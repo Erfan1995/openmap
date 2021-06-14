@@ -30,7 +30,6 @@ export async function getServerSideProps(ctx) {
       props: {mapDetails:res[0]},
     };
   } catch (e) {
-    console.log(e);
     return {
       redirect: {
         destination: '/customer/dashboard',

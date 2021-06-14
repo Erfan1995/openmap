@@ -5,6 +5,7 @@ import styled from 'styled-components'
 import { useRouter } from "next/router";
 const { Sider } = Layout;
 const { Title } = Typography;
+import { MAP } from 'static/constant'
 
 
 const ParentWrapper = styled.div`

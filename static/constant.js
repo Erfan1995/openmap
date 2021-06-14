@@ -101,6 +101,8 @@ export const MAP = {
     OPENMAP_LOGO: 'OpenMaps Logo',
     WELCOME_TO_OPENMAP: 'Welcome to OpenMaps',
     AS_CUSTOMER: 'as Customer',
-    SING_IN: 'Sign in'
+    SING_IN: 'Sign in',
+    MAP: 'Map',
+    LIST: 'List',
 
 }

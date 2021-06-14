@@ -21,17 +21,17 @@ const CardTitle = styled(Title)`
   float: left !important;
 `;
 
-const ManualMapData = ({ authenticatedUser, collapsed ,customerData}) => {
+const ManualMapData = ({ authenticatedUser, collapsed, customerData }) => {
     const [manualMapData, setManualMapData] = useState();
     const [mapsDataTofilter, setMapsDataToFilter] = useState();
 
 
-    useEffect(()=>{
+    useEffect(() => {
 
-      callback('1');
+        callback('1');
 
 
-    },[]);
+    }, []);
 
     const createMapFilterData = (mMapData) => {
         let arr = [];
@@ -52,6 +52,9 @@ const ManualMapData = ({ authenticatedUser, collapsed ,customerData}) => {
 
         } else if (key === "2") {
             res = await getMethod(`mmdpublicusers?_where[0][map.users]=${authenticatedUser.id}`)
+            res.map((map) => {
+                map.publicAddress = map.public_user.publicAddress
+            })
         }
         if (res) {
             res.forEach(element => {
@@ -90,8 +93,8 @@ export const getServerSideProps = withPrivateServerSideProps(
     async (ctx, verifyUser) => {
         try {
             const { token } = nookies.get(ctx);
-         
-            return { props: { authenticatedUser: verifyUser} }
+
+            return { props: { authenticatedUser: verifyUser } }
         } catch (error) {
             return {
                 redirect: {

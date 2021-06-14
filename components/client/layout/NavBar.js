@@ -3,7 +3,7 @@ import { Layout, Button, Radio } from "antd";
 import { MenuOutlined } from "@ant-design/icons";
 import { useRouter } from 'next/router';
 import styled from 'styled-components';
-
+import { MAP } from 'static/constant'
 
 const WalletAddressButton = styled(Button)`
 position:fexid; 

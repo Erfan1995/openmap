@@ -87,7 +87,9 @@ const PublicUserManualMapData = ({ data, mapFilterData }) => {
         {
             title: DATASET.ID,
             dataIndex: 'id',
-            key: 'id'
+            key: 'id',
+            fixed: 'left',
+            width: 80
         },
         {
             title: DATASET.NAME,
@@ -118,8 +120,15 @@ const PublicUserManualMapData = ({ data, mapFilterData }) => {
 
         },
         {
+            title: "Public adderss",
+            dataIndex: 'publicAddress',
+            key: 'publicAddress'
+
+        },
+        {
             title: DATASET.ACTIONS,
             key: 'action',
+            fixed: 'right',
             render: (record) => (
                 <Dropdown size="big" overlay={menu} trigger={['click']} >
                     <a className="ant-dropdown-link"
@@ -134,7 +143,7 @@ const PublicUserManualMapData = ({ data, mapFilterData }) => {
     ];
     return (
         <Spin spinning={loading}>
-            <Table dataSource={dataset} columns={columns} />
+            <Table dataSource={dataset} columns={columns} scroll={{ x: 1300 }} />
         </Spin>
     )
 }
