@@ -1,7 +1,7 @@
 import GlobalStyle from '../styles/globalStyles';
 import "antd/dist/antd.css";
 import "../styles/vars.css";
-// import "../styles/globals.css";
+import "../styles/globals.css";
 import Head from "next/head"
 import NProgress from "nprogress"
 import Router from "next/router"
