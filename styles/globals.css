@@ -1,0 +1,149 @@
+
+ .mobile-trigger {
+  cursor: pointer;
+  transition: color 0.3s;
+  position: absolute;
+  top: 15px;
+  left: 10px;
+}
+.web-trigger{
+  cursor: pointer;
+  transition: color 0.3s;
+  position: absolute;
+  top: 10px;
+  right: 10px;
+}
+
+
+ .site-layout-content {
+  position: relative;
+  top:0;
+  right:0;
+  /* min-width: 120vh; */
+}
+
+.news-relay{
+  position: absolute;
+  top: 0;
+  width: 100%;
+  height: 100%;
+  z-index: 1000;
+  padding: 65px 20px 20px 20px;
+  background-color:rgba(0, 0, 0, 0.35);
+  overflow-y: auto;
+}
+
+.newslist-wrapper ,.newsfeed-wrapper{
+  overflow-y: auto;
+  min-height: 10vh;
+  max-height: 80vh;
+  margin-top: 20px;
+}
+
+.newsfeed-list{
+  background-color: rgba(255, 255, 255, 1);
+  border-radius: 5px;
+  text-align: left;
+  padding: 20px;
+}
+.site-layout-sider{
+  height: 100vh;
+}
+/* .leaflet-left .leaflet-control{
+ /* position:fixed;
+ right: 20px; */
+ /* top:40px; */
+/* } */ */
+
+.text-center{
+  text-align: center!important;
+}
+
+.text-left{
+  text-align: left!important;
+}
+.text-right{
+  text-align: right!important;
+}
+
+.news-list-item{
+  background:rgba(255, 255, 255, 1);
+  color: #000 !important;;
+  border-radius:5px;
+  margin-bottom:10px;
+  text-align:left;
+  padding:10px;
+}
+.navBar-button{
+  float: left;
+}
+.metamask-button{
+   float: right;
+}
+
+
+.site-layout-header{
+  position: fixed;
+  top: 0;
+  z-index: 1000;
+  width: 100%;
+  background-color:transparent;
+}
+.nav-button{
+  width: 100%;
+  text-align: left;
+}
+
+.chatBot{
+  position: fixed;
+  bottom: 20px;
+  right: 20px;
+  height: 50px;
+  width: 50px;
+  box-shadow: 0px 0px 18px -2px rgba(0,0,0,0.67);
+}
+.ant-modal-body{
+  padding: 0;
+}
+
+.p-1{
+  padding: 10px;
+}
+
+
+.login-form-forgot {
+  float: right;
+}
+.login-form-button {
+  width: 100%;
+}
+.login-wrapper {
+  padding-top: 180px;
+  background: #ececec;
+  height: 100vh;
+}
+.text-center {
+  text-align: center;
+}
+.container {
+  min-height: 90vh;
+  height: 100%;
+}
+
+.margin-right-10{
+  margin-right: 10px;
+}
+.margin-top-5{
+  margin-top: 5px;
+}
+.margin-top-10{
+  margin-top: 10px;
+}
+
+.leaflet-top{
+  top: 50px !important;;
+}
+
+#nprogress .bar {
+  height:6px;
+}

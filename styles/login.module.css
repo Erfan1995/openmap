@@ -1,0 +1,29 @@
+.login {
+    min-height: 100vh;
+}
+.formContainer {
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    background-color: white;
+    
+}
+.logo {
+    width: 200px;
+    margin-bottom: 25px;
+
+}
+.imageContainer {
+    background-image: url('../assets/login_image.png');
+    background-position: center;
+    background-size: cover;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    color: white;
+}
+
+.white {
+ color: white!important;
+}
