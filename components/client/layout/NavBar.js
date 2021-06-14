@@ -35,7 +35,7 @@ const NavBar = ({ isMobileSize, toggle, walletAddress }) => {
             <div className='nav-button'>
                 <Radio.Group onChange={handleModeChange}>
                     <Radio.Button value="/client/map">Map</Radio.Button>
-                    <Radio.Button value="/client/newslist">List</Radio.Button>
+                    {/* <Radio.Button value="/client/newslist">List</Radio.Button> */}
                 </Radio.Group>
                 <WalletAddressButton type='primary' shape='round'>
                     {customWalletAddress}

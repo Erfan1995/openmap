@@ -4,7 +4,6 @@ import { postMethod, putMethod } from "lib/api";
 import { useImperativeHandle, useState, forwardRef } from "react";
 import styled from 'styled-components';
 import { DATASET } from '../../../../static/constant';
-// import CryptoJS from 'crypto-js';
 const  CryptoJS = require("crypto-js");
 const { Option } = Select;
 const StyledDivider = styled(Divider)`

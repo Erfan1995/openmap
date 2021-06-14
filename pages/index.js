@@ -33,7 +33,7 @@ export async function getServerSideProps(ctx) {
     console.log(e);
     return {
       redirect: {
-        destination: '/server-error',
+        destination: '/customer/dashboard',
         permanent: false,
       }
     }
