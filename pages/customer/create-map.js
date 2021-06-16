@@ -138,14 +138,15 @@ const CreateMapContainer = ({ authenticatedUser, collapsed, styledMaps, tags, ma
 
   const changeMapCenter = async (center) => {
     try {
-       message.loading({ content: 'Loading...', key });
+      const zoom = localStorage.getItem('zoom');
+      message.loading({ content: 'Loading...', key });
       const res = await putMethod(`maps/${mapData.id}`, {
         center: center,
-        zoomLevel: localStorage.getItem('zoom')    
+        zoomLevel: zoom ? zoom : mapData.zoomLevel
       });
-   
+
       if (res) {
-        mapData.zoomLevel = localStorage.getItem('zoom');
+        mapData.zoomLevel = zoom ? zoom : mapData.zoomLevel;
         setCustomMapData(await getMapData(mapData.id));
         setCenter(center);
         message.success({ content: 'Success!', key, duration: 2 });
@@ -154,6 +155,15 @@ const CreateMapContainer = ({ authenticatedUser, collapsed, styledMaps, tags, ma
       message.error(e.message);
     }
 
+  }
+
+
+
+  const showGeneratedLink = () => {
+    router.push({
+      pathname: '/',
+      query: { mapToken: mapData.mapId, id: mapData.id }
+    });
   }
 
   return (
@@ -213,6 +223,8 @@ const CreateMapContainer = ({ authenticatedUser, collapsed, styledMaps, tags, ma
                   </TabPane>
                 </Tabs>
               </Card>
+              <Button type={'primary'} onClick={showGeneratedLink} className='margin-top-10' size='large'>Publish</Button>
+
             </Col>
             <Col xs={24} sm={24} md={24} lg={17} xl={17}>
               <MapWithNoSSR
