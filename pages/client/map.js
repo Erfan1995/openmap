@@ -39,8 +39,8 @@ const Map = ({ manualMapData, mapData, datasets }) => {
 
   return (
     <div>
-      { !loading &&
-        <LayoutPage walletAddress={publicUser.publicAddress} datasets={datasets} onDataSetChange={onDataSetChange}  >
+      {!loading &&
+        <LayoutPage walletAddress={publicUser.publicAddress} datasets={datasets} onDataSetChange={onDataSetChange} mapInfo={mapData}  >
           <MapWithNoSSR draw={{
             rectangle: false,
             polygon: false,
@@ -73,7 +73,7 @@ export async function getServerSideProps(ctx) {
   try {
     if (id) {
       mapData = await getMethod(`maps?id=${id}&mapId=${mapToken}`, null, false);
-      if(!mapData.length > 0){
+      if (!mapData.length > 0) {
         return {
           redirect: {
             destination: '/server-error',

@@ -6,7 +6,7 @@ import { useRouter } from "next/router";
 const { Sider } = Layout;
 const { Title } = Typography;
 import { MAP } from 'static/constant'
-
+import { getStrapiMedia } from '../../../lib/media'
 
 const ParentWrapper = styled.div`
  width:100%;
@@ -18,7 +18,9 @@ const ChildWrapper = styled.div`
  padding:5px 30px;
 `
 
-
+const Photo = styled.img`
+  height:100px;
+`
 const StyledCheckBox = styled(Checkbox)`
   margin-bottom:20px;
   font-weight:500;
@@ -35,7 +37,7 @@ text-align:center;
 `
 
 
-const SideBar = ({ siderCollapsed, toggle, datasets, onDataSetChange }) => {
+const SideBar = ({ siderCollapsed, toggle, datasets, onDataSetChange, mapInfo }) => {
   const router = useRouter();
   let firstMounted = useRef(false);
   const [checkedList, setCheckedList] = useState(datasets.map((item) => (item.id)));
@@ -66,12 +68,12 @@ const SideBar = ({ siderCollapsed, toggle, datasets, onDataSetChange }) => {
 
       <ParentWrapper>
         <ChildWrapper>
-          <img src='/af-logo.png' />
+          <Photo src={getStrapiMedia(mapInfo.logo)} />
           <Title>
-            Hello World Welcome To My OpenMap
+            {mapInfo.title}
           </Title>
           <Title level={2}>
-            Subtitle
+            {mapInfo.subtitle}
           </Title>
         </ChildWrapper>
         <Divider />
