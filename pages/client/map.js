@@ -30,7 +30,7 @@ const Map = ({ manualMapData, mapData, datasets }) => {
         }
       })
     })
-    setZoomLevel(localStorage.getItem('zoom'));
+    setZoomLevel(localStorage.getItem('zoom') || mapData.zoomLevel);
     setDatasetData(arr);
   }
   const MapWithNoSSR = dynamic(() => import("../../components/map/publicMap"), {

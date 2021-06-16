@@ -9,7 +9,7 @@ import CreateMap from 'components/customer/Forms/CreateMap';
 import StyledMaps from 'components/customer/generalComponents/ListMapboxStyle';
 import { fetchApi, getMethod, putMethod } from 'lib/api';
 import SelectNewMapDataset from 'components/customer/mapComponents/SelectNewMapDataset';
-import { formatDate, fileSizeReadable } from "../../lib/general-functions";
+import { formatDate, fileSizeReadable, getMapData } from "../../lib/general-functions";
 import { DeleteTwoTone } from '@ant-design/icons';
 import { useRouter } from 'next/router';
 import { DATASET } from '../../static/constant'
@@ -44,11 +44,12 @@ const CreateMapContainer = ({ authenticatedUser, collapsed, styledMaps, tags, ma
   const [selectedDataset, setSelectedDataset] = useState(serverSideDatasets);
   const [loading, setLoading] = useState(false);
   const [center, setCenter] = useState(mapData.center);
+  const [customMapData, setCustomMapData] = useState(manualMapData);
 
   const MapWithNoSSR = dynamic(() => import("../../components/map"), {
     ssr: false
   });
-
+  const key = 'updatable';
   const router = useRouter();
   const changeStyle = (item) => {
     setStyleID(item.id);
@@ -131,6 +132,26 @@ const CreateMapContainer = ({ authenticatedUser, collapsed, styledMaps, tags, ma
     });
   }
 
+  const changeMapCenter = async (center) => {
+    try {
+       message.loading({ content: 'Loading...', key });
+      const res = await putMethod(`maps/${mapData.id}`, {
+        center: center,
+        zoomLevel: localStorage.getItem('zoom')    
+      });
+   
+      if (res) {
+        mapData.zoomLevel = localStorage.getItem('zoom');
+        setCustomMapData(await getMapData(mapData.id));
+        setCenter(center);
+        message.success({ content: 'Success!', key, duration: 2 });
+      }
+    } catch (e) {
+      message.error(e.message);
+    }
+
+  }
+
   return (
     <Layout collapsed={collapsed} user={authenticatedUser}>
       <MapsWrapper  >
@@ -191,7 +212,7 @@ const CreateMapContainer = ({ authenticatedUser, collapsed, styledMaps, tags, ma
             </Col>
             <Col xs={24} sm={24} md={24} lg={17} xl={17}>
               <MapWithNoSSR
-                manualMapData={manualMapData}
+                manualMapData={customMapData}
                 styleId={styleId}
                 style={{ height: "70vh" }}
                 datasets={selectedDataset}
@@ -199,7 +220,7 @@ const CreateMapContainer = ({ authenticatedUser, collapsed, styledMaps, tags, ma
                 userType='customer'
                 userId={authenticatedUser.id}
                 center={center}
-                setCenter={setCenter}
+                setCenter={changeMapCenter}
                 draw={{
                   rectangle: true,
                   polygon: true,
@@ -243,7 +264,7 @@ export const getServerSideProps = withPrivateServerSideProps(
                     id: item.id,
                     title: item.title,
                     description: item.description,
-                    type: item.public_user? 'public' : 'customer',
+                    type: item.public_user ? 'public' : 'customer',
 
                   }
                 })

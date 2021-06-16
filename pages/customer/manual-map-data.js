@@ -21,16 +21,13 @@ const CardTitle = styled(Title)`
   float: left !important;
 `;
 
-const ManualMapData = ({ authenticatedUser, collapsed, customerData }) => {
+const ManualMapData = ({ authenticatedUser, collapsed }) => {
     const [manualMapData, setManualMapData] = useState();
     const [mapsDataTofilter, setMapsDataToFilter] = useState();
 
 
     useEffect(() => {
-
         callback('1');
-
-
     }, []);
 
     const createMapFilterData = (mMapData) => {

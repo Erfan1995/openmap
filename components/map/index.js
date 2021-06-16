@@ -9,11 +9,28 @@ import EditControlExample from "./map2";
 import { getMethod } from "lib/api";
 import { Button, message } from "antd";
 import styled from 'styled-components';
+import { getMapData } from "lib/general-functions";
 const SaveButton = styled(Button)`
   margin-bottom: 10px;
   margin-right:10px;
   float: right !important;
 `;
+
+const ZoomButton = styled.div`
+width: 34px;
+height: 32px;
+line-height: 30px;
+background-color:#ffffff;
+text-align:center;
+bottom:74px;
+left:10px;
+font-size: 18px;
+border-radius:3px ;
+border: 2px solid #aaa;
+
+`;
+
+
 
 const TopButtonWrapper = styled.div`
   margin-top: -67px;
@@ -60,32 +77,12 @@ const Map = ({ styleId, center, setCenter, style, mapData, manualMapData, datase
   }
 
 
-
   const onChange = async () => {
-    let manualArray = [];
     try {
-      if (mapData) {
-        const data = await getMethod(`maps/${mapData.id}`, null, true);
-        [...data.mmdpublicusers, ...data.mmdcustomers].map((item) => {
-          if (item.is_approved) {
-            manualArray.push(
-              {
-                type: "Feature",
-                geometry: item.geometry,
-                properties: {
-                  id: item.id,
-                  title: item.title,
-                  description: item.description,
-                  type: item.public_user ? 'public' : 'customer',
-                }
-              })
-          }
-        })
-      }
+      setCustomMapData(await getMapData(mapData.id));
     } catch (e) {
       message.error(e.message);
     }
-    setCustomMapData(manualArray);
   }
 
 
@@ -99,14 +96,11 @@ const Map = ({ styleId, center, setCenter, style, mapData, manualMapData, datase
       {
         userType === 'customer' &&
         <TopButtonWrapper >
-
-          <SaveButton type='primary' onClick={setMapCenter}>set Center</SaveButton>
-
-          <SaveButton type='default'>{zoomLevel}</SaveButton>
-
+          <SaveButton icon={<img style={{ marginTop: '-5px' }} src='/focus.png' />} onClick={setMapCenter} />
         </TopButtonWrapper>
       }
       <div style={{ clear: 'both' }}>
+
         <MapContainer
           center={center || [10, 20]}
           zoom={zoomLevel || 8}
@@ -116,6 +110,7 @@ const Map = ({ styleId, center, setCenter, style, mapData, manualMapData, datase
           style={style} >
 
           <ZoomControl position='bottomleft' />
+
           <TileLayer
             url={`${process.env.NEXT_PUBLIC_MAPBOX_API_URL}/styles/v1/mbshaban/${styleId || process.env.NEXT_PUBLIC_MAPBOX_DEFAULT_MAP}/tiles/256/{z}/{x}/{y}@2x?access_token=${process.env.NEXT_PUBLIC_MAPBOX_TOKEN}`}
           />
@@ -146,7 +141,12 @@ const Map = ({ styleId, center, setCenter, style, mapData, manualMapData, datase
             />
           }
 
+          {
+            userType === 'customer' &&
+            <ZoomButton className='leaflet-control leaflet-bottom leaflet-left' type='default'>{zoomLevel}</ZoomButton>
+          }
         </MapContainer>
+
       </div>
     </div>
   );
