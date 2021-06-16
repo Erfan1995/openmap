@@ -36,7 +36,7 @@ export const StyledCard = styled(Card)`
 
 
 const { Title } = Typography;
-const Dashboard = ({ mapDetails }) => {
+const Dashboard = ({ mapData,manualMapData,datasets }) => {
 
 
   const MapWithNoSSR = dynamic(() => import("../../components/map/mapImage"), {
@@ -50,7 +50,7 @@ const Dashboard = ({ mapDetails }) => {
   return (
     <div>
 
-      <MapWithNoSSR style={{ height: "100vh" }} option={{ zoom: 8 }} />
+      <MapWithNoSSR   mapData={mapData} manualMapData={manualMapData} datasets={datasets} />
 
       <div className='news-relay text-center' >
         <StyledCard>
@@ -62,7 +62,7 @@ const Dashboard = ({ mapDetails }) => {
           </Title>
 
 
-          <Metamask mapDetails={mapDetails} />
+          <Metamask mapDetails={mapData} />
           <CardMiddle>
             <img src='metamask-big.png' />
           </CardMiddle>

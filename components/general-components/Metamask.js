@@ -32,7 +32,7 @@ export const NextButton = styled(Button)`
 
 `;
 let web3 = undefined;
-const Metamask = ({mapDetails}) => {
+const Metamask = ({ mapDetails }) => {
     const router = useRouter();
 
     const handleSignup = async (publicAddress) => {
@@ -74,7 +74,7 @@ const Metamask = ({mapDetails}) => {
                 if (res) {
                     router.push({
                         pathname: 'client/map',
-                        query: { mapToken: mapDetails.mapId,id:mapDetails.id }
+                        query: { mapToken: mapDetails.mapId, id: mapDetails.id, publicUser: res.id }
                     });
                 }
             }
