@@ -55,7 +55,6 @@ const CreateMap = ({ serverSideTags, user, mapData, onModalClose, addImageFile }
             form
                 .validateFields()
                 .then(async (values) => {
-                    console.log('mapdata', values)
                     const fData = new FormData();
                     values.styleId = styleId;
                     values.users = user.id;
@@ -71,9 +70,8 @@ const CreateMap = ({ serverSideTags, user, mapData, onModalClose, addImageFile }
                         fData.append('data', JSON.stringify(values))
                         if (image) {
                             fData.append('files.logo', image.file.originFileObj, image.file.originFileObj.name);
-                            res = await putFileMethod(`maps/${mapData.id}`, fData);
-                            console.log('res', res);
                         }
+                        res = await putFileMethod(`maps/${mapData.id}`, fData);
                     } else {
                         res = await postMethod('maps', values);
                     }
@@ -109,6 +107,8 @@ const CreateMap = ({ serverSideTags, user, mapData, onModalClose, addImageFile }
                             message.success(DATASET.CREATE_MAP_SUCCESS_MSG);
                             onModalClose(res);
                         }
+                    } else {
+                        message.error('please select the logo');
                     }
                 })
                 .catch((info) => {
