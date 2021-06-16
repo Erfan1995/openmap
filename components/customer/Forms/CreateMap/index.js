@@ -1,11 +1,13 @@
 import { PlusOutlined } from "@ant-design/icons";
-import { Form, Input, Row, Select, Divider, Col, message, Spin } from "antd";
-import { postMethod, putMethod } from "lib/api";
+import { Form, Input, Row, Select, Divider, Col, message, Upload, Spin, Button } from "antd";
+import { postMethod, putMethod, postFileMethod, putFileMethod } from "lib/api";
 import { useImperativeHandle, useState, forwardRef } from "react";
 import styled from 'styled-components';
 import { DATASET } from '../../../../static/constant';
-const  CryptoJS = require("crypto-js");
+import { InboxOutlined, UploadOutlined } from '@ant-design/icons';
+const CryptoJS = require("crypto-js");
 const { Option } = Select;
+const { Dragger } = Upload;
 const StyledDivider = styled(Divider)`
   margin: 4px 0;
 `;
@@ -21,7 +23,7 @@ const StyledLink = styled.a`
 `;
 
 
-const CreateMap = ({ serverSideTags, user, mapData, onModalClose }, ref) => {
+const CreateMap = ({ serverSideTags, user, mapData, onModalClose, addImageFile }, ref) => {
     const [form] = Form.useForm();
     const [tagName, settagName] = useState('');
     const [tags, setTags] = useState(serverSideTags || []);
@@ -47,15 +49,14 @@ const CreateMap = ({ serverSideTags, user, mapData, onModalClose }, ref) => {
             settagName('');
         }
     };
-
-
     useImperativeHandle(ref, () => ({
-        saveData(styleId, datasetIds) {
+        saveData(styleId, image) {
             form
                 .validateFields()
                 .then(async (values) => {
+                    console.log('mapdata', values)
+                    const fData = new FormData();
                     values.styleId = styleId;
-                    values.datasets = datasetIds;
                     values.users = user.id;
                     let res = null;
                     setLoading(true);
@@ -66,8 +67,14 @@ const CreateMap = ({ serverSideTags, user, mapData, onModalClose }, ref) => {
                         if (JSON.parse(localStorage.getItem('center'))) {
                             values.center = JSON.parse(localStorage.getItem('center'));
                         }
-                        res = await putMethod(`maps/${mapData.id}`, values);
+                        fData.append('data', JSON.stringify(values))
+                        if (image) {
+                            fData.append('files.logo', image.file.originFileObj, image.file.originFileObj.name);
+                            res = await putFileMethod(`maps/${mapData.id}`, fData);
+                            console.log('res', res);
+                        }
                     } else {
+                        console.log('no map data')
                         res = await postMethod('maps', values);
                     }
                     setLoading(false);
@@ -78,26 +85,30 @@ const CreateMap = ({ serverSideTags, user, mapData, onModalClose }, ref) => {
                     }
                 })
                 .catch((info) => {
-                    message.log(info);
+                    message.error(info.message)
                 });
         },
-        createMap(datasetId = null) {
+        createMap(datasetId = null, image) {
             form
                 .validateFields()
                 .then(async (values) => {
-                    
+                    const fData = new FormData();
                     values.datasets = datasetId;
-                    values.styleId = process.env.NEXT_PUBLIC_MAPBOX_DEFAULT_MAP;                  
+                    values.styleId = process.env.NEXT_PUBLIC_MAPBOX_DEFAULT_MAP;
                     values.users = user.id;
-                    values.mapId=CryptoJS.SHA1(new Date().toString()+user.id).toString();
-                    values.zoomLevel=2;
-                    values.center=[29.9635203,-10.1238717];
+                    values.mapId = CryptoJS.SHA1(new Date().toString() + user.id).toString();
+                    values.zoomLevel = 2;
+                    values.center = [29.9635203, -10.1238717];
+                    fData.append('data', JSON.stringify(values));
                     setLoading(true);
-                    let res = await postMethod('maps', values)
-                    setLoading(false);
-                    if (res) {
-                        message.success(DATASET.CREATE_MAP_SUCCESS_MSG);
-                        onModalClose(res);
+                    if (image) {
+                        fData.append('files.logo', image.file.originFileObj, image.file.originFileObj.name);
+                        let res = await postFileMethod('maps', fData)
+                        setLoading(false);
+                        if (res) {
+                            message.success(DATASET.CREATE_MAP_SUCCESS_MSG);
+                            onModalClose(res);
+                        }
                     }
                 })
                 .catch((info) => {
@@ -105,15 +116,22 @@ const CreateMap = ({ serverSideTags, user, mapData, onModalClose }, ref) => {
                 })
         }
     }), [])
-
-
-
-
+    const props = {
+        beforeUpload: file => {
+            if ((file.type.split("/")[0]) !== "image") {
+                message.error(`${file.name} is not a valid file`);
+            }
+            return (file.type.split("/")[0]) === "image" ? true : Upload.LIST_IGNORE;
+        },
+        onChange: info => {
+            addImageFile(info);
+        },
+    };
     return (
         <Spin spinning={loading}>
             <Form form={form} layout="vertical" initialValues={mapData} hideRequiredMark>
                 <Row gutter={16}>
-                    <Col span={24}>
+                    <Col span={12}>
                         <Form.Item
                             name="title"
                             label={DATASET.TITLE}
@@ -122,7 +140,16 @@ const CreateMap = ({ serverSideTags, user, mapData, onModalClose }, ref) => {
                             <Input placeholder={DATASET.PLACE_HOLDER_TITLE} />
                         </Form.Item>
                     </Col>
-                    <Col span={24}>
+                    <Col span={12}>
+                        <Form.Item
+                            name="subtitle"
+                            label={DATASET.SUBTITLE}
+                            rules={[{ required: true }]}
+                        >
+                            <Input placeholder={DATASET.PLACEHOLDER_SUBTITLE} />
+                        </Form.Item>
+                    </Col>
+                    <Col span={12}>
                         <Form.Item
                             name="type"
                             label={DATASET.TYPE}
@@ -134,8 +161,16 @@ const CreateMap = ({ serverSideTags, user, mapData, onModalClose }, ref) => {
                             </Select>
                         </Form.Item>
                     </Col>
-
-                    <Col span={24}>
+                    <Col span={12}>
+                        <Form.Item
+                            name="link"
+                            label={DATASET.LINK}
+                            rules={[{ required: true }]}
+                        >
+                            <Input placeholder={DATASET.PLACEHOLDER_LINK} />
+                        </Form.Item>
+                    </Col>
+                    <Col span={12}>
                         <Form.Item
                             name="tags"
                             label={DATASET.TAGS}
@@ -165,7 +200,7 @@ const CreateMap = ({ serverSideTags, user, mapData, onModalClose }, ref) => {
                             </Select>
                         </Form.Item>
                     </Col>
-                    <Col span={24}>
+                    <Col span={12}>
                         <Form.Item
                             name="description"
                             label={DATASET.DESCRIPTION}
@@ -179,6 +214,13 @@ const CreateMap = ({ serverSideTags, user, mapData, onModalClose }, ref) => {
                     </Col>
                 </Row>
             </Form>
+            <Dragger  {...props} name="file" maxCount={1} >
+                <p className="ant-upload-drag-icon">
+                    <InboxOutlined />
+                </p>
+                <p className="ant-upload-text">{DATASET.CLICK_OR_DRAG}</p>
+
+            </Dragger>
         </Spin>
     );
 };

@@ -45,6 +45,7 @@ const CreateMapContainer = ({ authenticatedUser, collapsed, styledMaps, tags, ma
   const [loading, setLoading] = useState(false);
   const [center, setCenter] = useState(mapData.center);
   const [customMapData, setCustomMapData] = useState(manualMapData);
+  const [file, setFile] = useState();
 
   const MapWithNoSSR = dynamic(() => import("../../components/map"), {
     ssr: false
@@ -105,6 +106,9 @@ const CreateMapContainer = ({ authenticatedUser, collapsed, styledMaps, tags, ma
     })
 
   }
+  const addImageFile = (file) => {
+    setFile(file);
+  }
   const deleteDataset = async (id) => {
     setLoading(true);
     const dd = selectedDataset.filter(dData => dData.id !== id)
@@ -159,7 +163,7 @@ const CreateMapContainer = ({ authenticatedUser, collapsed, styledMaps, tags, ma
           {DATASET.ADD_NEW}
         </CardTitle>
         <SaveButton type='primary' onClick={() => {
-          childRef.current.saveData(styleId);
+          childRef.current.saveData(styleId, file);
         }}>{DATASET.SAVE}</SaveButton>
         <Divider />
         <Spin spinning={loading}>
@@ -168,7 +172,7 @@ const CreateMapContainer = ({ authenticatedUser, collapsed, styledMaps, tags, ma
               <Card style={{ height: '70vh', overflowY: 'scroll' }}>
                 <Tabs defaultActiveKey="1">
                   <TabPane tab={DATASET.META_DATA} key="1" >
-                    <CreateMap ref={childRef} mapData={mapData} serverSideTags={tags} user={authenticatedUser} onModalClose={onModalClose} />
+                    <CreateMap ref={childRef} mapData={mapData} serverSideTags={tags} user={authenticatedUser} onModalClose={onModalClose} addImageFile={addImageFile} />
                   </TabPane>
 
                   <TabPane tab={DATASET.MAP_STYLE} key="2" >
@@ -253,6 +257,7 @@ export const getServerSideProps = withPrivateServerSideProps(
       if (id) {
         mapData = await getMethod(`maps/${id}`, token);
         if (mapData) {
+          console.log('map', mapData)
           mapData.tags = mapData.tags.map(item => item.id);
           [...mapData.mmdpublicusers, ...mapData.mmdcustomers].map((item) => {
             if (item.is_approved) {

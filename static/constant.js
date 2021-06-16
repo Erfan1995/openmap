@@ -73,7 +73,12 @@ export const DATASET = {
     SEND: 'send',
     SIGN_IN_TO_VIEW_DASHBOARD: 'sign in to view the dashboard',
     BACK_TO_HOME: 'Back Home',
-    INVALID_FILE_SIZE: 'this file size is greater than 1MB'
+    INVALID_FILE_SIZE: 'this file size is greater than 1MB',
+    SUBTITLE:'Subtitle',
+    PLACEHOLDER_SUBTITLE:'Please enter subtitle',
+    LINK:'Link',
+    PLACEHOLDER_LINK:'Please enter link',
+
 
 }
 export const LAT = ['lat', 'Lat', 'LAT', 'latitude', 'Latitude', 'LATITUDE'];
