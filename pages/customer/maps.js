@@ -33,6 +33,7 @@ const Map = ({ authenticatedUser, collapsed, maps, tags, mapData = null }) => {
   const childRef = useRef();
   const [allMaps, setAllMaps] = useState(maps)
   const [createMapModalVisibl, setCreateMapModalVisible] = useState(false);
+  const [file, setFile] = useState();
   const onModalClose = (res) => {
     setCreateMapModalVisible(false);
     router.push({
@@ -41,10 +42,13 @@ const Map = ({ authenticatedUser, collapsed, maps, tags, mapData = null }) => {
     })
 
   }
+  const addImageFile = (file) => {
+    setFile(file);
+  }
   const filterDeletedMap = (id) => {
     setAllMaps(allMaps.filter(dData => dData.id !== id))
   }
-
+  let dataset;
   return (
     <Layout collapsed={collapsed} user={authenticatedUser}>
       <MapsWrapper  >
@@ -54,14 +58,15 @@ const Map = ({ authenticatedUser, collapsed, maps, tags, mapData = null }) => {
         <AddNew type='primary' onClick={() => setCreateMapModalVisible(true)}>{DATASET.ADD_NEW}</AddNew>
         <Modal
           title="Create Map"
+          width={800}
           centered
           visible={createMapModalVisibl}
-          onOk={() => childRef.current.createMap()}
+          onOk={() => childRef.current.createMap(dataset, file)}
           destroyOnClose={true}
           onCancel={() => setCreateMapModalVisible(false)}>
           <CreateMapWrapper>
             <CreateMap ref={childRef}
-              mapData={mapData} serverSideTags={tags} user={authenticatedUser} onModalClose={onModalClose} />
+              mapData={mapData} serverSideTags={tags} user={authenticatedUser} onModalClose={onModalClose} addImageFile={addImageFile} />
           </CreateMapWrapper>
         </Modal>
         <Divider />
