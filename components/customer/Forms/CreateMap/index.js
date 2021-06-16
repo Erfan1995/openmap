@@ -5,6 +5,7 @@ import { useImperativeHandle, useState, forwardRef } from "react";
 import styled from 'styled-components';
 import { DATASET } from '../../../../static/constant';
 import { InboxOutlined, UploadOutlined } from '@ant-design/icons';
+import nookies from 'nookies';
 const CryptoJS = require("crypto-js");
 const { Option } = Select;
 const { Dragger } = Upload;
@@ -74,7 +75,6 @@ const CreateMap = ({ serverSideTags, user, mapData, onModalClose, addImageFile }
                             console.log('res', res);
                         }
                     } else {
-                        console.log('no map data')
                         res = await postMethod('maps', values);
                     }
                     setLoading(false);
