@@ -5,6 +5,7 @@ import { useImperativeHandle, useState, forwardRef } from "react";
 import styled from 'styled-components';
 import { DATASET } from '../../../../static/constant';
 import { InboxOutlined, UploadOutlined } from '@ant-design/icons';
+import nookies from 'nookies';
 const CryptoJS = require("crypto-js");
 const { Option } = Select;
 const { Dragger } = Upload;
@@ -54,7 +55,6 @@ const CreateMap = ({ serverSideTags, user, mapData, onModalClose, addImageFile }
             form
                 .validateFields()
                 .then(async (values) => {
-                    console.log('mapdata', values)
                     const fData = new FormData();
                     values.styleId = styleId;
                     values.users = user.id;
@@ -70,11 +70,9 @@ const CreateMap = ({ serverSideTags, user, mapData, onModalClose, addImageFile }
                         fData.append('data', JSON.stringify(values))
                         if (image) {
                             fData.append('files.logo', image.file.originFileObj, image.file.originFileObj.name);
-                            res = await putFileMethod(`maps/${mapData.id}`, fData);
-                            console.log('res', res);
                         }
+                        res = await putFileMethod(`maps/${mapData.id}`, fData);
                     } else {
-                        console.log('no map data')
                         res = await postMethod('maps', values);
                     }
                     setLoading(false);
@@ -109,6 +107,8 @@ const CreateMap = ({ serverSideTags, user, mapData, onModalClose, addImageFile }
                             message.success(DATASET.CREATE_MAP_SUCCESS_MSG);
                             onModalClose(res);
                         }
+                    } else {
+                        message.error('please select the logo');
                     }
                 })
                 .catch((info) => {

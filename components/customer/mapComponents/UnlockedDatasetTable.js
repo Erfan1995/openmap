@@ -23,6 +23,7 @@ const UnlockedDataset = ({ data, updateLockedData, user, tags }) => {
     const [loading, setLoading] = useState(false);
     const [createMapModalVisibl, setCreateMapModalVisible] = useState(false);
     const childRef = useRef();
+    const [file, setFile] = useState();
 
     useEffect(() => {
         setDataset(data);
@@ -120,7 +121,9 @@ const UnlockedDataset = ({ data, updateLockedData, user, tags }) => {
         },
     ];
 
-
+    const addImageFile = (file) => {
+        setFile(file);
+    }
     const onModalClose = (res) => {
         setCreateMapModalVisible(false);
         router.push({
@@ -147,13 +150,14 @@ const UnlockedDataset = ({ data, updateLockedData, user, tags }) => {
             <Modal
                 title={DATASET.CREATE_MAP}
                 centered
+                width={800}
                 visible={createMapModalVisibl}
-                onOk={() => childRef.current.createMap(datasetId)}
+                onOk={() => childRef.current.createMap(datasetId, file)}
                 destroyOnClose={true}
                 onCancel={() => setCreateMapModalVisible(false)}>
                 <CreateMapWrapper>
                     <CreateMap ref={childRef}
-                        mapData={mapData} serverSideTags={tags} user={user} onModalClose={onModalClose} />
+                        mapData={mapData} serverSideTags={tags} user={user} onModalClose={onModalClose} addImageFile={addImageFile} />
                 </CreateMapWrapper>
 
             </Modal>

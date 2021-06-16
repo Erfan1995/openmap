@@ -35,7 +35,10 @@ const ButtonWrapper = styled.div`
 text-align:center;
 
 `
-
+const NeedHelp = styled.div`
+  margin-top:120px;
+  padding-left:20px;
+`
 
 const SideBar = ({ siderCollapsed, toggle, datasets, onDataSetChange, mapInfo }) => {
   const router = useRouter();
@@ -93,7 +96,9 @@ const SideBar = ({ siderCollapsed, toggle, datasets, onDataSetChange, mapInfo })
           </ButtonWrapper>
         </ChildWrapper>
       </ParentWrapper>
-
+      <NeedHelp>
+        <a href={mapInfo.link} target="_blank" rel="noopener noreferrer">Need Help?</a>
+      </NeedHelp>
     </Sider>
   )
 };

@@ -1,5 +1,5 @@
 import Layout from '../../components/customer/layout/Layout';
-import { Divider, Typography, Tabs } from 'antd';
+import { Divider, Typography, Tabs, Spin } from 'antd';
 import withPrivateServerSideProps from '../../utils/withPrivateServerSideProps';
 const { Title } = Typography;
 const { TabPane } = Tabs;
@@ -24,7 +24,7 @@ const CardTitle = styled(Title)`
 const ManualMapData = ({ authenticatedUser, collapsed }) => {
     const [manualMapData, setManualMapData] = useState();
     const [mapsDataTofilter, setMapsDataToFilter] = useState();
-
+    const [loading, setLoading] = useState(false);
 
     useEffect(() => {
         callback('1');
@@ -43,7 +43,9 @@ const ManualMapData = ({ authenticatedUser, collapsed }) => {
         setMapsDataToFilter(finalMapsDataToFilter);
     }
     const callback = async (key) => {
+        setManualMapData([]);
         let res;
+        setLoading(true);
         if (key === "1") {
             res = await getMethod(`mmdcustomers?users=${authenticatedUser.id}`)
 
@@ -53,6 +55,7 @@ const ManualMapData = ({ authenticatedUser, collapsed }) => {
                 map.publicAddress = map.public_user.publicAddress
             })
         }
+        setLoading(false);
         if (res) {
             res.forEach(element => {
                 element.key = element.id;
@@ -76,10 +79,14 @@ const ManualMapData = ({ authenticatedUser, collapsed }) => {
                 <Divider />
                 <Tabs defaultActiveKey="1" onChange={callback}>
                     <TabPane tab="Customer " key="1">
-                        <CustomerManualMapData data={manualMapData} mapFilterData={mapsDataTofilter} />
+                        <Spin spinning={loading}>
+                            <CustomerManualMapData data={manualMapData} mapFilterData={mapsDataTofilter} />
+                        </Spin>
                     </TabPane>
                     <TabPane tab="Public User" key="2">
-                        <PublicUserManualMapData data={manualMapData} mapFilterData={mapsDataTofilter} />
+                        <Spin spinning={loading}>
+                            <PublicUserManualMapData data={manualMapData} mapFilterData={mapsDataTofilter} />
+                        </Spin>
                     </TabPane>
                 </Tabs>
             </MapsWrapper>
