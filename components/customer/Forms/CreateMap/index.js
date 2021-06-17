@@ -218,7 +218,9 @@ const CreateMap = ({ serverSideTags, user, mapData, onModalClose, addImageFile }
                 <p className="ant-upload-drag-icon">
                     <InboxOutlined />
                 </p>
+                <p className="ant-upload-text">{DATASET.LOGO_FILE}</p>
                 <p className="ant-upload-text">{DATASET.CLICK_OR_DRAG}</p>
+
 
             </Dragger>
         </Spin>

@@ -70,6 +70,7 @@ export const DATASET = {
     SELECT: 'Select',
     CREATE_LINK: 'Create Link',
     CLICK_OR_DRAG: 'Click or drag file to this area to upload',
+    LOGO_FILE: 'Please Add Your Logo [recommended size (70px)]',
     SEND: 'send',
     SIGN_IN_TO_VIEW_DASHBOARD: 'sign in to view the dashboard',
     BACK_TO_HOME: 'Back Home',
@@ -78,6 +79,7 @@ export const DATASET = {
     PLACEHOLDER_SUBTITLE:'Please enter subtitle',
     LINK:'Link',
     PLACEHOLDER_LINK:'Please enter link',
+    MANUAL_MAP_DATA:'Manual Map Data'
 
 
 }
