@@ -144,7 +144,7 @@ const Map = ({ styleId, center, setCenter, style, mapData, manualMapData, datase
           {
          
             userType === 'customer' &&
-            <ZoomButton className='leaflet-control leaflet-bottom leaflet-left' style={{bottom:'74px!important',left:'10px!important'}} type='default'>{zoomLevel}</ZoomButton>
+            <ZoomButton className='leaflet-control leaflet-bottom leaflet-left' style={{bottom:'74px',left:'10px'}} type='default'>{zoomLevel}</ZoomButton>
           }
         </MapContainer>
 

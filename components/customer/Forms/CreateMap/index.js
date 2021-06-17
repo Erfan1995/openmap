@@ -170,7 +170,7 @@ const CreateMap = ({ serverSideTags, user, mapData, onModalClose, addImageFile }
                             <Input placeholder={DATASET.PLACEHOLDER_LINK} />
                         </Form.Item>
                     </Col>
-                    <Col span={12}>
+                    <Col span={24}>
                         <Form.Item
                             name="tags"
                             label={DATASET.TAGS}
@@ -200,7 +200,7 @@ const CreateMap = ({ serverSideTags, user, mapData, onModalClose, addImageFile }
                             </Select>
                         </Form.Item>
                     </Col>
-                    <Col span={12}>
+                    <Col span={24}>
                         <Form.Item
                             name="description"
                             label={DATASET.DESCRIPTION}
