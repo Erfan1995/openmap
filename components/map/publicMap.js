@@ -8,6 +8,7 @@ import Preview from "./Preview";
 import EditControlExample from "./map2";
 import { getMethod } from "lib/api";
 import { message } from "antd";
+import { getCustomerMapData, getMapData, getPublicMapData } from "lib/general-functions";
 
 
 
@@ -38,30 +39,11 @@ const PublicMap = ({ styleId, mapZoom, style, mapData, manualMapData, datasets, 
     }
 
     const onChange = async () => {
-        let manualArray = [];
         try {
-            if (mapData) {
-                const data = await getMethod(`mmdpublicusers?map=${mapData.id}`, null, false);
-                data.map((item) => {
-                    if (item.is_approved || item.public_user.id === userId) {
-                        manualArray.push(
-                            {
-                                type: "Feature",
-                                geometry: item.geometry,
-                                properties: {
-                                    id: item.id,
-                                    title: item.title,
-                                    description: item.description,
-                                    type: item.geometry.type
-                                }
-                            })
-                    }
-                })
-            }
+            setCustomMapData([...await getCustomerMapData(mapData.id), ...await getPublicMapData(userId, mapData.id)]);
         } catch (e) {
             message.error(e.message);
         }
-        setCustomMapData(manualArray);
     }
 
 
@@ -80,15 +62,7 @@ const PublicMap = ({ styleId, mapZoom, style, mapData, manualMapData, datasets, 
             <TileLayer
                 url={`${process.env.NEXT_PUBLIC_MAPBOX_API_URL}/styles/v1/mbshaban/${styleId || process.env.NEXT_PUBLIC_MAPBOX_DEFAULT_MAP}/tiles/256/{z}/{x}/{y}@2x?access_token=${process.env.NEXT_PUBLIC_MAPBOX_TOKEN}`}
             />
-            {/* <MyMap /> */}
-            {/* <MapConsumer>
-                {(map) => {
-                    setTimeout(() => {
-                        map.flyTo(mapData.center);
-                    }, 2000)
-                    return null
-                }}
-            </MapConsumer> */}
+
             <MapEvents />
             <EditControlExample onChange={onChange} draw={draw}
                 edit={edit} manualMapData={customMapData} mapData={mapData} userType={userType} userId={userId} />

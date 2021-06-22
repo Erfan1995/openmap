@@ -101,8 +101,6 @@ export const getServerSideProps = withPrivateServerSideProps(
       const res = await getMethod(`maps?_sort=updated_at:DESC&_where[0][users.id]=${verifyUser.id}`, token);
       const tags = await getMethod('tags', token);
 
-      let mapData = null;
-
       return { props: { authenticatedUser: verifyUser, maps: res, tags: tags } }
     } catch (error) {
       return {
