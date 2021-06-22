@@ -1,5 +1,6 @@
 import styled from 'styled-components';
 import Link from 'next/link';
+import { DATASET } from '../../../static/constant';
 
 export const Logo = styled.img`
   display: inline-block;
@@ -36,7 +37,7 @@ const LogoTitle = () => {
       <Link href="/">
         <HrefLink>
           {/* <Logo src="logo.png" alt="logo" /> */}
-          <Title>Focal Point  </Title>
+          <Title>{DATASET.OPEN_MAP}</Title>
         </HrefLink>
       </Link>
     </TitleWrapper>

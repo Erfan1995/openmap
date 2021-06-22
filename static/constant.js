@@ -78,6 +78,7 @@ export const DATASET = {
     PLACEHOLDER_SUBTITLE:'Please enter subtitle',
     LINK:'Link',
     PLACEHOLDER_LINK:'Please enter link',
+    OPEN_MAP:'Openmap'
 
 
 }
