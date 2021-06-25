@@ -1,7 +1,7 @@
 import { Table, Dropdown, Menu, Modal, Spin, Button } from 'antd';
 import React, { useEffect, useState, useRef } from 'react';
 import { DownOutlined, ExclamationCircleOutlined } from '@ant-design/icons';
-import { deleteMethod, putMethod } from "../../../lib/api";
+import { deleteMethod, putMethod, getMaps } from "../../../lib/api";
 import 'antd/dist/antd.css';
 import styled from 'styled-components';
 import DatasetDetails from './DatasatDetails';
