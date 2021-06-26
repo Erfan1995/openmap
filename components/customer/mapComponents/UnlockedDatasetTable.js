@@ -14,7 +14,7 @@ background:#ffffff;
 padding:20px;
 margin:10px;
 `;
-const UnlockedDataset = ({ data, updateLockedData, user, tags }) => {
+const UnlockedDataset = ({ data, updateLockedData, user, tags, token }) => {
     let mapData;
     const router = useRouter();
     const [datasetId, setDatasetId] = useState();

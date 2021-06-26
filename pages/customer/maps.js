@@ -5,7 +5,7 @@ import MapItem from 'components/customer/mapComponents/mapListItem';
 import { List, Button, Divider, Typography, Modal } from 'antd';
 import styled from 'styled-components';
 import React, { useState, useRef } from 'react';
-import { getMethod } from 'lib/api';
+import { getMethod, getMaps, getTags } from 'lib/api';
 const { Title } = Typography;
 import nookies from 'nookies';
 import CreateMap from 'components/customer/Forms/CreateMap';
@@ -98,9 +98,8 @@ export const getServerSideProps = withPrivateServerSideProps(
   async (ctx, verifyUser) => {
     try {
       const { token } = nookies.get(ctx);
-      const res = await getMethod(`maps?_sort=updated_at:DESC&_where[0][users.id]=${verifyUser.id}`, token);
-      const tags = await getMethod('tags', token);
-
+      const res = await getMaps({ users: verifyUser.id }, token)
+      const tags = await getTags(token);
       return { props: { authenticatedUser: verifyUser, maps: res, tags: tags } }
     } catch (error) {
       return {

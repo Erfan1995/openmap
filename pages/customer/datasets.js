@@ -5,7 +5,7 @@ import { Button, Divider, Typography, Tabs, Modal, Spin, message, notification }
 import styled from 'styled-components';
 const { Title } = Typography;
 const { TabPane } = Tabs;
-import { postFileMethod, getMethod, postMethod, getDatasets } from "../../lib/api";
+import { postFileMethod, getMethod, postMethod, getDatasets, getTags } from "../../lib/api";
 import { formatDate, fileSizeReadable, changeCSVToJson } from "../../lib/general-functions";
 import FileUpload from '../../components/customer/mapComponents/FileUpload';
 import nookies from 'nookies';
@@ -173,7 +173,8 @@ const Dataset = ({ authenticatedUser, collapsed, locked_data, unlocked_data, tag
 
                 <Tabs defaultActiveKey="1">
                     <TabPane tab={<span>{DATASET.UNLOCKED_DATASETS}</span>} key="1">
-                        <UnlockedDataset data={dataset} updateLockedData={updateLockedData} user={authenticatedUser} tags={tags} />
+                        <UnlockedDataset data={dataset} updateLockedData={updateLockedData}
+                            user={authenticatedUser} tags={tags} />
                         <Modal
                             title={DATASET.ADD_DATASET}
                             centered
@@ -198,13 +199,13 @@ export const getServerSideProps = withPrivateServerSideProps(
     async (ctx, verifyUser) => {
         try {
             const { token } = nookies.get(ctx);
-            let tags = await getMethod('tags', token)
+            let tags = await getTags(token);
             let res = await getDatasets({ users: verifyUser.id }, token);
             let lockedData = [];
             let unlockedData = [];
             let index1 = 0;
             let index2 = 0;
-            res.datasets.forEach(element => {
+            res.forEach(element => {
                 element.title = element.title.split(".")[0];
                 element.maps = element.maps.length;
                 element.updated_at = formatDate(element.updated_at);

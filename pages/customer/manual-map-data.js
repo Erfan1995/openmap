@@ -3,7 +3,7 @@ import { Divider, Typography, Tabs, Spin } from 'antd';
 import withPrivateServerSideProps from '../../utils/withPrivateServerSideProps';
 const { Title } = Typography;
 const { TabPane } = Tabs;
-import { getMethod } from "../../lib/api";
+import { getMethod, getMMDCustomers } from "../../lib/api";
 import nookies from 'nookies';
 import styled from 'styled-components';
 import { formatDate } from "../../lib/general-functions";
@@ -21,7 +21,7 @@ const CardTitle = styled(Title)`
   float: left !important;
 `;
 
-const ManualMapData = ({ authenticatedUser, collapsed }) => {
+const ManualMapData = ({ authenticatedUser, collapsed, token }) => {
     const [manualMapData, setManualMapData] = useState();
     const [mapsDataTofilter, setMapsDataToFilter] = useState();
     const [loading, setLoading] = useState(false);
@@ -47,8 +47,7 @@ const ManualMapData = ({ authenticatedUser, collapsed }) => {
         let res;
         setLoading(true);
         if (key === "1") {
-            res = await getMethod(`mmdcustomers?users=${authenticatedUser.id}`)
-
+            res = await getMMDCustomers({ users: authenticatedUser.id }, token);
         } else if (key === "2") {
             res = await getMethod(`mmdpublicusers?_where[0][map.users]=${authenticatedUser.id}`)
             res.map((map) => {
@@ -98,7 +97,7 @@ export const getServerSideProps = withPrivateServerSideProps(
         try {
             const { token } = nookies.get(ctx);
 
-            return { props: { authenticatedUser: verifyUser } }
+            return { props: { authenticatedUser: verifyUser, token: token } }
         } catch (error) {
             return {
                 redirect: {

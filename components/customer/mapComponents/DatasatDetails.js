@@ -1,7 +1,7 @@
 import React, { useContext, useState, useEffect, useRef } from 'react';
 import { Table, Input, Button, Spin, Form, message } from 'antd';
 import styled from 'styled-components';
-import { getMethod, putMethod } from "../../../lib/api";
+import { getMethod, putMethod, getDatasetDetails } from "../../../lib/api";
 const EditableContext = React.createContext(null);
 
 const DatasetTable = styled(Table)`
@@ -50,7 +50,7 @@ const EditableCell = ({
             toggleEdit();
             handleSave({ ...record, ...values });
         } catch (errInfo) {
-            message.error( errInfo.message);
+            message.error(errInfo.message);
         }
     };
 
@@ -95,7 +95,7 @@ const DatasetDetails = ({ rowId }) => {
 
     useEffect(async () => {
         setLoading(true);
-        const res = await getMethod(`datasetcontents?dataset=${rowId}`);
+        const res = await getDatasetDetails({ dataset: rowId })
         if (res.length !== 0) {
             let arr = [];
             let dataSetArr = [];
