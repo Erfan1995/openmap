@@ -7,7 +7,7 @@ import nookies from 'nookies';
 import dynamic from "next/dynamic";
 import CreateMap from 'components/customer/Forms/CreateMap';
 import StyledMaps from 'components/customer/generalComponents/ListMapboxStyle';
-import { fetchApi, getMethod, putMethod } from 'lib/api';
+import { fetchApi, getMethod, putMethod, getOneMap } from 'lib/api';
 import SelectNewMapDataset from 'components/customer/mapComponents/SelectNewMapDataset';
 import { formatDate, fileSizeReadable, getMapData } from "../../lib/general-functions";
 import { DeleteTwoTone } from '@ant-design/icons';
@@ -267,9 +267,11 @@ export const getServerSideProps = withPrivateServerSideProps(
       let manualArray = [];
       let datasets = [];
       if (id) {
-        mapData = await getMethod(`maps/${id}`, token);
+        // mapData = await getMethod(`maps/${id}`, token);
+        // console.log(mapData);
+        mapData = await getOneMap({ id: id }, token);
         if (mapData) {
-          console.log('map', mapData)
+          console.log(mapData.tags);
           mapData.tags = mapData.tags.map(item => item.id);
           [...mapData.mmdpublicusers, ...mapData.mmdcustomers].map((item) => {
             if (item.is_approved) {
@@ -299,8 +301,8 @@ export const getServerSideProps = withPrivateServerSideProps(
         }
       }
     } catch (error) {
+      console.log(error.message)
       return {
-
         redirect: {
           destination: '/server-error',
           permanent: false,
