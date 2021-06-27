@@ -129,10 +129,11 @@ const Dataset = ({ authenticatedUser, collapsed, locked_data, unlocked_data, tag
             if (invalidFileSize === false) {
                 setLoading(true);
                 try {
-                    const res = await postMethod('datasets', { title: file.originFileObj.name, is_locked: false, users: authenticatedUser.id })
+                    const res = await postMethod('datasets', { title: file.originFileObj.name, is_locked: false, users: authenticatedUser.id, size: file.originFileObj.size })
                     res.title = res.title.split(".")[0];
                     res.updated_at = formatDate(res.updated_at);
                     res.maps = res.maps.length;
+                    res.size = fileSizeReadable(res.size);
                     setDataset([...dataset, res]);
                     if (res) {
                         const resdataset = await postMethod('datasetcontents', { dataset: datasetContent.features, id: res.id });
@@ -209,6 +210,7 @@ export const getServerSideProps = withPrivateServerSideProps(
                 element.title = element.title.split(".")[0];
                 element.maps = element.maps.length;
                 element.updated_at = formatDate(element.updated_at);
+                element.size = fileSizeReadable(element.size);
                 element.key = element.id;
                 if (element.is_locked === true) {
                     lockedData[index1] = element

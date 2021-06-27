@@ -106,6 +106,11 @@ const UnlockedDataset = ({ data, updateLockedData, user, tags, token }) => {
             key: 'maps'
         },
         {
+            title: DATASET.SIZE,
+            dataIndex: "size",
+            key: 'size'
+        },
+        {
             title: DATASET.ACTIONS,
             key: 'action',
             render: (record) => (

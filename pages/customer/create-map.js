@@ -7,7 +7,7 @@ import nookies from 'nookies';
 import dynamic from "next/dynamic";
 import CreateMap from 'components/customer/Forms/CreateMap';
 import StyledMaps from 'components/customer/generalComponents/ListMapboxStyle';
-import { fetchApi, getMethod, putMethod, getOneMap } from 'lib/api';
+import { fetchApi, getMethod, putMethod, getOneMap, getDatasetsByMap, getTags, getDatasets } from 'lib/api';
 import SelectNewMapDataset from 'components/customer/mapComponents/SelectNewMapDataset';
 import { formatDate, fileSizeReadable, getMapData } from "../../lib/general-functions";
 import { DeleteTwoTone } from '@ant-design/icons';
@@ -35,7 +35,7 @@ const SaveButton = styled(Button)`
   float: right !important;
 `;
 
-const CreateMapContainer = ({ authenticatedUser, collapsed, styledMaps, tags, mapData, manualMapData, serverSideDatasets }) => {
+const CreateMapContainer = ({ authenticatedUser, collapsed, styledMaps, tags, mapData, manualMapData, serverSideDatasets, token }) => {
   const [styleId, setStyleID] = useState(mapData.styleId || process.env.NEXT_PUBLIC_MAPBOX_DEFAULT_MAP);
   const childRef = useRef();
   const selectDatasetChildRef = useRef();
@@ -57,7 +57,7 @@ const CreateMapContainer = ({ authenticatedUser, collapsed, styledMaps, tags, ma
   }
   const chooseDataset = async () => {
     setLoading(true);
-    let res = await getMethod('datasets');
+    let res = await getDatasets({ users: authenticatedUser.id }, token);
     setLoading(false);
     if (res) {
       let finalDatasets = [];
@@ -267,12 +267,9 @@ export const getServerSideProps = withPrivateServerSideProps(
       let manualArray = [];
       let datasets = [];
       if (id) {
-        // mapData = await getMethod(`maps/${id}`, token);
-        // console.log(mapData);
         mapData = await getOneMap({ id: id }, token);
         if (mapData) {
-          console.log(mapData.tags);
-          mapData.tags = mapData.tags.map(item => item.id);
+          mapData.tags = mapData.tags.map(item => Number(item.id));
           [...mapData.mmdpublicusers, ...mapData.mmdcustomers].map((item) => {
             if (item.is_approved) {
               manualArray.push(
@@ -289,19 +286,21 @@ export const getServerSideProps = withPrivateServerSideProps(
                 })
             }
           })
-          datasets = await getMethod(`datasets?_where[0][maps.id]=${id}`, token);
-
+          datasets = await getDatasetsByMap({ maps: id }, token);
         }
       }
       const data = await fetchApi('styles/v1/mbshaban');
-      const tags = await getMethod('tags', token);
+      const tags = await getTags(token);
+      tags.map((item) => {
+        item.id = Number(item.id);
+      })
       return {
         props: {
-          authenticatedUser: verifyUser, styledMaps: data, tags: tags, mapData: mapData, manualMapData: manualArray, serverSideDatasets: datasets
+          authenticatedUser: verifyUser, styledMaps: data, tags: tags,
+          mapData: mapData, manualMapData: manualArray, serverSideDatasets: datasets, token: token
         }
       }
     } catch (error) {
-      console.log(error.message)
       return {
         redirect: {
           destination: '/server-error',
