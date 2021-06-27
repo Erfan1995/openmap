@@ -103,7 +103,9 @@ export const getServerSideProps = withPrivateServerSideProps(
 
       return { props: { authenticatedUser: verifyUser, maps: res, tags: tags } }
     } catch (error) {
+      console.log(error);
       return {
+
         redirect: {
           destination: '/server-error',
           permanent: false,

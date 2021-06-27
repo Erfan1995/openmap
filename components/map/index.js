@@ -1,4 +1,4 @@
-import { MapContainer, TileLayer, GeoJSON, ZoomControl, useMapEvents } from "react-leaflet";
+import { MapContainer, TileLayer, GeoJSON, ZoomControl, useMapEvents, useMap } from "react-leaflet";
 import "leaflet/dist/leaflet.css";
 import "leaflet-draw/dist/leaflet.draw.css";
 import "leaflet-defaulticon-compatibility/dist/leaflet-defaulticon-compatibility.css";
@@ -10,6 +10,13 @@ import { getMethod } from "lib/api";
 import { Button, message } from "antd";
 import styled from 'styled-components';
 import { getMapData } from "lib/general-functions";
+import { GeoSearchControl, OpenStreetMapProvider } from "leaflet-geosearch";
+import "leaflet-geosearch/dist/geosearch.css";
+
+import L from "leaflet";
+
+
+
 const SaveButton = styled(Button)`
   margin-bottom: 10px;
   margin-right:10px;
@@ -90,6 +97,31 @@ const Map = ({ styleId, center, setCenter, style, mapData, manualMapData, datase
   function setMapCenter() {
     setCenter(JSON.parse(localStorage.getItem('center')));
   }
+
+
+
+  function LeafletgeoSearch() {
+    const map = useMap();
+    useEffect(() => {
+      const provider = new OpenStreetMapProvider();
+
+      const searchControl = new GeoSearchControl({
+        provider,
+        style: 'button',
+        showMarker: false,
+        searchLabel: 'Enter address',
+        animateZoom: true
+      });
+
+      map.addControl(searchControl);
+
+      return () => map.removeControl(searchControl);
+    }, []);
+
+    return null;
+  }
+
+
   return (
 
     <div>
@@ -114,7 +146,7 @@ const Map = ({ styleId, center, setCenter, style, mapData, manualMapData, datase
           <TileLayer
             url={`${process.env.NEXT_PUBLIC_MAPBOX_API_URL}/styles/v1/mbshaban/${styleId || process.env.NEXT_PUBLIC_MAPBOX_DEFAULT_MAP}/tiles/256/{z}/{x}/{y}@2x?access_token=${process.env.NEXT_PUBLIC_MAPBOX_TOKEN}`}
           />
-
+          <LeafletgeoSearch />
           <MapEvents />
           <EditControlExample onChange={onChange} draw={draw}
             edit={edit} manualMapData={customMapData} mapData={mapData} userType={userType} userId={userId} />
@@ -142,9 +174,9 @@ const Map = ({ styleId, center, setCenter, style, mapData, manualMapData, datase
           }
 
           {
-         
+
             userType === 'customer' &&
-            <ZoomButton className='leaflet-control leaflet-bottom leaflet-left' style={{bottom:'74px',left:'10px'}} type='default'>{zoomLevel}</ZoomButton>
+            <ZoomButton className='leaflet-control leaflet-bottom leaflet-left' style={{ bottom: '74px', left: '10px' }} type='default'>{zoomLevel}</ZoomButton>
           }
         </MapContainer>
 
