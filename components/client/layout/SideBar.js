@@ -19,7 +19,7 @@ const ChildWrapper = styled.div`
 `
 
 const Photo = styled.img`
-  height:100px;
+  height:70px;
 `
 const StyledCheckBox = styled(Checkbox)`
   margin-bottom:20px;

@@ -17,21 +17,29 @@ export async function getServerSideProps(ctx) {
 
   try {
     const { mapToken, id } = ctx.query;
-    const res = await getMethod(`maps?mapId=${decodeURI(mapToken)}&id=${id}`, null, false);
-    // const res = await getOneMap({mapId:decodeURI(mapToken),id:id},null,false);
-    // console.log(res);
-    if (!(res.length > 0)) {
+    if (id) {
+      const res = await getMethod(`maps?mapId=${decodeURI(mapToken)}&id=${id}`, null, false);
+       // const res = await getOneMap({mapId:decodeURI(mapToken),id:id},null,false);
+      if (!(res.length > 0)) {
+        return {
+          redirect: {
+            destination: '/server-error',
+            permanent: false,
+          }
+        }
+      } else {
+        const datasetData = await getMethod(`datasets?_where[0][maps.id]=${id}`, null, false);
+        return {
+          props: { mapData: res[0], manualMapData: await extractMapData(res[0]), datasets: datasetData },
+        };
+      }
+    } else {
       return {
         redirect: {
-          destination: '/server-error',
+          destination: '/customer/dashboard',
           permanent: false,
         }
       }
-    } else {
-      const datasetData = await getMethod(`datasets?_where[0][maps.id]=${id}`, null, false);
-      return {
-        props: { mapData: res[0], manualMapData: await extractMapData(res[0]), datasets: datasetData },
-      };
     }
   } catch (e) {
     return {

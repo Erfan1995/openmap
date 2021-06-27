@@ -74,7 +74,7 @@ const ManualMapData = ({ authenticatedUser, collapsed, token }) => {
     return (
         <Layout collapsed={collapsed} user={authenticatedUser}>
             <MapsWrapper  >
-                <CardTitle level={4}>{DATASET.DATASETS}</CardTitle>
+                <CardTitle level={4}>{DATASET.MANUAL_MAP_DATA}</CardTitle>
                 <Divider />
                 <Tabs defaultActiveKey="1" onChange={callback}>
                     <TabPane tab="Customer " key="1">

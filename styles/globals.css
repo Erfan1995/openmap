@@ -147,3 +147,7 @@
 #nprogress .bar {
   height:6px;
 }
+
+.leaflet-control-geosearch form input{
+  height: 30px !important;
+}
