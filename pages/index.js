@@ -1,4 +1,4 @@
-import { getMethod } from "lib/api";
+import { getMethod, getOneMap } from "lib/api";
 import { extractMapData, getMapData } from "lib/general-functions";
 
 import dynamic from "next/dynamic";
@@ -18,6 +18,8 @@ export async function getServerSideProps(ctx) {
   try {
     const { mapToken, id } = ctx.query;
     const res = await getMethod(`maps?mapId=${decodeURI(mapToken)}&id=${id}`, null, false);
+    // const res = await getOneMap({mapId:decodeURI(mapToken),id:id},null,false);
+    // console.log(res);
     if (!(res.length > 0)) {
       return {
         redirect: {

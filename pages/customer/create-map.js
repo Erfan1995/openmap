@@ -7,7 +7,7 @@ import nookies from 'nookies';
 import dynamic from "next/dynamic";
 import CreateMap from 'components/customer/Forms/CreateMap';
 import StyledMaps from 'components/customer/generalComponents/ListMapboxStyle';
-import { fetchApi, getMethod, putMethod, getOneMap, getDatasetsByMap, getTags, getDatasets } from 'lib/api';
+import { fetchApi, putMethod, getOneMap, getDatasetsByMap, getTags, getDatasets } from 'lib/api';
 import SelectNewMapDataset from 'components/customer/mapComponents/SelectNewMapDataset';
 import { formatDate, fileSizeReadable, getMapData } from "../../lib/general-functions";
 import { DeleteTwoTone } from '@ant-design/icons';

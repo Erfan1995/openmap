@@ -2,10 +2,10 @@ import dynamic from "next/dynamic";
 import LayoutPage from "components/client/layout";
 import { useEffect, useState } from "react";
 import UseAuth from "hooks/useAuth";
-import { getMethod } from "lib/api";
+import { getMethod, getOneMap } from "lib/api";
 import { extractMapData, getPublicAuthenticatedMapData } from "lib/general-functions";
 const Map = ({ manualMapData, mapData, datasets }) => {
- 
+
   const [loading, setLoading] = useState(true);
   const [publicUser, setPublicUser] = useState(true);
   const [datasetData, setDatasetData] = useState(true);
@@ -69,10 +69,12 @@ export default Map;
 export async function getServerSideProps(ctx) {
   let mapData = null;
   let datasetData = null;
-  const { mapToken, id,publicUser } = ctx.query;
+  const { mapToken, id, publicUser } = ctx.query;
   try {
     if (id) {
       mapData = await getMethod(`maps?id=${id}&mapId=${mapToken}`, null, false);
+      // mapData = await getOneMap({ mapId: mapToken, id: id }, null, false);
+      console.log(mapData, '>>>>>>>');
       if (!mapData.length > 0) {
         return {
           redirect: {
@@ -87,7 +89,7 @@ export async function getServerSideProps(ctx) {
 
     return {
       props: {
-        manualMapData:[...await extractMapData(mapData[0]),...await getPublicAuthenticatedMapData(publicUser,mapData[0].id)]
+        manualMapData: [...await extractMapData(mapData[0]), ...await getPublicAuthenticatedMapData(publicUser, mapData[0].id)]
         , mapData: mapData[0],
         datasets: datasetData
       },
