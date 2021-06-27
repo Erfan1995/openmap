@@ -82,10 +82,10 @@ const MapItem = ({ item, filterDeletedMap }) => {
             onOk() {
                 router.push({
                     pathname: '/',
-                    query: { mapToken: item.mapId,id:item.id }
+                    query: { mapToken: item.mapId, id: item.id }
                 });
             },
-            
+
             onCancel() {
             },
         });
@@ -102,7 +102,7 @@ const MapItem = ({ item, filterDeletedMap }) => {
             });
         } else if (e.key === "delete") {
             showConfirm(item.id)
-        }else{
+        } else {
             showGeneratedLink(item);
         }
 

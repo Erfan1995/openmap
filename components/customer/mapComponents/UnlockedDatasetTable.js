@@ -1,7 +1,7 @@
 import { Table, Dropdown, Menu, Modal, Spin, Button } from 'antd';
 import React, { useEffect, useState, useRef } from 'react';
 import { DownOutlined, ExclamationCircleOutlined } from '@ant-design/icons';
-import { deleteMethod, putMethod } from "../../../lib/api";
+import { deleteMethod, putMethod, getMaps } from "../../../lib/api";
 import 'antd/dist/antd.css';
 import styled from 'styled-components';
 import DatasetDetails from './DatasatDetails';
@@ -14,7 +14,7 @@ background:#ffffff;
 padding:20px;
 margin:10px;
 `;
-const UnlockedDataset = ({ data, updateLockedData, user, tags }) => {
+const UnlockedDataset = ({ data, updateLockedData, user, tags, token }) => {
     let mapData;
     const router = useRouter();
     const [datasetId, setDatasetId] = useState();
@@ -104,6 +104,11 @@ const UnlockedDataset = ({ data, updateLockedData, user, tags }) => {
             title: DATASET.MAPS,
             dataIndex: "maps",
             key: 'maps'
+        },
+        {
+            title: DATASET.SIZE,
+            dataIndex: "size",
+            key: 'size'
         },
         {
             title: DATASET.ACTIONS,
