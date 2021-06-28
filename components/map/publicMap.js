@@ -6,7 +6,6 @@ import "leaflet-defaulticon-compatibility";
 import { useState } from "react";
 import Preview from "./Preview";
 import EditControlExample from "./map2";
-import { getMethod } from "lib/api";
 import { message } from "antd";
 import { getCustomerMapData, getMapData, getPublicMapData } from "lib/general-functions";
 
