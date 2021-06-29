@@ -1,7 +1,7 @@
 import React, { useContext, useState, useEffect, useRef } from 'react';
 import { Table, Input, Button, Spin, Form, message } from 'antd';
 import styled from 'styled-components';
-import { getMethod, putMethod, getDatasetDetails } from "../../../lib/api";
+import { putMethod, getDatasetDetails } from "../../../lib/api";
 const EditableContext = React.createContext(null);
 
 const DatasetTable = styled(Table)`

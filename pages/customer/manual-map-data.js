@@ -58,6 +58,7 @@ const ManualMapData = ({ authenticatedUser, collapsed, token }) => {
         if (res) {
             res.forEach(element => {
                 element.key = element.id;
+                element.id = Number(element.id);
                 element.updated_at = formatDate(element.updated_at);
                 if (element.is_approved === true) {
                     element.is_approved = "yes"

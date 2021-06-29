@@ -5,8 +5,8 @@ import { Button, Divider, Typography, Tabs, Modal, Spin, message, notification }
 import styled from 'styled-components';
 const { Title } = Typography;
 const { TabPane } = Tabs;
-import { postFileMethod, getMethod, postMethod, getDatasets, getTags } from "../../lib/api";
-import { formatDate, fileSizeReadable, changeCSVToJson } from "../../lib/general-functions";
+import { postMethod, getDatasets, getTags } from "../../lib/api";
+import { formatDate, fileSizeReadable } from "../../lib/general-functions";
 import FileUpload from '../../components/customer/mapComponents/FileUpload';
 import nookies from 'nookies';
 import UnlockedDataset from '../../components/customer/mapComponents/UnlockedDatasetTable';
@@ -207,6 +207,7 @@ export const getServerSideProps = withPrivateServerSideProps(
             let index1 = 0;
             let index2 = 0;
             res.forEach(element => {
+                element.id = Number(element.id);
                 element.title = element.title.split(".")[0];
                 element.maps = element.maps.length;
                 element.updated_at = formatDate(element.updated_at);

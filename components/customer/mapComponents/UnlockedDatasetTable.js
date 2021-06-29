@@ -14,7 +14,7 @@ background:#ffffff;
 padding:20px;
 margin:10px;
 `;
-const UnlockedDataset = ({ data, updateLockedData, user, tags, token }) => {
+const UnlockedDataset = ({ data, updateLockedData, user, tags }) => {
     let mapData;
     const router = useRouter();
     const [datasetId, setDatasetId] = useState();
@@ -43,7 +43,8 @@ const UnlockedDataset = ({ data, updateLockedData, user, tags, token }) => {
         const res = await putMethod('datasets/' + datasetId, { is_locked: true });
         if (res) {
             let dd = dataset.filter(dData => dData.id !== res.id);
-            setDataset(dd)
+            setDataset(dd);
+            console.log(dd)
             updateLockedData(dataset.filter(dData => dData.id === res.id), dd)
             setLoading(false)
         }
