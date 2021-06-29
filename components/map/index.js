@@ -3,17 +3,14 @@ import "leaflet/dist/leaflet.css";
 import "leaflet-draw/dist/leaflet.draw.css";
 import "leaflet-defaulticon-compatibility/dist/leaflet-defaulticon-compatibility.css";
 import "leaflet-defaulticon-compatibility";
-import { useEffect, useState } from "react";
+import { useState } from "react";
 import Preview from "./Preview";
 import EditControlExample from "./map2";
 import { Button, message } from "antd";
 import styled from 'styled-components';
 import { getMapData } from "lib/general-functions";
-import { GeoSearchControl, OpenStreetMapProvider } from "leaflet-geosearch";
-import "leaflet-geosearch/dist/geosearch.css";
 
-import L from "leaflet";
-
+import LeafletgeoSearch from "./MapSearch";
 
 
 const SaveButton = styled(Button)`
@@ -99,27 +96,6 @@ const Map = ({ styleId, center, setCenter, style, mapData, manualMapData, datase
 
 
 
-  function LeafletgeoSearch() {
-    const map = useMap();
-    useEffect(() => {
-      const provider = new OpenStreetMapProvider();
-
-      const searchControl = new GeoSearchControl({
-        provider,
-        style: 'button',
-        showMarker: false,
-        searchLabel: 'Enter address',
-        animateZoom: true
-      });
-
-      map.addControl(searchControl);
-
-      return () => map.removeControl(searchControl);
-    }, []);
-
-    return null;
-  }
-
 
   return (
 
@@ -145,6 +121,7 @@ const Map = ({ styleId, center, setCenter, style, mapData, manualMapData, datase
           <TileLayer
             url={`${process.env.NEXT_PUBLIC_MAPBOX_API_URL}/styles/v1/mbshaban/${styleId || process.env.NEXT_PUBLIC_MAPBOX_DEFAULT_MAP}/tiles/256/{z}/{x}/{y}@2x?access_token=${process.env.NEXT_PUBLIC_MAPBOX_TOKEN}`}
           />
+
           <LeafletgeoSearch />
           <MapEvents />
           <EditControlExample onChange={onChange} draw={draw}

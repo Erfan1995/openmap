@@ -5,7 +5,7 @@ import { EditControl } from 'react-leaflet-draw';
 import foo from '../../lib/data.json';
 import AddMap from './AddMap';
 import Preview from './Preview';
-
+import parkIcon from '.'
 // work around broken icons when using webpack, see https://github.com/PaulLeCam/react-leaflet/issues/255
 
 delete L.Icon.Default.prototype._getIconUrl;
@@ -80,16 +80,27 @@ export default class EditControlExample extends Component {
       reactFGref?.clearLayers();
     }
     if (this.props.manualMapData.length > 0) {
-      let leafletGeoJSON = new L.GeoJSON({
-        type: 'FeatureCollection',
-        features: this.props.manualMapData
+      let leafletGeoJSON = new L.GeoJSON(this.props.manualMapData, {
+        pointToLayer: (feature, latlng) => {
+          return L.marker(latlng, {
+            icon: new L.icon({ iconUrl: '/metamask.png' })
+          })
+        },
+        onEachFeature: (feature = {}, layer) => {
+          const { properties } = feature;
+
+          const { title } = properties;
+          if (!title) return;
+
+          layer.bindPopup(`<p>${title}</p>`)
+        }
       });
       let leafletFG = reactFGref;
       localStorage.setItem('center', JSON.stringify(leafletGeoJSON.getBounds().getCenter()));
       leafletGeoJSON.eachLayer((layer) => {
-        layer.on("click", function (e) {
-          this.setState({ modalVisible: true, place: layer.feature });
-        }.bind(this));
+        // layer.on("click", function (e) {
+        //   this.setState({ modalVisible: true, place: layer.feature });
+        // }.bind(this));
         if (leafletFG) {
           leafletFG.addLayer(layer);
         }
@@ -119,7 +130,7 @@ export default class EditControlExample extends Component {
               modalClose={this.drawerClose}
               userType={this.props.userType}
               userId={this.props.userId}
-              
+
 
             />
           )
