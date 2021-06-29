@@ -1,4 +1,4 @@
-import { Popup, MapContainer, TileLayer, Marker, GeoJSON, ZoomControl, useMapEvents, useMap, MapConsumer } from "react-leaflet";
+import {  MapContainer, TileLayer, GeoJSON, ZoomControl, useMapEvents } from "react-leaflet";
 import "leaflet/dist/leaflet.css";
 import "leaflet-draw/dist/leaflet.draw.css";
 import "leaflet-defaulticon-compatibility/dist/leaflet-defaulticon-compatibility.css";
@@ -6,11 +6,9 @@ import "leaflet-defaulticon-compatibility";
 import { useState } from "react";
 import Preview from "./Preview";
 import EditControlExample from "./map2";
-import { getMethod } from "lib/api";
 import { message } from "antd";
-import { getCustomerMapData, getMapData, getPublicMapData } from "lib/general-functions";
-
-
+import { getCustomerMapData, getPublicMapData } from "lib/general-functions";
+import LeafletgeoSearch from "./MapSearch";
 
 const PublicMap = ({ styleId, mapZoom, style, mapData, manualMapData, datasets, edit, draw, userType, userId }) => {
 
@@ -47,6 +45,9 @@ const PublicMap = ({ styleId, mapZoom, style, mapData, manualMapData, datasets, 
     }
 
 
+
+
+
     return (
 
 
@@ -63,6 +64,7 @@ const PublicMap = ({ styleId, mapZoom, style, mapData, manualMapData, datasets, 
                 url={`${process.env.NEXT_PUBLIC_MAPBOX_API_URL}/styles/v1/mbshaban/${styleId || process.env.NEXT_PUBLIC_MAPBOX_DEFAULT_MAP}/tiles/256/{z}/{x}/{y}@2x?access_token=${process.env.NEXT_PUBLIC_MAPBOX_TOKEN}`}
             />
 
+            <LeafletgeoSearch />
             <MapEvents />
             <EditControlExample onChange={onChange} draw={draw}
                 edit={edit} manualMapData={customMapData} mapData={mapData} userType={userType} userId={userId} />
