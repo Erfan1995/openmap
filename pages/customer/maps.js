@@ -98,7 +98,7 @@ export const getServerSideProps = withPrivateServerSideProps(
   async (ctx, verifyUser) => {
     try {
       const { token } = nookies.get(ctx);
-      const res = await getMaps({ users: verifyUser.id }, token)
+      const res = await getMaps({ user: verifyUser.id }, token)
       // const res = await getMethod(`maps?_sort=updated_at:DESC&_where[0][users.id]=${verifyUser.id}`, token);
       const tags = await getTags(token);
       return { props: { authenticatedUser: verifyUser, maps: res, tags: tags } }

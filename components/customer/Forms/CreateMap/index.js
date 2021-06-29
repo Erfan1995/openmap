@@ -57,7 +57,7 @@ const CreateMap = ({ serverSideTags, user, mapData, onModalClose, addImageFile }
                 .then(async (values) => {
                     const fData = new FormData();
                     values.styleId = styleId;
-                    values.users = user.id;
+                    values.user = user.id;
                     let res = null;
                     setLoading(true);
                     if (mapData) {
@@ -93,7 +93,7 @@ const CreateMap = ({ serverSideTags, user, mapData, onModalClose, addImageFile }
                     const fData = new FormData();
                     values.datasets = datasetId;
                     values.styleId = process.env.NEXT_PUBLIC_MAPBOX_DEFAULT_MAP;
-                    values.users = user.id;
+                    values.user = user.id;
                     values.mapId = CryptoJS.SHA1(new Date().toString() + user.id).toString();
                     values.zoomLevel = 2;
                     values.center = [29.9635203, -10.1238717];

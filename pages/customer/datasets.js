@@ -129,7 +129,7 @@ const Dataset = ({ authenticatedUser, collapsed, locked_data, unlocked_data, tag
             if (invalidFileSize === false) {
                 setLoading(true);
                 try {
-                    const res = await postMethod('datasets', { title: file.originFileObj.name, is_locked: false, users: authenticatedUser.id, size: file.originFileObj.size })
+                    const res = await postMethod('datasets', { title: file.originFileObj.name, is_locked: false, user: authenticatedUser.id, size: file.originFileObj.size })
                     res.title = res.title.split(".")[0];
                     res.updated_at = formatDate(res.updated_at);
                     res.maps = res.maps.length;
@@ -201,7 +201,7 @@ export const getServerSideProps = withPrivateServerSideProps(
         try {
             const { token } = nookies.get(ctx);
             let tags = await getTags(token);
-            let res = await getDatasets({ users: verifyUser.id }, token);
+            let res = await getDatasets({ user: verifyUser.id }, token);
             let lockedData = [];
             let unlockedData = [];
             let index1 = 0;

@@ -57,7 +57,7 @@ const CreateMapContainer = ({ authenticatedUser, collapsed, styledMaps, tags, ma
   }
   const chooseDataset = async () => {
     setLoading(true);
-    let res = await getDatasets({ users: authenticatedUser.id }, token);
+    let res = await getDatasets({ user: authenticatedUser.id }, token);
     setLoading(false);
     if (res) {
       let finalDatasets = [];
