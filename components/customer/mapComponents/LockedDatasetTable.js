@@ -6,7 +6,7 @@ import 'antd/dist/antd.css';
 import { DATASET } from '../../../static/constant'
 const { confirm } = Modal;
 
-const LockedDatasetTable = ({ data, updateUnlockedData }) => {
+const LockedDatasetTable = ({ data, updateUnlockedData, updatedLockedData }) => {
     const [datasetId, setDatasetId] = useState();
     const [dataset, setDataset] = useState([]);
     const [loading, setLoading] = useState(false);
@@ -19,7 +19,11 @@ const LockedDatasetTable = ({ data, updateUnlockedData }) => {
         const deletedDataset = await deleteMethod('datasetcontents/' + datasetId)
         if (deletedDataset) {
             const res = await deleteMethod('datasets/' + datasetId)
-            if (res) setDataset(dataset.filter(dData => dData.id !== res.id));
+            if (res) {
+                const dd = dataset.filter(dData => dData.id !== res.id);
+                setDataset(dd);
+                updatedLockedData(dd);
+            }
             setLoading(false)
         }
     }

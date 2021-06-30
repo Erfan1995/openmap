@@ -29,6 +29,7 @@ const CardTitle = styled(Title)`
 `;
 
 const Dataset = ({ authenticatedUser, collapsed, locked_data, unlocked_data, tags }) => {
+    console.log(authenticatedUser);
     const [dataset, setDataset] = useState(unlocked_data);
     const [lockedDataset, setLockedDataset] = useState(locked_data);
     const [visible, setVisible] = useState(false);
@@ -163,6 +164,12 @@ const Dataset = ({ authenticatedUser, collapsed, locked_data, unlocked_data, tag
         setLockedDataset([...lockedDataset, lockedData[0]])
         setDataset(unlockedData);
     }
+    const updatedData = (data) => {
+        setDataset(data);
+    }
+    const updatedLockedData = (data) => {
+        setLockedDataset(data);
+    }
     return (
         <Layout collapsed={collapsed} user={authenticatedUser}>
             <MapsWrapper  >
@@ -174,7 +181,7 @@ const Dataset = ({ authenticatedUser, collapsed, locked_data, unlocked_data, tag
 
                 <Tabs defaultActiveKey="1">
                     <TabPane tab={<span>{DATASET.UNLOCKED_DATASETS}</span>} key="1">
-                        <UnlockedDataset data={dataset} updateLockedData={updateLockedData}
+                        <UnlockedDataset data={dataset} updateLockedData={updateLockedData} updatedData={updatedData}
                             user={authenticatedUser} tags={tags} />
                         <Modal
                             title={DATASET.ADD_DATASET}
@@ -189,7 +196,8 @@ const Dataset = ({ authenticatedUser, collapsed, locked_data, unlocked_data, tag
                         </Modal>
                     </TabPane>
                     <TabPane tab={<span>{DATASET.LOCKED_DATASETS}</span>} key="2">
-                        <LockedDatasetTable data={lockedDataset} updateUnlockedData={updateUnlockedData} />
+                        <LockedDatasetTable data={lockedDataset} updateUnlockedData={updateUnlockedData}
+                            updatedLockedData={updatedLockedData} />
                     </TabPane>
                 </Tabs>
             </MapsWrapper>

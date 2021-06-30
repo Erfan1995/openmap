@@ -75,12 +75,12 @@ export const DATASET = {
     SIGN_IN_TO_VIEW_DASHBOARD: 'sign in to view the dashboard',
     BACK_TO_HOME: 'Back Home',
     INVALID_FILE_SIZE: 'this file size is greater than 1MB',
-    SUBTITLE:'Subtitle',
-    PLACEHOLDER_SUBTITLE:'Please enter subtitle',
-    LINK:'Link',
-    PLACEHOLDER_LINK:'Please enter link',
-    MANUAL_MAP_DATA:'Manual Map Data',
-    OPEN_MAP:'Openmap'
+    SUBTITLE: 'Subtitle',
+    PLACEHOLDER_SUBTITLE: 'Please enter subtitle',
+    LINK: 'Link',
+    PLACEHOLDER_LINK: 'Please enter link',
+    MANUAL_MAP_DATA: 'Manual Map Data',
+    OPEN_MAP: 'Openmap'
 
 
 }
@@ -113,4 +113,11 @@ export const MAP = {
     MAP: 'Map',
     LIST: 'List',
 
+}
+export const CUSTOMERS = {
+    NAME: 'Name',
+    EMAIL: 'Email',
+    ADD_NEW: 'Add New',
+    CUSTOMERS: 'Customers',
+    ADD_NEW_CUSTOMERS: 'Add New Customers'
 }

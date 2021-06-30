@@ -27,7 +27,11 @@ const SignIn = () => {
                 }, false)
                 persistUserCredential(res.jwt);
                 message.success({ content: DATASET.SUCCESS, key });
-                router.push('/customer/dashboard');
+                if (res.user.role.name === "Customer") {
+                    router.push('/customer/maps');
+                }else if(res.user.role.name === "Admin"){
+                    router.push('/admin/customers')
+                }
             })
             .catch((err) => {
                 message.error(err);

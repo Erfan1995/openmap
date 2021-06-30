@@ -2,24 +2,24 @@ import Layout from '../../components/customer/layout/Layout';
 import withPrivateServerSideProps from '../../utils/withPrivateServerSideProps';
 import { useEffect } from 'react';
 import { useRouter } from 'next/router';
- 
+
 
 const Dashboard = ({ authenticatedUser, collapsed }) => {
   const router = useRouter();
 
-  useEffect(async() => {
- 
+  useEffect(async () => {
+
   }, [])
   return (
-    <Layout collapsed={collapsed} user={authenticatedUser}>
-      
-       </Layout>
+    <Layout collapsed={collapsed} user={authenticatedUser.role.name}>
+
+    </Layout>
   )
 }
 export const getServerSideProps = withPrivateServerSideProps(
   async (ctx, verifyUser) => {
     try {
-   
+
       return { props: { authenticatedUser: verifyUser } }
     } catch (error) {
       return { props: {} };
