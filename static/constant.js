@@ -80,7 +80,9 @@ export const DATASET = {
     LINK: 'Link',
     PLACEHOLDER_LINK: 'Please enter link',
     MANUAL_MAP_DATA: 'Manual Map Data',
-    OPEN_MAP: 'Openmap'
+    OPEN_MAP: 'Openmap',
+    MARKERS:'Markers',
+    ADD_NEW_ICON:'Add New Icon'
 
 
 }

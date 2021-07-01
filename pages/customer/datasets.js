@@ -47,60 +47,60 @@ const Dataset = ({ authenticatedUser, collapsed, locked_data, unlocked_data, tag
     };
     const onChangeFile = ({ file }) => {
 
-        if (file.originFileObj.size < 1e6) {
-            setInvalidFileSize(false);
-            fileReader = new FileReader();
-            if (file.originFileObj.type === "application/vnd.ms-excel") {
-                fileReader.onloadend = () => {
-                    csv.parse(fileReader.result, (err, data) => {
-                        let latitude;
-                        let longitude;
-                        const columns = data[0];
-                        columns.map((col) => {
-                            for (let i = 0; i < LAT.length; i++) {
-                                if (col === LAT[i]) {
-                                    latitude = col;
-                                }
+        // if (file.originFileObj.size < 1e6) {
+        setInvalidFileSize(false);
+        fileReader = new FileReader();
+        if (file.originFileObj.type === "application/vnd.ms-excel") {
+            fileReader.onloadend = () => {
+                csv.parse(fileReader.result, (err, data) => {
+                    let latitude;
+                    let longitude;
+                    const columns = data[0];
+                    columns.map((col) => {
+                        for (let i = 0; i < LAT.length; i++) {
+                            if (col === LAT[i]) {
+                                latitude = col;
                             }
-                            for (let i = 0; i < LONG.length; i++) {
-                                if (col === LONG[i]) {
-                                    longitude = col;
-                                }
-                            }
-                        })
-                        if (latitude) {
-                            setHasCoordinate(true)
-                        } else {
-                            setHasCoordinate(false)
                         }
-                        let arr = [];
-                        for (let j = 1; j < data.length; j++) {
-                            let obj = {}
-                            for (let i = 0; i < columns.length; i++) {
-                                obj[columns[i]] = data[j][i]
+                        for (let i = 0; i < LONG.length; i++) {
+                            if (col === LONG[i]) {
+                                longitude = col;
                             }
-                            arr[j] = obj;
-                        }
-                        arr.splice(0, 1)
-                        try {
-                            let gJson = GeoJSON.parse(arr, { Point: [latitude, longitude] });
-                            setDatasetContent(gJson);
-                        } catch (e) {
-                            setHasCoordinate(false);
                         }
                     })
-                }
-                fileReader.readAsText(file.originFileObj);
-
-            } else {
-                fileReader.onloadend = handleFileRead;
-                fileReader.readAsText(file.originFileObj, "UTF-8");
-
+                    if (latitude) {
+                        setHasCoordinate(true)
+                    } else {
+                        setHasCoordinate(false)
+                    }
+                    let arr = [];
+                    for (let j = 1; j < data.length; j++) {
+                        let obj = {}
+                        for (let i = 0; i < columns.length; i++) {
+                            obj[columns[i]] = data[j][i]
+                        }
+                        arr[j] = obj;
+                    }
+                    arr.splice(0, 1)
+                    try {
+                        let gJson = GeoJSON.parse(arr, { Point: [latitude, longitude] });
+                        setDatasetContent(gJson);
+                    } catch (e) {
+                        setHasCoordinate(false);
+                    }
+                })
             }
-            setDataFile(file);
+            fileReader.readAsText(file.originFileObj);
+
         } else {
-            setInvalidFileSize(true);
+            fileReader.onloadend = handleFileRead;
+            fileReader.readAsText(file.originFileObj, "UTF-8");
+
         }
+        setDataFile(file);
+        // } else {
+        // setInvalidFileSize(true);
+        // }
 
     }
     const handleFileRead = (e) => {

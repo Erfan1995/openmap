@@ -7,13 +7,14 @@ import nookies from 'nookies';
 import dynamic from "next/dynamic";
 import CreateMap from 'components/customer/Forms/CreateMap';
 import StyledMaps from 'components/customer/generalComponents/ListMapboxStyle';
-import { fetchApi, putMethod, getOneMap, getDatasetsByMap, getTags, getDatasets } from 'lib/api';
+import { fetchApi, putMethod, getOneMap, getDatasetsByMap, getTags, getDatasets, getIcons } from 'lib/api';
 import SelectNewMapDataset from 'components/customer/mapComponents/SelectNewMapDataset';
 import { formatDate, fileSizeReadable, getMapData } from "../../lib/general-functions";
 import { DeleteTwoTone } from '@ant-design/icons';
 import { useRouter } from 'next/router';
 import { DATASET } from '../../static/constant'
 import { ExclamationCircleOutlined } from '@ant-design/icons';
+import MapMarkers from 'components/customer/mapComponents/MapMarkers';
 const { Title } = Typography;
 const { TabPane } = Tabs;
 const { confirm } = Modal;
@@ -35,7 +36,8 @@ const SaveButton = styled(Button)`
   float: right !important;
 `;
 
-const CreateMapContainer = ({ authenticatedUser, collapsed, styledMaps, tags, mapData, manualMapData, serverSideDatasets, token }) => {
+const CreateMapContainer = ({ authenticatedUser, collapsed, styledMaps, tags, mapData,
+  manualMapData, serverSideDatasets, token, icons }) => {
   const [styleId, setStyleID] = useState(mapData.styleId || process.env.NEXT_PUBLIC_MAPBOX_DEFAULT_MAP);
   const childRef = useRef();
   const selectDatasetChildRef = useRef();
@@ -192,7 +194,10 @@ const CreateMapContainer = ({ authenticatedUser, collapsed, styledMaps, tags, ma
                     />
 
                   </TabPane>
-                  <TabPane tab={DATASET.LAYERS} key="3" >
+                  <TabPane tab={DATASET.MARKERS} key="3">
+                    <MapMarkers icons={icons} />
+                  </TabPane>
+                  <TabPane tab={DATASET.LAYERS} key="4" >
                     <Button type="dashed" size='large' block onClick={() => chooseDataset()}>
                       {DATASET.ADD_NEW_LAYER}
                     </Button>
@@ -291,17 +296,17 @@ export const getServerSideProps = withPrivateServerSideProps(
       }
       const data = await fetchApi('styles/v1/mbshaban');
       const tags = await getTags(token);
+      const icons = await getIcons(token);
       tags.map((item) => {
         item.id = Number(item.id);
       })
       return {
         props: {
           authenticatedUser: verifyUser, styledMaps: data, tags: tags,
-          mapData: mapData, manualMapData: manualArray, serverSideDatasets: datasets, token: token
+          mapData: mapData, manualMapData: manualArray, serverSideDatasets: datasets, token: token, icons: icons
         }
       }
     } catch (error) {
-      console.log(error);
       return {
         redirect: {
           destination: '/server-error',
