@@ -29,7 +29,6 @@ const CardTitle = styled(Title)`
 `;
 
 const Dataset = ({ authenticatedUser, collapsed, locked_data, unlocked_data, tags }) => {
-    console.log(authenticatedUser);
     const [dataset, setDataset] = useState(unlocked_data);
     const [lockedDataset, setLockedDataset] = useState(locked_data);
     const [visible, setVisible] = useState(false);

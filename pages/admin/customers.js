@@ -40,7 +40,7 @@ const Customers = ({ authenticatedUser, collapsed, serverSideCustomers }) => {
         setCutomers(data);
     }
     return (
-        <Layout collapsed={collapsed}>
+        <Layout collapsed={collapsed} user={authenticatedUser}>
             <Wrapper>
                 <CardTitle level={4}>{CUSTOMERS.CUSTOMERS}</CardTitle>
                 <AddNew type='primary' onClick={() => setVisible(true)}>{CUSTOMERS.ADD_NEW}</AddNew>
