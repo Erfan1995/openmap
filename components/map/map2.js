@@ -1,12 +1,19 @@
 import React, { Component } from 'react';
-import { MapContainer, TileLayer, Circle, FeatureGroup } from 'react-leaflet';
-import L, { geoJSON, Layer, polyline } from 'leaflet';
+import { FeatureGroup } from 'react-leaflet';
+import L from 'leaflet';
 import { EditControl } from 'react-leaflet-draw';
-import foo from '../../lib/data.json';
 import AddMap from './AddMap';
 import Preview from './Preview';
-import parkIcon from '.'
+import styled from 'styled-components';
 // work around broken icons when using webpack, see https://github.com/PaulLeCam/react-leaflet/issues/255
+
+
+const PupopDiv=styled.div`
+height:100px;
+background-color:#000;
+border-radius:10px;
+`
+
 
 delete L.Icon.Default.prototype._getIconUrl;
 L.Icon.Default.mergeOptions({
@@ -88,11 +95,10 @@ export default class EditControlExample extends Component {
         },
         onEachFeature: (feature = {}, layer) => {
           const { properties } = feature;
-
           const { title } = properties;
           if (!title) return;
 
-          layer.bindPopup(`<p>${title}</p>`)
+          layer.bindPopup(`<div class='background'>${title}this is some text here</div>`)
         }
       });
       let leafletFG = reactFGref;
@@ -148,11 +154,13 @@ export default class EditControlExample extends Component {
               closePlaceDetails={this.modalClose}
             />
           )}
+      
         <FeatureGroup
           ref={(reactFGref) => {
             this._onFeatureGroupReady(reactFGref);
           }}
         >
+          
           <EditControl
             position="topright"
             onCreated={this._onCreated}

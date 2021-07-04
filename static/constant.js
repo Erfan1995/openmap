@@ -114,3 +114,9 @@ export const MAP = {
     LIST: 'List',
 
 }
+
+
+export const DATASET_CONF={
+    STYLE:'STYLE',
+    PUPOP:'POP-UP',
+}
