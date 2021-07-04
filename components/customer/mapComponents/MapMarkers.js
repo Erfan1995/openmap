@@ -37,6 +37,7 @@ cursor:pointer;
 const MapMarkers = (icons) => {
     const [modalVisible, setModalVisible] = useState(false);
     const [selectIconLoading, setSelectIconLoading] = useState(false);
+    const [file, setFile] = useState();
     const [uploadIconsLoading, setUploadIconsLoading] = useState(false);
     const [markers, setMarkers] = useState(icons.icons);
     const [selectedIcons, setSelectedIcons] = useState([]);
@@ -48,13 +49,14 @@ const MapMarkers = (icons) => {
             return (file.type.split("/")[0]) === "image" ? true : Upload.LIST_IGNORE;
         },
         onChange: info => {
+            setModalVisible(false);
             uploadIcon(info.file)
         },
     };
     const uploadIcon = async (file) => {
-        // setMarkers(markers.reverse());
         setUploadIconsLoading(true);
-        setModalVisible(false);
+        setMarkers((markers) => [...markers].reverse());
+        // console.log(markers, 'reversed')
         const data = new FormData();
         data.append('data', JSON.stringify({ 'name': file.originFileObj.name }))
         data.append('files.icon', file.originFileObj, file.originFileObj.name);
@@ -62,6 +64,9 @@ const MapMarkers = (icons) => {
         if (res) {
             setMarkers([...markers, res]);
             message.success('uploaded successfully')
+            setMarkers((markers) => [...markers].reverse());
+            console.log(markers, '>>>>revers');
+
         }
         setUploadIconsLoading(false);
     }
@@ -92,12 +97,16 @@ const MapMarkers = (icons) => {
         }
         setUploadIconsLoading(false);
     }
-    function showDeleteConfirm(id) {
+    function showDeleteConfirm(id, condition) {
         confirm({
             icon: <ExclamationCircleOutlined />,
             content: <p>{DATASET.DELETE_CONFIRM}</p>,
             onOk() {
-                deleteIcon(id)
+                if (condition === "allIcons") {
+                    deleteIcon(id);
+                } else if (condition === "selectedIcons") {
+                    console.log("helllllloooooooooooo");
+                }
             },
             onCancel() {
             },
@@ -114,7 +123,8 @@ const MapMarkers = (icons) => {
                     dataSource={selectedIcons}
                     renderItem={(item) => (
                         <List.Item key={`listItem` + item.id}>
-                            <Card onClick={() => selectIcon(item)}>
+                            <Card >
+                                <DeleteButton onClick={() => showDeleteConfirm(item.id, 'selectedIcons')}>x</DeleteButton>
                                 <Photo src={getStrapiMedia(item.icon[0])} />
                             </Card>
                         </List.Item>
@@ -134,7 +144,7 @@ const MapMarkers = (icons) => {
                         renderItem={(item) => (
                             <List.Item key={`listItem` + item.id}>
                                 <Card >
-                                    <DeleteButton onClick={() => showDeleteConfirm(item.id)}>x</DeleteButton>
+                                    <DeleteButton onClick={() => showDeleteConfirm(item.id, 'allIcons')}>x</DeleteButton>
                                     <Photo src={getStrapiMedia(item.icon[0])} onClick={() => selectIcon(item)} />
                                 </Card>
                             </List.Item>
