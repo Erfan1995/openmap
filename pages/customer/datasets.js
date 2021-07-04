@@ -47,60 +47,60 @@ const Dataset = ({ authenticatedUser, collapsed, locked_data, unlocked_data, tag
     };
     const onChangeFile = ({ file }) => {
 
-        if (file.originFileObj.size < 1e6) {
-            setInvalidFileSize(false);
-            fileReader = new FileReader();
-            if (file.originFileObj.type === "application/vnd.ms-excel") {
-                fileReader.onloadend = () => {
-                    csv.parse(fileReader.result, (err, data) => {
-                        let latitude;
-                        let longitude;
-                        const columns = data[0];
-                        columns.map((col) => {
-                            for (let i = 0; i < LAT.length; i++) {
-                                if (col === LAT[i]) {
-                                    latitude = col;
-                                }
+        // if (file.originFileObj.size < 1e6) {
+        setInvalidFileSize(false);
+        fileReader = new FileReader();
+        if (file.originFileObj.type === "application/vnd.ms-excel") {
+            fileReader.onloadend = () => {
+                csv.parse(fileReader.result, (err, data) => {
+                    let latitude;
+                    let longitude;
+                    const columns = data[0];
+                    columns.map((col) => {
+                        for (let i = 0; i < LAT.length; i++) {
+                            if (col === LAT[i]) {
+                                latitude = col;
                             }
-                            for (let i = 0; i < LONG.length; i++) {
-                                if (col === LONG[i]) {
-                                    longitude = col;
-                                }
-                            }
-                        })
-                        if (latitude) {
-                            setHasCoordinate(true)
-                        } else {
-                            setHasCoordinate(false)
                         }
-                        let arr = [];
-                        for (let j = 1; j < data.length; j++) {
-                            let obj = {}
-                            for (let i = 0; i < columns.length; i++) {
-                                obj[columns[i]] = data[j][i]
+                        for (let i = 0; i < LONG.length; i++) {
+                            if (col === LONG[i]) {
+                                longitude = col;
                             }
-                            arr[j] = obj;
-                        }
-                        arr.splice(0, 1)
-                        try {
-                            let gJson = GeoJSON.parse(arr, { Point: [latitude, longitude] });
-                            setDatasetContent(gJson);
-                        } catch (e) {
-                            setHasCoordinate(false);
                         }
                     })
-                }
-                fileReader.readAsText(file.originFileObj);
-
-            } else {
-                fileReader.onloadend = handleFileRead;
-                fileReader.readAsText(file.originFileObj, "UTF-8");
-
+                    if (latitude) {
+                        setHasCoordinate(true)
+                    } else {
+                        setHasCoordinate(false)
+                    }
+                    let arr = [];
+                    for (let j = 1; j < data.length; j++) {
+                        let obj = {}
+                        for (let i = 0; i < columns.length; i++) {
+                            obj[columns[i]] = data[j][i]
+                        }
+                        arr[j] = obj;
+                    }
+                    arr.splice(0, 1)
+                    try {
+                        let gJson = GeoJSON.parse(arr, { Point: [latitude, longitude] });
+                        setDatasetContent(gJson);
+                    } catch (e) {
+                        setHasCoordinate(false);
+                    }
+                })
             }
-            setDataFile(file);
+            fileReader.readAsText(file.originFileObj);
+
         } else {
-            setInvalidFileSize(true);
+            fileReader.onloadend = handleFileRead;
+            fileReader.readAsText(file.originFileObj, "UTF-8");
+
         }
+        setDataFile(file);
+        // } else {
+        // setInvalidFileSize(true);
+        // }
 
     }
     const handleFileRead = (e) => {
@@ -129,7 +129,7 @@ const Dataset = ({ authenticatedUser, collapsed, locked_data, unlocked_data, tag
             if (invalidFileSize === false) {
                 setLoading(true);
                 try {
-                    const res = await postMethod('datasets', { title: file.originFileObj.name, is_locked: false, users: authenticatedUser.id, size: file.originFileObj.size })
+                    const res = await postMethod('datasets', { title: file.originFileObj.name, is_locked: false, user: authenticatedUser.id, size: file.originFileObj.size })
                     res.title = res.title.split(".")[0];
                     res.updated_at = formatDate(res.updated_at);
                     res.maps = res.maps.length;
@@ -163,6 +163,12 @@ const Dataset = ({ authenticatedUser, collapsed, locked_data, unlocked_data, tag
         setLockedDataset([...lockedDataset, lockedData[0]])
         setDataset(unlockedData);
     }
+    const updatedData = (data) => {
+        setDataset(data);
+    }
+    const updatedLockedData = (data) => {
+        setLockedDataset(data);
+    }
     return (
         <Layout collapsed={collapsed} user={authenticatedUser}>
             <MapsWrapper  >
@@ -174,7 +180,7 @@ const Dataset = ({ authenticatedUser, collapsed, locked_data, unlocked_data, tag
 
                 <Tabs defaultActiveKey="1">
                     <TabPane tab={<span>{DATASET.UNLOCKED_DATASETS}</span>} key="1">
-                        <UnlockedDataset data={dataset} updateLockedData={updateLockedData}
+                        <UnlockedDataset data={dataset} updateLockedData={updateLockedData} updatedData={updatedData}
                             user={authenticatedUser} tags={tags} />
                         <Modal
                             title={DATASET.ADD_DATASET}
@@ -189,7 +195,8 @@ const Dataset = ({ authenticatedUser, collapsed, locked_data, unlocked_data, tag
                         </Modal>
                     </TabPane>
                     <TabPane tab={<span>{DATASET.LOCKED_DATASETS}</span>} key="2">
-                        <LockedDatasetTable data={lockedDataset} updateUnlockedData={updateUnlockedData} />
+                        <LockedDatasetTable data={lockedDataset} updateUnlockedData={updateUnlockedData}
+                            updatedLockedData={updatedLockedData} />
                     </TabPane>
                 </Tabs>
             </MapsWrapper>
@@ -201,7 +208,7 @@ export const getServerSideProps = withPrivateServerSideProps(
         try {
             const { token } = nookies.get(ctx);
             let tags = await getTags(token);
-            let res = await getDatasets({ users: verifyUser.id }, token);
+            let res = await getDatasets({ user: verifyUser.id }, token);
             let lockedData = [];
             let unlockedData = [];
             let index1 = 0;

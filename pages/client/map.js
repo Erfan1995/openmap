@@ -2,7 +2,7 @@ import dynamic from "next/dynamic";
 import LayoutPage from "components/client/layout";
 import { useEffect, useState } from "react";
 import UseAuth from "hooks/useAuth";
-import { getMethod, getOneMap } from "lib/api";
+import { getMethod, getOneMap, getAllMaps } from "lib/api";
 import { extractMapData, getPublicAuthenticatedMapData } from "lib/general-functions";
 const Map = ({ manualMapData, mapData, datasets }) => {
 
@@ -74,7 +74,7 @@ export async function getServerSideProps(ctx) {
     if (id) {
       mapData = await getMethod(`maps?id=${id}&mapId=${mapToken}`, null, false);
       // mapData = await getOneMap({ mapId: mapToken, id: id }, null, false);
-      console.log(mapData, '>>>>>>>');
+      // console.log(mapData, '>>>>>>>');
       if (!mapData.length > 0) {
         return {
           redirect: {

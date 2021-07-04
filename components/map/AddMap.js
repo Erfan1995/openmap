@@ -36,7 +36,7 @@ const AddMap = ({ onDataSaved, myVisible, geoData, mapData, modalClose, userType
                     res = await postMethod('mmdpublicusers', values, false);
                 } else {
                     values.is_approved = true;
-                    values.users = userId;
+                    values.user = userId;
                     res = await postMethod('mmdcustomers', values);
                 }
 

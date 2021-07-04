@@ -14,7 +14,7 @@ background:#ffffff;
 padding:20px;
 margin:10px;
 `;
-const UnlockedDataset = ({ data, updateLockedData, user, tags }) => {
+const UnlockedDataset = ({ data, updateLockedData, user, tags, updatedData }) => {
     let mapData;
     const router = useRouter();
     const [datasetId, setDatasetId] = useState();
@@ -34,7 +34,11 @@ const UnlockedDataset = ({ data, updateLockedData, user, tags }) => {
         const deletedDataset = await deleteMethod('datasetcontents/' + datasetId)
         if (deletedDataset) {
             const res = await deleteMethod('datasets/' + datasetId)
-            if (res) setDataset(dataset.filter(dData => dData.id !== res.id));
+            if (res) {
+                const dd = dataset.filter(dData => dData.id !== res.id);
+                setDataset(dd);
+                updatedData(dd);
+            }
             setLoading(false)
         }
     }

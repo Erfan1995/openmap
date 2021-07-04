@@ -42,7 +42,6 @@ class MyLayout extends Component {
   render() {
     const { collapsed, drawerVisible } = this.state;
     const { children } = this.props;
-
     return (
       <Layout className={'layout-fixed-height'}>
         <FixedSider
@@ -54,7 +53,7 @@ class MyLayout extends Component {
             });
           }}>
           <LogoTitle />
-          <Menu closeDrawer={() => this.setState({ drawerVisible: false })} />
+          <Menu closeDrawer={() => this.setState({ drawerVisible: false })} user={this.props.user} />
         </FixedSider>
         <MainLayout collapsed={collapsed}>
           <Header user={this.props.user} collapsed={collapsed} handleToggle={this.toggle} />
@@ -66,7 +65,7 @@ class MyLayout extends Component {
           closeDrawer={() => this.setState({ drawerVisible: false })}>
           <LogoTitle />
 
-          <Menu closeDrawer={() => this.setState({ drawerVisible: false })} />
+          <Menu closeDrawer={() => this.setState({ drawerVisible: false })} user={this.props.user} />
         </Drawer>
       </Layout>
     );

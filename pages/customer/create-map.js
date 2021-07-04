@@ -7,7 +7,7 @@ import nookies from 'nookies';
 import dynamic from "next/dynamic";
 import CreateMap from 'components/customer/Forms/CreateMap';
 import StyledMaps from 'components/customer/generalComponents/ListMapboxStyle';
-import { fetchApi, putMethod, getOneMap, getDatasetsByMap, getTags, getDatasets } from 'lib/api';
+import { fetchApi, putMethod, getOneMap, getDatasetsByMap, getTags, getDatasets, getIcons } from 'lib/api';
 import SelectNewMapDataset from 'components/customer/mapComponents/SelectNewMapDataset';
 import { formatDate, fileSizeReadable, getMapData } from "../../lib/general-functions";
 import { ArrowLeftOutlined, DeleteTwoTone } from '@ant-design/icons';
@@ -15,6 +15,7 @@ import { useRouter } from 'next/router';
 import { DATASET } from '../../static/constant'
 import { ExclamationCircleOutlined } from '@ant-design/icons';
 import DatasetConf from 'components/customer/generalComponents/DetasetConf';
+import MapMarkers from 'components/customer/mapComponents/MapMarkers';
 const { Title } = Typography;
 const { TabPane } = Tabs;
 const { confirm } = Modal;
@@ -50,7 +51,8 @@ const SaveButton = styled(Button)`
   float: right !important;
 `;
 
-const CreateMapContainer = ({ authenticatedUser, collapsed, styledMaps, tags, mapData, manualMapData, serverSideDatasets, token }) => {
+const CreateMapContainer = ({ authenticatedUser, collapsed, styledMaps, tags, mapData,
+  manualMapData, serverSideDatasets, token, icons }) => {
   const [styleId, setStyleID] = useState(mapData.styleId || process.env.NEXT_PUBLIC_MAPBOX_DEFAULT_MAP);
   const childRef = useRef();
   const selectDatasetChildRef = useRef();
@@ -73,7 +75,7 @@ const CreateMapContainer = ({ authenticatedUser, collapsed, styledMaps, tags, ma
   }
   const chooseDataset = async () => {
     setLoading(true);
-    let res = await getDatasets({ users: authenticatedUser.id }, token);
+    let res = await getDatasets({ user: authenticatedUser.id }, token);
     setLoading(false);
     if (res) {
       let finalDatasets = [];
@@ -201,7 +203,6 @@ const CreateMapContainer = ({ authenticatedUser, collapsed, styledMaps, tags, ma
             <Col xs={24} sm={24} md={24} lg={7} xl={7} >
 
               <Card style={{ height: '70vh', overflowY: 'scroll' }}>
-
                 {layerClicked ?
                   <Tabs defaultActiveKey="1">
                     <TabPane tab={DATASET.META_DATA} key="1" >
@@ -329,17 +330,21 @@ export const getServerSideProps = withPrivateServerSideProps(
       }
       //  const data = await fetchApi('styles/v1/mbshaban');
       const tags = await getTags(token);
+      const icons = await getIcons(token);
+      icons.map((icon) => {
+        icon.id = Number(icon.id);
+      })
+
       tags.map((item) => {
         item.id = Number(item.id);
       })
       return {
         props: {
-          authenticatedUser: verifyUser, styledMaps: [], tags: tags,
-          mapData: mapData, manualMapData: manualArray, serverSideDatasets: datasets, token: token
+          authenticatedUser: verifyUser, styledMaps: data, tags: tags,
+          mapData: mapData, manualMapData: manualArray, serverSideDatasets: datasets, token: token, icons: icons
         }
       }
     } catch (error) {
-      console.log(error);
       return {
         redirect: {
           destination: '/server-error',

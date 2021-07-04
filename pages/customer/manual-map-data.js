@@ -47,9 +47,9 @@ const ManualMapData = ({ authenticatedUser, collapsed, token }) => {
         let res;
         setLoading(true);
         if (key === "1") {
-            res = await getMMDCustomers({ users: authenticatedUser.id }, token);
+            res = await getMMDCustomers({ user: authenticatedUser.id }, token);
         } else if (key === "2") {
-            res = await getMethod(`mmdpublicusers?_where[0][map.users]=${authenticatedUser.id}`)
+            res = await getMethod(`mmdpublicusers?_where[0][map.user]=${authenticatedUser.id}`)
             res.map((map) => {
                 map.publicAddress = map.public_user.publicAddress
             })
