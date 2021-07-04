@@ -34,12 +34,9 @@ const DeleteButton = styled.div`
 
 cursor:pointer;
 `
-const MapMarkers = (icons) => {
-    const [modalVisible, setModalVisible] = useState(false);
-    const [selectIconLoading, setSelectIconLoading] = useState(false);
-    const [file, setFile] = useState();
+const MapMarkers = ({icons}) => {
     const [uploadIconsLoading, setUploadIconsLoading] = useState(false);
-    const [markers, setMarkers] = useState(icons.icons);
+    const [markers, setMarkers] = useState(icons);
     const [selectedIcons, setSelectedIcons] = useState([]);
     const props = {
         beforeUpload: file => {
@@ -49,7 +46,6 @@ const MapMarkers = (icons) => {
             return (file.type.split("/")[0]) === "image" ? true : Upload.LIST_IGNORE;
         },
         onChange: info => {
-            setModalVisible(false);
             uploadIcon(info.file)
         },
     };
@@ -153,18 +149,14 @@ const MapMarkers = (icons) => {
                 </MarkerCard>
             </Spin>
             <br />
-            <Button type="dashed" block size='large' onClick={() => setModalVisible(!modalVisible)}>
-                {DATASET.ADD_NEW_ICON}
-            </Button>
-            {modalVisible ? (<Wrapper>
+           <Wrapper>
                 <Dragger  {...props} name="file" maxCount={1} >
                     <p className="ant-upload-drag-icon">
                         <InboxOutlined />
                     </p>
                     <p>{DATASET.CLICK_OR_DRAG}</p>
                 </Dragger>
-            </Wrapper>) : (<p></p>)
-            }
+            </Wrapper>
         </div>
     )
 }

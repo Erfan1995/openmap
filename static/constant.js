@@ -119,8 +119,8 @@ export const MAP = {
 
 
 export const DATASET_CONF={
-    STYLE:'STYLE',
-    PUPOP:'POP-UP',
+    MARKERS:'marker',
+    PUPOP:'Pop-Up',
 }
 export const CUSTOMERS = {
     NAME: 'Name',

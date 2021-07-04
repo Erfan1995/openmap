@@ -122,7 +122,6 @@ const CreateMapContainer = ({ authenticatedUser, collapsed, styledMaps, tags, ma
     router.push({
       pathname: 'maps'
     })
-
   }
   const addImageFile = (file) => {
     setFile(file);
@@ -253,7 +252,7 @@ const CreateMapContainer = ({ authenticatedUser, collapsed, styledMaps, tags, ma
                     <Button style={{marginLeft:-20,marginTop:-30}} icon={<ArrowLeftOutlined />} onClick={() => {
                       setLayerClicked(true);
                     }} type='link'>back</Button>
-                    <DatasetConf />
+                    <DatasetConf icons={icons} />
                   </div>
 
                 }

@@ -1,18 +1,18 @@
 import { Tabs } from "antd";
 import { DATASET_CONF } from "static/constant";
+import MapMarkers from "../mapComponents/MapMarkers";
 const { TabPane } = Tabs;
-
-const DatasetConf = () => {
+import Popup from "../mapComponents/popup";
+const DatasetConf = ({icons}) => {
 
     return (
         <div>
             <Tabs defaultActiveKey="1">
-
-                <TabPane tab={DATASET_CONF.STYLE} key="2" >
-                    this is some text here
+                <TabPane tab={DATASET_CONF.MARKERS} key="2" >
+                   <MapMarkers icons={icons}/>
                 </TabPane>
                 <TabPane tab={DATASET_CONF.PUPOP} key="3" >
-                    this is some tehhhhhhhhhhhhhxt here
+                    <Popup/>
                 </TabPane>
             </Tabs>
         </div>
