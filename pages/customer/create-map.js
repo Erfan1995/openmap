@@ -297,6 +297,10 @@ export const getServerSideProps = withPrivateServerSideProps(
       const data = await fetchApi('styles/v1/mbshaban');
       const tags = await getTags(token);
       const icons = await getIcons(token);
+      icons.map((icon) => {
+        icon.id = Number(icon.id);
+      })
+
       tags.map((item) => {
         item.id = Number(item.id);
       })

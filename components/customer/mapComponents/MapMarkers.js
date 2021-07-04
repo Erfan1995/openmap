@@ -1,15 +1,16 @@
 import styled from 'styled-components';
-import { Form, Input, Row, Select, Divider, Col, message, Upload, Spin, Button, Modal, List, Card } from "antd";
+import { Divider, message, Upload, Spin, Button, Modal, List, Card } from "antd";
 import { DATASET } from '../../../static/constant'
-import { ConsoleSqlOutlined, InboxOutlined, UploadOutlined } from '@ant-design/icons';
+import { InboxOutlined, ExclamationCircleOutlined } from '@ant-design/icons';
 import { useState } from 'react';
-import { deleteMethod, postFileMethod, postMethod } from "../../../lib/api";
+import { deleteMethod, postFileMethod } from "../../../lib/api";
 import { getStrapiMedia } from '../../../lib/media';
+const { confirm } = Modal;
 
 const { Dragger } = Upload;
 const Wrapper = styled.div`
 background:#ffffff;
-padding:30px;
+padding:10px;
 margin:10px;
 `;
 const Photo = styled.img`
@@ -23,24 +24,20 @@ const Photo = styled.img`
 const MarkerCard = styled(Card)`
   margin-top:10px;
 `
-const IconCard = styled(Card)`
-  
-`
 const DeleteButton = styled.div`
   position: absolute;
-  top:1%;
-  right:6%;
-  padding:1px 4px;
+  top:-4%;
+  right:10%;
   :hover{
-
+    font-size:large;
   }
 
 cursor:pointer;
 `
 const MapMarkers = (icons) => {
     const [modalVisible, setModalVisible] = useState(false);
-    const [file, setFile] = useState();
-    const [loading, setLoading] = useState(false);
+    const [selectIconLoading, setSelectIconLoading] = useState(false);
+    const [uploadIconsLoading, setUploadIconsLoading] = useState(false);
     const [markers, setMarkers] = useState(icons.icons);
     const [selectedIcons, setSelectedIcons] = useState([]);
     const props = {
@@ -51,11 +48,12 @@ const MapMarkers = (icons) => {
             return (file.type.split("/")[0]) === "image" ? true : Upload.LIST_IGNORE;
         },
         onChange: info => {
-            setFile(info.file)
+            uploadIcon(info.file)
         },
     };
-    const saveIcon = async () => {
-        setLoading(true);
+    const uploadIcon = async (file) => {
+        // setMarkers(markers.reverse());
+        setUploadIconsLoading(true);
         setModalVisible(false);
         const data = new FormData();
         data.append('data', JSON.stringify({ 'name': file.originFileObj.name }))
@@ -63,8 +61,9 @@ const MapMarkers = (icons) => {
         const res = await postFileMethod('icons', data);
         if (res) {
             setMarkers([...markers, res]);
+            message.success('uploaded successfully')
         }
-        setLoading(false);
+        setUploadIconsLoading(false);
     }
     const selectIcon = (item) => {
         let exists = false;
@@ -83,44 +82,46 @@ const MapMarkers = (icons) => {
             setSelectedIcons([...selectedIcons, item]);
         }
     }
-    const deleteIcon = (id) => {
-        console.log(id);
+    const deleteIcon = async (id) => {
+        setUploadIconsLoading(true)
+        const res = await deleteMethod('icons/' + id)
+        if (res) {
+            const dd = markers.filter(dData => dData.id !== res.id);
+            setMarkers(dd);
+            message.success('deleted successfully');
+        }
+        setUploadIconsLoading(false);
+    }
+    function showDeleteConfirm(id) {
+        confirm({
+            icon: <ExclamationCircleOutlined />,
+            content: <p>{DATASET.DELETE_CONFIRM}</p>,
+            onOk() {
+                deleteIcon(id)
+            },
+            onCancel() {
+            },
+        });
     }
     return (
-        <Spin spinning={loading}>
-            <div>
-
-                <Modal
-                    destroyOnClose={true}
-                    visible={modalVisible}
-                    onOk={() => saveIcon()}
-                    onCancel={() => setModalVisible(false)}
-                    width={300}
-                >
-                    <Wrapper>
-                        <Dragger  {...props} name="file" maxCount={1} >
-                            <p className="ant-upload-drag-icon">
-                                <UploadOutlined />
-                            </p>
-                        </Dragger>
-                    </Wrapper>
-                </Modal>
-                <Card size="small" title="Selected Markers" >
-                    <List
-                        grid={{
-                            gutter: 10,
-                            column: 3
-                        }}
-                        dataSource={selectedIcons}
-                        renderItem={(item) => (
-                            <List.Item key={`listItem` + item.id}>
-                                <IconCard onClick={() => selectIcon(item)}>
-                                    <Photo src={getStrapiMedia(item.icon[0])} />
-                                </IconCard>
-                            </List.Item>
-                        )}
-                    />
-                </Card>
+        <div>
+            <Card size="small" title="Selected Markers" >
+                <List
+                    grid={{
+                        gutter: 10,
+                        column: 3
+                    }}
+                    dataSource={selectedIcons}
+                    renderItem={(item) => (
+                        <List.Item key={`listItem` + item.id}>
+                            <Card onClick={() => selectIcon(item)}>
+                                <Photo src={getStrapiMedia(item.icon[0])} />
+                            </Card>
+                        </List.Item>
+                    )}
+                />
+            </Card>
+            <Spin spinning={uploadIconsLoading}>
                 <MarkerCard size="small" title="Markers" >
                     <List
                         pagination={true}
@@ -132,20 +133,29 @@ const MapMarkers = (icons) => {
                         dataSource={markers}
                         renderItem={(item) => (
                             <List.Item key={`listItem` + item.id}>
-                                <IconCard >
-                                    <DeleteButton onClick={() => deleteIcon(item.id)}>x</DeleteButton>
+                                <Card >
+                                    <DeleteButton onClick={() => showDeleteConfirm(item.id)}>x</DeleteButton>
                                     <Photo src={getStrapiMedia(item.icon[0])} onClick={() => selectIcon(item)} />
-                                </IconCard>
+                                </Card>
                             </List.Item>
                         )}
                     />
                 </MarkerCard>
-                <Button type="dashed" block size='large' onClick={() => setModalVisible(true)}>
-                    {DATASET.ADD_NEW_ICON}
-                </Button>
-
-            </div>
-        </Spin>
+            </Spin>
+            <br />
+            <Button type="dashed" block size='large' onClick={() => setModalVisible(!modalVisible)}>
+                {DATASET.ADD_NEW_ICON}
+            </Button>
+            {modalVisible ? (<Wrapper>
+                <Dragger  {...props} name="file" maxCount={1} >
+                    <p className="ant-upload-drag-icon">
+                        <InboxOutlined />
+                    </p>
+                    <p>{DATASET.CLICK_OR_DRAG}</p>
+                </Dragger>
+            </Wrapper>) : (<p></p>)
+            }
+        </div>
     )
 }
 export default MapMarkers;
