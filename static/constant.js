@@ -116,6 +116,12 @@ export const MAP = {
     LIST: 'List',
 
 }
+
+
+export const DATASET_CONF={
+    STYLE:'STYLE',
+    PUPOP:'POP-UP',
+}
 export const CUSTOMERS = {
     NAME: 'Name',
     EMAIL: 'Email',

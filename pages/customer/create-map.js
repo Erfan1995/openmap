@@ -10,10 +10,11 @@ import StyledMaps from 'components/customer/generalComponents/ListMapboxStyle';
 import { fetchApi, putMethod, getOneMap, getDatasetsByMap, getTags, getDatasets, getIcons } from 'lib/api';
 import SelectNewMapDataset from 'components/customer/mapComponents/SelectNewMapDataset';
 import { formatDate, fileSizeReadable, getMapData } from "../../lib/general-functions";
-import { DeleteTwoTone } from '@ant-design/icons';
+import { ArrowLeftOutlined, DeleteTwoTone } from '@ant-design/icons';
 import { useRouter } from 'next/router';
 import { DATASET } from '../../static/constant'
 import { ExclamationCircleOutlined } from '@ant-design/icons';
+import DatasetConf from 'components/customer/generalComponents/DetasetConf';
 import MapMarkers from 'components/customer/mapComponents/MapMarkers';
 const { Title } = Typography;
 const { TabPane } = Tabs;
@@ -24,6 +25,20 @@ height:100%;
 padding:10px 20px;
 margin:10px;
 `;
+
+const DatasetsWrapper = styled.div`
+border: 1px solid #eeeeee;
+ border-radius: 5px;
+ padding:0 10px;
+ margin-bottom:10px;
+ &:hover{
+  border:1px solid #5bc0de;
+  cursor:pointer
+ }
+`;
+
+
+
 
 const CardTitle = styled(Title)`
   margin-bottom: 10px;
@@ -48,6 +63,7 @@ const CreateMapContainer = ({ authenticatedUser, collapsed, styledMaps, tags, ma
   const [center, setCenter] = useState(mapData.center);
   const [customMapData, setCustomMapData] = useState(manualMapData);
   const [file, setFile] = useState();
+  const [layerClicked, setLayerClicked] = useState(true);
 
   const MapWithNoSSR = dynamic(() => import("../../components/map"), {
     ssr: false
@@ -174,59 +190,77 @@ const CreateMapContainer = ({ authenticatedUser, collapsed, styledMaps, tags, ma
         <CardTitle level={4}>
           {DATASET.ADD_NEW}
         </CardTitle>
+
         <SaveButton type='primary' onClick={() => {
           childRef.current.saveData(styleId, file);
         }}>{DATASET.SAVE}</SaveButton>
         <Divider />
+
         <Spin spinning={loading}>
+
           <Row gutter={[24, 24]}>
+
             <Col xs={24} sm={24} md={24} lg={7} xl={7} >
+
               <Card style={{ height: '70vh', overflowY: 'scroll' }}>
-                <Tabs defaultActiveKey="1">
-                  <TabPane tab={DATASET.META_DATA} key="1" >
-                    <CreateMap ref={childRef} mapData={mapData} serverSideTags={tags} user={authenticatedUser} onModalClose={onModalClose} addImageFile={addImageFile} />
-                  </TabPane>
+                {layerClicked ?
+                  <Tabs defaultActiveKey="1">
+                    <TabPane tab={DATASET.META_DATA} key="1" >
+                      <CreateMap ref={childRef} mapData={mapData} serverSideTags={tags} user={authenticatedUser} onModalClose={onModalClose} addImageFile={addImageFile} />
+                    </TabPane>
 
-                  <TabPane tab={DATASET.MAP_STYLE} key="2" >
-                    <StyledMaps
-                      changeStyle={changeStyle}
-                      mapData={styledMaps}
-                    />
+                    <TabPane tab={DATASET.MAP_STYLE} key="2" >
+                      <StyledMaps
+                        changeStyle={changeStyle}
+                        mapData={styledMaps}
+                      />
 
-                  </TabPane>
-                  <TabPane tab={DATASET.MARKERS} key="3">
-                    <MapMarkers icons={icons} />
-                  </TabPane>
-                  <TabPane tab={DATASET.LAYERS} key="4" >
-                    <Button type="dashed" size='large' block onClick={() => chooseDataset()}>
-                      {DATASET.ADD_NEW_LAYER}
-                    </Button>
-                    <Modal
-                      title={DATASET.CHOOSE_DATASET}
-                      centered
-                      width={700}
-                      visible={modalVisible}
-                      destroyOnClose={true}
-                      footer={[
-                        <Button key="close" onClick={() => { setModalVisible(false) }}> {DATASET.CLOSE}</Button>
-                      ]}
-                      destroyOnClose={true}
-                    >
-                      <SelectNewMapDataset datasets={datasets} ref={selectDatasetChildRef} addSelectedDataset={addSelectedDataset} />
-                    </Modal>
-                    <List
-                      className='margin-top-10'
-                      size="default"
-                      bordered
-                      dataSource={selectedDataset}
-                      renderItem={item => (
-                        <List.Item className='margin-top-10' actions={[<a onClick={() => showConfirm(item.id)} ><span><DeleteTwoTone twoToneColor="#eb2f96" /></span></a>]}>
-                          <List.Item.Meta title={item.title.split(".")[0]} />
-                        </List.Item>
-                      )}
-                    />
-                  </TabPane>
-                </Tabs>
+                    </TabPane>
+                    <TabPane tab={DATASET.LAYERS} key="3" >
+                      <Button type="dashed" size='large' block onClick={() => chooseDataset()}>
+                        {DATASET.ADD_NEW_LAYER}
+                      </Button>
+                      <Modal
+                        title={DATASET.CHOOSE_DATASET}
+                        centered
+                        width={700}
+                        visible={modalVisible}
+                        destroyOnClose={true}
+                        footer={[
+                          <Button key="close" onClick={() => { setModalVisible(false) }}> {DATASET.CLOSE}</Button>
+                        ]}
+                        destroyOnClose={true}
+                      >
+                        <SelectNewMapDataset datasets={datasets} ref={selectDatasetChildRef} addSelectedDataset={addSelectedDataset} />
+                      </Modal>
+                      <List
+                        className='margin-top-10'
+                        dataSource={selectedDataset}
+                        renderItem={item => (
+                          <DatasetsWrapper onClick={() => setLayerClicked(false)}>
+                            <List.Item className='margin-top-10' actions={[<a onClick={() => showConfirm(item.id)} ><span><DeleteTwoTone twoToneColor="#eb2f96" /></span></a>]}>
+                              {item.title.split(".")[0]}
+                            </List.Item>
+                          </DatasetsWrapper>
+
+                        )}
+                      />
+                    </TabPane>
+                  </Tabs>
+                  :
+                  <div>
+
+                    <Button style={{marginLeft:-20,marginTop:-30}} icon={<ArrowLeftOutlined />} onClick={() => {
+                      setLayerClicked(true);
+                    }} type='link'>back</Button>
+                    <DatasetConf />
+                  </div>
+
+                }
+
+
+
+
               </Card>
               <Button type={'primary'} onClick={showGeneratedLink} className='margin-top-10' size='large'>Publish</Button>
 
@@ -294,7 +328,7 @@ export const getServerSideProps = withPrivateServerSideProps(
           datasets = await getDatasetsByMap({ maps: id }, token);
         }
       }
-      const data = await fetchApi('styles/v1/mbshaban');
+      //  const data = await fetchApi('styles/v1/mbshaban');
       const tags = await getTags(token);
       const icons = await getIcons(token);
       icons.map((icon) => {

@@ -152,5 +152,23 @@
   height: 30px !important;
 }
 
+.background{
+  background-color: red;
+  height: 100px;
+}
 
 /* Leaflet Pupop */
+
+.leaflet-container a.leaflet-popup-close-button{   
+    position: absolute;
+     top: -18px !important;
+     right: -15px !important;
+     padding: 6px !important;
+     text-align: center;
+     width: 28px !important;
+     height: 28px !important;
+     color: #000000 !important;
+     border-radius: 100%;
+     background: #ffffff !important;
+ 
+ }
