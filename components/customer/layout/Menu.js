@@ -21,7 +21,6 @@ const MyMenu = ({ closeDrawer, user }) => {
   const router = useRouter();
   const currentPath = router.route;
   let selectedKeys = [];
-
   for (let i = keys.length - 1; i >= 0; i--) {
     if (currentPath.includes(keys[i])) {
       selectedKeys = [keys[i]];
@@ -38,7 +37,7 @@ const MyMenu = ({ closeDrawer, user }) => {
         router.push(key);
       }}>
       {MENU.map((item) =>
-        item.role === user ?
+        item.role === user.role.name ?
           (<Menu.Item key={item.key}>
             <Link href={item.link}>
               <a>

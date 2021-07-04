@@ -320,7 +320,6 @@ export const getServerSideProps = withPrivateServerSideProps(
                     title: item.title,
                     description: item.description,
                     type: item.public_user ? 'public' : 'customer',
-
                   }
                 })
             }
@@ -328,7 +327,7 @@ export const getServerSideProps = withPrivateServerSideProps(
           datasets = await getDatasetsByMap({ maps: id }, token);
         }
       }
-      //  const data = await fetchApi('styles/v1/mbshaban');
+       const data = await fetchApi('styles/v1/mbshaban');
       const tags = await getTags(token);
       const icons = await getIcons(token);
       icons.map((icon) => {
@@ -345,6 +344,7 @@ export const getServerSideProps = withPrivateServerSideProps(
         }
       }
     } catch (error) {
+      console.log(error);
       return {
         redirect: {
           destination: '/server-error',

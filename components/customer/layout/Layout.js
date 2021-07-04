@@ -58,7 +58,6 @@ class MyLayout extends Component {
         <MainLayout collapsed={collapsed}>
           <Header user={this.props.user} collapsed={collapsed} handleToggle={this.toggle} />
           <Content>{children}</Content>
-          {/* <MyFooter /> */}
         </MainLayout>
         <Drawer
           drawerVisible={drawerVisible}
