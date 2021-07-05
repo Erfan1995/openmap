@@ -56,7 +56,7 @@ class MyLayout extends Component {
           <Menu closeDrawer={() => this.setState({ drawerVisible: false })} user={this.props.user} />
         </FixedSider>
         <MainLayout collapsed={collapsed}>
-          <Header user={this.props.user} collapsed={collapsed} handleToggle={this.toggle} />
+          {/* <Header user={this.props.user} collapsed={collapsed} handleToggle={this.toggle} /> */}
           <Content>{children}</Content>
         </MainLayout>
         <Drawer

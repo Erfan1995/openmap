@@ -9,9 +9,9 @@ import styled from 'styled-components';
 
 
 const PupopDiv=styled.div`
-height:100px;
+height:200px;
 background-color:#000;
-border-radius:10px;
+border-radius:20px;
 `
 
 

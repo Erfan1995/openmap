@@ -8,7 +8,7 @@ const { SubMenu } = Menu;
 
 const MainMenu = styled(Menu)`
   padding: 16px 0;
-  min-height: 90vh;
+  min-height: 88vh;
 `;
 
 const keys = [

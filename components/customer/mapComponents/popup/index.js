@@ -1,10 +1,11 @@
-import { Slider, Row, Col, Input, Checkbox, Card,List } from "antd";
+import { Slider, Row, Col, Input, Checkbox, Card, List } from "antd";
 import styled from 'styled-components'
 import 'antd/dist/antd.css';
 import styles from './Sidebar.module.css'
 import ColorPicker from "rc-color-picker";
 import "rc-color-picker/assets/index.css";
 import { PopUp } from "lib/constants";
+import { Scrollbars } from 'react-custom-scrollbars';
 
 
 const Div = styled.div`
@@ -12,27 +13,34 @@ const Div = styled.div`
   padding-left:35px
 `
 
+const PopUpContainer = styled.div`
+margin-left:35px;
 
+`
+const ListWrapper = styled(Row)`
+  width: 400px ;
+  padding-left:20px;
+`
+const PopUpCart = styled(Card)`
+height: 75px; 
+width: 100px; 
+padding: 10px;
+ margin-left: 10px;
+ border-radius:5px;
+ border:1px solid #aaa;
+ &:hover{
+ border:2px solid #228;
 
-const cardStyle = { height: 75, width: 100, padding: 10, margin: 5 }
+ }
+`
+
 
 const Popup = () => {
-    var intialValue = 10;
-
 
     const onChange = value => {
         console.log(" value " + { value })
     }
 
-    const changeHandler = (colors) => {
-        console.log("Change Handler Color : ", posts);
-    };
-
-    const closeHandler = (colors) => {
-        console.log("Close Handler Color ", colors);
-    };
-
-    const style = { background: '#0092ff', padding: '8px 0' };
     return (
         <Row>
 
@@ -40,34 +48,31 @@ const Popup = () => {
                 <Col className={styles.list_item_no}>1</Col>
                 <Col className={styles.list_item_title}> Style</Col>
             </Row>
-            <Div>
-                <Row >
-                    <List 
-                        className='margin-top-10'
-                        dataSource={PopUp}
-                        style={{overflowX:'scroll'}}
-                        grid={{
-                            gutter: 16,
-                            xs: 1,
-                            sm: 2,
-                            md: 2,
-                            lg: 4,
-                            xl: 6,
-                            xxl: 3,
-                          }}                       
-                        renderItem={item => (
-                            <Card
-                            hoverable
-                            style={cardStyle}
-                            cover={<img alt="example" src={item.cover} 
-                             />}
-                        />
 
-                        )}
-                      />
-                </Row>
+            <PopUpContainer>
+
+                <Scrollbars style={{ width: 300, height: 100 }} className='track-horizontal'>
+
+
+
+                    <ListWrapper>
+                        <List
+                            dataSource={PopUp}
+                            grid={{ gutter: 16, column: 3 }}
+                            itemLayout='horizontal'
+                            renderItem={item => (
+                                <PopUpCart
+                                    cover={<img alt="example" src={item.cover}
+                                    />}
+                                />
+
+                            )}
+                        />
+                    </ListWrapper>
+                </Scrollbars>
+
                 {/* <Row> */}
-                    {/* <Col span={8}>
+                {/* <Col span={8}>
                         Window Size
                     </Col>
                     <Col span={9}>
@@ -107,7 +112,7 @@ const Popup = () => {
                         </ColorPicker>
                     </Col>
                 </Row> */}
-            </Div>
+            </PopUpContainer>
 
             <Row className={styles.list_title}>
                 <Col className={styles.list_item_no}>2</Col>
