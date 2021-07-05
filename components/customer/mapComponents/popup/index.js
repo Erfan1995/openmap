@@ -42,14 +42,15 @@ const Popup = () => {
             </Row>
             <Div>
                 <Row >
-                    <List
+                    <List 
                         className='margin-top-10'
                         dataSource={PopUp}
+                        style={{overflowX:'scroll'}}
                         grid={{
                             gutter: 16,
                             xs: 1,
-                            sm: 4,
-                            md: 4,
+                            sm: 2,
+                            md: 2,
                             lg: 4,
                             xl: 6,
                             xxl: 3,
