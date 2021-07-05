@@ -7,7 +7,10 @@ import nookies from 'nookies';
 import dynamic from "next/dynamic";
 import CreateMap from 'components/customer/Forms/CreateMap';
 import StyledMaps from 'components/customer/generalComponents/ListMapboxStyle';
-import { fetchApi, putMethod, getOneMap, getDatasetsByMap, getTags, getDatasets, getIcons } from 'lib/api';
+import {
+  fetchApi, putMethod, getOneMap, getDatasetsByMap, getTags, getDatasets,
+  getIcons, postMethod, deleteMethod, getMapDatasetConf, getDatasetSelectedIcons
+} from 'lib/api';
 import SelectNewMapDataset from 'components/customer/mapComponents/SelectNewMapDataset';
 import { formatDate, fileSizeReadable, getMapData } from "../../lib/general-functions";
 import { ArrowLeftOutlined, DeleteTwoTone } from '@ant-design/icons';
@@ -29,8 +32,8 @@ margin:10px;
 const DatasetsWrapper = styled.div`
 border: 1px solid #eeeeee;
  border-radius: 5px;
- padding:0 10px;
- margin-bottom:10px;
+ padding:10px 10px;
+ width:100%;
  &:hover{
   border:1px solid #5bc0de;
   cursor:pointer
@@ -64,7 +67,8 @@ const CreateMapContainer = ({ authenticatedUser, collapsed, styledMaps, tags, ma
   const [customMapData, setCustomMapData] = useState(manualMapData);
   const [file, setFile] = useState();
   const [layerClicked, setLayerClicked] = useState(true);
-
+  const [mdcId, setmdcId] = useState();
+  const [selectedDIcons, setSelectedDIcons] = useState();
   const MapWithNoSSR = dynamic(() => import("../../components/map"), {
     ssr: false
   });
@@ -106,8 +110,11 @@ const CreateMapContainer = ({ authenticatedUser, collapsed, styledMaps, tags, ma
       try {
         const res = await putMethod(`maps/${mapData.id}`, { datasets: selectedDataset.map(item => item.id) });
         if (res) {
+          const dd = await postMethod('mapdatasetconfs', { map: mapData.id, dataset: selectedRow.id });
+          if (dd) {
+            message.success(DATASET.SUCCESS);
+          }
           setModalVisible(false);
-          message.success(DATASET.SUCCESS);
         }
       } catch (e) {
         setLoading(false);
@@ -128,10 +135,15 @@ const CreateMapContainer = ({ authenticatedUser, collapsed, styledMaps, tags, ma
   }
   const deleteDataset = async (id) => {
     setLoading(true);
+
     const dd = selectedDataset.filter(dData => dData.id !== id)
     try {
       const res = await putMethod(`maps/${mapData.id}`, { datasets: dd.map(item => item.id) });
       if (res) {
+        const mapDatasetConf = await getMapDatasetConf({ dataset: id }, token);
+        if (mapDatasetConf) {
+          const deleteMDC = await deleteMethod('mapdatasetconfs/' + mapDatasetConf[0].id);
+        }
         setSelectedDataset(dd);
         message.success(DATASET.SUCCESS);
       }
@@ -173,7 +185,18 @@ const CreateMapContainer = ({ authenticatedUser, collapsed, styledMaps, tags, ma
     }
 
   }
-
+  const mdc = async (id, state) => {
+    setLayerClicked(state)
+    setSelectedDIcons([]);
+    const mapDatasetConf = await getMapDatasetConf({ dataset: id }, token);
+    if (mapDatasetConf) setmdcId(mapDatasetConf[0].id);
+    const selectedIcons = await getDatasetSelectedIcons({ id: mapDatasetConf[0].id }, token);
+    if (selectedIcons[0].icon !== null) {
+      let arr = [];
+      arr[0] = selectedIcons[0].icon;
+      setSelectedDIcons(arr);
+    }
+  }
 
 
   const showGeneratedLink = () => {
@@ -233,15 +256,13 @@ const CreateMapContainer = ({ authenticatedUser, collapsed, styledMaps, tags, ma
                         <SelectNewMapDataset datasets={datasets} ref={selectDatasetChildRef} addSelectedDataset={addSelectedDataset} />
                       </Modal>
                       <List
-                        className='margin-top-10'
                         dataSource={selectedDataset}
                         renderItem={item => (
-                          <DatasetsWrapper onClick={() => setLayerClicked(false)}>
-                            <List.Item className='margin-top-10' actions={[<a onClick={() => showConfirm(item.id)} ><span><DeleteTwoTone twoToneColor="#eb2f96" /></span></a>]}>
+                          <List.Item actions={[<a onClick={() => showConfirm(item.id)} ><span><DeleteTwoTone twoToneColor="#eb2f96" /></span></a>]}>
+                            <DatasetsWrapper onClick={() => mdc(item.id, false)}>
                               {item.title.split(".")[0]}
-                            </List.Item>
-                          </DatasetsWrapper>
-
+                            </DatasetsWrapper>
+                          </List.Item>
                         )}
                       />
                     </TabPane>
@@ -249,10 +270,10 @@ const CreateMapContainer = ({ authenticatedUser, collapsed, styledMaps, tags, ma
                   :
                   <div>
 
-                    <Button style={{marginLeft:-20,marginTop:-30}} icon={<ArrowLeftOutlined />} onClick={() => {
+                    <Button style={{ marginLeft: -20, marginTop: -30 }} icon={<ArrowLeftOutlined />} onClick={() => {
                       setLayerClicked(true);
                     }} type='link'>back</Button>
-                    <DatasetConf icons={icons} />
+                    <DatasetConf icons={icons} mdcId={mdcId} selectedDIcons={selectedDIcons} />
                   </div>
 
                 }
@@ -326,7 +347,7 @@ export const getServerSideProps = withPrivateServerSideProps(
           datasets = await getDatasetsByMap({ maps: id }, token);
         }
       }
-       const data = await fetchApi('styles/v1/mbshaban');
+      const data = await fetchApi('styles/v1/mbshaban');
       const tags = await getTags(token);
       const icons = await getIcons(token);
       icons.map((icon) => {

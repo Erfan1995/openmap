@@ -3,16 +3,15 @@ import { DATASET_CONF } from "static/constant";
 import MapMarkers from "../mapComponents/MapMarkers";
 const { TabPane } = Tabs;
 import Popup from "../mapComponents/popup";
-const DatasetConf = ({icons}) => {
-
+const DatasetConf = ({ icons, mdcId, selectedDIcons }) => {
     return (
         <div>
             <Tabs defaultActiveKey="1">
                 <TabPane tab={DATASET_CONF.MARKERS} key="2" >
-                   <MapMarkers icons={icons}/>
+                    <MapMarkers icons={icons} mdcId={mdcId} selectedDIcons={selectedDIcons} />
                 </TabPane>
                 <TabPane tab={DATASET_CONF.PUPOP} key="3" >
-                    <Popup/>
+                    <Popup />
                 </TabPane>
             </Tabs>
         </div>

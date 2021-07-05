@@ -48,7 +48,6 @@ const UnlockedDataset = ({ data, updateLockedData, user, tags, updatedData }) =>
         if (res) {
             let dd = dataset.filter(dData => dData.id !== res.id);
             setDataset(dd);
-            console.log(dd)
             updateLockedData(dataset.filter(dData => dData.id === res.id), dd)
             setLoading(false)
         }

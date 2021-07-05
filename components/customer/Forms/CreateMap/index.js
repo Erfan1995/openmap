@@ -68,8 +68,6 @@ const CreateMap = ({ serverSideTags, user, mapData, onModalClose, addImageFile }
                             values.center = JSON.parse(localStorage.getItem('center'));
                         }
                         fData.append('data', JSON.stringify(values))
-                        console.log(values)
-                        console.log(JSON.stringify(values))
                         if (image) {
                             fData.append('files.logo', image.file.originFileObj, image.file.originFileObj.name);
                         }
