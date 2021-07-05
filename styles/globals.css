@@ -152,23 +152,94 @@
   height: 30px !important;
 }
 
-.background{
-  background-color: red;
-  height: 100px;
-}
+
 
 /* Leaflet Pupop */
 
 .leaflet-container a.leaflet-popup-close-button{   
     position: absolute;
-     top: -18px !important;
-     right: -15px !important;
+     top: -16px !important;
+     right: -13px !important;
      padding: 6px !important;
      text-align: center;
      width: 28px !important;
      height: 28px !important;
-     color: #000000 !important;
+     color: #227ec9 !important;
+     font-weight: 400 !important;
      border-radius: 100%;
-     background: #ffffff !important;
- 
+     background: #fff !important;
+     box-shadow: 0 2px 4px 0 rgb(0 0 0 / 24%) !important;
  }
+ .leaflet-popup-content-wrapper{
+   border-radius:5px !important;
+   padding: 0 !important;
+   margin-left: 30px !important;
+ }
+ .leaflet-popup-content{
+  margin:0 !important;
+}
+.leaflet-popup-tip-container {
+  margin-left: 0 !important;
+}
+
+.white-mode,.dark-mode,.color-mode{
+  min-height: 150px;
+  min-width: 200px;
+  max-height: 250px;
+  overflow-y: scroll;
+  border-radius: 5px;
+}
+.white-mode{
+  background-color: #fff;
+  color:#000
+}
+.dark-mode{
+  background-color: #333;
+  color:#fff;
+}
+.leaflet-popup-tip{
+  background-color: #aaa;
+}
+
+.popup-bold{
+  font-weight: 550;
+}
+
+.popup-header{
+  min-height: 60px;
+  background-color: #35aae5;
+  color:#fff
+
+}
+.margin-0{
+  margin: 0 !important;
+}
+.padding-0{
+  padding:0 !important;
+}
+.padding-10{
+  padding:10 px !important;
+}
+::-webkit-scrollbar {
+  width: 5px;
+}
+
+/* Track */
+::-webkit-scrollbar-track {
+  background: #f1f1f1; 
+  border-radius: 5px;
+}
+ 
+/* Handle */
+::-webkit-scrollbar-thumb {
+  background: #aaa; 
+  border-radius: 5px;
+
+}
+
+/* Handle on hover */
+::-webkit-scrollbar-thumb:hover {
+  background: #888;
+  border-radius: 5px;
+
+}

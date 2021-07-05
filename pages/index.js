@@ -36,7 +36,7 @@ export async function getServerSideProps(ctx) {
     } else {
       return {
         redirect: {
-          destination: '/customer/dashboard',
+          destination: '/customer/maps',
           permanent: false,
         }
       }
@@ -44,7 +44,7 @@ export async function getServerSideProps(ctx) {
   } catch (e) {
     return {
       redirect: {
-        destination: '/customer/dashboard',
+        destination: '/customer/maps',
         permanent: false,
       }
     }

@@ -19,6 +19,7 @@ import { DATASET } from '../../static/constant'
 import { ExclamationCircleOutlined } from '@ant-design/icons';
 import DatasetConf from 'components/customer/generalComponents/DetasetConf';
 import MapMarkers from 'components/customer/mapComponents/MapMarkers';
+import { Scrollbars } from 'react-custom-scrollbars';
 const { Title } = Typography;
 const { TabPane } = Tabs;
 const { confirm } = Modal;
@@ -223,6 +224,7 @@ const CreateMapContainer = ({ authenticatedUser, collapsed, styledMaps, tags, ma
           <Row gutter={[24, 24]}>
 
             <Col xs={24} sm={24} md={24} lg={7} xl={7} >
+              {/* <Scrollbars style={{ height: '70vh' }}  autoHide autoHideTimeout={500} autoHideDuration={200}> */}
 
               <Card style={{ height: '70vh', overflowY: 'scroll' }}>
                 {layerClicked ?
@@ -275,13 +277,10 @@ const CreateMapContainer = ({ authenticatedUser, collapsed, styledMaps, tags, ma
                     }} type='link'>back</Button>
                     <DatasetConf icons={icons} mdcId={mdcId} selectedDIcons={selectedDIcons} />
                   </div>
+                  }
+                </Card>
+              {/* </Scrollbars> */}
 
-                }
-
-
-
-
-              </Card>
               <Button type={'primary'} onClick={showGeneratedLink} className='margin-top-10' size='large'>Publish</Button>
 
             </Col>
@@ -289,7 +288,7 @@ const CreateMapContainer = ({ authenticatedUser, collapsed, styledMaps, tags, ma
               <MapWithNoSSR
                 manualMapData={customMapData}
                 styleId={styleId}
-                style={{ height: "70vh" }}
+                style={{ height: "71vh" }}
                 datasets={selectedDataset}
                 mapData={mapData}
                 userType='customer'
