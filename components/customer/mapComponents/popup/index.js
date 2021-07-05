@@ -50,11 +50,7 @@ const Popup = () => {
             </Row>
 
             <PopUpContainer>
-
                 <Scrollbars style={{ width: 300, height: 100 }} className='track-horizontal'>
-
-
-
                     <ListWrapper>
                         <List
                             dataSource={PopUp}

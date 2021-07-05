@@ -201,9 +201,9 @@ const CreateMapContainer = ({ authenticatedUser, collapsed, styledMaps, tags, ma
           <Row gutter={[24, 24]}>
 
             <Col xs={24} sm={24} md={24} lg={7} xl={7} >
-              <Scrollbars style={{ height: '80vh' }}  autoHide autoHideTimeout={500} autoHideDuration={200}>
+              {/* <Scrollbars style={{ height: '70vh' }}  autoHide autoHideTimeout={500} autoHideDuration={200}> */}
 
-                <Card style={{ height: '80vh' }}>
+                <Card style={{ height: '71vh',overflowY:'scroll'}}>
 
                   {layerClicked ?
                     <Tabs defaultActiveKey="1">
@@ -264,7 +264,7 @@ const CreateMapContainer = ({ authenticatedUser, collapsed, styledMaps, tags, ma
 
 
                 </Card>
-              </Scrollbars>
+              {/* </Scrollbars> */}
 
               <Button type={'primary'} onClick={showGeneratedLink} className='margin-top-10' size='large'>Publish</Button>
 
@@ -273,7 +273,7 @@ const CreateMapContainer = ({ authenticatedUser, collapsed, styledMaps, tags, ma
               <MapWithNoSSR
                 manualMapData={customMapData}
                 styleId={styleId}
-                style={{ height: "80vh" }}
+                style={{ height: "71vh" }}
                 datasets={selectedDataset}
                 mapData={mapData}
                 userType='customer'

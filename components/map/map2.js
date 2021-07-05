@@ -6,9 +6,9 @@ import AddMap from './AddMap';
 import Preview from './Preview';
 import styled from 'styled-components';
 // work around broken icons when using webpack, see https://github.com/PaulLeCam/react-leaflet/issues/255
+import { Card } from "antd";
 
-
-const PupopDiv=styled.div`
+const PupopDiv = styled.div`
 height:200px;
 background-color:#000;
 border-radius:20px;
@@ -26,6 +26,28 @@ L.Icon.Default.mergeOptions({
 });
 
 //
+
+
+const getSpecifictPopup = (properties, type) => {
+  switch (type) {
+    case 'dark': return `<div class='dark-mode'>${generateData(properties,type)}</div>`
+    case 'white': return `<div class='white-mode'>${generateData(properties,type)}</div>`
+    case 'color': return `<div class='color-mode '>${generateData(properties,type)}</div>`
+
+  }
+}
+
+const generateData = (properties, type) => {
+  let details = '';
+  Object.entries(properties).map((item, index) => {
+    details += `<div class=" padding-10 ${type === 'color' && index === 0 ? 'popup-header' : ''}">
+      <div>${item[0].toUpperCase()}</div>
+      <div  class='popup-bold'>${item[1]}</div>
+    </div>`
+  })
+  return details;
+}
+
 
 
 export default class EditControlExample extends Component {
@@ -95,10 +117,8 @@ export default class EditControlExample extends Component {
         },
         onEachFeature: (feature = {}, layer) => {
           const { properties } = feature;
-          const { title } = properties;
-          if (!title) return;
-
-          layer.bindPopup(`<div class='background'>${title}this is some text here</div>`)
+          if (!properties) return;
+          layer.bindPopup(`<div>${getSpecifictPopup(properties,'white')}</div>`)
         }
       });
       let leafletFG = reactFGref;
@@ -154,13 +174,13 @@ export default class EditControlExample extends Component {
               closePlaceDetails={this.modalClose}
             />
           )}
-      
+
         <FeatureGroup
           ref={(reactFGref) => {
             this._onFeatureGroupReady(reactFGref);
           }}
         >
-          
+
           <EditControl
             position="topright"
             onCreated={this._onCreated}
