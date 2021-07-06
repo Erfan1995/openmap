@@ -1,4 +1,4 @@
-import { Slider, Row, Col, Input, Checkbox, Card, List } from "antd";
+import { Slider, Row, Col, Input, Checkbox, Card, List, Spin, Modal } from "antd";
 import styled from 'styled-components'
 import 'antd/dist/antd.css';
 import styles from './Sidebar.module.css'
@@ -6,6 +6,9 @@ import ColorPicker from "rc-color-picker";
 import "rc-color-picker/assets/index.css";
 import { PopUp } from "lib/constants";
 import { Scrollbars } from 'react-custom-scrollbars';
+import { deleteMethod, postFileMethod, putMethod } from "../../../../lib/api";
+import { useState } from "react";
+const { confirm } = Modal;
 
 
 const Div = styled.div`
@@ -30,45 +33,82 @@ padding: 10px;
  border:1px solid #aaa;
  &:hover{
  border:2px solid #228;
+ cursor:pointer;
 
  }
 `
+const PopuSelectedCard = styled(Card)`
+height: 75px; 
+width: 100px; 
+padding: 10px;
+ margin-left: 10px;
+ border-radius:5px;
+ border:1px solid #aaa;
+ border:2px solid #228;
+ cursor:pointer;
+`
 
+const Popup = ({ mdcId, selectedDataset }) => {
+    const [selectedStyle, setSelectedStyle] = useState(false);
+    const [loading, setLoading] = useState(false);
+    function onChange(checkedValues) {
+        console.log('checked = ', checkedValues);
+        updateCheckedProperties(checkedValues);
 
-const Popup = () => {
-
-    const onChange = value => {
-        console.log(" value " + { value })
     }
+    const updateCheckedProperties = async (checkedValues) => {
+        setLoading(true);
+        const res = await putMethod('mapdatasetconfs/' + mdcId, { selected_dataset_properties: checkedValues })
+        console.log(res);
+        setLoading(false);
 
+
+    }
+    const selectPopupStyle = async (item) => {
+        setLoading(true);
+        setSelectedStyle(true);
+        const res = await putMethod('mapdatasetconfs/' + mdcId, { default_popup_style_slug: item.name });
+        if (res) {
+            console.log(res);
+
+        }
+        setLoading(false);
+    }
+    let options = [];
+    let i = 0;
+    for (const [key, value] of Object.entries(selectedDataset[0].datasetcontents[0].properties)) {
+        options[i] = { 'label': key, "value": key, }
+        i++;
+    }
     return (
-        <Row>
+        <Spin spinning={loading}>
+            <Row>
 
-            <Row className={styles.list_title}>
-                <Col className={styles.list_item_no}>1</Col>
-                <Col className={styles.list_item_title}> Style</Col>
-            </Row>
+                <Row className={styles.list_title}>
+                    <Col className={styles.list_item_no}>1</Col>
+                    <Col className={styles.list_item_title}> Style</Col>
+                </Row>
 
-            <PopUpContainer>
-                <Scrollbars style={{ width: 300, height: 100 }} className='track-horizontal'>
-                    <ListWrapper>
-                        <List
-                            dataSource={PopUp}
-                            grid={{ gutter: 16, column: 3 }}
-                            itemLayout='horizontal'
-                            renderItem={item => (
-                                <PopUpCart
-                                    cover={<img alt="example" src={item.cover}
-                                    />}
-                                />
+                <PopUpContainer>
+                    <Scrollbars style={{ width: 300, height: 100 }} className='track-horizontal'>
+                        <ListWrapper>
+                            <List
+                                dataSource={PopUp}
+                                grid={{ gutter: 16, column: 3 }}
+                                itemLayout='horizontal'
+                                renderItem={item => (
+                                    <PopUpCart onClick={() => selectPopupStyle(item)}
+                                        cover={<img alt="example" src={item.cover}
+                                        />}
+                                    />
 
-                            )}
-                        />
-                    </ListWrapper>
-                </Scrollbars>
+                                )}
+                            />
+                        </ListWrapper>
+                    </Scrollbars>
 
-                {/* <Row> */}
-                {/* <Col span={8}>
+                    {/* <Row> */}
+                    {/* <Col span={8}>
                         Window Size
                     </Col>
                     <Col span={9}>
@@ -88,9 +128,9 @@ const Popup = () => {
                             style={{ margin: '0 16px' }}
                         />
                     </Col> */}
-                {/* </Row> */}
+                    {/* </Row> */}
 
-                {/* <Row>
+                    {/* <Row>
                     <Col span={8}>
                         Header Color
                     </Col>
@@ -108,65 +148,30 @@ const Popup = () => {
                         </ColorPicker>
                     </Col>
                 </Row> */}
-            </PopUpContainer>
+                </PopUpContainer>
 
-            <Row className={styles.list_title}>
-                <Col className={styles.list_item_no}>2</Col>
-                <Col className={styles.list_item_title}> Show Items</Col>
-            </Row>
-            <Div>
-                <Row>
-                    <Col className="gutter-row" span={18}>All Selected</Col>
-                    <Col className="gutter-row" span={6}>NONE</Col>
+                <Row className={styles.list_title}>
+                    <Col className={styles.list_item_no}>2</Col>
+                    <Col className={styles.list_item_title}> Show Items</Col>
                 </Row>
-
-                <br />
-                <Checkbox.Group style={{ width: '100%' }} onChange={onChange}>
+                <Div>
                     <Row>
-                        <Col span={8}>
-                            <Checkbox value="A">First</Checkbox>
-                        </Col>
+                        <Col className="gutter-row" span={18}>All Selected</Col>
+                        <Col className="gutter-row" span={6}>NONE</Col>
                     </Row>
-
-
-                    <Row>
-                        <Col span={8}>
-                            <Checkbox value="A">First</Checkbox>
-                        </Col>
-                    </Row>
-
-
-                    <Row>
-                        <Col span={8}>
-                            <Checkbox value="A">First</Checkbox>
-                        </Col>
-                    </Row>
-
-
-                    <Row>
-                        <Col span={8}>
-                            <Checkbox value="A">First</Checkbox>
-                        </Col>
-                    </Row>
-
-
-                    <Row>
-                        <Col span={8}>
-                            <Checkbox value="A">First</Checkbox>
-                        </Col>
-                    </Row>
-
-
-                    <Row>
-                        <Col span={8}>
-                            <Checkbox value="A">First</Checkbox>
-                        </Col>
-                    </Row>
-
-                </Checkbox.Group>
-
-            </Div>
-        </Row>
+                    <br />
+                    <Checkbox.Group style={{ width: '100%' }} onChange={onChange}>
+                        {options.map((item) =>
+                            <Row key={item.value}>
+                                <Col span={8}>
+                                    <Checkbox value={item.value}>{item.label}</Checkbox>
+                                </Col>
+                            </Row>
+                        )}
+                    </Checkbox.Group>
+                </Div>
+            </Row>
+        </Spin>
     )
 
 }
