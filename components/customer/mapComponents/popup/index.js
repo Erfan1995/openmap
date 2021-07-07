@@ -1,11 +1,11 @@
 import { Slider, Row, Col, Input, Checkbox, Card, List, Spin, Modal, Divider } from "antd";
 import styled from 'styled-components'
-import 'antd/dist/antd.css';
 import styles from './Sidebar.module.css'
 import ColorPicker from "rc-color-picker";
 import "rc-color-picker/assets/index.css";
 import { PopUp } from "lib/constants";
 import { Scrollbars } from 'react-custom-scrollbars';
+import SubTitle from "components/customer/generalComponents/SubTitle";
 import { deleteMethod, postFileMethod, putMethod } from "../../../../lib/api";
 import { useState } from "react";
 const { confirm } = Modal;
@@ -97,11 +97,7 @@ const Popup = ({ mdcId, datasetProperties, selectedDatasetProperties }) => {
         <Spin spinning={loading}>
             <Row>
 
-                <Row className={styles.list_title}>
-                    <Col className={styles.list_item_no}>1</Col>
-                    <Col className={styles.list_item_title}> Style</Col>
-                </Row>
-
+                <SubTitle number={1} title={'style'} />
                 <PopUpContainer>
                     <Scrollbars style={{ width: 300, height: 100 }} className='track-horizontal'>
                         <ListWrapper>
@@ -110,7 +106,7 @@ const Popup = ({ mdcId, datasetProperties, selectedDatasetProperties }) => {
                                 grid={{ gutter: 16, column: 3 }}
                                 itemLayout='horizontal'
                                 renderItem={item => (
-                                    <PopUpCart onClick={() => selectPopupStyle(item)}
+                                    <PopUpCart
                                         cover={<img alt="example" src={item.cover}
                                         />}
                                     />
@@ -161,12 +157,11 @@ const Popup = ({ mdcId, datasetProperties, selectedDatasetProperties }) => {
                         </ColorPicker>
                     </Col>
                 </Row> */}
+
                 </PopUpContainer>
 
-                <Row className={styles.list_title}>
-                    <Col className={styles.list_item_no}>2</Col>
-                    <Col className={styles.list_item_title}> Show Items</Col>
-                </Row>
+                <SubTitle number={2} title={'Show Items'} />
+
                 <Div>
                     <Checkbox indeterminate={indeterminate} onChange={onCheckAllChange} checked={checkAll}>
                         Check all
