@@ -9,7 +9,7 @@ import CreateMap from 'components/customer/Forms/CreateMap';
 import StyledMaps from 'components/customer/generalComponents/ListMapboxStyle';
 import {
   fetchApi, putMethod, getOneMap, getDatasetsByMap, getTags, getDatasets,
-  getIcons, postMethod, deleteMethod, getMapDatasetConf, getDatasetSelectedIcons
+  getIcons, postMethod, deleteMethod, getMapDatasetConf, getDatasetSelectedIcons, getMethod
 } from 'lib/api';
 import SelectNewMapDataset from 'components/customer/mapComponents/SelectNewMapDataset';
 import { formatDate, fileSizeReadable, getMapData } from "../../lib/general-functions";
@@ -275,10 +275,10 @@ const CreateMapContainer = ({ authenticatedUser, collapsed, styledMaps, tags, ma
                     <Button style={{ marginLeft: -20, marginTop: -30 }} icon={<ArrowLeftOutlined />} onClick={() => {
                       setLayerClicked(true);
                     }} type='link'>back</Button>
-                    <DatasetConf icons={icons} mdcId={mdcId} selectedDIcons={selectedDIcons} />
+                    <DatasetConf icons={icons} mdcId={mdcId} selectedDIcons={selectedDIcons} selectedDataset={selectedDataset} />
                   </div>
-                  }
-                </Card>
+                }
+              </Card>
               {/* </Scrollbars> */}
 
               <Button type={'primary'} onClick={showGeneratedLink} className='margin-top-10' size='large'>Publish</Button>

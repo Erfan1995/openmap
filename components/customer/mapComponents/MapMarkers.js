@@ -35,7 +35,6 @@ const DeleteButton = styled.div`
 cursor:pointer;
 `
 const MapMarkers = ({ icons, mdcId, selectedDIcons }) => {
-    console.log()
     const [uploadIconsLoading, setUploadIconsLoading] = useState(false);
     const [markers, setMarkers] = useState(icons);
     const [selectedIcons, setSelectedIcons] = useState([]);
