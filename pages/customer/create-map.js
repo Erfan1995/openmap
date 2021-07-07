@@ -71,6 +71,7 @@ const CreateMapContainer = ({ authenticatedUser, collapsed, styledMaps, tags, ma
   const [mdcId, setmdcId] = useState();
   const [selectedDIcons, setSelectedDIcons] = useState();
   const [selectedDatasetProperties, setSelectedDatasetProperties] = useState();
+  const [datasetProperties, setDatasetProperties] = useState();
   const MapWithNoSSR = dynamic(() => import("../../components/map"), {
     ssr: false
   });
@@ -188,9 +189,15 @@ const CreateMapContainer = ({ authenticatedUser, collapsed, styledMaps, tags, ma
 
   }
   const mdc = async (id, state) => {
+
     setLayerClicked(state)
     setSelectedDIcons([]);
     setSelectedDatasetProperties([]);
+    setDatasetProperties([]);
+    selectedDataset.map((data) => {
+      console.log(data);
+      setDatasetProperties(data.datasetcontents[0].properties)
+    })
     const mapDatasetConf = await getMapDatasetConf({ dataset: id }, token);
     if (mapDatasetConf) setmdcId(mapDatasetConf[0].id);
     const selectedIcons = await getDatasetConfContent({ id: mapDatasetConf[0].id }, token);
@@ -281,7 +288,7 @@ const CreateMapContainer = ({ authenticatedUser, collapsed, styledMaps, tags, ma
                       setLayerClicked(true);
                     }} type='link'>back</Button>
                     <DatasetConf icons={icons} mdcId={mdcId} selectedDIcons={selectedDIcons}
-                      selectedDataset={selectedDataset} selectedDatasetProperties={selectedDatasetProperties} />
+                      datasetProperties={datasetProperties} selectedDatasetProperties={selectedDatasetProperties} />
                   </div>
                 }
               </Card>

@@ -48,16 +48,15 @@ padding: 10px;
  cursor:pointer;
 `
 
-const Popup = ({ mdcId, selectedDataset, selectedDatasetProperties }) => {
+const Popup = ({ mdcId, datasetProperties, selectedDatasetProperties }) => {
     const [selectedStyle, setSelectedStyle] = useState(false);
     const [loading, setLoading] = useState(false);
     const [checkedList, setCheckedList] = useState(selectedDatasetProperties);
     const [indeterminate, setIndeterminate] = useState(true);
     const [checkAll, setCheckAll] = useState(false);
-    console.log(selectedDatasetProperties);
     let options = [];
     let i = 0;
-    for (const [key, value] of Object.entries(selectedDataset[0].datasetcontents[0].properties)) {
+    for (const [key, value] of Object.entries(datasetProperties)) {
         options[i] = key;
         i++;
     }
