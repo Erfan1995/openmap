@@ -9,7 +9,7 @@ import CreateMap from 'components/customer/Forms/CreateMap';
 import StyledMaps from 'components/customer/generalComponents/ListMapboxStyle';
 import {
   fetchApi, putMethod, getOneMap, getDatasetsByMap, getTags, getDatasets,
-  getIcons, postMethod, deleteMethod, getMapDatasetConf, getDatasetSelectedIcons, getMethod
+  getIcons, postMethod, deleteMethod, getMapDatasetConf, getDatasetConfContent, getMethod
 } from 'lib/api';
 import SelectNewMapDataset from 'components/customer/mapComponents/SelectNewMapDataset';
 import { formatDate, fileSizeReadable, getMapData } from "../../lib/general-functions";
@@ -70,6 +70,7 @@ const CreateMapContainer = ({ authenticatedUser, collapsed, styledMaps, tags, ma
   const [layerClicked, setLayerClicked] = useState(true);
   const [mdcId, setmdcId] = useState();
   const [selectedDIcons, setSelectedDIcons] = useState();
+  const [selectedDatasetProperties, setSelectedDatasetProperties] = useState();
   const MapWithNoSSR = dynamic(() => import("../../components/map"), {
     ssr: false
   });
@@ -189,13 +190,17 @@ const CreateMapContainer = ({ authenticatedUser, collapsed, styledMaps, tags, ma
   const mdc = async (id, state) => {
     setLayerClicked(state)
     setSelectedDIcons([]);
+    setSelectedDatasetProperties([]);
     const mapDatasetConf = await getMapDatasetConf({ dataset: id }, token);
     if (mapDatasetConf) setmdcId(mapDatasetConf[0].id);
-    const selectedIcons = await getDatasetSelectedIcons({ id: mapDatasetConf[0].id }, token);
-    if (selectedIcons[0].icon !== null) {
-      let arr = [];
-      arr[0] = selectedIcons[0].icon;
-      setSelectedDIcons(arr);
+    const selectedIcons = await getDatasetConfContent({ id: mapDatasetConf[0].id }, token);
+    if (selectedIcons) {
+      if (selectedIcons[0].icon !== null) {
+        let arr = [];
+        arr[0] = selectedIcons[0].icon;
+        setSelectedDIcons(arr);
+      }
+      setSelectedDatasetProperties(selectedIcons[0].selected_dataset_properties);
     }
   }
 
@@ -275,7 +280,8 @@ const CreateMapContainer = ({ authenticatedUser, collapsed, styledMaps, tags, ma
                     <Button style={{ marginLeft: -20, marginTop: -30 }} icon={<ArrowLeftOutlined />} onClick={() => {
                       setLayerClicked(true);
                     }} type='link'>back</Button>
-                    <DatasetConf icons={icons} mdcId={mdcId} selectedDIcons={selectedDIcons} selectedDataset={selectedDataset} />
+                    <DatasetConf icons={icons} mdcId={mdcId} selectedDIcons={selectedDIcons}
+                      selectedDataset={selectedDataset} selectedDatasetProperties={selectedDatasetProperties} />
                   </div>
                 }
               </Card>

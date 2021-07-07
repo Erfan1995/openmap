@@ -1,4 +1,4 @@
-import { Slider, Row, Col, Input, Checkbox, Card, List, Spin, Modal } from "antd";
+import { Slider, Row, Col, Input, Checkbox, Card, List, Spin, Modal, Divider } from "antd";
 import styled from 'styled-components'
 import 'antd/dist/antd.css';
 import styles from './Sidebar.module.css'
@@ -9,7 +9,7 @@ import { Scrollbars } from 'react-custom-scrollbars';
 import { deleteMethod, postFileMethod, putMethod } from "../../../../lib/api";
 import { useState } from "react";
 const { confirm } = Modal;
-
+const CheckboxGroup = Checkbox.Group;
 
 const Div = styled.div`
   width:400px;
@@ -48,22 +48,41 @@ padding: 10px;
  cursor:pointer;
 `
 
-const Popup = ({ mdcId, selectedDataset }) => {
+const Popup = ({ mdcId, selectedDataset, selectedDatasetProperties }) => {
     const [selectedStyle, setSelectedStyle] = useState(false);
     const [loading, setLoading] = useState(false);
-    function onChange(checkedValues) {
-        console.log('checked = ', checkedValues);
-        updateCheckedProperties(checkedValues);
-
+    const [checkedList, setCheckedList] = useState(selectedDatasetProperties);
+    const [indeterminate, setIndeterminate] = useState(true);
+    const [checkAll, setCheckAll] = useState(false);
+    console.log(selectedDatasetProperties);
+    let options = [];
+    let i = 0;
+    for (const [key, value] of Object.entries(selectedDataset[0].datasetcontents[0].properties)) {
+        options[i] = key;
+        i++;
     }
+    const onChange = list => {
+        setCheckedList(list);
+        updateCheckedProperties(list);
+        setIndeterminate(!!list.length && list.length < options.length);
+        setCheckAll(list.length === options.length);
+    };
     const updateCheckedProperties = async (checkedValues) => {
         setLoading(true);
         const res = await putMethod('mapdatasetconfs/' + mdcId, { selected_dataset_properties: checkedValues })
         console.log(res);
         setLoading(false);
-
-
     }
+    const onCheckAllChange = e => {
+        setCheckedList(e.target.checked ? options : []);
+        if (e.target.checked) {
+            updateCheckedProperties(options);
+        } else {
+            updateCheckedProperties([]);
+        }
+        setIndeterminate(false);
+        setCheckAll(e.target.checked);
+    };
     const selectPopupStyle = async (item) => {
         setLoading(true);
         setSelectedStyle(true);
@@ -74,12 +93,7 @@ const Popup = ({ mdcId, selectedDataset }) => {
         }
         setLoading(false);
     }
-    let options = [];
-    let i = 0;
-    for (const [key, value] of Object.entries(selectedDataset[0].datasetcontents[0].properties)) {
-        options[i] = { 'label': key, "value": key, }
-        i++;
-    }
+
     return (
         <Spin spinning={loading}>
             <Row>
@@ -155,12 +169,12 @@ const Popup = ({ mdcId, selectedDataset }) => {
                     <Col className={styles.list_item_title}> Show Items</Col>
                 </Row>
                 <Div>
-                    <Row>
-                        <Col className="gutter-row" span={18}>All Selected</Col>
-                        <Col className="gutter-row" span={6}>NONE</Col>
-                    </Row>
-                    <br />
-                    <Checkbox.Group style={{ width: '100%' }} onChange={onChange}>
+                    <Checkbox indeterminate={indeterminate} onChange={onCheckAllChange} checked={checkAll}>
+                        Check all
+                    </Checkbox>
+                    <Divider />
+                    <CheckboxGroup  options={options} value={checkedList} onChange={onChange} />
+                    {/* <Checkbox.Group style={{ width: '100%' }} onChange={onChange}>
                         {options.map((item) =>
                             <Row key={item.value}>
                                 <Col span={8}>
@@ -168,7 +182,7 @@ const Popup = ({ mdcId, selectedDataset }) => {
                                 </Col>
                             </Row>
                         )}
-                    </Checkbox.Group>
+                    </Checkbox.Group> */}
                 </Div>
             </Row>
         </Spin>
