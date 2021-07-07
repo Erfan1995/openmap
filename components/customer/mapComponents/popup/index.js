@@ -1,12 +1,11 @@
 import { Slider, Row, Col, Input, Checkbox, Card, List } from "antd";
 import styled from 'styled-components'
-import 'antd/dist/antd.css';
 import styles from './Sidebar.module.css'
 import ColorPicker from "rc-color-picker";
 import "rc-color-picker/assets/index.css";
 import { PopUp } from "lib/constants";
 import { Scrollbars } from 'react-custom-scrollbars';
-
+import SubTitle from "components/customer/generalComponents/SubTitle";
 
 const Div = styled.div`
   width:400px;
@@ -44,11 +43,7 @@ const Popup = () => {
     return (
         <Row>
 
-            <Row className={styles.list_title}>
-                <Col className={styles.list_item_no}>1</Col>
-                <Col className={styles.list_item_title}> Style</Col>
-            </Row>
-
+            <SubTitle number={1} title={'style'} />            
             <PopUpContainer>
                 <Scrollbars style={{ width: 300, height: 100 }} className='track-horizontal'>
                     <ListWrapper>
@@ -109,11 +104,7 @@ const Popup = () => {
                     </Col>
                 </Row> */}
             </PopUpContainer>
-
-            <Row className={styles.list_title}>
-                <Col className={styles.list_item_no}>2</Col>
-                <Col className={styles.list_item_title}> Show Items</Col>
-            </Row>
+            <SubTitle number={2} title={'Show Items'} />            
             <Div>
                 <Row>
                     <Col className="gutter-row" span={18}>All Selected</Col>
