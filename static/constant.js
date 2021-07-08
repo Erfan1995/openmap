@@ -82,7 +82,8 @@ export const DATASET = {
     MANUAL_MAP_DATA: 'Manual Map Data',
     OPEN_MAP: 'Openmap',
     MARKERS:'Markers',
-    ADD_NEW_ICON:'Add New Icon'
+    ADD_NEW_ICON:'Add New Icon',
+    ADD_MAIN_POPUPS_AND_MARKER:'Add Main Popups and Markers'
 
 
 }

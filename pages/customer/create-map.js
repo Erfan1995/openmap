@@ -9,7 +9,7 @@ import CreateMap from 'components/customer/Forms/CreateMap';
 import StyledMaps from 'components/customer/generalComponents/ListMapboxStyle';
 import {
   fetchApi, putMethod, getOneMap, getDatasetsByMap, getTags, getDatasets,
-  getIcons, postMethod, deleteMethod, getMapDatasetConf, getDatasetConfContent, getMethod
+  getIcons, postMethod, deleteMethod, getMapDatasetConf, getDatasetConfContent, getMapPopupProperties
 } from 'lib/api';
 import SelectNewMapDataset from 'components/customer/mapComponents/SelectNewMapDataset';
 import { formatDate, fileSizeReadable, getMapData } from "../../lib/general-functions";
@@ -72,6 +72,7 @@ const CreateMapContainer = ({ authenticatedUser, collapsed, styledMaps, tags, ma
   const [selectedDIcons, setSelectedDIcons] = useState();
   const [selectedDatasetProperties, setSelectedDatasetProperties] = useState();
   const [datasetProperties, setDatasetProperties] = useState();
+  const [layerType, setLayerType] = useState();
   const MapWithNoSSR = dynamic(() => import("../../components/map"), {
     ssr: false
   });
@@ -188,26 +189,45 @@ const CreateMapContainer = ({ authenticatedUser, collapsed, styledMaps, tags, ma
     }
 
   }
-  const mdc = async (id, state) => {
-
+  //this function gets called whenever the user click on a dataset or main map popup styles button
+  const mdc = async (id, state, type) => {
     setLayerClicked(state)
+    setLayerType(type);
     setSelectedDIcons([]);
     setSelectedDatasetProperties([]);
     setDatasetProperties([]);
-    selectedDataset.map((data) => {
-      console.log(data);
-      setDatasetProperties(data.datasetcontents[0].properties)
-    })
-    const mapDatasetConf = await getMapDatasetConf({ dataset: id }, token);
-    if (mapDatasetConf) setmdcId(mapDatasetConf[0].id);
-    const selectedIcons = await getDatasetConfContent({ id: mapDatasetConf[0].id }, token);
-    if (selectedIcons) {
-      if (selectedIcons[0].icon !== null) {
-        let arr = [];
-        arr[0] = selectedIcons[0].icon;
-        setSelectedDIcons(arr);
+    if (type === "dataset") {
+      selectedDataset.map((data) => {
+        console.log(data);
+        setDatasetProperties(data.datasetcontents[0].properties)
+      })
+      const mapDatasetConf = await getMapDatasetConf({ dataset: id }, token);
+      if (mapDatasetConf) setmdcId(mapDatasetConf[0].id);
+      const selectedIcons = await getDatasetConfContent({ id: mapDatasetConf[0].id }, token);
+      if (selectedIcons) {
+        if (selectedIcons[0].icon !== null) {
+          let arr = [];
+          arr[0] = selectedIcons[0].icon;
+          setSelectedDIcons(arr);
+        }
+        setSelectedDatasetProperties(selectedIcons[0].selected_dataset_properties);
       }
-      setSelectedDatasetProperties(selectedIcons[0].selected_dataset_properties);
+    } else if (type === "main") {
+      const mmdProperties = await getMapPopupProperties({ id: mapData.id }, token);
+      setmdcId(mapData.id);
+      if (mmdProperties) {
+        if (mmdProperties[0].icons !== null) {
+          let i = 0;
+          let arr = [];
+          mmdProperties[0].icons.map((data) => {
+            arr[i] = data;
+            i++;
+          })
+          setSelectedDIcons(arr);
+          setSelectedDatasetProperties(mmdProperties[0].mmd_properties)
+          setDatasetProperties(['title', 'description']);
+        }
+      }
     }
   }
 
@@ -253,6 +273,10 @@ const CreateMapContainer = ({ authenticatedUser, collapsed, styledMaps, tags, ma
 
                     </TabPane>
                     <TabPane tab={DATASET.LAYERS} key="3" >
+                      <Button type="dashed" size='large' block onClick={() => mdc(mapData.id, false, "main")}>
+                        {DATASET.ADD_MAIN_POPUPS_AND_MARKER}
+                      </Button>
+                      <Divider />
                       <Button type="dashed" size='large' block onClick={() => chooseDataset()}>
                         {DATASET.ADD_NEW_LAYER}
                       </Button>
@@ -273,7 +297,7 @@ const CreateMapContainer = ({ authenticatedUser, collapsed, styledMaps, tags, ma
                         dataSource={selectedDataset}
                         renderItem={item => (
                           <List.Item actions={[<a onClick={() => showConfirm(item.id)} ><span><DeleteTwoTone twoToneColor="#eb2f96" /></span></a>]}>
-                            <DatasetsWrapper onClick={() => mdc(item.id, false)}>
+                            <DatasetsWrapper onClick={() => mdc(item.id, false, "dataset")}>
                               {item.title.split(".")[0]}
                             </DatasetsWrapper>
                           </List.Item>
@@ -288,7 +312,7 @@ const CreateMapContainer = ({ authenticatedUser, collapsed, styledMaps, tags, ma
                       setLayerClicked(true);
                     }} type='link'>back</Button>
                     <DatasetConf icons={icons} mdcId={mdcId} selectedDIcons={selectedDIcons}
-                      datasetProperties={datasetProperties} selectedDatasetProperties={selectedDatasetProperties} />
+                      datasetProperties={datasetProperties} selectedDatasetProperties={selectedDatasetProperties} layerType={layerType} />
                   </div>
                 }
               </Card>

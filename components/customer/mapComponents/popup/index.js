@@ -48,17 +48,21 @@ padding: 10px;
  cursor:pointer;
 `
 
-const Popup = ({ mdcId, datasetProperties, selectedDatasetProperties }) => {
+const Popup = ({ mdcId, datasetProperties, selectedDatasetProperties, layerType }) => {
     const [selectedStyle, setSelectedStyle] = useState(false);
     const [loading, setLoading] = useState(false);
     const [checkedList, setCheckedList] = useState(selectedDatasetProperties);
     const [indeterminate, setIndeterminate] = useState(true);
     const [checkAll, setCheckAll] = useState(false);
     let options = [];
-    let i = 0;
-    for (const [key, value] of Object.entries(datasetProperties)) {
-        options[i] = key;
-        i++;
+    if (layerType === "dataset") {
+        let i = 0;
+        for (const [key, value] of Object.entries(datasetProperties)) {
+            options[i] = key;
+            i++;
+        }
+    } else if (layerType === "main") {
+        options = datasetProperties;
     }
     const onChange = list => {
         setCheckedList(list);
@@ -68,8 +72,12 @@ const Popup = ({ mdcId, datasetProperties, selectedDatasetProperties }) => {
     };
     const updateCheckedProperties = async (checkedValues) => {
         setLoading(true);
-        const res = await putMethod('mapdatasetconfs/' + mdcId, { selected_dataset_properties: checkedValues })
-        console.log(res);
+        if (layerType === "dataset") {
+            const res = await putMethod('mapdatasetconfs/' + mdcId, { selected_dataset_properties: checkedValues });
+
+        } else if (layerType === "main") {
+            const res = await putMethod('maps/' + mdcId, { mmd_properties: checkedValues });
+        }
         setLoading(false);
     }
     const onCheckAllChange = e => {
@@ -84,11 +92,19 @@ const Popup = ({ mdcId, datasetProperties, selectedDatasetProperties }) => {
     };
     const selectPopupStyle = async (item) => {
         setLoading(true);
-        setSelectedStyle(true);
-        const res = await putMethod('mapdatasetconfs/' + mdcId, { default_popup_style_slug: item.name });
-        if (res) {
-            console.log(res);
+        if (layerType === "dataset") {
+            setSelectedStyle(true);
+            const res = await putMethod('mapdatasetconfs/' + mdcId, { default_popup_style_slug: item });
+            if (res) {
+                console.log(res);
 
+            }
+        } else if (layerType === "main") {
+            console.log(item);
+            const res = await putMethod('maps/' + mdcId, { default_popup_style_slug: item })
+            if (res) {
+                console.log(res);
+            }
         }
         setLoading(false);
     }
@@ -106,7 +122,7 @@ const Popup = ({ mdcId, datasetProperties, selectedDatasetProperties }) => {
                                 grid={{ gutter: 16, column: 3 }}
                                 itemLayout='horizontal'
                                 renderItem={item => (
-                                    <PopUpCart
+                                    <PopUpCart onClick={() => selectPopupStyle(item.name)}
                                         cover={<img alt="example" src={item.cover}
                                         />}
                                     />
@@ -167,7 +183,7 @@ const Popup = ({ mdcId, datasetProperties, selectedDatasetProperties }) => {
                         Check all
                     </Checkbox>
                     <Divider />
-                    <CheckboxGroup  options={options} value={checkedList} onChange={onChange} />
+                    <CheckboxGroup options={options} value={checkedList} onChange={onChange} />
                     {/* <Checkbox.Group style={{ width: '100%' }} onChange={onChange}>
                         {options.map((item) =>
                             <Row key={item.value}>
