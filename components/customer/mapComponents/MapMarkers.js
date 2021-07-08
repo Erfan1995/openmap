@@ -111,7 +111,6 @@ const MapMarkers = ({ icons, mdcId, selectedDIcons, layerType }) => {
         if (layerType === "main") {
             setUploadIconsLoading(true)
             const dd = selectedIcons.filter(data => data.id !== id);
-            console.log(dd);
             const res = await putMethod('maps/' + mdcId, { icons: dd.map(item => item.id) });
             if (res) {
                 setSelectedIcons(dd);
@@ -119,7 +118,10 @@ const MapMarkers = ({ icons, mdcId, selectedDIcons, layerType }) => {
             }
             setUploadIconsLoading(false);
         } else if (layerType === "dataset") {
-
+            const res = putMethod('mapdatasetconfs/' + mdcId, { icon: null });
+            if (res) {
+                setSelectedIcons([]);
+            }
         }
     }
     function showDeleteConfirm(id, condition) {

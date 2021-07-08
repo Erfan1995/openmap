@@ -198,7 +198,6 @@ const CreateMapContainer = ({ authenticatedUser, collapsed, styledMaps, tags, ma
     setDatasetProperties([]);
     if (type === "dataset") {
       selectedDataset.map((data) => {
-        console.log(data);
         setDatasetProperties(data.datasetcontents[0].properties)
       })
       const mapDatasetConf = await getMapDatasetConf({ dataset: id }, token);
