@@ -9,7 +9,7 @@ import CreateMap from 'components/customer/Forms/CreateMap';
 import StyledMaps from 'components/customer/generalComponents/ListMapboxStyle';
 import {
   fetchApi, putMethod, getOneMap, getDatasetsByMap, getTags, getDatasets,
-  getIcons, postMethod, deleteMethod, getMapDatasetConf, getDatasetConfContent, getMapPopupProperties
+  getIcons, postMethod, deleteMethod, getMapDatasetConf, getDatasetConfContent, getMapPopupProperties, getDatasetDetails
 } from 'lib/api';
 import SelectNewMapDataset from 'components/customer/mapComponents/SelectNewMapDataset';
 import { formatDate, fileSizeReadable, getMapData } from "../../lib/general-functions";
@@ -191,16 +191,20 @@ const CreateMapContainer = ({ authenticatedUser, collapsed, styledMaps, tags, ma
   }
   //this function gets called whenever the user click on a dataset or main map popup styles button
   const mdc = async (id, state, type) => {
+    console.log(selectedDataset);
     setLayerClicked(state)
     setLayerType(type);
     setSelectedDIcons([]);
     setSelectedDatasetProperties([]);
     setDatasetProperties([]);
     if (type === "dataset") {
-      selectedDataset.map((data) => {
-        setDatasetProperties(data.datasetcontents[0].properties)
-      })
-      const mapDatasetConf = await getMapDatasetConf({ dataset: id }, token);
+      const datasetDetails = await getDatasetDetails({ dataset: id }, token);
+      console.log(datasetDetails);
+      if (datasetDetails.length !== 0) {
+        setDatasetProperties(datasetDetails[0].properties)
+
+      }
+      const mapDatasetConf = await getMapDatasetConf({ dataset: id, map: mapData.id }, token);
       if (mapDatasetConf) setmdcId(mapDatasetConf[0].id);
       const selectedIcons = await getDatasetConfContent({ id: mapDatasetConf[0].id }, token);
       if (selectedIcons) {
