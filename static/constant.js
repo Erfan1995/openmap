@@ -81,10 +81,13 @@ export const DATASET = {
     PLACEHOLDER_LINK: 'Please enter link',
     MANUAL_MAP_DATA: 'Manual Map Data',
     OPEN_MAP: 'Openmap',
-    MARKERS:'Markers',
-    ADD_NEW_ICON:'Add New Icon',
-    ADD_MAIN_POPUPS_AND_MARKER:'Add Main Popups and Markers'
-
+    MARKERS: 'Markers',
+    ADD_NEW_ICON: 'Add New Icon',
+    ADD_MAIN_POPUPS_AND_MARKER: 'Add Main Popups and Markers',
+    MAP_ANALYTICS: 'Map Analytics',
+    CREATED_DATE: 'Created Date',
+    VISITS: 'Visits',
+    SUBMISSIONS: 'Submissions',
 
 }
 export const LAT = ['lat', 'Lat', 'LAT', 'latitude', 'Latitude', 'LATITUDE'];
@@ -119,9 +122,9 @@ export const MAP = {
 }
 
 
-export const DATASET_CONF={
-    MARKERS:'marker',
-    PUPOP:'Pop-Up',
+export const DATASET_CONF = {
+    MARKERS: 'marker',
+    PUPOP: 'Pop-Up',
 }
 export const CUSTOMERS = {
     NAME: 'Name',

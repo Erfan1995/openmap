@@ -48,6 +48,9 @@ const ActionButton = ({ handleMenuClick }) => {
             <Menu.Item key="link">
                 {DATASET.CREATE_LINK}
             </Menu.Item>
+            <Menu.Item key="analytics">
+                {DATASET.MAP_ANALYTICS}
+            </Menu.Item>
         </Menu>
     );
 };
@@ -102,6 +105,11 @@ const MapItem = ({ item, filterDeletedMap }) => {
             });
         } else if (e.key === "delete") {
             showConfirm(item.id)
+        } else if (e.key === "analytics") {
+            router.push({
+                pathname: 'map-analytics',
+                query: { id: item.id }
+            })
         } else {
             showGeneratedLink(item);
         }
