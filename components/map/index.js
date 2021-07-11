@@ -8,7 +8,7 @@ import Preview from "./Preview";
 import EditControlExample from "./map2";
 import { Button, message } from "antd";
 import styled from 'styled-components';
-import { getMapData } from "lib/general-functions";
+import { getMapData, getSpecifictPopup } from "lib/general-functions";
 
 import LeafletgeoSearch from "./MapSearch";
 
@@ -129,10 +129,11 @@ const Map = ({ styleId, center, setCenter, style, mapData, manualMapData, datase
 
           {
             datasets && datasets.map((item) => {
-              return <GeoJSON key={item.title + item.id} data={item.datasetcontents} onEachFeature={(item, layer) => {
-                layer.on({
-                  click: changeCountryColor
-                })
+              return <GeoJSON key={item.title + item.id} data={item.datasetcontents} onEachFeature={(feature, layer) => {
+                const { properties } = feature;
+                console.log(item.config.default_popup_style_slug);
+                if (!properties) return;
+                layer.bindPopup(`<div>${getSpecifictPopup(properties, item.config.default_popup_style_slug || '')}</div>`)
               }} />
             })
           }

@@ -94,17 +94,11 @@ const Popup = ({ mdcId, datasetProperties, selectedDatasetProperties, layerType 
         setLoading(true);
         if (layerType === "dataset") {
             setSelectedStyle(true);
-            const res = await putMethod('mapdatasetconfs/' + mdcId, { default_popup_style_slug: item });
-            if (res) {
-                console.log(res);
+            await putMethod('mapdatasetconfs/' + mdcId, { default_popup_style_slug: item });
 
-            }
         } else if (layerType === "main") {
-            console.log(item);
-            const res = await putMethod('maps/' + mdcId, { default_popup_style_slug: item })
-            if (res) {
-                console.log(res);
-            }
+            await putMethod('maps/' + mdcId, { default_popup_style_slug: item })
+
         }
         setLoading(false);
     }
@@ -131,49 +125,6 @@ const Popup = ({ mdcId, datasetProperties, selectedDatasetProperties, layerType 
                             />
                         </ListWrapper>
                     </Scrollbars>
-
-                    {/* <Row> */}
-                    {/* <Col span={8}>
-                        Window Size
-                    </Col>
-                    <Col span={9}>
-                        <Slider
-                            min={1}
-                            max={20}
-                            value={intialValue}
-                            onChange={onChange}
-                        />
-                    </Col>
-                    <Col span={4}>
-                        <Input
-                            min={1}
-                            max={20}
-                            value={intialValue}
-                            onChange={onChange}
-                            style={{ margin: '0 16px' }}
-                        />
-                    </Col> */}
-                    {/* </Row> */}
-
-                    {/* <Row>
-                    <Col span={8}>
-                        Header Color
-                    </Col>
-                    <Col span={14}>
-                        <ColorPicker
-                            color={"#36c"}
-                            alpha={30}
-                            onChange={changeHandler}
-                            onClose={closeHandler}
-                            placement="topLeft"
-                            className="some-class"
-                            enableAlpha={false}
-                        >
-                            <button className="rc-color-picker-trigger"> </button>
-                        </ColorPicker>
-                    </Col>
-                </Row> */}
-
                 </PopUpContainer>
 
                 <SubTitle number={2} title={'Show Items'} />
@@ -184,15 +135,6 @@ const Popup = ({ mdcId, datasetProperties, selectedDatasetProperties, layerType 
                     </Checkbox>
                     <Divider />
                     <CheckboxGroup options={options} value={checkedList} onChange={onChange} />
-                    {/* <Checkbox.Group style={{ width: '100%' }} onChange={onChange}>
-                        {options.map((item) =>
-                            <Row key={item.value}>
-                                <Col span={8}>
-                                    <Checkbox value={item.value}>{item.label}</Checkbox>
-                                </Col>
-                            </Row>
-                        )}
-                    </Checkbox.Group> */}
                 </Div>
             </Row>
         </Spin>

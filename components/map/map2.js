@@ -7,6 +7,7 @@ import Preview from './Preview';
 import styled from 'styled-components';
 // work around broken icons when using webpack, see https://github.com/PaulLeCam/react-leaflet/issues/255
 import { Card } from "antd";
+import { getSpecifictPopup } from 'lib/general-functions';
 
 const PupopDiv = styled.div`
 height:200px;
@@ -27,26 +28,6 @@ L.Icon.Default.mergeOptions({
 
 //
 
-
-const getSpecifictPopup = (properties, type) => {
-  switch (type) {
-    case 'dark': return `<div class='dark-mode'>${generateData(properties,type)}</div>`
-    case 'white': return `<div class='white-mode'>${generateData(properties,type)}</div>`
-    case 'color': return `<div class='color-mode '>${generateData(properties,type)}</div>`
-
-  }
-}
-
-const generateData = (properties, type) => {
-  let details = '';
-  Object.entries(properties).map((item, index) => {
-    details += `<div class=" padding-10 ${type === 'color' && index === 0 ? 'popup-header' : ''}">
-      <div>${item[0].toUpperCase()}</div>
-      <div  class='popup-bold'>${item[1]}</div>
-    </div>`
-  })
-  return details;
-}
 
 
 
@@ -118,7 +99,7 @@ export default class EditControlExample extends Component {
         onEachFeature: (feature = {}, layer) => {
           const { properties } = feature;
           if (!properties) return;
-          layer.bindPopup(`<div>${getSpecifictPopup(properties,'white')}</div>`)
+          layer.bindPopup(`<div>${getSpecifictPopup(properties,this.props.mapData.default_popup_style_slug || '')}</div>`)
         }
       });
       let leafletFG = reactFGref;

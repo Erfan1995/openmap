@@ -12,7 +12,7 @@ import {
   getIcons, postMethod, deleteMethod, getMapDatasetConf, getDatasetConfContent, getMapPopupProperties, getDatasetDetails
 } from 'lib/api';
 import SelectNewMapDataset from 'components/customer/mapComponents/SelectNewMapDataset';
-import { formatDate, fileSizeReadable, getMapData } from "../../lib/general-functions";
+import { formatDate, fileSizeReadable, getMapData, extractMapData } from "../../lib/general-functions";
 import { ArrowLeftOutlined, DeleteTwoTone } from '@ant-design/icons';
 import { useRouter } from 'next/router';
 import { DATASET } from '../../static/constant'
@@ -76,6 +76,7 @@ const CreateMapContainer = ({ authenticatedUser, collapsed, styledMaps, tags, ma
   const MapWithNoSSR = dynamic(() => import("../../components/map"), {
     ssr: false
   });
+
   const key = 'updatable';
   const router = useRouter();
   const changeStyle = (item) => {
@@ -320,9 +321,7 @@ const CreateMapContainer = ({ authenticatedUser, collapsed, styledMaps, tags, ma
                 }
               </Card>
               {/* </Scrollbars> */}
-
               <Button type={'primary'} onClick={showGeneratedLink} className='margin-top-10' size='large'>Publish</Button>
-
             </Col>
             <Col xs={24} sm={24} md={24} lg={17} xl={17}>
               <MapWithNoSSR
@@ -368,22 +367,12 @@ export const getServerSideProps = withPrivateServerSideProps(
         mapData = await getOneMap({ id: id }, token);
         if (mapData) {
           mapData.tags = mapData.tags.map(item => Number(item.id));
-          [...mapData.mmdpublicusers, ...mapData.mmdcustomers].map((item) => {
-            if (item.is_approved) {
-              manualArray.push(
-                {
-                  type: "Feature",
-                  geometry: item.geometry,
-                  properties: {
-                    id: item.id,
-                    title: item.title,
-                    description: item.description,
-                    type: item.public_user ? 'public' : 'customer',
-                  }
-                })
-            }
-          })
+          manualArray = await extractMapData(mapData);
           datasets = await getDatasetsByMap({ maps: id }, token);
+          datasets=datasets.map((item) => {
+            let temp = mapData.mapdatasetconfs.find((obj) => obj.dataset.id === item.id);
+            return { ...item, config: temp ? temp : null }
+          })
         }
       }
       const data = await fetchApi('styles/v1/mbshaban');
@@ -392,6 +381,7 @@ export const getServerSideProps = withPrivateServerSideProps(
       icons.map((icon) => {
         icon.id = Number(icon.id);
       })
+
 
       tags.map((item) => {
         item.id = Number(item.id);
