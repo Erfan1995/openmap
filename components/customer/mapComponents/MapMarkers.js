@@ -14,8 +14,8 @@ padding:10px;
 margin:10px;
 `;
 const Photo = styled.img`
-  width:100%;
-  height:100%;
+  width:70%;
+  height:70%;
   :hover{
       opacity:0.8;
       cursor:pointer;
@@ -34,7 +34,7 @@ const DeleteButton = styled.div`
 
 cursor:pointer;
 `
-const MapMarkers = ({ icons, mdcId, selectedDIcons, layerType }) => {
+const MapMarkers = ({ icons, mdcId, selectedDIcons, layerType, setDataset, onMapDataChange }) => {
     selectedDIcons.map(data => data.id = Number(data.id));
     const [uploadIconsLoading, setUploadIconsLoading] = useState(false);
     const [markers, setMarkers] = useState(icons);
@@ -75,23 +75,23 @@ const MapMarkers = ({ icons, mdcId, selectedDIcons, layerType }) => {
     const selectIcon = async (item) => {
         setUploadIconsLoading(true);
         if (layerType === "main") {
-            if (selectedIcons.length !== 0) {
-                const found = selectedIcons.some(el => el.id === item.id);
-                if (!found) {
-                    setSelectedIcons([...selectedIcons, item]);
-                    selectedIconsToUpload.push(item);
-                    const res = putMethod('maps/' + mdcId, { icons: selectedIconsToUpload.map(item => item.id) });
-                }
-            } else {
+            const found = selectedIcons.some(el => el.id === item.id);
+            if (!found) {
                 setSelectedIcons([...selectedIcons, item]);
                 selectedIconsToUpload.push(item);
+                const res = putMethod('maps/' + mdcId, { icons: selectedIconsToUpload.map(item => item.id) });
+                if (res) {
+                    onMapDataChange();
+                }
             }
+
         } else if (layerType === "dataset") {
             const res = putMethod('mapdatasetconfs/' + mdcId, { icon: item.id });
             if (res) {
                 let ics = [];
                 ics[0] = item;
                 setSelectedIcons(ics);
+                setDataset();
             }
         }
         setUploadIconsLoading(false);
@@ -114,6 +114,7 @@ const MapMarkers = ({ icons, mdcId, selectedDIcons, layerType }) => {
             const res = await putMethod('maps/' + mdcId, { icons: dd.map(item => item.id) });
             if (res) {
                 setSelectedIcons(dd);
+                onMapDataChange();
                 message.success('deleted successfully');
             }
             setUploadIconsLoading(false);
@@ -121,6 +122,7 @@ const MapMarkers = ({ icons, mdcId, selectedDIcons, layerType }) => {
             const res = putMethod('mapdatasetconfs/' + mdcId, { icon: null });
             if (res) {
                 setSelectedIcons([]);
+                setDataset();
             }
         }
     }
@@ -164,16 +166,16 @@ const MapMarkers = ({ icons, mdcId, selectedDIcons, layerType }) => {
                         pagination={true}
                         grid={{
                             gutter: 10,
-                            column: 3
+                            column: 5
 
                         }}
                         dataSource={markers}
                         renderItem={(item) => (
                             <List.Item key={`listItem` + item.id}>
-                                <Card >
-                                    <DeleteButton onClick={() => showDeleteConfirm(item.id, 'allIcons')}>x</DeleteButton>
+                                <div >
+                                    {/* <DeleteButton onClick={() => showDeleteConfirm(item.id, 'allIcons')}>x</DeleteButton> */}
                                     <Photo src={getStrapiMedia(item.icon[0])} onClick={() => selectIcon(item)} />
-                                </Card>
+                                </div>
                             </List.Item>
                         )}
                     />

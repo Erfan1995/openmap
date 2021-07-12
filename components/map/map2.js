@@ -8,6 +8,8 @@ import styled from 'styled-components';
 // work around broken icons when using webpack, see https://github.com/PaulLeCam/react-leaflet/issues/255
 import { Card } from "antd";
 import { getSpecifictPopup } from 'lib/general-functions';
+import { getStrapiMedia } from 'lib/media';
+import { MapIconSize } from 'lib/constants';
 
 const PupopDiv = styled.div`
 height:200px;
@@ -92,19 +94,24 @@ export default class EditControlExample extends Component {
     if (this.props.manualMapData.length > 0) {
       let leafletGeoJSON = new L.GeoJSON(this.props.manualMapData, {
         pointToLayer: (feature, latlng) => {
+
+          const iconUrl = getStrapiMedia(this.props.mapData.icons.length > 0 ? this.props.mapData.icons[0]?.icon[0] : null);
+          if (!iconUrl) return L.marker(latlng);
+
           return L.marker(latlng, {
-            icon: new L.icon({ iconUrl: '/metamask.png' })
+            icon: new L.icon({ iconUrl: iconUrl, iconSize: MapIconSize })
           })
         },
         onEachFeature: (feature = {}, layer) => {
           const { properties } = feature;
           if (!properties) return;
-          layer.bindPopup(`<div>${getSpecifictPopup(properties,this.props.mapData.default_popup_style_slug || '')}</div>`)
+          layer.bindPopup(`<div>${getSpecifictPopup(properties, this.props.mapData.default_popup_style_slug || '', this.props.mapData.mmd_properties || [])}</div>`)
         }
       });
       let leafletFG = reactFGref;
       localStorage.setItem('center', JSON.stringify(leafletGeoJSON.getBounds().getCenter()));
       leafletGeoJSON.eachLayer((layer) => {
+
         // layer.on("click", function (e) {
         //   this.setState({ modalVisible: true, place: layer.feature });
         // }.bind(this));

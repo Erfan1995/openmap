@@ -48,7 +48,7 @@ padding: 10px;
  cursor:pointer;
 `
 
-const Popup = ({ mdcId, datasetProperties, selectedDatasetProperties, layerType }) => {
+const Popup = ({ mdcId, datasetProperties, selectedDatasetProperties, layerType, setDataset,onMapDataChange }) => {
     const [selectedStyle, setSelectedStyle] = useState(false);
     const [loading, setLoading] = useState(false);
     const [checkedList, setCheckedList] = useState(selectedDatasetProperties);
@@ -74,9 +74,15 @@ const Popup = ({ mdcId, datasetProperties, selectedDatasetProperties, layerType 
         setLoading(true);
         if (layerType === "dataset") {
             const res = await putMethod('mapdatasetconfs/' + mdcId, { selected_dataset_properties: checkedValues });
+            if(res){
+                setDataset();
+            }
 
         } else if (layerType === "main") {
             const res = await putMethod('maps/' + mdcId, { mmd_properties: checkedValues });
+            if(res){
+                onMapDataChange();
+            }
         }
         setLoading(false);
     }
@@ -94,10 +100,16 @@ const Popup = ({ mdcId, datasetProperties, selectedDatasetProperties, layerType 
         setLoading(true);
         if (layerType === "dataset") {
             setSelectedStyle(true);
-            await putMethod('mapdatasetconfs/' + mdcId, { default_popup_style_slug: item });
+            const res = await putMethod('mapdatasetconfs/' + mdcId, { default_popup_style_slug: item });
+            if (res) {
+                setDataset();
+            }
 
         } else if (layerType === "main") {
-            await putMethod('maps/' + mdcId, { default_popup_style_slug: item })
+            const res = await putMethod('maps/' + mdcId, { default_popup_style_slug: item })
+            if (res) {
+                onMapDataChange();
+            }
 
         }
         setLoading(false);

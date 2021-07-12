@@ -29,10 +29,16 @@ const ListWrapper = styled(Row)`
   padding-left:35px;
   margin-top:10px;
 `
-const SourceCard = styled(Card)`
-height: 75px; 
+const SourceCard = styled.div`
+height: 60px; 
 width: 100px; 
-margin-left: 10px;
+margin-left:10px;
+justify-content:center;
+display:flex;
+align-items: center;
+
+
+background-color:rgb(250,250,250);
  border-radius:5px;
  border:1px solid #aaa;
  &:hover{
