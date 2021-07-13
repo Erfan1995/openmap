@@ -41,7 +41,8 @@ const Map = ({ manualMapData, mapData, datasets }) => {
   return (
     <div>
       {!loading &&
-        <LayoutPage walletAddress={publicUser.publicAddress} datasets={datasets} onDataSetChange={onDataSetChange} mapInfo={mapData}  >
+        <LayoutPage walletAddress={publicUser.publicAddress} datasets={datasets} onDataSetChange={onDataSetChange}
+          mapInfo={mapData} userId={publicUser.id} publicUser={publicUser} mapData={mapData}  >
           <MapWithNoSSR draw={{
             rectangle: false,
             polygon: false,
@@ -56,7 +57,6 @@ const Map = ({ manualMapData, mapData, datasets }) => {
               remove: false,
             }}
             userType='public'
-            userId={publicUser.id}
             manualMapData={manualMapData} datasets={datasetData} mapData={mapData}
             style={{ height: "100vh" }} />
         </LayoutPage>

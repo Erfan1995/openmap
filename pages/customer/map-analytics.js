@@ -1,52 +1,118 @@
 import Layout from '../../components/customer/layout/Layout';
 import withPrivateServerSideProps from '../../utils/withPrivateServerSideProps';
-import { useState, useRef, useEffect } from 'react';
-import { Table } from 'antd';
+import { Statistic, Card, Row, Col, Table, List } from 'antd';
+import { ArrowUpOutlined, ArrowDownOutlined } from '@ant-design/icons';
 import styled from 'styled-components';
 import nookies from 'nookies';
 import { getMethod, getMapAnalytics } from 'lib/api';
+import { getStrapiMedia } from 'lib/media';
 import { formatDate } from 'lib/general-functions';
 import { DATASET } from '../../static/constant'
 const MapsWrapper = styled.div`
 background:#ffffff;
 height:100%;
-padding:10px 20px;
+padding:40px 40px;
+margin:10px;
+`;
+const CardWrapper = styled(Card)`
+padding-left:50px;
+padding-top:30px;
+padding-bottom:30px;
+margin:10px;
+`
+const MapImage = styled.img`
+    height:120px;
+`;
+const CardImage = styled(Card)`
+padding-left:30px;
 margin:10px;
 `;
 const MapAnalytics = ({ collapsed, authenticatedUser, mapData }) => {
-    const columns = [
-
-        {
-            title: DATASET.NAME,
-            dataIndex: 'title',
-            key: 'title'
-        },
-        {
-            title: DATASET.CREATED_DATE,
-            dataIndex: 'created_at',
-            key: 'created_at'
-
-        },
-        {
-            title: DATASET.DATE,
-            dataIndex: "updated_at",
-            key: 'updated_at'
-        },
-        {
-            title: DATASET.VISITS,
-            dataIndex: 'visits',
-            key: 'visits'
-        },
-        {
-            title: DATASET.SUBMISSIONS,
-            dataIndex: 'submissions',
-            key: 'submissions'
-        },
-    ]
     return (
         <Layout collapsed={collapsed} user={authenticatedUser} >
             <MapsWrapper>
-                <Table dataSource={mapData} columns={columns} />
+                <div className="site-statistic-demo-card">
+
+                    <Row gutter={16}>
+                        <Col span={6}>
+                            <CardWrapper>
+                                <Statistic
+
+                                    title="Map Name"
+                                    value={mapData[0].title}
+                                    precision={2}
+                                    valueStyle={{ color: '#3f8600' }}
+                                />
+                            </CardWrapper>
+                        </Col>
+                        <Col span={12}>
+                            <CardWrapper>
+                                <Statistic
+
+                                    title="Map Description"
+                                    value={mapData[0].description}
+                                    precision={2}
+                                    valueStyle={{ color: '#3f8600' }}
+                                />
+                            </CardWrapper>
+                        </Col>
+                        <Col span={6}>
+                            <CardImage>
+                                <MapImage
+
+                                    title="Map Logo"
+                                    src={getStrapiMedia(mapData[0].logo)}
+
+                                />
+                            </CardImage>
+                        </Col>
+
+                    </Row>
+                    <Row gutter={16}>
+                        <Col span={6}>
+                            <CardWrapper>
+                                <Statistic
+                                    title="Map Visits"
+                                    value={20000}
+                                    precision={2}
+                                    valueStyle={{ color: '#3f8600' }}
+                                    prefix={<ArrowUpOutlined />}
+                                />
+                            </CardWrapper>
+                        </Col>
+                        <Col span={6}>
+                            <CardWrapper>
+                                <Statistic
+                                    title="Map Submissions"
+                                    value={1999}
+                                    precision={2}
+                                    valueStyle={{ color: '#3f8600' }}
+                                    prefix={<ArrowUpOutlined />}
+                                />
+                            </CardWrapper>
+                        </Col>
+                        <Col span={6}>
+                            <CardWrapper>
+                                <Statistic
+                                    title="Created Date"
+                                    value={mapData[0].created_at}
+                                    precision={2}
+                                    valueStyle={{ color: '#3f8600' }}
+                                />
+                            </CardWrapper>
+                        </Col>
+                        <Col span={6}>
+                            <CardWrapper>
+                                <Statistic
+                                    title="Modified Date"
+                                    value={mapData[0].updated_at}
+                                    precision={2}
+                                    valueStyle={{ color: '#3f8600' }}
+                                />
+                            </CardWrapper>
+                        </Col>
+                    </Row>
+                </div>
             </MapsWrapper>
         </Layout>
 
@@ -64,7 +130,6 @@ export const getServerSideProps = withPrivateServerSideProps(
                     data.created_at = formatDate(data.created_at);
                     data.updated_at = formatDate(data.updated_at);
                 })
-                console.log(mapData);
             }
             return {
                 props: {
