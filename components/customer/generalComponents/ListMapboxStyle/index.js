@@ -2,24 +2,23 @@ import { List, Row, Card, Button, Form, Input, Col, message, Spin } from 'antd';
 import { MAP_SOURCE } from 'lib/constants';
 import styled from 'styled-components';
 import SubTitle from '../SubTitle';
-import { Scrollbars } from 'react-custom-scrollbars';
 import { useState } from 'react';
 import { getMethod, postMethod } from '../../../../lib/api';
-import { DATASET } from '../../../../static/constant';
 import nookies from "nookies";
-
 
 const StyleWrapper = styled.div`
 border: 1px solid #eeeeee;
  border-radius: 5px;
-width:74px;
+width:100%;
  &:hover{
-  border:2px solid #5bc0de;
+  border:1px solid #5bc0de;
   cursor:pointer
  }
 `;
+
 const Image = styled.img`
 border-radius: 5px;
+margin-right:10px;
 `;
 
 const PopUpContainer = styled.div`
@@ -29,10 +28,14 @@ const ListWrapper = styled(Row)`
   padding-left:35px;
   margin-top:10px;
 `
-const SourceCard = styled(Card)`
-height: 75px; 
+const SourceCard = styled.div`
+height: 60px; 
 width: 100px; 
-margin-left: 10px;
+margin-left:10px;
+justify-content:center;
+display:flex;
+align-items: center;
+background-color:rgb(250,250,250);
  border-radius:5px;
  border:1px solid #aaa;
  &:hover{
@@ -46,14 +49,23 @@ const StyledMaps = ({ changeStyle, mapData }) => {
     const [loading, setLoading] = useState(false);
     const [dataSource, setDataSource] = useState(mapData);
     const [formVisible, setFormVisible] = useState(false);
+    const [mapSource, setMapSource] = useState(MAP_SOURCE);
     const changeMapStyleSource = async (name) => {
+
+        setMapSource(MAP_SOURCE.map((item) => {
+            if (item.name === name) {
+                return { ...item, isSelected: true };
+            } else {
+                return { ...item, isSelected: false };
+            }
+        }))
+
         if (name === "Base") {
             setFormVisible(false);
             setDataSource(mapData)
         } else if (name === "MapBox") {
             setLoading(true);
             const res = await getMethod('mapstyles', token);
-            console.log(res);
             setFormVisible(true);
             setDataSource(res);
             setLoading(false);
@@ -86,10 +98,11 @@ const StyledMaps = ({ changeStyle, mapData }) => {
                         {/* <Scrollbars style={{ width: 300, height: 100 }} className='track-horizontal'> */}
                         <ListWrapper>
                             <List
-                                dataSource={MAP_SOURCE}
+                                dataSource={mapSource}
                                 grid={{ gutter: 16, column: 2 }}
                                 renderItem={item => (
                                     <SourceCard
+                                       className={item.isSelected?'selectedBox':''}
                                         onClick={() => changeMapStyleSource(item.name)}
                                     >
                                         {item.name}
@@ -130,13 +143,20 @@ const StyledMaps = ({ changeStyle, mapData }) => {
                     <ListWrapper>
                         <List
                             itemLayout='vertical'
-                            grid={{ gutter: 10, column: 3 }}
+                            grid={{ gutter: 10, column: 1 }}
                             dataSource={dataSource}
                             renderItem={(item) => (
+
                                 <List.Item>
                                     <StyleWrapper onClick={() => { changeStyle(item) }} >
                                         {formVisible ? <div>{item.link}</div>
-                                            : <Image src={`${process.env.NEXT_PUBLIC_MAPBOX_API_URL}/styles/v1/mbshaban/${item.id}/static/-87.0186,32.4055,10/70x60?access_token=${process.env.NEXT_PUBLIC_MAPBOX_TOKEN}`} alt={item.name} />
+                                            :
+                                            <span>
+                                                <Image src={`${process.env.NEXT_PUBLIC_MAPBOX_API_URL}/styles/v1/mbshaban/${item.id}/static/-87.0186,32.4055,10/70x60?access_token=${process.env.NEXT_PUBLIC_MAPBOX_TOKEN}`} alt={item.name} />
+
+
+                                                {item.name}
+                                            </span>
 
                                         }
 

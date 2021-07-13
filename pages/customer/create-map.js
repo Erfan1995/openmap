@@ -1,28 +1,20 @@
 import Layout from '../../components/customer/layout/Layout';
 import withPrivateServerSideProps from '../../utils/withPrivateServerSideProps';
-import { useState, useRef, useEffect } from 'react';
-import { Row, Col, Divider, Typography, Card, Tabs, Button, Modal, List, Spin, message } from 'antd';
+import { useState } from 'react';
+import { Row, Col, Divider, Typography, Button, message } from 'antd';
 import styled from 'styled-components';
 import nookies from 'nookies';
 import dynamic from "next/dynamic";
-import CreateMap from 'components/customer/Forms/CreateMap';
-import StyledMaps from 'components/customer/generalComponents/ListMapboxStyle';
 import {
-  fetchApi, putMethod, getOneMap, getDatasetsByMap, getTags, getDatasets,
-  getIcons, postMethod, deleteMethod, getMapDatasetConf, getDatasetConfContent, getMapPopupProperties, getDatasetDetails
+  fetchApi, putMethod, getOneMap, getDatasetsByMap, getTags, 
+  getIcons
 } from 'lib/api';
-import SelectNewMapDataset from 'components/customer/mapComponents/SelectNewMapDataset';
-import { formatDate, fileSizeReadable, getMapData } from "../../lib/general-functions";
-import { ArrowLeftOutlined, DeleteTwoTone } from '@ant-design/icons';
+import { getMapData, extractMapData } from "../../lib/general-functions";
 import { useRouter } from 'next/router';
 import { DATASET } from '../../static/constant'
-import { ExclamationCircleOutlined } from '@ant-design/icons';
-import DatasetConf from 'components/customer/generalComponents/DetasetConf';
-import MapMarkers from 'components/customer/mapComponents/MapMarkers';
-import { Scrollbars } from 'react-custom-scrollbars';
+import MapConf from 'components/customer/generalComponents/MapConf';
+
 const { Title } = Typography;
-const { TabPane } = Tabs;
-const { confirm } = Modal;
 const MapsWrapper = styled.div`
 background:#ffffff;
 height:100%;
@@ -30,143 +22,59 @@ padding:10px 20px;
 margin:10px;
 `;
 
-const DatasetsWrapper = styled.div`
-border: 1px solid #eeeeee;
- border-radius: 5px;
- padding:10px 10px;
- width:100%;
- &:hover{
-  border:1px solid #5bc0de;
-  cursor:pointer
- }
-`;
-
-
-
 
 const CardTitle = styled(Title)`
   margin-bottom: 10px;
   float: left !important;
 `;
 
-const SaveButton = styled(Button)`
-  margin-bottom: 10px;
-  margin-right:10px;
-  float: right !important;
-`;
 
-const CreateMapContainer = ({ authenticatedUser, collapsed, styledMaps, tags, mapData,
+const CreateMapContainer = ({ authenticatedUser, collapsed, styledMaps, tags, serverSideMapData,
   manualMapData, serverSideDatasets, token, icons }) => {
-  const [styleId, setStyleID] = useState(mapData.styleId || process.env.NEXT_PUBLIC_MAPBOX_DEFAULT_MAP);
-  const childRef = useRef();
-  const selectDatasetChildRef = useRef();
-  const [modalVisible, setModalVisible] = useState(false);
-  const [datasets, setDatasets] = useState();
-  const [selectedDataset, setSelectedDataset] = useState(serverSideDatasets);
-  const [loading, setLoading] = useState(false);
-  const [center, setCenter] = useState(mapData.center);
+  const [mapStyle, setMapStyle] = useState(serverSideMapData.styleId || process.env.NEXT_PUBLIC_MAPBOX_DEFAULT_MAP);
+  const [datasets, setDatasets] = useState(serverSideDatasets);
+  const [mapData, setMapData] = useState(serverSideMapData);
+  const [center, setCenter] = useState(serverSideMapData.center);
   const [customMapData, setCustomMapData] = useState(manualMapData);
-  const [file, setFile] = useState();
-  const [layerClicked, setLayerClicked] = useState(true);
-  const [mdcId, setmdcId] = useState();
-  const [selectedDIcons, setSelectedDIcons] = useState();
-  const [selectedDatasetProperties, setSelectedDatasetProperties] = useState();
-  const [datasetProperties, setDatasetProperties] = useState();
-  const [layerType, setLayerType] = useState();
+
   const MapWithNoSSR = dynamic(() => import("../../components/map"), {
     ssr: false
   });
+
   const key = 'updatable';
+  
   const router = useRouter();
-  const changeStyle = (item) => {
-    setStyleID(item.id);
-  }
-  const chooseDataset = async () => {
-    setLoading(true);
-    let res = await getDatasets({ user: authenticatedUser.id }, token);
-    setLoading(false);
-    if (res) {
-      let finalDatasets = [];
-      let i = 0;
-      res.forEach(element => {
-        element.size = fileSizeReadable(element.size);
-        element.title = element.title.split(".")[0];
-        element.updated_at = formatDate(element.updated_at);
-        element.key = element.id;
-        finalDatasets[i] = element;
-        i++;
-      });
-      setDatasets(finalDatasets);
-    }
-    setModalVisible(true)
-  }
-  const addSelectedDataset = async (selectedRow) => {
-    let alreadyExist = false;
-    selectedDataset.map((dd) => {
-      if (dd.id === selectedRow.id) {
-        alreadyExist = true;
-      }
-    })
 
-    if (alreadyExist === false) {
-      setLoading(true);
-      selectedDataset.push(selectedRow);
-      try {
-        const res = await putMethod(`maps/${mapData.id}`, { datasets: selectedDataset.map(item => item.id) });
-        if (res) {
-          const dd = await postMethod('mapdatasetconfs', { map: mapData.id, dataset: selectedRow.id });
-          if (dd) {
-            message.success(DATASET.SUCCESS);
-          }
-          setModalVisible(false);
-        }
-      } catch (e) {
-        setLoading(false);
-        message.error(e);
-      }
-      setLoading(false);
-    } else {
-      message.error(DATASET.DUPLICATE_DATASET);
-    }
-  }
-  const onModalClose = (res) => {
-    router.push({
-      pathname: 'maps'
-    })
-  }
-  const addImageFile = (file) => {
-    setFile(file);
-  }
-  const deleteDataset = async (id) => {
-    setLoading(true);
 
-    const dd = selectedDataset.filter(dData => dData.id !== id)
+  const onDatasetChange = () => {
     try {
-      const res = await putMethod(`maps/${mapData.id}`, { datasets: dd.map(item => item.id) });
-      if (res) {
-        const mapDatasetConf = await getMapDatasetConf({ dataset: id }, token);
-        if (mapDatasetConf) {
-          const deleteMDC = await deleteMethod('mapdatasetconfs/' + mapDatasetConf[0].id);
+      setTimeout(async () => {
+        const data = await getOneMap({ id: mapData.id }, token);
+        if (data) {
+          const res = await getDatasetsByMap({ maps: mapData.id }, token);
+          setDatasets(res.map((item) => {
+            let temp = data.mapdatasetconfs.find((obj) => obj.dataset.id === item.id);
+            return { ...item, config: temp ? temp : null }
+          }));
+
         }
-        setSelectedDataset(dd);
-        message.success(DATASET.SUCCESS);
-      }
+      }, 200)
     } catch (e) {
-      setLoading(false);
-      message.error(e);
+      console.log(e);
     }
-    setLoading(false);
   }
-  function showConfirm(id) {
-    confirm({
-      icon: <ExclamationCircleOutlined />,
-      content: <p>{DATASET.DELETE_CONFIRM}</p>,
-      onOk() {
-        deleteDataset(id)
-      },
-      onCancel() {
-      },
-    });
+
+
+  const onCustomDataChange = () => {
+    try {
+      setTimeout(async () => {
+        const { manualArray, data } = await getMapData(mapData.id);
+        setMapData(data);
+        setCustomMapData(manualArray);
+      }, 200)
+    } catch (e) {
+      message.error(e.message);
+    }
   }
 
   const changeMapCenter = async (center) => {
@@ -180,7 +88,8 @@ const CreateMapContainer = ({ authenticatedUser, collapsed, styledMaps, tags, ma
 
       if (res) {
         mapData.zoomLevel = zoom ? zoom : mapData.zoomLevel;
-        setCustomMapData(await getMapData(mapData.id));
+        const { manualArray } = await getMapData(mapData.id);
+        setCustomMapData(manualArray);
         setCenter(center);
         message.success({ content: 'Success!', key, duration: 2 });
       }
@@ -188,50 +97,6 @@ const CreateMapContainer = ({ authenticatedUser, collapsed, styledMaps, tags, ma
       message.error(e.message);
     }
 
-  }
-  //this function gets called whenever the user click on a dataset or main map popup styles button
-  const mdc = async (id, state, type) => {
-    console.log(selectedDataset);
-    setLayerClicked(state)
-    setLayerType(type);
-    setSelectedDIcons([]);
-    setSelectedDatasetProperties([]);
-    setDatasetProperties([]);
-    if (type === "dataset") {
-      const datasetDetails = await getDatasetDetails({ dataset: id }, token);
-      console.log(datasetDetails);
-      if (datasetDetails.length !== 0) {
-        setDatasetProperties(datasetDetails[0].properties)
-
-      }
-      const mapDatasetConf = await getMapDatasetConf({ dataset: id, map: mapData.id }, token);
-      if (mapDatasetConf) setmdcId(mapDatasetConf[0].id);
-      const selectedIcons = await getDatasetConfContent({ id: mapDatasetConf[0].id }, token);
-      if (selectedIcons) {
-        if (selectedIcons[0].icon !== null) {
-          let arr = [];
-          arr[0] = selectedIcons[0].icon;
-          setSelectedDIcons(arr);
-        }
-        setSelectedDatasetProperties(selectedIcons[0].selected_dataset_properties);
-      }
-    } else if (type === "main") {
-      const mmdProperties = await getMapPopupProperties({ id: mapData.id }, token);
-      setmdcId(mapData.id);
-      if (mmdProperties) {
-        if (mmdProperties[0].icons !== null) {
-          let i = 0;
-          let arr = [];
-          mmdProperties[0].icons.map((data) => {
-            arr[i] = data;
-            i++;
-          })
-          setSelectedDIcons(arr);
-          setSelectedDatasetProperties(mmdProperties[0].mmd_properties)
-          setDatasetProperties(['title', 'description']);
-        }
-      }
-    }
   }
 
 
@@ -249,109 +114,58 @@ const CreateMapContainer = ({ authenticatedUser, collapsed, styledMaps, tags, ma
           {DATASET.ADD_NEW}
         </CardTitle>
 
-        <SaveButton type='primary' onClick={() => {
-          childRef.current.saveData(styleId, file);
-        }}>{DATASET.SAVE}</SaveButton>
+
         <Divider />
 
-        <Spin spinning={loading}>
+        <Row gutter={[24, 24]}>
 
-          <Row gutter={[24, 24]}>
+          <Col xs={24} sm={24} md={24} lg={7} xl={7} >
 
-            <Col xs={24} sm={24} md={24} lg={7} xl={7} >
-              {/* <Scrollbars style={{ height: '70vh' }}  autoHide autoHideTimeout={500} autoHideDuration={200}> */}
+            <MapConf
+              authenticatedUser={authenticatedUser}
+              styledMaps={styledMaps}
+              tags={tags}
+              mapData={mapData}
+              serverSideDatasets={serverSideDatasets}
+              token={token}
+              icons={icons}
+              setMapStyle={setMapStyle}
+              setDataset={onDatasetChange}
+              onMapDataChange={onCustomDataChange}
 
-              <Card style={{ height: '70vh', overflowY: 'scroll' }}>
-                {layerClicked ?
-                  <Tabs defaultActiveKey="1">
-                    <TabPane tab={DATASET.META_DATA} key="1" >
-                      <CreateMap ref={childRef} mapData={mapData} serverSideTags={tags} user={authenticatedUser} onModalClose={onModalClose} addImageFile={addImageFile} />
-                    </TabPane>
+            />
 
-                    <TabPane tab={DATASET.MAP_STYLE} key="2" >
-                      <StyledMaps
-                        changeStyle={changeStyle}
-                        mapData={styledMaps}
-                      />
+            <Button type={'primary'} onClick={showGeneratedLink} className='margin-top-10' size='large'>Publish</Button>
+          </Col>
 
-                    </TabPane>
-                    <TabPane tab={DATASET.LAYERS} key="3" >
-                      <Button type="dashed" size='large' block onClick={() => mdc(mapData.id, false, "main")}>
-                        {DATASET.ADD_MAIN_POPUPS_AND_MARKER}
-                      </Button>
-                      <Divider />
-                      <Button type="dashed" size='large' block onClick={() => chooseDataset()}>
-                        {DATASET.ADD_NEW_LAYER}
-                      </Button>
-                      <Modal
-                        title={DATASET.CHOOSE_DATASET}
-                        centered
-                        width={700}
-                        visible={modalVisible}
-                        destroyOnClose={true}
-                        footer={[
-                          <Button key="close" onClick={() => { setModalVisible(false) }}> {DATASET.CLOSE}</Button>
-                        ]}
-                        destroyOnClose={true}
-                      >
-                        <SelectNewMapDataset datasets={datasets} ref={selectDatasetChildRef} addSelectedDataset={addSelectedDataset} />
-                      </Modal>
-                      <List
-                        dataSource={selectedDataset}
-                        renderItem={item => (
-                          <List.Item actions={[<a onClick={() => showConfirm(item.id)} ><span><DeleteTwoTone twoToneColor="#eb2f96" /></span></a>]}>
-                            <DatasetsWrapper onClick={() => mdc(item.id, false, "dataset")}>
-                              {item.title.split(".")[0]}
-                            </DatasetsWrapper>
-                          </List.Item>
-                        )}
-                      />
-                    </TabPane>
-                  </Tabs>
-                  :
-                  <div>
-
-                    <Button style={{ marginLeft: -20, marginTop: -30 }} icon={<ArrowLeftOutlined />} onClick={() => {
-                      setLayerClicked(true);
-                    }} type='link'>back</Button>
-                    <DatasetConf icons={icons} mdcId={mdcId} selectedDIcons={selectedDIcons}
-                      datasetProperties={datasetProperties} selectedDatasetProperties={selectedDatasetProperties} layerType={layerType} />
-                  </div>
+          <Col xs={24} sm={24} md={24} lg={17} xl={17}>
+            <MapWithNoSSR
+              manualMapData={customMapData}
+              styleId={mapStyle}
+              style={{ height: "71vh" }}
+              datasets={datasets}
+              mapData={mapData}
+              userType='customer'
+              userId={authenticatedUser.id}
+              center={center}
+              setCenter={changeMapCenter}
+              onMapDataChange={onCustomDataChange}
+              draw={{
+                rectangle: true,
+                polygon: true,
+                circle: false,
+                circlemarker: false,
+                polyline: false
+              }}
+              edit={
+                {
+                  edit: false,
+                  remove: false,
                 }
-              </Card>
-              {/* </Scrollbars> */}
-
-              <Button type={'primary'} onClick={showGeneratedLink} className='margin-top-10' size='large'>Publish</Button>
-
-            </Col>
-            <Col xs={24} sm={24} md={24} lg={17} xl={17}>
-              <MapWithNoSSR
-                manualMapData={customMapData}
-                styleId={styleId}
-                style={{ height: "71vh" }}
-                datasets={selectedDataset}
-                mapData={mapData}
-                userType='customer'
-                userId={authenticatedUser.id}
-                center={center}
-                setCenter={changeMapCenter}
-                draw={{
-                  rectangle: true,
-                  polygon: true,
-                  circle: false,
-                  circlemarker: false,
-                  polyline: false
-                }}
-                edit={
-                  {
-                    edit: false,
-                    remove: false,
-                  }
-                }
-              />
-            </Col>
-          </Row>
-        </Spin>
+              }
+            />
+          </Col>
+        </Row>
       </MapsWrapper>
     </Layout>
   )
@@ -368,22 +182,12 @@ export const getServerSideProps = withPrivateServerSideProps(
         mapData = await getOneMap({ id: id }, token);
         if (mapData) {
           mapData.tags = mapData.tags.map(item => Number(item.id));
-          [...mapData.mmdpublicusers, ...mapData.mmdcustomers].map((item) => {
-            if (item.is_approved) {
-              manualArray.push(
-                {
-                  type: "Feature",
-                  geometry: item.geometry,
-                  properties: {
-                    id: item.id,
-                    title: item.title,
-                    description: item.description,
-                    type: item.public_user ? 'public' : 'customer',
-                  }
-                })
-            }
-          })
+          manualArray = await extractMapData(mapData);
           datasets = await getDatasetsByMap({ maps: id }, token);
+          datasets = datasets.map((item) => {
+            let temp = mapData.mapdatasetconfs.find((obj) => obj.dataset.id === item.id);
+            return { ...item, config: temp ? temp : null }
+          })
         }
       }
       const data = await fetchApi('styles/v1/mbshaban');
@@ -393,13 +197,14 @@ export const getServerSideProps = withPrivateServerSideProps(
         icon.id = Number(icon.id);
       })
 
+
       tags.map((item) => {
         item.id = Number(item.id);
       })
       return {
         props: {
           authenticatedUser: verifyUser, styledMaps: data, tags: tags,
-          mapData: mapData, manualMapData: manualArray, serverSideDatasets: datasets, token: token, icons: icons
+          serverSideMapData: mapData, manualMapData: manualArray, serverSideDatasets: datasets, token: token, icons: icons
         }
       }
     } catch (error) {

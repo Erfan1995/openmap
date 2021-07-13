@@ -7,6 +7,9 @@ import Preview from './Preview';
 import styled from 'styled-components';
 // work around broken icons when using webpack, see https://github.com/PaulLeCam/react-leaflet/issues/255
 import { Card } from "antd";
+import { getSpecifictPopup } from 'lib/general-functions';
+import { getStrapiMedia } from 'lib/media';
+import { MapIconSize } from 'lib/constants';
 
 const PupopDiv = styled.div`
 height:200px;
@@ -27,26 +30,6 @@ L.Icon.Default.mergeOptions({
 
 //
 
-
-const getSpecifictPopup = (properties, type) => {
-  switch (type) {
-    case 'dark': return `<div class='dark-mode'>${generateData(properties,type)}</div>`
-    case 'white': return `<div class='white-mode'>${generateData(properties,type)}</div>`
-    case 'color': return `<div class='color-mode '>${generateData(properties,type)}</div>`
-
-  }
-}
-
-const generateData = (properties, type) => {
-  let details = '';
-  Object.entries(properties).map((item, index) => {
-    details += `<div class=" padding-10 ${type === 'color' && index === 0 ? 'popup-header' : ''}">
-      <div>${item[0].toUpperCase()}</div>
-      <div  class='popup-bold'>${item[1]}</div>
-    </div>`
-  })
-  return details;
-}
 
 
 
@@ -111,19 +94,24 @@ export default class EditControlExample extends Component {
     if (this.props.manualMapData.length > 0) {
       let leafletGeoJSON = new L.GeoJSON(this.props.manualMapData, {
         pointToLayer: (feature, latlng) => {
+
+          const iconUrl = getStrapiMedia(this.props.mapData.icons.length > 0 ? this.props.mapData.icons[0]?.icon[0] : null);
+          if (!iconUrl) return L.marker(latlng);
+
           return L.marker(latlng, {
-            icon: new L.icon({ iconUrl: '/metamask.png' })
+            icon: new L.icon({ iconUrl: iconUrl, iconSize: MapIconSize })
           })
         },
         onEachFeature: (feature = {}, layer) => {
           const { properties } = feature;
           if (!properties) return;
-          layer.bindPopup(`<div>${getSpecifictPopup(properties,'white')}</div>`)
+          layer.bindPopup(`<div>${getSpecifictPopup(properties, this.props.mapData.default_popup_style_slug || '', this.props.mapData.mmd_properties || [])}</div>`)
         }
       });
       let leafletFG = reactFGref;
       localStorage.setItem('center', JSON.stringify(leafletGeoJSON.getBounds().getCenter()));
       leafletGeoJSON.eachLayer((layer) => {
+
         // layer.on("click", function (e) {
         //   this.setState({ modalVisible: true, place: layer.feature });
         // }.bind(this));

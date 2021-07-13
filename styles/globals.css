@@ -173,7 +173,7 @@
  .leaflet-popup-content-wrapper{
    border-radius:5px !important;
    padding: 0 !important;
-   margin-left: 30px !important;
+   margin-left: 0px !important;
  }
  .leaflet-popup-content{
   margin:0 !important;
@@ -222,7 +222,7 @@
 }
 ::-webkit-scrollbar {
   width: 5px;
-  
+  height: 5px;
 }
 
 /* Track */
@@ -243,4 +243,10 @@
   background: #888;
   border-radius: 5px;
 
+}
+
+
+
+.selectedBox{
+  border:2px solid rgb(184, 172, 172) !important;
 }

@@ -1,5 +1,5 @@
 import { getMethod, getOneMap } from "lib/api";
-import { extractMapData, getMapData } from "lib/general-functions";
+import { extractMapData } from "lib/general-functions";
 
 import dynamic from "next/dynamic";
 export default function Home({ mapData, manualMapData, datasets }) {
