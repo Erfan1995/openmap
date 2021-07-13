@@ -36,7 +36,7 @@ const SaveButton = styled(Button)`
 `;
 
 
-const MapConf = ({ authenticatedUser, styledMaps, tags, mapData, serverSideDatasets, token, icons ,setMapStyle,setDataset,onMapDataChange}) => {
+const MapConf = ({ authenticatedUser, styledMaps, tags, mapData, serverSideDatasets, token, icons, setMapStyle, setDataset, onMapDataChange }) => {
     const [styleId, setStyleID] = useState(mapData.styleId || process.env.NEXT_PUBLIC_MAPBOX_DEFAULT_MAP);
     const childRef = useRef();
     const selectDatasetChildRef = useRef();
@@ -54,9 +54,16 @@ const MapConf = ({ authenticatedUser, styledMaps, tags, mapData, serverSideDatas
 
     const router = useRouter();
 
-    const changeStyle = (item) => {
-        setStyleID(item.id);
-        setMapStyle(item.id);
+    const changeStyle = async (item) => {
+        setLoading(true);
+        const res = await putMethod(`maps/${mapData.id}`, { styleId: item.id });
+        if (res) {
+            message.success("map style updated successfully");
+            setStyleID(item.id);
+            setMapStyle(item.id);
+        }
+        setLoading(false);
+
     }
 
 
@@ -96,9 +103,9 @@ const MapConf = ({ authenticatedUser, styledMaps, tags, mapData, serverSideDatas
                 if (res) {
                     const dd = await postMethod('mapdatasetconfs', { map: mapData.id, dataset: selectedRow.id });
                     if (dd) {
-                         selectedDataset.push({ ...selectedRow, config: dd });
-                         setDataset();
-                         
+                        selectedDataset.push({ ...selectedRow, config: dd });
+                        setDataset();
+
                         message.success(DATASET.SUCCESS);
                     }
                     setModalVisible(false);
@@ -204,8 +211,6 @@ const MapConf = ({ authenticatedUser, styledMaps, tags, mapData, serverSideDatas
 
     return (
         <Spin spinning={loading}>
-
-
             <Card style={{ height: '70vh', overflowY: 'scroll' }}>
                 {layerClicked ?
                     <Tabs defaultActiveKey="1">

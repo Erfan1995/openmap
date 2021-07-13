@@ -38,7 +38,7 @@ const MapMarkers = ({ icons, mdcId, selectedDIcons, layerType, setDataset, onMap
     selectedDIcons.map(data => data.id = Number(data.id));
     const [uploadIconsLoading, setUploadIconsLoading] = useState(false);
     const [markers, setMarkers] = useState(icons);
-    const [selectedIcons, setSelectedIcons] = useState();
+    const [selectedIcons, setSelectedIcons] = useState([]);
     const selectedIconsToUpload = selectedDIcons;
     useEffect(() => {
         setSelectedIcons(selectedDIcons);

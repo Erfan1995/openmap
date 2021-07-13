@@ -1,11 +1,12 @@
-import { List, Row, Card, Button, Form, Input, Col, message, Spin } from 'antd';
+import { List, Row, Card, Button, Form, Input, Col, message, Spin, Modal } from 'antd';
 import { MAP_SOURCE } from 'lib/constants';
 import styled from 'styled-components';
 import SubTitle from '../SubTitle';
-import { useState } from 'react';
+import { useState, useRef } from 'react';
 import { getMethod, postMethod } from '../../../../lib/api';
 import nookies from "nookies";
-
+import { DATASET } from '../../../../static/constant'
+import MapStyleDialog from './MapStyleDialog';
 const StyleWrapper = styled.div`
 border: 1px solid #eeeeee;
  border-radius: 5px;
@@ -44,12 +45,13 @@ background-color:rgb(250,250,250);
  }
 `
 const StyledMaps = ({ changeStyle, mapData }) => {
-    const [form] = Form.useForm();
+    const childRef = useRef();
     const { token } = nookies.get();
     const [loading, setLoading] = useState(false);
     const [dataSource, setDataSource] = useState(mapData);
     const [formVisible, setFormVisible] = useState(false);
     const [mapSource, setMapSource] = useState(MAP_SOURCE);
+    const [modalVisible, setModalVisible] = useState(false);
     const changeMapStyleSource = async (name) => {
 
         setMapSource(MAP_SOURCE.map((item) => {
@@ -72,20 +74,11 @@ const StyledMaps = ({ changeStyle, mapData }) => {
         }
     }
 
-    const addNewStyle = () => {
-        form
-            .validateFields()
-            .then(async (values) => {
-                setLoading(true);
-                const res = await postMethod('mapstyles', values);
-                if (res) {
-                    setDataSource([...dataSource, res]);
-                    message.success("style added successfully");
-                    form.resetFields();
-                }
-                setLoading(false);
-            })
+    const onModalClose = (res) => {
+        setModalVisible(false);
+        setDataSource([...dataSource, res]);
     }
+
     return (
         <Spin spinning={loading}>
             <Row>
@@ -102,7 +95,7 @@ const StyledMaps = ({ changeStyle, mapData }) => {
                                 grid={{ gutter: 16, column: 2 }}
                                 renderItem={item => (
                                     <SourceCard
-                                       className={item.isSelected?'selectedBox':''}
+                                        className={item.isSelected ? 'selectedBox' : ''}
                                         onClick={() => changeMapStyleSource(item.name)}
                                     >
                                         {item.name}
@@ -119,26 +112,22 @@ const StyledMaps = ({ changeStyle, mapData }) => {
                         title={'item'}
                         number={2}
                     />
+                    <Modal
+                        width={800}
+                        visible={modalVisible}
+                        centered
+                        title={DATASET.ADD_NEW_MAP_STYLE}
+                        onOk={() => childRef.current.addNewStyle()}
+                        destroyOnClose={true}
+                        onCancel={() => setModalVisible(false)}
+                    >
+                        <MapStyleDialog ref={childRef} onModalClose={onModalClose} />
+                    </Modal>
+
                     {formVisible ?
-                        <div>
-                            <Row gutter={6}>
-                                <Col span={16}>
-                                    <Form form={form} layout="horizantal" hideRequiredMark>
-                                        <Form.Item
-                                            name="link"
-                                            rules={[{ required: true }]}
-                                        >
-                                            <Input placeholder="link" width={100} />
-                                        </Form.Item>
-                                    </Form>
-                                </Col>
-                                <Col span={4}>
-                                    <Button type="dashed" onClick={() => addNewStyle()} >
-                                        Add Style
-                                    </Button>
-                                </Col>
-                            </Row>
-                        </div> : <div></div>
+                        <Button type="dashed" size='large' block onClick={() => setModalVisible(true)}>
+                            {DATASET.ADD_CUSTOM_STYLE}
+                        </Button> : <div></div>
                     }
                     <ListWrapper>
                         <List
@@ -146,15 +135,12 @@ const StyledMaps = ({ changeStyle, mapData }) => {
                             grid={{ gutter: 10, column: 1 }}
                             dataSource={dataSource}
                             renderItem={(item) => (
-
-                                <List.Item>
+                                < List.Item >
                                     <StyleWrapper onClick={() => { changeStyle(item) }} >
                                         {formVisible ? <div>{item.link}</div>
                                             :
                                             <span>
                                                 <Image src={`${process.env.NEXT_PUBLIC_MAPBOX_API_URL}/styles/v1/mbshaban/${item.id}/static/-87.0186,32.4055,10/70x60?access_token=${process.env.NEXT_PUBLIC_MAPBOX_TOKEN}`} alt={item.name} />
-
-
                                                 {item.name}
                                             </span>
 

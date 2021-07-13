@@ -88,6 +88,8 @@ export const DATASET = {
     CREATED_DATE: 'Created Date',
     VISITS: 'Visits',
     SUBMISSIONS: 'Submissions',
+    ADD_CUSTOM_STYLE: 'Add Mapbox Map Style',
+    ADD_NEW_MAP_STYLE: 'Add New Map Style',
 
 }
 export const LAT = ['lat', 'Lat', 'LAT', 'latitude', 'Latitude', 'LATITUDE'];
