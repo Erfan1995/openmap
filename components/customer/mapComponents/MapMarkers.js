@@ -143,23 +143,25 @@ const MapMarkers = ({ icons, mdcId, selectedDIcons, layerType, setDataset, onMap
     }
     return (
         <div>
-            <Card size="small" title="Selected Markers" >
-                <List
-                    grid={{
-                        gutter: 10,
-                        column: 3
-                    }}
-                    dataSource={selectedIcons}
-                    renderItem={(item) => (
-                        <List.Item key={`listItem` + item.id}>
-                            <Card >
-                                <DeleteButton onClick={() => showDeleteConfirm(item.id, 'selectedIcons')}>x</DeleteButton>
-                                <Photo src={getStrapiMedia(item.icon[0])} />
-                            </Card>
-                        </List.Item>
-                    )}
-                />
-            </Card>
+            {selectedIcons.length > 0 &&
+                <Card size="small" title="Selected Markers" >
+                    <List
+                        grid={{
+                            gutter: 10,
+                            column: 3
+                        }}
+                        dataSource={selectedIcons}
+                        renderItem={(item) => (
+                            <List.Item key={`listItem` + item.id}>
+                                <Card >
+                                    <DeleteButton onClick={() => showDeleteConfirm(item.id, 'selectedIcons')}>x</DeleteButton>
+                                    <Photo src={getStrapiMedia(item.icon[0])} />
+                                </Card>
+                            </List.Item>
+                        )}
+                    />
+                </Card>
+            }
             <Spin spinning={uploadIconsLoading}>
                 <MarkerCard size="small" title="Markers" >
                     <List

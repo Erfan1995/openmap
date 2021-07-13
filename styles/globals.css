@@ -244,3 +244,9 @@
   border-radius: 5px;
 
 }
+
+
+
+.selectedBox{
+  border:2px solid rgb(184, 172, 172) !important;
+}

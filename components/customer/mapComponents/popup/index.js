@@ -128,7 +128,7 @@ const Popup = ({ mdcId, datasetProperties, selectedDatasetProperties, layerType,
                                 grid={{ gutter: 16, column: 3 }}
                                 itemLayout='horizontal'
                                 renderItem={item => (
-                                    <PopUpCart onClick={() => selectPopupStyle(item.name)}
+                                    <PopUpCart  onClick={() => selectPopupStyle(item.name)}
                                         cover={<img alt="example" src={item.cover}
                                         />}
                                     />
