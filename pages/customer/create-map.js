@@ -122,6 +122,7 @@ const CreateMapContainer = ({ authenticatedUser, collapsed, styledMaps, tags, se
           <Col xs={24} sm={24} md={24} lg={7} xl={7} >
 
             <MapConf
+            
               authenticatedUser={authenticatedUser}
               styledMaps={styledMaps}
               tags={tags}
@@ -190,6 +191,8 @@ export const getServerSideProps = withPrivateServerSideProps(
           })
         }
       }
+
+
       const data = await fetchApi('styles/v1/mbshaban');
       const tags = await getTags(token);
       const icons = await getIcons(token);

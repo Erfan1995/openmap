@@ -8,7 +8,7 @@ import Preview from "./Preview";
 import EditControlExample from "./map2";
 import { Button, message } from "antd";
 import styled from 'styled-components';
-import {  getSpecifictPopup } from "lib/general-functions";
+import { getSpecifictPopup } from "lib/general-functions";
 import L from 'leaflet';
 import LeafletgeoSearch from "./MapSearch";
 import { getStrapiMedia } from "lib/media";
@@ -40,15 +40,15 @@ bottom:74px;
 left:10px;
 font-size: 18px;
 border-radius:3px ;
-border: 2px solid #aaa;
+border: 1px solid #aaa;
 
 `;
 
 
 
 const TopButtonWrapper = styled.div`
-  margin-top: -67px;
-  margin-right:70px;
+  margin-top: -60px;
+  margin-right:-10px;
   float: right !important;
 
   @media (max-width: 990px) {
@@ -86,16 +86,23 @@ const Map = ({ styleId, center, setCenter, style, mapData, manualMapData, datase
   }
 
 
+
+
   const onChange = async () => {
     onMapDataChange();
   }
 
   function setMapCenter() {
-    setCenter(JSON.parse(localStorage.getItem('center')));
+
+    const arr = [];
+    datasets?.map(item => item.datasetcontents).map(obj => obj.map(j => arr.push(j)));
+    let leafletGeoJSON = new L.GeoJSON([...manualMapData, ...arr]);
+    // console.log('center', JSON.stringify());
+
+    setCenter(leafletGeoJSON.getBounds().getCenter());
   }
 
   return (
-
     <div>
       {
         userType === 'customer' &&
