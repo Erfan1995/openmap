@@ -41,8 +41,8 @@ export default class EditControlExample extends Component {
     geoData: {},
     type: 'create',
     place: {}
-
   }
+  
   constructor(props) {
     super(props);
     this.childRef = React.createRef()
@@ -98,8 +98,9 @@ export default class EditControlExample extends Component {
           const iconUrl = getStrapiMedia(this.props.mapData.icons.length > 0 ? this.props.mapData.icons[0]?.icon[0] : null);
           if (!iconUrl) return L.marker(latlng);
 
+
           return L.marker(latlng, {
-            icon: new L.icon({ iconUrl: iconUrl, iconSize: MapIconSize })
+            icon: new L.icon({ iconUrl: feature?.icon?.icon[0] ? getStrapiMedia(feature?.icon?.icon[0]) : iconUrl, iconSize: MapIconSize })
           })
         },
         onEachFeature: (feature = {}, layer) => {
@@ -109,7 +110,6 @@ export default class EditControlExample extends Component {
         }
       });
       let leafletFG = reactFGref;
-      localStorage.setItem('center', JSON.stringify(leafletGeoJSON.getBounds().getCenter()));
       leafletGeoJSON.eachLayer((layer) => {
 
         // layer.on("click", function (e) {

@@ -121,6 +121,7 @@ const CreateMapContainer = ({ authenticatedUser, collapsed, styledMaps, tags, se
           <Col xs={24} sm={24} md={24} lg={7} xl={7} >
 
             <MapConf
+            
               authenticatedUser={authenticatedUser}
               styledMaps={styledMaps}
               tags={tags}

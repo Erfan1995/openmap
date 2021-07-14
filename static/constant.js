@@ -106,6 +106,7 @@ export const MAP = {
     ENTER_TITLE: 'Please enter title',
     TITLE: 'title',
     DESCRIPTION: 'description',
+    SELECT_ICON: 'Select Icon',
     ENTER_DESCRIPTION: 'please enter description',
     CHECK_INTERNET_CONNECTION: 'please check your internet connection.',
     SET_CENTER: 'set Center',

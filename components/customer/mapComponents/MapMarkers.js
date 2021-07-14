@@ -143,7 +143,7 @@ const MapMarkers = ({ icons, mdcId, selectedDIcons, layerType, setDataset, onMap
     }
     return (
         <div>
-            {selectedIcons.length > 0 &&
+            {selectedIcons &&
                 <Card size="small" title="Selected Markers" >
                     <List
                         grid={{
