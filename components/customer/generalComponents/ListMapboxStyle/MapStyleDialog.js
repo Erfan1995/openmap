@@ -20,6 +20,7 @@ const MapStyleDialog = ({ onModalClose }, ref) => {
             form
                 .validateFields()
                 .then(async (values) => {
+                    values.type = "custom";
                     setLoading(true);
                     const res = await postMethod('mapstyles', values);
                     if (res) {

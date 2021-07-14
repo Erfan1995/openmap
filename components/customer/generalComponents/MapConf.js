@@ -56,13 +56,15 @@ const MapConf = ({ authenticatedUser, styledMaps, tags, mapData, serverSideDatas
 
     const changeStyle = async (item) => {
         setLoading(true);
-        const res = await putMethod(`maps/${mapData.id}`, { styleId: item.id });
+        console.log(item);
+        const res = await putMethod(`maps/${mapData.id}`, { mapstyle: item.id });
         if (res) {
             message.success("map style updated successfully");
             setStyleID(item.id);
-            setMapStyle(item.id);
+            setMapStyle(item);
+            console.log(res);
         }
-        setLoading(false);
+        setLoading(false)
 
     }
 

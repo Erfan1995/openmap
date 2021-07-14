@@ -6,8 +6,8 @@ import styled from 'styled-components';
 import nookies from 'nookies';
 import dynamic from "next/dynamic";
 import {
-  fetchApi, putMethod, getOneMap, getDatasetsByMap, getTags, 
-  getIcons
+  fetchApi, putMethod, getOneMap, getDatasetsByMap, getTags,
+  getIcons, getMapStyles
 } from 'lib/api';
 import { getMapData, extractMapData } from "../../lib/general-functions";
 import { useRouter } from 'next/router';
@@ -40,9 +40,8 @@ const CreateMapContainer = ({ authenticatedUser, collapsed, styledMaps, tags, se
   const MapWithNoSSR = dynamic(() => import("../../components/map"), {
     ssr: false
   });
-
   const key = 'updatable';
-  
+
   const router = useRouter();
 
 
@@ -190,7 +189,7 @@ export const getServerSideProps = withPrivateServerSideProps(
           })
         }
       }
-      const data = await fetchApi('styles/v1/mbshaban');
+      const data = await getMapStyles({ type: 'default' }, token);
       const tags = await getTags(token);
       const icons = await getIcons(token);
       icons.map((icon) => {

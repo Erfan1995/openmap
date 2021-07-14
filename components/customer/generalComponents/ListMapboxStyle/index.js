@@ -3,14 +3,13 @@ import { MAP_SOURCE } from 'lib/constants';
 import styled from 'styled-components';
 import SubTitle from '../SubTitle';
 import { useState, useRef } from 'react';
-import { getMethod, postMethod } from '../../../../lib/api';
+import { getMethod, postMethod, getMapStyles } from '../../../../lib/api';
 import nookies from "nookies";
 import { DATASET } from '../../../../static/constant'
 import MapStyleDialog from './MapStyleDialog';
 const StyleWrapper = styled.div`
 border: 1px solid #eeeeee;
  border-radius: 5px;
-width:100%;
  &:hover{
   border:1px solid #5bc0de;
   cursor:pointer
@@ -63,14 +62,24 @@ const StyledMaps = ({ changeStyle, mapData }) => {
         }))
 
         if (name === "Base") {
-            setFormVisible(false);
-            setDataSource(mapData)
+            setLoading(true);
+            const res = await getMapStyles({ type: 'default' }, token);
+            if (res) {
+                setFormVisible(false);
+                setDataSource(res);
+                console.log(res);
+            }
+            setLoading(false);
         } else if (name === "MapBox") {
             setLoading(true);
-            const res = await getMethod('mapstyles', token);
-            setFormVisible(true);
-            setDataSource(res);
-            setLoading(false);
+            const res = await getMapStyles({ type: 'custom' }, token);
+            if (res) {
+                setFormVisible(true);
+                setDataSource(res);
+                setLoading(false);
+                setModalVisible(true)
+            }
+
         }
     }
 
@@ -123,12 +132,6 @@ const StyledMaps = ({ changeStyle, mapData }) => {
                     >
                         <MapStyleDialog ref={childRef} onModalClose={onModalClose} />
                     </Modal>
-
-                    {formVisible ?
-                        <Button type="dashed" size='large' block onClick={() => setModalVisible(true)}>
-                            {DATASET.ADD_CUSTOM_STYLE}
-                        </Button> : <div></div>
-                    }
                     <ListWrapper>
                         <List
                             itemLayout='vertical'
@@ -137,11 +140,15 @@ const StyledMaps = ({ changeStyle, mapData }) => {
                             renderItem={(item) => (
                                 < List.Item >
                                     <StyleWrapper onClick={() => { changeStyle(item) }} >
-                                        {formVisible ? <div>{item.link}</div>
+                                        {formVisible ?
+                                            <span>
+                                                <Image src={item.link} />
+                                                {/* {item.name} */}
+                                            </span>
                                             :
                                             <span>
-                                                <Image src={`${process.env.NEXT_PUBLIC_MAPBOX_API_URL}/styles/v1/mbshaban/${item.id}/static/-87.0186,32.4055,10/70x60?access_token=${process.env.NEXT_PUBLIC_MAPBOX_TOKEN}`} alt={item.name} />
-                                                {item.name}
+                                                <Image src={item.link} />
+                                                {/* {item.name} */}
                                             </span>
 
                                         }

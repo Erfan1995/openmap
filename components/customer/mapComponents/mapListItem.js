@@ -56,6 +56,7 @@ const ActionButton = ({ handleMenuClick }) => {
 };
 
 const MapItem = ({ item, filterDeletedMap }) => {
+    console.log(item);
     const [loading, setLoading] = useState(false);
     const router = useRouter();
     const deleteDataset = async (id) => {
