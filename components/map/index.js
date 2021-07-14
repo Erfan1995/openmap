@@ -97,7 +97,6 @@ const Map = ({ styleId, center, setCenter, style, mapData, manualMapData, datase
     const arr = [];
     datasets?.map(item => item.datasetcontents).map(obj => obj.map(j => arr.push(j)));
     let leafletGeoJSON = new L.GeoJSON([...manualMapData, ...arr]);
-    // console.log('center', JSON.stringify());
 
     setCenter(leafletGeoJSON.getBounds().getCenter());
   }

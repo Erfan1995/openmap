@@ -1,14 +1,9 @@
-import { Card, Typography, Form, Input, Spin, Row, Col, Upload, message, Button, Image } from "antd";
-import { InboxOutlined, UploadOutlined } from '@ant-design/icons';
-
-import UseAuth from "hooks/useAuth";
-import dynamic from "next/dynamic";
-import Link from "next/link";
-import { useRouter } from "next/router";
+import {  Typography, Form, Input, Spin, Row, Col, Upload, message, Button, Image } from "antd";
+import { InboxOutlined } from '@ant-design/icons';
 import { useImperativeHandle, useState, forwardRef } from "react";
 import styled from 'styled-components';
 import { DATASET } from '../../../static/constant';
-import { putMethod, putFileMethod, postFileMethod, postMethod, postPublicUserFileMethod, putPublicUserFileMethod } from "lib/api";
+import {  putPublicUserFileMethod } from "lib/api";
 import { getStrapiMedia } from "lib/media";
 const { Title } = Typography;
 const { Dragger } = Upload;
@@ -26,7 +21,7 @@ const StyledButton = styled(Button)`
 const PublicUserProfile = ({ userId, onModalClose, addImageFile, serverPublicUser }, ref) => {
     const [loading, setLoading] = useState(false);
     const [form] = Form.useForm();
-    const [imageUrl, setImageUrl] = useState(serverPublicUser.picture.url);
+    const [imageUrl, setImageUrl] = useState(serverPublicUser?.picture?.url);
     const [uploadImageAvailable, setUploadImageAvailable] = useState(false);
 
     const props = {

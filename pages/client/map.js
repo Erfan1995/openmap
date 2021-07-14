@@ -2,13 +2,13 @@ import dynamic from "next/dynamic";
 import LayoutPage from "components/client/layout";
 import { useEffect, useState } from "react";
 import UseAuth from "hooks/useAuth";
-import { getMethod, getOneMap, getAllMaps } from "lib/api";
+import { getMethod, getOneMap, getAllMaps, getDatasetsByMap } from "lib/api";
 import { extractMapData, getPublicAuthenticatedMapData } from "lib/general-functions";
 const Map = ({ manualMapData, mapData, datasets }) => {
 
   const [loading, setLoading] = useState(true);
   const [publicUser, setPublicUser] = useState(true);
-  const [datasetData, setDatasetData] = useState(true);
+  const [datasetData, setDatasetData] = useState(datasets);
   const [zoomLevel, setZoomLevel] = useState(mapData.zoomLevel);
 
   const { login, logout } = UseAuth();
@@ -19,7 +19,7 @@ const Map = ({ manualMapData, mapData, datasets }) => {
       setPublicUser(res[0]);
       setLoading(false);
     }
-    setDatasetData(datasets);
+    // setDatasetData(datasets);
   }, [])
 
   const onDataSetChange = (list) => {
@@ -43,18 +43,19 @@ const Map = ({ manualMapData, mapData, datasets }) => {
       {!loading &&
         <LayoutPage walletAddress={publicUser.publicAddress} datasets={datasets} onDataSetChange={onDataSetChange}
           mapInfo={mapData} userId={publicUser.id} publicUser={publicUser} mapData={mapData}  >
-          <MapWithNoSSR draw={{
-            rectangle: false,
-            polygon: false,
-            circle: false,
-            circlemarker: false,
-            polyline: false
-          }}
+          <MapWithNoSSR 
             mapZoom={zoomLevel}
             styleId={mapData ? mapData.styleId : process.env.NEXT_PUBLIC_MAPBOX_DEFAULT_MAP}
             edit={{
               edit: false,
               remove: false,
+            }}
+            draw={{
+              rectangle: false,
+              polygon: false,
+              circle: false,
+              circlemarker: false,
+              polyline: false
             }}
             userType='public'
             manualMapData={manualMapData} datasets={datasetData} mapData={mapData}
@@ -68,33 +69,29 @@ export default Map;
 
 export async function getServerSideProps(ctx) {
   let mapData = null;
-  let datasetData = null;
   const { mapToken, id, publicUser } = ctx.query;
   try {
+    let datasets = [];
     if (id) {
-      mapData = await getMethod(`maps?id=${id}&mapId=${mapToken}`, null, false);
-      // mapData = await getOneMap({ mapId: mapToken, id: id }, null, false);
-      // console.log(mapData, '>>>>>>>');
-      if (!mapData.length > 0) {
-        return {
-          redirect: {
-            destination: '/server-error',
-            permanent: false,
-          }
-        }
+      mapData = await getOneMap({ id: id });
+      if (mapData) {
+        datasets = await getDatasetsByMap({ maps: id },null,false);
+        datasets = datasets.map((item) => {
+          let temp = mapData.mapdatasetconfs.find((obj) => obj.dataset.id === item.id);
+          return { ...item, config: temp ? temp : null }
+        })
       }
-      datasetData = await getMethod(`datasets?_where[0][maps.id]=${id}`, null, false);
-
     }
 
     return {
       props: {
-        manualMapData: [...await extractMapData(mapData[0]), ...await getPublicAuthenticatedMapData(publicUser, mapData[0].id)]
-        , mapData: mapData[0],
-        datasets: datasetData
+        manualMapData: [...await extractMapData(mapData), ...await getPublicAuthenticatedMapData(publicUser, mapData.id)]
+        , mapData: mapData,
+        datasets: datasets
       },
     };
   } catch (e) {
+    console.log(e);
     return {
       redirect: {
         destination: '/server-error',

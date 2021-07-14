@@ -1,4 +1,4 @@
-import {  MapContainer, TileLayer, GeoJSON, ZoomControl, useMapEvents } from "react-leaflet";
+import { MapContainer, TileLayer, GeoJSON, ZoomControl, useMapEvents } from "react-leaflet";
 import "leaflet/dist/leaflet.css";
 import "leaflet-draw/dist/leaflet.draw.css";
 import "leaflet-defaulticon-compatibility/dist/leaflet-defaulticon-compatibility.css";
@@ -7,14 +7,17 @@ import { useState } from "react";
 import Preview from "./Preview";
 import EditControlExample from "./map2";
 import { message } from "antd";
-import { getCustomerMapData, getPublicMapData } from "lib/general-functions";
+import { getCustomerMapData, getPublicMapData, getSpecifictPopup } from "lib/general-functions";
 import LeafletgeoSearch from "./MapSearch";
+import { getStrapiMedia } from "lib/media";
+import { MapIconSize } from "lib/constants";
 
 const PublicMap = ({ styleId, mapZoom, style, mapData, manualMapData, datasets, edit, draw, userType, userId }) => {
 
     const [openModal, setOpenModal] = useState(null);
     const [place, setPlace] = useState(null);
     const [customMapData, setCustomMapData] = useState(manualMapData);
+
 
     const closePlaceDetails = () => {
         setOpenModal(false)
@@ -71,10 +74,19 @@ const PublicMap = ({ styleId, mapZoom, style, mapData, manualMapData, datasets, 
 
             {
                 datasets && datasets.map((item) => {
-                    return <GeoJSON key={item.title + item.id} data={item.datasetcontents} onEachFeature={(item, layer) => {
-                        layer.on({
-                            click: showDetails
+                    return <GeoJSON pointToLayer={(feature, latlng) => {
+                        const iconUrl = getStrapiMedia(item.config.icon?.icon[0]);
+
+                        if (!iconUrl) return L.marker(latlng);
+
+                        return L.marker(latlng, {
+                            icon: new L.icon({ iconUrl: iconUrl, iconSize: MapIconSize })
                         })
+                    }} key={item.title + item.id} data={item.datasetcontents} onEachFeature={(feature, layer) => {
+                        const { properties } = feature;
+                        if (!properties) return;
+                        layer.bindPopup(`<div>${getSpecifictPopup(properties, item.config.default_popup_style_slug || '', item.config.selected_dataset_properties || [])}</div>`)
+
                     }} />
                 })
             }
