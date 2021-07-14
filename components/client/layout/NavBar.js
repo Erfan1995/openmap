@@ -86,6 +86,7 @@ const NavBar = ({ isMobileSize, toggle, walletAddress, publicUser, mapData }) =>
                 title="Add your profile"
                 onOk={() => childRef.current.createProfile(file)}
                 destroyOnClose={true}
+                footer={null}
                 onCancel={() => setModalVisible(false)}
             >
                 <PublicUserProfile userId={publicUser.id} ref={childRef} onModalClose={onModalClose} addImageFile={addImageFile} serverPublicUser={serverPublicUser} />

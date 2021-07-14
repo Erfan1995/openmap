@@ -250,3 +250,28 @@
 .selectedBox{
   border:2px solid rgb(184, 172, 172) !important;
 }
+
+
+
+
+.ant-modal {
+  width: 100%;
+  border: none;
+  background: rgb(255, 255, 255);
+  box-shadow: rgb(0 0 0 / 1%) 0px 0px 1px, rgb(0 0 0 / 4%) 0px 4px 8px,
+    rgb(0 0 0 / 4%) 0px 16px 24px, rgb(0 0 0 / 1%) 0px 24px 32px;
+    border-radius: 10px;
+    padding:0 ;
+}
+
+
+.ant-modal-content {
+  background-color:transparent;
+box-shadow: rgb(0 0 0 / 5%) 0px 4px 8px 0px;
+}
+.ant-modal-header{
+  background-color: transparent;
+  border-bottom: none;
+
+}
+

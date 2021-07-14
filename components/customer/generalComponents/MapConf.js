@@ -221,15 +221,15 @@ const MapConf = ({ authenticatedUser, styledMaps, tags, mapData, serverSideDatas
                             <SaveButton type='primary' onClick={() => {
                                 childRef.current.saveData(styleId, file);
                             }}>{DATASET.SAVE}</SaveButton>
-                        </TabPane>
+                        </TabPane> 
 
                         <TabPane tab={DATASET.MAP_STYLE} key="2" >
                             <StyledMaps
                                 changeStyle={changeStyle}
                                 mapData={styledMaps}
-                            />
+                            /> 
 
-                        </TabPane>
+                         </TabPane> 
                         <TabPane tab={DATASET.LAYERS} key="3" >
                             <Button type="dashed" size='large' block onClick={() => mdc(mapData.id, false, "main")}>
                                 {DATASET.ADD_MAIN_POPUPS_AND_MARKER}
