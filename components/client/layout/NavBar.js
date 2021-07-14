@@ -32,7 +32,7 @@ const { Header } = Layout;
 const NavBar = ({ isMobileSize, toggle, walletAddress, publicUser, mapData }) => {
     const router = useRouter();
     const childRef = useRef();
-    const customWalletAddress = walletAddress.substring(0, 10) + '...' + walletAddress.substr(walletAddress.length - 5);
+    const customWalletAddress = walletAddress.substring(0, 12) + '...' + walletAddress.substr(walletAddress.length - 5);
     const handleModeChange = (e) => {
         e.preventDefault();
         router.push(e.target.value);
@@ -89,7 +89,8 @@ const NavBar = ({ isMobileSize, toggle, walletAddress, publicUser, mapData }) =>
                 footer={null}
                 onCancel={() => setModalVisible(false)}
             >
-                <PublicUserProfile userId={publicUser.id} ref={childRef} onModalClose={onModalClose} addImageFile={addImageFile} serverPublicUser={serverPublicUser} />
+                <PublicUserProfile userId={publicUser.id} ref={childRef} onModalClose={onModalClose} addImageFile={addImageFile} serverPublicUser={serverPublicUser}
+                    customWalletAddress={customWalletAddress} />
             </Modal>
             <Button shape='circle' type='primary' className='chatBot' size='large'>
                 <img src='/chat.png' />
