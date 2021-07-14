@@ -5,6 +5,7 @@ import { Router, useRouter } from "next/router";
 import UseAuth from "hooks/useAuth";
 import { useEffect, useState } from "react";
 import { MAP, Map } from 'static/constant';
+import { getMapVisits, putMethodPublicUser } from '../../lib/api'
 export const NextButton = styled(Button)`
   margin-top: 20px;
   padding: 30px;
@@ -34,7 +35,6 @@ export const NextButton = styled(Button)`
 let web3 = undefined;
 const Metamask = ({ mapDetails }) => {
     const router = useRouter();
-
     const handleSignup = async (publicAddress) => {
         const res = await fetch(`${process.env.NEXT_PUBLIC_STRAPI_API_URL}/public-users`, {
             body: JSON.stringify({ publicAddress }),
@@ -44,9 +44,16 @@ const Metamask = ({ mapDetails }) => {
             method: 'POST',
         }).then((response) => response.json());
     }
+    const handleVisits = async () => {
+        const res = await getMapVisits({ id: mapDetails.id })
+        if (res) {
+            const updated = await putMethodPublicUser(`maps/${mapDetails.id}`, { visits: (res.visits + 1) })
+        }
+    }
 
 
     const handleClick = async () => {
+        handleVisits();
         try {
             if (ethereum) {
                 await ethereum.enable();
@@ -66,6 +73,7 @@ const Metamask = ({ mapDetails }) => {
                     // If yes, retrieve it. If no, create it.
                     .then((users) =>
                         users.length ? users[0] : handleSignup(publicAddress)
+
                     )
                     .catch((err) => {
                         message.info(err.message);

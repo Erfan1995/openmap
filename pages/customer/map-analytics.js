@@ -73,8 +73,7 @@ const MapAnalytics = ({ collapsed, authenticatedUser, mapData }) => {
                             <CardWrapper>
                                 <Statistic
                                     title="Map Visits"
-                                    value={20000}
-                                    precision={2}
+                                    value={mapData[0].visits}
                                     valueStyle={{ color: '#3f8600' }}
                                     prefix={<ArrowUpOutlined />}
                                 />
@@ -84,8 +83,7 @@ const MapAnalytics = ({ collapsed, authenticatedUser, mapData }) => {
                             <CardWrapper>
                                 <Statistic
                                     title="Map Submissions"
-                                    value={1999}
-                                    precision={2}
+                                    value={mapData[0].mmdpublicusers.length}
                                     valueStyle={{ color: '#3f8600' }}
                                     prefix={<ArrowUpOutlined />}
                                 />
