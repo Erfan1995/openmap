@@ -38,17 +38,13 @@ const NavBar = ({ isMobileSize, toggle, walletAddress, publicUser, mapData }) =>
         router.push(e.target.value);
     }
     const [modalVisible, setModalVisible] = useState(false);
-    const [file, setFile] = useState();
     const [serverPublicUser, setServerPublicUser] = useState(publicUser);
     const { login, logout } = UseAuth();
     const [publicuserImage, setPublicUserImage] = useState(publicUser.picture);
     const onModalClose = (res) => {
         setServerPublicUser(res);
         setPublicUserImage(res.picture);
-        setModalVisible(false);
-    }
-    const addImageFile = (file) => {
-        setFile(file);
+        // setModalVisible(false);
     }
     const openFormModal = async () => {
         setModalVisible(true);
@@ -84,12 +80,11 @@ const NavBar = ({ isMobileSize, toggle, walletAddress, publicUser, mapData }) =>
                 visible={modalVisible}
                 centered
                 title="Add your profile"
-                onOk={() => childRef.current.createProfile(file)}
                 destroyOnClose={true}
                 footer={null}
                 onCancel={() => setModalVisible(false)}
             >
-                <PublicUserProfile userId={publicUser.id} ref={childRef} onModalClose={onModalClose} addImageFile={addImageFile} serverPublicUser={serverPublicUser}
+                <PublicUserProfile userId={publicUser.id} onModalClose={onModalClose} serverPublicUser={serverPublicUser}
                     customWalletAddress={customWalletAddress} />
             </Modal>
             <Button shape='circle' type='primary' className='chatBot' size='large'>

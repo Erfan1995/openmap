@@ -5,7 +5,6 @@ import styled from 'styled-components';
 import { DATASET } from '../../../static/constant';
 import { putPublicUserFileMethod } from "lib/api";
 import { getStrapiMedia } from "lib/media";
-const { Title } = Typography;
 const { Dragger } = Upload;
 
 const FormWrapper = styled.div`
@@ -18,53 +17,63 @@ const StyledButton = styled(Button)`
   margin-top: 10px;
   width: 100%;
 `;
+const ProfileImage = styled(Image)`
+`;
 const StyledImage = styled.img`
-display: block;
-margin-left: auto;
-margin-right: auto;
-width:70px;
 height:70px;
-    border-radius:50%;
+border-radius:50%;
 `
 const AccountName = styled.p`
-display: block;
-margin-left: auto;
-margin-right: auto;
-width:16%;
+text-align:center;
 margin-top:10px;
 font-size:12px;
 `
 const WalletAdd = styled.div`
-display: block;
-margin-left: auto;
-margin-right: auto;
-width:35%;
+display: inline;
+margin:0px auto;
 padding:5px 10px 5px 13px;
 border-radius:15px;
     border:1px solid gray;
     font-size:14px;
 `
-const UpdateButton = styled(Button)`
+const UpdateButton = styled.div`
     position:absolute;
-    right:8%;
-    top:45%;
+    right:12%;
+    top:47%;
+    font-size:12px;
+    color:DodgerBlue;
+    &:hover{
+        cursor:pointer;
+    }
 `
 const AccountInfo = styled.div`
-    width:90%;
-    border-radius:15px;
-    border:1px solid gray;
-    height:100px;
-    margin-left:auto;
-    margin-right:auto;
-    margin-top:10px;
-    background-image: linear-gradient(to right,  #ADD8E6 , blue);
+    border-radius:17px;
+    margin:20px 5% 0px 5%;
+    background-image: linear-gradient(to right,  DodgerBlue , blue);
 `
-const PublicUserProfile = ({ userId, onModalClose, addImageFile, serverPublicUser, customWalletAddress }, ref) => {
+const AccountInfoRow = styled(Row)`
+    padding: 15px 0px;
+`;
+const Title = styled.h6`
+    color:white;
+    font-size:9px;
+`;
+const Content = styled.h6`
+    color:white;
+    font-size:12px;
+`;
+const SaveButton = styled(Button)`
+    padding:2px 20px 4px 20px;
+    margin-left:20px;
+`;
+const PublicUserProfile = ({ userId, onModalClose, serverPublicUser, customWalletAddress }) => {
     const [loading, setLoading] = useState(false);
     const [form] = Form.useForm();
     const [imageUrl, setImageUrl] = useState(serverPublicUser?.picture?.url);
     const [uploadImageAvailable, setUploadImageAvailable] = useState(false);
     const [updateActive, setUpdateActive] = useState(false);
+    const [imageFile, setImageFile] = useState();
+    const [imageSelected, setImageSelected] = useState(false);
     const props = {
         beforeUpload: file => {
             if ((file.type.split("/")[0]) !== "image") {
@@ -75,7 +84,8 @@ const PublicUserProfile = ({ userId, onModalClose, addImageFile, serverPublicUse
         onChange: info => {
             if (info.file.status === "done") {
                 setImage(info.file);
-                addImageFile(info);
+                setImageFile(info.file);
+                setImageSelected(true);
             }
         },
     };
@@ -93,31 +103,34 @@ const PublicUserProfile = ({ userId, onModalClose, addImageFile, serverPublicUse
         setUploadImageAvailable(true);
     }
 
-    useImperativeHandle(ref, () => ({
-        createProfile(image) {
-            form
-                .validateFields()
-                .then(async (values) => {
-                    const fData = new FormData();
-                    fData.append('data', JSON.stringify(values));
-                    setLoading(true);
-                    if (image) {
-                        fData.append('files.picture', image.file.originFileObj, image.file.originFileObj.name);
-                    }
-                    let res = await putPublicUserFileMethod(`public-users/${userId}`, fData)
-                    setLoading(false);
-                    if (res) {
-                        message.success(DATASET.CREATE_MAP_SUCCESS_MSG);
-                        onModalClose(res);
-                    }
+    const createProfile = async () => {
 
-                })
-                .catch((info) => {
-                    message.error(info.message)
-                })
-        }
+        form
+            .validateFields()
+            .then(async (values) => {
+                const fData = new FormData();
+                console.log(values);
+                console.log(imageFile);
+                fData.append('data', JSON.stringify(values));
+                setLoading(true);
+                if (imageSelected) {
+                    fData.append('files.picture', imageFile.originFileObj, imageFile.originFileObj.name);
+                }
+                let res = await putPublicUserFileMethod(`public-users/${userId}`, fData)
+                setLoading(false);
+                if (res) {
+                    message.success(DATASET.CREATE_MAP_SUCCESS_MSG);
+                    onModalClose(res);
 
-    }), [])
+                }
+
+            })
+            .catch((info) => {
+                message.error(info.message)
+            })
+        setUpdateActive(false);
+    }
+
 
     return (
         <Spin spinning={loading}>
@@ -169,26 +182,44 @@ const PublicUserProfile = ({ userId, onModalClose, addImageFile, serverPublicUse
                                     </p>
                                     <p className="ant-upload-text">{DATASET.LOGO_FILE}</p>
                                 </Dragger> :
-                                    <Row>
-                                        {!uploadImageAvailable ? <Image src={getStrapiMedia(serverPublicUser.picture)} />
-                                            : <Image src={imageUrl} />}
-                                        <StyledButton onClick={() => removeImage()} >
-                                            Upload New Photo
-                                        </StyledButton>
+                                    <Row style={{textAlign: "center" }}>
+                                        <Col span={24}>
+                                            {!uploadImageAvailable ? <ProfileImage src={getStrapiMedia(serverPublicUser.picture)} />
+                                                : <ProfileImage src={imageUrl} />}
+                                            <StyledButton onClick={() => removeImage()} >
+                                                Upload New Photo
+                                            </StyledButton>
+                                        </Col>
                                     </Row>}
                             </Photo>
                         </Col>
-                        <Button onClick={() => setUpdateActive(false)} type="primary" shape="round">save</Button>
+                        <SaveButton onClick={() => createProfile()} type="primary" shape="round">Save Profile</SaveButton>
                     </Row> :
-                    <div>
+                    <div style={{ textAlign: "center" }}>
                         <StyledImage src={getStrapiMedia(serverPublicUser.picture)} />
-                        <AccountName>Ali rez Erfan</AccountName>
+                        <AccountName>{serverPublicUser.name}</AccountName>
                         <WalletAdd>{customWalletAddress}</WalletAdd>
-                        <UpdateButton onClick={() => setUpdateActive(true)}>update</UpdateButton>
-                        <AccountInfo></AccountInfo>
+                        <UpdateButton onClick={() => setUpdateActive(true)}>Edit Profile</UpdateButton>
+                        <AccountInfo>
+                            <AccountInfoRow>
+                                <Col span={8}>
+                                    <Title>Balance</Title>
+                                    <Content>24.03 ETH</Content>
 
+                                </Col>
+                                <Col span={8}>
+                                    <Title >Network</Title>
+                                    <Content >SafeSpace</Content>
+                                </Col>
+                                <Col span={8}>
+                                    <Title >Trust Score</Title>
+                                    <Content >50</Content>
+                                </Col>
+
+                            </AccountInfoRow>
+                        </AccountInfo>
+                        <p style={{ paddingTop: "10px" }}>Email: {serverPublicUser.email}</p>
                     </div>
-
                 }
 
             </FormWrapper>
@@ -196,4 +227,4 @@ const PublicUserProfile = ({ userId, onModalClose, addImageFile, serverPublicUse
     )
 }
 
-export default forwardRef(PublicUserProfile);
+export default PublicUserProfile;
