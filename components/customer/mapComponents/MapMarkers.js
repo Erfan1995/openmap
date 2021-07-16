@@ -165,7 +165,6 @@ const MapMarkers = ({ icons, mdcId, selectedDIcons, layerType, setDataset, onMap
             <Spin spinning={uploadIconsLoading}>
                 <MarkerCard size="small" title="Markers" >
                     <List
-                        pagination={true}
                         grid={{
                             gutter: 10,
                             column: 5
