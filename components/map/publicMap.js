@@ -18,7 +18,6 @@ const PublicMap = ({ styleId, mapZoom, style, mapData, manualMapData, datasets, 
     const [place, setPlace] = useState(null);
     const [customMapData, setCustomMapData] = useState(manualMapData);
 
-
     const closePlaceDetails = () => {
         setOpenModal(false)
     }
@@ -47,10 +46,6 @@ const PublicMap = ({ styleId, mapZoom, style, mapData, manualMapData, datasets, 
         }
     }
 
-
-
-
-
     return (
 
 
@@ -67,7 +62,7 @@ const PublicMap = ({ styleId, mapZoom, style, mapData, manualMapData, datasets, 
                 url={`${process.env.NEXT_PUBLIC_MAPBOX_API_URL}/styles/v1/mbshaban/${styleId || process.env.NEXT_PUBLIC_MAPBOX_DEFAULT_MAP}/tiles/256/{z}/{x}/{y}@2x?access_token=${process.env.NEXT_PUBLIC_MAPBOX_TOKEN}`}
             />
 
-            <LeafletgeoSearch />
+            <LeafletgeoSearch  />
             <MapEvents />
             <EditControlExample onChange={onChange} draw={draw}
                 edit={edit} manualMapData={customMapData} mapData={mapData} userType={userType} userId={userId} />

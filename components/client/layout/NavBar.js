@@ -3,10 +3,10 @@ import { Layout, Button, Radio, Modal } from "antd";
 import { MenuOutlined } from "@ant-design/icons";
 import { useRouter } from 'next/router';
 import styled from 'styled-components';
-import { MAP } from 'static/constant'
 import PublicUserProfile from "./PublicUserProfile";
 import { getStrapiMedia } from "lib/media";
 import UseAuth from "hooks/useAuth";
+
 const WalletAddressButton = styled(Button)`
 position:fexid; 
 right:280px;
@@ -60,20 +60,13 @@ const NavBar = ({ isMobileSize, toggle, walletAddress, publicUser, mapData }) =>
                 <Button onClick={toggle} shape='circle' className='mobile-trigger'><MenuOutlined
                 /></Button>
             }
-            <div className='nav-button'>
-                <Radio.Group onChange={handleModeChange}>
-                    <Radio.Button value="/client/map">Map</Radio.Button>
-                    {/* <Radio.Button value="/client/newslist">List</Radio.Button> */}
-                </Radio.Group>
-
+            <div className='profile'>
                 {publicUser.picture ? <ImageWrapper src={getStrapiMedia(publicuserImage)}
                     onClick={() => openFormModal()} /> :
                     <WalletAddressButton type='primary' shape='round' onClick={() => openFormModal()}>
                         {customWalletAddress}
                     </WalletAddressButton>
-
                 }
-
             </div>
 
             <Modal

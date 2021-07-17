@@ -43,7 +43,7 @@ const Map = ({ manualMapData, mapData, datasets }) => {
       {!loading &&
         <LayoutPage walletAddress={publicUser.publicAddress} datasets={datasets} onDataSetChange={onDataSetChange}
           mapInfo={mapData} userId={publicUser.id} publicUser={publicUser} mapData={mapData}  >
-          <MapWithNoSSR 
+          <MapWithNoSSR
             mapZoom={zoomLevel}
             styleId={mapData ? mapData.styleId : process.env.NEXT_PUBLIC_MAPBOX_DEFAULT_MAP}
             edit={{
@@ -58,7 +58,10 @@ const Map = ({ manualMapData, mapData, datasets }) => {
               polyline: false
             }}
             userType='public'
-            manualMapData={manualMapData} datasets={datasetData} mapData={mapData}
+            manualMapData={manualMapData}
+            datasets={datasetData}
+            mapData={mapData}
+            userId={publicUser.id}
             style={{ height: "100vh" }} />
         </LayoutPage>
       }
@@ -75,7 +78,7 @@ export async function getServerSideProps(ctx) {
     if (id) {
       mapData = await getOneMap({ id: id });
       if (mapData) {
-        datasets = await getDatasetsByMap({ maps: id },null,false);
+        datasets = await getDatasetsByMap({ maps: id }, null, false);
         datasets = datasets.map((item) => {
           let temp = mapData.mapdatasetconfs.find((obj) => obj.dataset.id === item.id);
           return { ...item, config: temp ? temp : null }

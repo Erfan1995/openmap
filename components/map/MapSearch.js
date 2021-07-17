@@ -14,7 +14,8 @@ const LeafletgeoSearch = () => {
             style: 'button',
             showMarker: false,
             searchLabel: 'Enter address',
-            animateZoom: true
+            animateZoom: true,
+            
         });
 
         map.addControl(searchControl);
