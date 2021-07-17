@@ -22,10 +22,9 @@ const { confirm } = Modal;
 const DatasetsWrapper = styled.div`
 border: 1px solid #eeeeee;
  border-radius: 5px;
- padding:15px 10px 10px 10px;
  width:100%;
  display:inline;
- height:60px;
+ height:70px;
 `;
 
 const SaveButton = styled(Button)`
@@ -38,14 +37,16 @@ const DatasetName = styled.p`
         text-decoration:underline;
         cursor:pointer;
     }
-    display:inline;
+    margin-top:23px;
+    margin-left:10px;
 `;
 const DatasetDeleteButton = styled.p`
-    display:inline;
     font-size:20px;
+    font-weight:bold;
     &:hover{
         font-size:22px;
     }
+    margin-top:15px;
 `;
 const MapConf = ({ authenticatedUser, styledMaps, tags, mapData, serverSideDatasets, token, icons, setMapStyle, setDataset, onMapDataChange }) => {
     const [styleId, setStyleID] = useState(mapData.styleId || process.env.NEXT_PUBLIC_MAPBOX_DEFAULT_MAP);
