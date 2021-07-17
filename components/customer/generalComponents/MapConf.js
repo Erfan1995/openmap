@@ -1,18 +1,18 @@
 import { useState, useRef } from 'react';
-import { Divider, Typography, Card, Tabs, Button, Modal, List, Spin, message } from 'antd';
+import { Divider, Typography, Card, Tabs, Button, Modal, List, Spin, message, Menu, Dropdown, Row, Col } from 'antd';
 import styled from 'styled-components';
 import CreateMap from 'components/customer/Forms/CreateMap';
 import StyledMaps from 'components/customer/generalComponents/ListMapboxStyle';
 import {
     putMethod, getDatasets,
-    postMethod, deleteMethod, getMapDatasetConf, getDatasetConfContent, getMapPopupProperties, getDatasetDetails
+    postMethod, deleteMethod, getMapDatasetConf, getDatasetConfContent, getMapPopupProperties, getDatasetDetails, getIcons
 } from '../../../lib/api';
 import SelectNewMapDataset from 'components/customer/mapComponents/SelectNewMapDataset';
 import { formatDate, fileSizeReadable } from "../../../lib/general-functions";
 import { ArrowLeftOutlined, DeleteTwoTone } from '@ant-design/icons';
 import { useRouter } from 'next/router';
 import { DATASET } from '../../../static/constant'
-import { ExclamationCircleOutlined } from '@ant-design/icons';
+import { ExclamationCircleOutlined, DownOutlined, } from '@ant-design/icons';
 import DatasetConf from './DetasetConf';
 import InjectCode from '../Forms/InjectCode.js';
 
@@ -23,12 +23,8 @@ const { confirm } = Modal;
 const DatasetsWrapper = styled.div`
 border: 1px solid #eeeeee;
  border-radius: 5px;
- padding:10px 10px;
  width:100%;
- &:hover{
-  border:1px solid #5bc0de;
-  cursor:pointer
- }
+ height:70px;
 `;
 
 const SaveButton = styled(Button)`
@@ -36,7 +32,22 @@ const SaveButton = styled(Button)`
   float: right !important;
 `;
 
-
+const DatasetName = styled.p`
+    &:hover{
+        text-decoration:underline;
+        cursor:pointer;
+    }
+    margin-top:23px;
+    margin-left:10px;
+`;
+const DatasetDeleteButton = styled.span`
+    font-size:20px;
+    font-weight:bold;
+    &:hover{
+        font-size:22px;
+    }
+    padding:4px;
+`;
 const MapConf = ({ authenticatedUser, styledMaps, tags, mapData, serverSideDatasets, token, icons, setMapStyle, setDataset, onMapDataChange }) => {
     const [styleId, setStyleID] = useState(mapData.styleId || process.env.NEXT_PUBLIC_MAPBOX_DEFAULT_MAP);
     const childRef = useRef();
@@ -52,12 +63,16 @@ const MapConf = ({ authenticatedUser, styledMaps, tags, mapData, serverSideDatas
     const [layerType, setLayerType] = useState();
     const [loading, setLoading] = useState(false);
     const [file, setFile] = useState();
-
+    const [datasetId, setDatasetId] = useState();
     const router = useRouter();
 
+    const menu = (
+        <Menu >
+            <Menu.Item key="1" style={{ padding: "3px 20px" }}><a onClick={() => showConfirm()} >{DATASET.DELETE}</a></Menu.Item>
+        </Menu>
+    );
     const changeStyle = async (item) => {
         setLoading(true);
-        console.log(item);
         const res = await putMethod(`maps/${mapData.id}`, { mapstyle: item.id });
         if (res) {
             message.success("map style updated successfully");
@@ -154,12 +169,12 @@ const MapConf = ({ authenticatedUser, styledMaps, tags, mapData, serverSideDatas
         }
         setLoading(false);
     }
-    function showConfirm(id) {
+    function showConfirm() {
         confirm({
             icon: <ExclamationCircleOutlined />,
             content: <p>{DATASET.DELETE_CONFIRM}</p>,
             onOk() {
-                deleteDataset(id)
+                deleteDataset(datasetId)
             },
             onCancel() {
             },
@@ -175,35 +190,35 @@ const MapConf = ({ authenticatedUser, styledMaps, tags, mapData, serverSideDatas
         setDatasetProperties([]);
         if (type === "dataset") {
             const datasetDetails = await getDatasetDetails({ dataset: id }, token);
-            console.log(datasetDetails);
             if (datasetDetails.length !== 0) {
-                setDatasetProperties(datasetDetails[0].properties)
-
+                setDatasetProperties(datasetDetails[0]?.properties)
             }
             const mapDatasetConf = await getMapDatasetConf({ dataset: id, map: mapData.id }, token);
-            if (mapDatasetConf) setmdcId(mapDatasetConf[0].id);
-            const selectedIcons = await getDatasetConfContent({ id: mapDatasetConf[0].id }, token);
-            if (selectedIcons) {
+            if (mapDatasetConf) setmdcId(mapDatasetConf[0]?.id);
+            const selectedIcons = await getDatasetConfContent({ id: mapDatasetConf[0]?.id }, token);
+            if (selectedIcons.length > 0) {
                 if (selectedIcons[0].icon !== null) {
                     let arr = [];
                     arr[0] = selectedIcons[0].icon;
                     setSelectedDIcons(arr);
+                } else {
+                    setSelectedDIcons([]);
                 }
-                setSelectedDatasetProperties(selectedIcons[0].selected_dataset_properties);
+                setSelectedDatasetProperties(selectedIcons[0]?.selected_dataset_properties);
             }
         } else if (type === "main") {
             const mmdProperties = await getMapPopupProperties({ id: mapData.id }, token);
             setmdcId(mapData.id);
             if (mmdProperties) {
-                if (mmdProperties[0].icons !== null) {
+                if (mmdProperties[0]?.icons !== null) {
                     let i = 0;
                     let arr = [];
-                    mmdProperties[0].icons.map((data) => {
+                    mmdProperties[0]?.icons.map((data) => {
                         arr[i] = data;
                         i++;
                     })
                     setSelectedDIcons(arr);
-                    setSelectedDatasetProperties(mmdProperties[0].mmd_properties)
+                    setSelectedDatasetProperties(mmdProperties[0]?.mmd_properties)
                     setDatasetProperties(['title', 'description']);
                 }
             }
@@ -222,13 +237,13 @@ const MapConf = ({ authenticatedUser, styledMaps, tags, mapData, serverSideDatas
                             <SaveButton type='primary' onClick={() => {
                                 childRef.current.saveData(styleId, file);
                             }}>{DATASET.SAVE}</SaveButton>
-                        </TabPane> 
+                        </TabPane>
 
                         <TabPane tab={DATASET.MAP_STYLE} key="2" >
                             <StyledMaps
                                 changeStyle={changeStyle}
                                 mapData={styledMaps}
-                            /> 
+                            />
 
                          </TabPane> 
 
@@ -238,7 +253,7 @@ const MapConf = ({ authenticatedUser, styledMaps, tags, mapData, serverSideDatas
 
                          </TabPane> 
 
-                        <TabPane tab={DATASET.LAYERS} key="4" >
+                        <TabPane tab={DATASET.LAYERS} key="3" >
                             <Button type="dashed" size='large' block onClick={() => mdc(mapData.id, false, "main")}>
                                 {DATASET.ADD_MAIN_POPUPS_AND_MARKER}
                             </Button>
@@ -262,9 +277,25 @@ const MapConf = ({ authenticatedUser, styledMaps, tags, mapData, serverSideDatas
                             <List
                                 dataSource={selectedDataset}
                                 renderItem={item => (
-                                    <List.Item actions={[<a onClick={() => showConfirm(item.id)} ><span><DeleteTwoTone twoToneColor="#eb2f96" /></span></a>]}>
-                                        <DatasetsWrapper onClick={() => mdc(item.id, false, "dataset")}>
-                                            {item.title.split(".")[0]}
+                                    <List.Item>
+                                        <DatasetsWrapper >
+                                            <Row>
+                                                <Col span={21}>
+                                                    <DatasetName onClick={() => mdc(item.id, false, "dataset")}>{item.title.split(".")[0]}</DatasetName>
+                                                </Col>
+                                                <Col span={3}>
+                                                    <div style={{marginTop:"13px",padding:"4px"}}>
+                                                        <Dropdown size="big" overlay={menu} trigger={['click']} >
+                                                            <a className="ant-dropdown-link"
+                                                                onClick={(e) => {
+                                                                    setDatasetId(item.id);
+                                                                }} >
+                                                                <DatasetDeleteButton>:</DatasetDeleteButton>
+                                                            </a>
+                                                        </Dropdown>
+                                                    </div>
+                                                </Col>
+                                            </Row>
                                         </DatasetsWrapper>
                                     </List.Item>
                                 )}

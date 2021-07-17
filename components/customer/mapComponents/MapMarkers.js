@@ -1,18 +1,12 @@
 import styled from 'styled-components';
 import { Divider, message, Upload, Spin, Button, Modal, List, Card } from "antd";
 import { DATASET } from '../../../static/constant'
-import { InboxOutlined, ExclamationCircleOutlined } from '@ant-design/icons';
+import { InboxOutlined, ExclamationCircleOutlined, PlusOutlined } from '@ant-design/icons';
 import { useState, useEffect } from 'react';
-import { deleteMethod, postFileMethod, putMethod } from "../../../lib/api";
+import { deleteMethod, postFileMethod, putMethod, getIcons } from "../../../lib/api";
 import { getStrapiMedia } from '../../../lib/media';
 const { confirm } = Modal;
-
-const { Dragger } = Upload;
-const Wrapper = styled.div`
-background:#ffffff;
-padding:10px;
-margin:10px;
-`;
+import nookies from 'nookies';
 const Photo = styled.img`
   width:70%;
   height:70%;
@@ -36,6 +30,7 @@ cursor:pointer;
 `
 const MapMarkers = ({ icons, mdcId, selectedDIcons, layerType, setDataset, onMapDataChange }) => {
     selectedDIcons.map(data => data.id = Number(data.id));
+    const { token } = nookies.get();
     const [uploadIconsLoading, setUploadIconsLoading] = useState(false);
     const [markers, setMarkers] = useState(icons);
     const [selectedIcons, setSelectedIcons] = useState([]);
@@ -43,6 +38,13 @@ const MapMarkers = ({ icons, mdcId, selectedDIcons, layerType, setDataset, onMap
     useEffect(() => {
         setSelectedIcons(selectedDIcons);
     }, [selectedDIcons])
+    useEffect(async () => {
+        const allIcons = await getIcons(token);
+        allIcons.map((icon) => {
+            icon.id = Number(icon.id);
+        });
+        setMarkers(allIcons);
+    }, [icons])
     const props = {
         beforeUpload: file => {
             if ((file.type.split("/")[0]) !== "image") {
@@ -141,6 +143,9 @@ const MapMarkers = ({ icons, mdcId, selectedDIcons, layerType, setDataset, onMap
             },
         });
     }
+    const handleChange = () => {
+
+    }
     return (
         <div>
             {selectedIcons &&
@@ -163,9 +168,10 @@ const MapMarkers = ({ icons, mdcId, selectedDIcons, layerType, setDataset, onMap
                 </Card>
             }
             <Spin spinning={uploadIconsLoading}>
-                <MarkerCard size="small" title="Markers" >
+                <MarkerCard size="small" title="Markers" extra={<Upload showUploadList={false} {...props}>
+                    <Button icon={<PlusOutlined />}></Button>
+                </Upload>} >
                     <List
-                        pagination={true}
                         grid={{
                             gutter: 10,
                             column: 5
@@ -183,7 +189,7 @@ const MapMarkers = ({ icons, mdcId, selectedDIcons, layerType, setDataset, onMap
                     />
                 </MarkerCard>
             </Spin>
-            <br />
+            {/* <br />
             <Wrapper>
                 <Dragger  {...props} name="file" maxCount={1} >
                     <p className="ant-upload-drag-icon">
@@ -191,7 +197,7 @@ const MapMarkers = ({ icons, mdcId, selectedDIcons, layerType, setDataset, onMap
                     </p>
                     <p>{DATASET.CLICK_OR_DRAG}</p>
                 </Dragger>
-            </Wrapper>
+            </Wrapper> */}
         </div>
     )
 }
