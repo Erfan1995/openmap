@@ -23,7 +23,6 @@ const DatasetsWrapper = styled.div`
 border: 1px solid #eeeeee;
  border-radius: 5px;
  width:100%;
- display:inline;
  height:70px;
 `;
 
@@ -40,13 +39,13 @@ const DatasetName = styled.p`
     margin-top:23px;
     margin-left:10px;
 `;
-const DatasetDeleteButton = styled.p`
+const DatasetDeleteButton = styled.span`
     font-size:20px;
     font-weight:bold;
     &:hover{
         font-size:22px;
     }
-    margin-top:15px;
+    padding:4px;
 `;
 const MapConf = ({ authenticatedUser, styledMaps, tags, mapData, serverSideDatasets, token, icons, setMapStyle, setDataset, onMapDataChange }) => {
     const [styleId, setStyleID] = useState(mapData.styleId || process.env.NEXT_PUBLIC_MAPBOX_DEFAULT_MAP);
@@ -68,7 +67,7 @@ const MapConf = ({ authenticatedUser, styledMaps, tags, mapData, serverSideDatas
 
     const menu = (
         <Menu >
-            <Menu.Item key="1" style={{ padding: "0px 15px" }}><a onClick={() => showConfirm()} >{DATASET.DELETE}</a></Menu.Item>
+            <Menu.Item key="1" style={{ padding: "3px 20px" }}><a onClick={() => showConfirm()} >{DATASET.DELETE}</a></Menu.Item>
         </Menu>
     );
     const changeStyle = async (item) => {
@@ -273,18 +272,20 @@ const MapConf = ({ authenticatedUser, styledMaps, tags, mapData, serverSideDatas
                                     <List.Item>
                                         <DatasetsWrapper >
                                             <Row>
-                                                <Col span={22}>
+                                                <Col span={21}>
                                                     <DatasetName onClick={() => mdc(item.id, false, "dataset")}>{item.title.split(".")[0]}</DatasetName>
                                                 </Col>
-                                                <Col span={2}>
-                                                    <Dropdown size="big" overlay={menu} trigger={['click']} >
-                                                        <a className="ant-dropdown-link"
-                                                            onClick={(e) => {
-                                                                setDatasetId(item.id);
-                                                            }} >
-                                                            <DatasetDeleteButton>:</DatasetDeleteButton>
-                                                        </a>
-                                                    </Dropdown>
+                                                <Col span={3}>
+                                                    <div style={{marginTop:"13px",padding:"4px"}}>
+                                                        <Dropdown size="big" overlay={menu} trigger={['click']} >
+                                                            <a className="ant-dropdown-link"
+                                                                onClick={(e) => {
+                                                                    setDatasetId(item.id);
+                                                                }} >
+                                                                <DatasetDeleteButton>:</DatasetDeleteButton>
+                                                            </a>
+                                                        </Dropdown>
+                                                    </div>
                                                 </Col>
                                             </Row>
                                         </DatasetsWrapper>
