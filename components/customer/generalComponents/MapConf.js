@@ -5,7 +5,7 @@ import CreateMap from 'components/customer/Forms/CreateMap';
 import StyledMaps from 'components/customer/generalComponents/ListMapboxStyle';
 import {
     putMethod, getDatasets,
-    postMethod, deleteMethod, getMapDatasetConf, getDatasetConfContent, getMapPopupProperties, getDatasetDetails
+    postMethod, deleteMethod, getMapDatasetConf, getDatasetConfContent, getMapPopupProperties, getDatasetDetails, getIcons
 } from '../../../lib/api';
 import SelectNewMapDataset from 'components/customer/mapComponents/SelectNewMapDataset';
 import { formatDate, fileSizeReadable } from "../../../lib/general-functions";
@@ -64,12 +64,12 @@ const MapConf = ({ authenticatedUser, styledMaps, tags, mapData, serverSideDatas
     const [loading, setLoading] = useState(false);
     const [file, setFile] = useState();
     const [datasetId, setDatasetId] = useState();
-
+    const [serverIcons, setServerIcons] = useState(icons);
     const router = useRouter();
 
     const menu = (
         <Menu >
-            <Menu.Item key="1" style={{padding:"0px 15px"}}><a onClick={() => showConfirm()} >{DATASET.DELETE}</a></Menu.Item>
+            <Menu.Item key="1" style={{ padding: "0px 15px" }}><a onClick={() => showConfirm()} >{DATASET.DELETE}</a></Menu.Item>
         </Menu>
     );
     const changeStyle = async (item) => {
@@ -189,9 +189,14 @@ const MapConf = ({ authenticatedUser, styledMaps, tags, mapData, serverSideDatas
         setSelectedDIcons([]);
         setSelectedDatasetProperties([]);
         setDatasetProperties([]);
+        const icons = await getIcons(token);
+        icons.map((icon) => {
+            icon.id = Number(icon.id);
+        });
+        setServerIcons(icons);
+
         if (type === "dataset") {
             const datasetDetails = await getDatasetDetails({ dataset: id }, token);
-            console.log(datasetDetails);
             if (datasetDetails.length !== 0) {
                 setDatasetProperties(datasetDetails[0].properties)
 
@@ -200,7 +205,7 @@ const MapConf = ({ authenticatedUser, styledMaps, tags, mapData, serverSideDatas
             if (mapDatasetConf) setmdcId(mapDatasetConf[0].id);
             const selectedIcons = await getDatasetConfContent({ id: mapDatasetConf[0].id }, token);
             if (selectedIcons) {
-                if (selectedIcons[0].icon !== null) {
+                if (selectedIcons[0]?.icon !== null) {
                     let arr = [];
                     arr[0] = selectedIcons[0].icon;
                     setSelectedDIcons(arr);
@@ -300,7 +305,7 @@ const MapConf = ({ authenticatedUser, styledMaps, tags, mapData, serverSideDatas
                         <Button style={{ marginLeft: -20, marginTop: -30 }} icon={<ArrowLeftOutlined />} onClick={() => {
                             setLayerClicked(true);
                         }} type='link'>back</Button>
-                        <DatasetConf setDataset={setDataset} onMapDataChange={onMapDataChange} icons={icons} mdcId={mdcId} selectedDIcons={selectedDIcons}
+                        <DatasetConf setDataset={setDataset} onMapDataChange={onMapDataChange} icons={serverIcons} mdcId={mdcId} selectedDIcons={selectedDIcons}
                             datasetProperties={datasetProperties} selectedDatasetProperties={selectedDatasetProperties} layerType={layerType} />
                     </div>
                 }

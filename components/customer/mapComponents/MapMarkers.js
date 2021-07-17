@@ -1,7 +1,7 @@
 import styled from 'styled-components';
 import { Divider, message, Upload, Spin, Button, Modal, List, Card } from "antd";
 import { DATASET } from '../../../static/constant'
-import { InboxOutlined, ExclamationCircleOutlined } from '@ant-design/icons';
+import { InboxOutlined, ExclamationCircleOutlined, PlusOutlined } from '@ant-design/icons';
 import { useState, useEffect } from 'react';
 import { deleteMethod, postFileMethod, putMethod } from "../../../lib/api";
 import { getStrapiMedia } from '../../../lib/media';
@@ -141,6 +141,9 @@ const MapMarkers = ({ icons, mdcId, selectedDIcons, layerType, setDataset, onMap
             },
         });
     }
+    const handleChange = () => {
+
+    }
     return (
         <div>
             {selectedIcons &&
@@ -163,7 +166,9 @@ const MapMarkers = ({ icons, mdcId, selectedDIcons, layerType, setDataset, onMap
                 </Card>
             }
             <Spin spinning={uploadIconsLoading}>
-                <MarkerCard size="small" title="Markers" >
+                <MarkerCard size="small" title="Markers" extra={<Upload showUploadList={false} {...props}>
+                    <Button icon={<PlusOutlined />}></Button>
+                </Upload>} >
                     <List
                         grid={{
                             gutter: 10,
@@ -182,7 +187,7 @@ const MapMarkers = ({ icons, mdcId, selectedDIcons, layerType, setDataset, onMap
                     />
                 </MarkerCard>
             </Spin>
-            <br />
+            {/* <br />
             <Wrapper>
                 <Dragger  {...props} name="file" maxCount={1} >
                     <p className="ant-upload-drag-icon">
@@ -190,7 +195,7 @@ const MapMarkers = ({ icons, mdcId, selectedDIcons, layerType, setDataset, onMap
                     </p>
                     <p>{DATASET.CLICK_OR_DRAG}</p>
                 </Dragger>
-            </Wrapper>
+            </Wrapper> */}
         </div>
     )
 }
