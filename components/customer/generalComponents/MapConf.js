@@ -64,7 +64,6 @@ const MapConf = ({ authenticatedUser, styledMaps, tags, mapData, serverSideDatas
     const [loading, setLoading] = useState(false);
     const [file, setFile] = useState();
     const [datasetId, setDatasetId] = useState();
-    const [serverIcons, setServerIcons] = useState(icons);
     const router = useRouter();
 
     const menu = (
@@ -189,42 +188,37 @@ const MapConf = ({ authenticatedUser, styledMaps, tags, mapData, serverSideDatas
         setSelectedDIcons([]);
         setSelectedDatasetProperties([]);
         setDatasetProperties([]);
-        const icons = await getIcons(token);
-        icons.map((icon) => {
-            icon.id = Number(icon.id);
-        });
-        setServerIcons(icons);
-
         if (type === "dataset") {
             const datasetDetails = await getDatasetDetails({ dataset: id }, token);
             if (datasetDetails.length !== 0) {
-                setDatasetProperties(datasetDetails[0].properties)
-
+                setDatasetProperties(datasetDetails[0]?.properties)
             }
             const mapDatasetConf = await getMapDatasetConf({ dataset: id, map: mapData.id }, token);
-            if (mapDatasetConf) setmdcId(mapDatasetConf[0].id);
-            const selectedIcons = await getDatasetConfContent({ id: mapDatasetConf[0].id }, token);
-            if (selectedIcons) {
-                if (selectedIcons[0]?.icon !== null) {
+            if (mapDatasetConf) setmdcId(mapDatasetConf[0]?.id);
+            const selectedIcons = await getDatasetConfContent({ id: mapDatasetConf[0]?.id }, token);
+            if (selectedIcons.length > 0) {
+                if (selectedIcons[0].icon !== null) {
                     let arr = [];
                     arr[0] = selectedIcons[0].icon;
                     setSelectedDIcons(arr);
+                } else {
+                    setSelectedDIcons([]);
                 }
-                setSelectedDatasetProperties(selectedIcons[0].selected_dataset_properties);
+                setSelectedDatasetProperties(selectedIcons[0]?.selected_dataset_properties);
             }
         } else if (type === "main") {
             const mmdProperties = await getMapPopupProperties({ id: mapData.id }, token);
             setmdcId(mapData.id);
             if (mmdProperties) {
-                if (mmdProperties[0].icons !== null) {
+                if (mmdProperties[0]?.icons !== null) {
                     let i = 0;
                     let arr = [];
-                    mmdProperties[0].icons.map((data) => {
+                    mmdProperties[0]?.icons.map((data) => {
                         arr[i] = data;
                         i++;
                     })
                     setSelectedDIcons(arr);
-                    setSelectedDatasetProperties(mmdProperties[0].mmd_properties)
+                    setSelectedDatasetProperties(mmdProperties[0]?.mmd_properties)
                     setDatasetProperties(['title', 'description']);
                 }
             }
@@ -305,7 +299,7 @@ const MapConf = ({ authenticatedUser, styledMaps, tags, mapData, serverSideDatas
                         <Button style={{ marginLeft: -20, marginTop: -30 }} icon={<ArrowLeftOutlined />} onClick={() => {
                             setLayerClicked(true);
                         }} type='link'>back</Button>
-                        <DatasetConf setDataset={setDataset} onMapDataChange={onMapDataChange} icons={serverIcons} mdcId={mdcId} selectedDIcons={selectedDIcons}
+                        <DatasetConf setDataset={setDataset} onMapDataChange={onMapDataChange} icons={icons} mdcId={mdcId} selectedDIcons={selectedDIcons}
                             datasetProperties={datasetProperties} selectedDatasetProperties={selectedDatasetProperties} layerType={layerType} />
                     </div>
                 }

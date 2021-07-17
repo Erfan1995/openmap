@@ -208,7 +208,6 @@ export const getServerSideProps = withPrivateServerSideProps(
         }
       }
     } catch (error) {
-      console.log(error);
       return {
         redirect: {
           destination: '/server-error',
