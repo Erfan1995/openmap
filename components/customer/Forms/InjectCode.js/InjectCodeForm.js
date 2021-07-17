@@ -10,7 +10,6 @@ const FormWrapper = styled.div`
 `;
 
 const InjectCodeForm = ({ onModalClose, id, editableCode, displayCode }, ref) => {
-    console.log(editableCode);
     const [form] = Form.useForm();
     const [loading, setLoading] = useState(false);
 
