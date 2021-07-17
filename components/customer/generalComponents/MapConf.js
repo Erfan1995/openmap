@@ -14,6 +14,7 @@ import { useRouter } from 'next/router';
 import { DATASET } from '../../../static/constant'
 import { ExclamationCircleOutlined } from '@ant-design/icons';
 import DatasetConf from './DetasetConf';
+import InjectCode from '../Forms/InjectCode.js';
 
 const { TabPane } = Tabs;
 const { confirm } = Modal;
@@ -230,7 +231,14 @@ const MapConf = ({ authenticatedUser, styledMaps, tags, mapData, serverSideDatas
                             /> 
 
                          </TabPane> 
-                        <TabPane tab={DATASET.LAYERS} key="3" >
+
+                         
+                        <TabPane tab={DATASET.MAP_INJECT} key="3" >
+                         <InjectCode mapData={mapData} />
+
+                         </TabPane> 
+
+                        <TabPane tab={DATASET.LAYERS} key="4" >
                             <Button type="dashed" size='large' block onClick={() => mdc(mapData.id, false, "main")}>
                                 {DATASET.ADD_MAIN_POPUPS_AND_MARKER}
                             </Button>
