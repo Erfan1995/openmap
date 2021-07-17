@@ -48,7 +48,8 @@ const DatasetDeleteButton = styled.span`
     }
     padding:4px;
 `;
-const MapConf = ({ authenticatedUser, styledMaps, tags, mapData, serverSideDatasets, token, icons, setMapStyle, setDataset, onMapDataChange }) => {
+const MapConf = ({ authenticatedUser, styledMaps, tags, mapData, serverSideDatasets, token, icons, setMapStyle,
+    setDataset, onMapDataChange, injectedcodes }) => {
     const [styleId, setStyleID] = useState(mapData.styleId || process.env.NEXT_PUBLIC_MAPBOX_DEFAULT_MAP);
     const childRef = useRef();
     const selectDatasetChildRef = useRef();
@@ -245,13 +246,13 @@ const MapConf = ({ authenticatedUser, styledMaps, tags, mapData, serverSideDatas
                                 mapData={styledMaps}
                             />
 
-                         </TabPane> 
+                        </TabPane>
 
-                         
+
                         <TabPane tab={DATASET.MAP_INJECT} key="3" >
-                         <InjectCode mapData={mapData} />
+                            <InjectCode mapData={mapData} injectedcodes={injectedcodes} />
 
-                         </TabPane> 
+                        </TabPane>
 
                         <TabPane tab={DATASET.LAYERS} key="4" >
                             <Button type="dashed" size='large' block onClick={() => mdc(mapData.id, false, "main")}>
@@ -284,7 +285,7 @@ const MapConf = ({ authenticatedUser, styledMaps, tags, mapData, serverSideDatas
                                                     <DatasetName onClick={() => mdc(item.id, false, "dataset")}>{item.title.split(".")[0]}</DatasetName>
                                                 </Col>
                                                 <Col span={3}>
-                                                    <div style={{marginTop:"13px",padding:"4px"}}>
+                                                    <div style={{ marginTop: "13px", padding: "4px" }}>
                                                         <Dropdown size="big" overlay={menu} trigger={['click']} >
                                                             <a className="ant-dropdown-link"
                                                                 onClick={(e) => {

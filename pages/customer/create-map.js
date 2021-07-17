@@ -6,7 +6,7 @@ import styled from 'styled-components';
 import nookies from 'nookies';
 import dynamic from "next/dynamic";
 import {
-  fetchApi, putMethod, getOneMap, getDatasetsByMap, getTags,
+  fetchApi, putMethod, getOneMap, getDatasetsByMap, getTags, getInjectedCodes,
   getIcons, getMapStyles
 } from 'lib/api';
 import { getMapData, extractMapData } from "../../lib/general-functions";
@@ -29,7 +29,7 @@ const CardTitle = styled(Title)`
 `;
 
 
-const CreateMapContainer = ({ authenticatedUser, collapsed, styledMaps, tags, serverSideMapData,
+const CreateMapContainer = ({ authenticatedUser, collapsed, styledMaps, tags, serverSideMapData, injectedcodes,
   manualMapData, serverSideDatasets, token, icons }) => {
   const [mapStyle, setMapStyle] = useState(serverSideMapData.styleId || process.env.NEXT_PUBLIC_MAPBOX_DEFAULT_MAP);
   const [datasets, setDatasets] = useState(serverSideDatasets);
@@ -121,7 +121,7 @@ const CreateMapContainer = ({ authenticatedUser, collapsed, styledMaps, tags, se
           <Col xs={24} sm={24} md={24} lg={7} xl={7} >
 
             <MapConf
-            
+
               authenticatedUser={authenticatedUser}
               styledMaps={styledMaps}
               tags={tags}
@@ -132,6 +132,7 @@ const CreateMapContainer = ({ authenticatedUser, collapsed, styledMaps, tags, se
               setMapStyle={setMapStyle}
               setDataset={onDatasetChange}
               onMapDataChange={onCustomDataChange}
+              injectedcodes={injectedcodes}
 
             />
 
@@ -192,19 +193,22 @@ export const getServerSideProps = withPrivateServerSideProps(
       }
       const data = await getMapStyles({ type: 'default' }, token);
       const tags = await getTags(token);
+      const injectedcodes = await getInjectedCodes({ map: id }, token);
+      injectedcodes.map((item) => {
+        item.id = Number(item.id);
+      })
       const icons = await getIcons(token);
       icons.map((icon) => {
         icon.id = Number(icon.id);
       })
-
-
       tags.map((item) => {
         item.id = Number(item.id);
       })
       return {
         props: {
-          authenticatedUser: verifyUser, styledMaps: data, tags: tags,
+          authenticatedUser: verifyUser, styledMaps: data, tags: tags, injectedcodes: injectedcodes,
           serverSideMapData: mapData, manualMapData: manualArray, serverSideDatasets: datasets, token: token, icons: icons
+
         }
       }
     } catch (error) {

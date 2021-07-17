@@ -91,6 +91,13 @@ export const DATASET = {
     SUBMISSIONS: 'Submissions',
     ADD_CUSTOM_STYLE: 'Add Mapbox Map Style',
     ADD_NEW_MAP_STYLE: 'Add New Map Style',
+    INJECT_CODE: "Inject New Code",
+    HEAD: "Head",
+    BODY: "Body",
+    HEAD_PLACEHOLDER: "Insert head here",
+    BODY_PLACEHOLDER: "Insert body here",
+    TITLE_PLACEHOLDER: "Insert title here",
+
 
 }
 export const LAT = ['lat', 'Lat', 'LAT', 'latitude', 'Latitude', 'LATITUDE'];
