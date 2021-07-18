@@ -51,7 +51,7 @@ const Customers = ({ authenticatedUser, collapsed, serverSideCustomers }) => {
                     centered
                     visible={visible}
                     destroyOnClose={true}
-                    onOk={() => storeData()}
+                    okButtonProps={{ style: { display: 'none' } }}
                     onCancel={() => setVisible(false)}>
                     <Spin spinning={loading}>
                         <CreateCustomers user={authenticatedUser.id} onModalClose={onModalClose} />
