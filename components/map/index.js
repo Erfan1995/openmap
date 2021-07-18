@@ -64,7 +64,7 @@ const Map = ({ styleId, center, setCenter, style, mapData, manualMapData, datase
   const [openModal, setOpenModal] = useState(null);
   const [place, setPlace] = useState(null);
   const [zoomLevel, setZoomLevel] = useState(mapData.zoomLevel);
-
+  
   const closePlaceDetails = () => {
     setOpenModal(false)
   }
@@ -121,7 +121,7 @@ const Map = ({ styleId, center, setCenter, style, mapData, manualMapData, datase
           <ZoomControl position='bottomleft' />
           <TileLayer
             // url={`${process.env.NEXT_PUBLIC_MAPBOX_API_URL}/styles/v1/mbshaban/${styleId || process.env.NEXT_PUBLIC_MAPBOX_DEFAULT_MAP}/tiles/256/{z}/{x}/{y}@2x?access_token=${process.env.NEXT_PUBLIC_MAPBOX_TOKEN}`}
-            url={'https://api.mapbox.com/styles/v1/mbshaban/ckr7jle9t1dis17quhnvs7m9a/tiles/512/{z}/{x}/{y}@2x?access_token=pk.eyJ1IjoibWJzaGFiYW4iLCJhIjoiY2tubXBlOHN4MDZzMzJubGFlNXYzemphbSJ9.03KzYzfwzZnWULV-WphldQ'}
+            url={styleId}
           />
           <LeafletgeoSearch />
           <MapEvents />

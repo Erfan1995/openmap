@@ -31,7 +31,7 @@ const CardTitle = styled(Title)`
 
 const CreateMapContainer = ({ authenticatedUser, collapsed, styledMaps, tags, serverSideMapData,
   manualMapData, serverSideDatasets, token, icons }) => {
-  const [mapStyle, setMapStyle] = useState(serverSideMapData.styleId || process.env.NEXT_PUBLIC_MAPBOX_DEFAULT_MAP);
+  const [mapStyle, setMapStyle] = useState(serverSideMapData.mapstyle.link || '');
   const [datasets, setDatasets] = useState(serverSideDatasets);
   const [mapData, setMapData] = useState(serverSideMapData);
   const [center, setCenter] = useState(serverSideMapData.center);

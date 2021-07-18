@@ -57,9 +57,9 @@ const PublicMap = ({ styleId, mapZoom, style, mapData, manualMapData, datasets, 
 
             style={style} >
 
-            <ZoomControl position='bottomleft' />
+            <ZoomControl position='topright' />
             <TileLayer
-                url={`${process.env.NEXT_PUBLIC_MAPBOX_API_URL}/styles/v1/mbshaban/${styleId || process.env.NEXT_PUBLIC_MAPBOX_DEFAULT_MAP}/tiles/256/{z}/{x}/{y}@2x?access_token=${process.env.NEXT_PUBLIC_MAPBOX_TOKEN}`}
+                url={styleId}
             />
 
             <LeafletgeoSearch  />

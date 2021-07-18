@@ -11,6 +11,7 @@ const Map = ({ manualMapData, mapData, datasets }) => {
   const [datasetData, setDatasetData] = useState(datasets);
   const [zoomLevel, setZoomLevel] = useState(mapData.zoomLevel);
 
+  console.log(mapData);
   const { login, logout } = UseAuth();
 
   useEffect(async () => {
@@ -45,7 +46,7 @@ const Map = ({ manualMapData, mapData, datasets }) => {
           mapInfo={mapData} userId={publicUser.id} publicUser={publicUser} mapData={mapData}  >
           <MapWithNoSSR
             mapZoom={zoomLevel}
-            styleId={mapData ? mapData.styleId : process.env.NEXT_PUBLIC_MAPBOX_DEFAULT_MAP}
+            styleId={mapData.mapstyle.link || ''}
             edit={{
               edit: false,
               remove: false,

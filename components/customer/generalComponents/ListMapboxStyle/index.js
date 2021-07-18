@@ -7,6 +7,7 @@ import { getMethod, postMethod, getMapStyles } from '../../../../lib/api';
 import nookies from "nookies";
 import { DATASET } from '../../../../static/constant'
 import MapStyleDialog from './MapStyleDialog';
+import { generateImageLinkFormStyleUrl } from 'lib/general-functions';
 const StyleWrapper = styled.div`
 border: 1px solid #eeeeee;
  border-radius: 5px;
@@ -140,19 +141,12 @@ const StyledMaps = ({ changeStyle, mapData }) => {
                             renderItem={(item) => (
                                 < List.Item >
                                     <StyleWrapper onClick={() => { changeStyle(item) }} >
-                                        {formVisible ?
+                                      
                                             <span>
-                                                <Image src={item.link} />
+                                                <Image src={generateImageLinkFormStyleUrl(item.link)} />
                                                 {/* {item.name} */}
                                             </span>
-                                            :
-                                            <span>
-                                                <Image src={item.link} />
-                                                {/* {item.name} */}
-                                            </span>
-
-                                        }
-
+                                      
                                     </StyleWrapper>
                                 </List.Item>
                             )}
