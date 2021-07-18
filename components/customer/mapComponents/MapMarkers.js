@@ -40,10 +40,12 @@ const MapMarkers = ({ icons, mdcId, selectedDIcons, layerType, setDataset, onMap
     }, [selectedDIcons])
     useEffect(async () => {
         const allIcons = await getIcons(token);
-        allIcons.map((icon) => {
-            icon.id = Number(icon.id);
-        });
-        setMarkers(allIcons);
+        if (allIcons) {
+            allIcons.map((icon) => {
+                icon.id = Number(icon.id);
+            });
+            setMarkers(allIcons);
+        }
     }, [icons])
     const props = {
         beforeUpload: file => {
