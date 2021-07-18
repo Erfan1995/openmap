@@ -29,7 +29,6 @@ padding:20px;
 margin:10px;
 `;
 const Map = ({ authenticatedUser, collapsed, maps, tags, mapData = null }) => {
-  console.log(maps);
   const router = useRouter();
   const childRef = useRef();
   const [allMaps, setAllMaps] = useState(maps)

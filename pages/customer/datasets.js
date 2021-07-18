@@ -5,7 +5,7 @@ import { Button, Divider, Typography, Tabs, Modal, Spin, message, notification }
 import styled from 'styled-components';
 const { Title } = Typography;
 const { TabPane } = Tabs;
-import { postMethod, getDatasets, getTags } from "../../lib/api";
+import { postMethod, getDatasets, getTags, deleteMethod } from "../../lib/api";
 import { formatDate, fileSizeReadable } from "../../lib/general-functions";
 import FileUpload from '../../components/customer/mapComponents/FileUpload';
 import nookies from 'nookies';
@@ -47,60 +47,63 @@ const Dataset = ({ authenticatedUser, collapsed, locked_data, unlocked_data, tag
     };
     const onChangeFile = ({ file }) => {
 
-        // if (file.originFileObj.size < 1e6) {
-        setInvalidFileSize(false);
-        fileReader = new FileReader();
-        if (file.originFileObj.type === "application/vnd.ms-excel") {
-            fileReader.onloadend = () => {
-                csv.parse(fileReader.result, (err, data) => {
-                    let latitude;
-                    let longitude;
-                    const columns = data[0];
-                    columns.map((col) => {
-                        for (let i = 0; i < LAT.length; i++) {
-                            if (col === LAT[i]) {
-                                latitude = col;
+        if (file.originFileObj.size < 1e6) {
+            setInvalidFileSize(false);
+            fileReader = new FileReader();
+            if (file.originFileObj.type === "application/vnd.ms-excel") {
+                fileReader.onloadend = () => {
+                    csv.parse(fileReader.result, (err, data) => {
+                        if (data) {
+                            let latitude;
+                            let longitude;
+                            console.log(data);
+                            const columns = data[0];
+                            columns.map((col) => {
+                                for (let i = 0; i < LAT.length; i++) {
+                                    if (col === LAT[i]) {
+                                        latitude = col;
+                                    }
+                                }
+                                for (let i = 0; i < LONG.length; i++) {
+                                    if (col === LONG[i]) {
+                                        longitude = col;
+                                    }
+                                }
+                            })
+                            if (latitude) {
+                                setHasCoordinate(true)
+                            } else {
+                                setHasCoordinate(false)
                             }
-                        }
-                        for (let i = 0; i < LONG.length; i++) {
-                            if (col === LONG[i]) {
-                                longitude = col;
+                            let arr = [];
+                            for (let j = 1; j < data.length; j++) {
+                                let obj = {}
+                                for (let i = 0; i < columns.length; i++) {
+                                    obj[columns[i]] = data[j][i]
+                                }
+                                arr[j] = obj;
+                            }
+                            arr.splice(0, 1)
+                            try {
+                                let gJson = GeoJSON.parse(arr, { Point: [latitude, longitude] });
+                                setDatasetContent(gJson);
+                            } catch (e) {
+                                setHasCoordinate(false);
                             }
                         }
                     })
-                    if (latitude) {
-                        setHasCoordinate(true)
-                    } else {
-                        setHasCoordinate(false)
-                    }
-                    let arr = [];
-                    for (let j = 1; j < data.length; j++) {
-                        let obj = {}
-                        for (let i = 0; i < columns.length; i++) {
-                            obj[columns[i]] = data[j][i]
-                        }
-                        arr[j] = obj;
-                    }
-                    arr.splice(0, 1)
-                    try {
-                        let gJson = GeoJSON.parse(arr, { Point: [latitude, longitude] });
-                        setDatasetContent(gJson);
-                    } catch (e) {
-                        setHasCoordinate(false);
-                    }
-                })
+                }
+                fileReader.readAsText(file.originFileObj);
+
+            } else {
+                fileReader.onloadend = handleFileRead;
+                fileReader.readAsText(file.originFileObj, "UTF-8");
+
             }
-            fileReader.readAsText(file.originFileObj);
-
+            setDataFile(file);
         } else {
-            fileReader.onloadend = handleFileRead;
-            fileReader.readAsText(file.originFileObj, "UTF-8");
-
+            setInvalidFileSize(true);
         }
-        setDataFile(file);
-        // } else {
-        // setInvalidFileSize(true);
-        // }
 
     }
     const handleFileRead = (e) => {
@@ -129,14 +132,17 @@ const Dataset = ({ authenticatedUser, collapsed, locked_data, unlocked_data, tag
             if (invalidFileSize === false) {
                 setLoading(true);
                 try {
-                    const res = await postMethod('datasets', { title: file.originFileObj.name, is_locked: false, user: authenticatedUser.id, size: file.originFileObj.size })
-                    res.title = res.title.split(".")[0];
-                    res.updated_at = formatDate(res.updated_at);
-                    res.maps = res.maps.length;
-                    res.size = fileSizeReadable(res.size);
-                    setDataset([...dataset, res]);
-                    if (res) {
-                        const resdataset = await postMethod('datasetcontents', { dataset: datasetContent.features, id: res.id });
+                    if (datasetContent) {
+                        console.log(datasetContent);
+                        const res = await postMethod('datasets', { title: file.originFileObj.name, is_locked: false, user: authenticatedUser.id, size: file.originFileObj.size })
+                        res.title = res.title.split(".")[0];
+                        res.updated_at = formatDate(res.updated_at);
+                        res.maps = res.maps.length;
+                        res.size = fileSizeReadable(res.size);
+                        if (res) {
+                            const resdataset = await postMethod('datasetcontents', { dataset: datasetContent.features, id: res.id });
+                            setDataset([...dataset, res]);
+                        }
                     }
 
                 } catch (execption) {

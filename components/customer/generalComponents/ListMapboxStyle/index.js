@@ -53,7 +53,7 @@ const StyledMaps = ({ changeStyle, mapData }) => {
     const [mapSource, setMapSource] = useState(MAP_SOURCE);
     const [modalVisible, setModalVisible] = useState(false);
     const changeMapStyleSource = async (name) => {
-
+        setDataSource([]);
         setMapSource(MAP_SOURCE.map((item) => {
             if (item.name === name) {
                 return { ...item, isSelected: true };
@@ -68,7 +68,6 @@ const StyledMaps = ({ changeStyle, mapData }) => {
             if (res) {
                 setFormVisible(false);
                 setDataSource(res);
-                console.log(res);
             }
             setLoading(false);
         } else if (name === "MapBox") {
@@ -78,7 +77,6 @@ const StyledMaps = ({ changeStyle, mapData }) => {
                 setFormVisible(true);
                 setDataSource(res);
                 setLoading(false);
-                setModalVisible(true)
             }
 
         }
@@ -134,6 +132,11 @@ const StyledMaps = ({ changeStyle, mapData }) => {
                         <MapStyleDialog ref={childRef} onModalClose={onModalClose} />
                     </Modal>
                     <ListWrapper>
+                        {formVisible ?
+                            <Button style={{ marginBottom: "10px" }} type="dashed" size='large' block onClick={() => setModalVisible(true)}>
+                                {DATASET.ADD_NEW_MAP_STYLE}
+                            </Button> : <div></div>
+                        }
                         <List
                             itemLayout='vertical'
                             grid={{ gutter: 10, column: 1 }}
