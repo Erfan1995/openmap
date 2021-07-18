@@ -38,17 +38,17 @@ const MyMenu = ({ closeDrawer, user }) => {
         router.push(key);
       }}>
       {MENU.map((item) =>
-        item.role === user.role.name ?
-          (<Menu.Item key={item.key}>
+        <Menu.Item key={item.key} >
+          {item.role === user.role.name ?
             <Link href={item.link}>
               <a>
                 {item.Icons}
                 <span>{item.title}</span>
               </a>
-            </Link>
-          </Menu.Item>) :
-          (<div></div>)
-        
+            </Link> :
+            <div></div>
+          }
+        </Menu.Item>
       )}
 
     </MainMenu>
