@@ -53,40 +53,43 @@ const Dataset = ({ authenticatedUser, collapsed, locked_data, unlocked_data, tag
         if (file.originFileObj.type === "application/vnd.ms-excel") {
             fileReader.onloadend = () => {
                 csv.parse(fileReader.result, (err, data) => {
-                    let latitude;
-                    let longitude;
-                    const columns = data[0];
-                    columns.map((col) => {
-                        for (let i = 0; i < LAT.length; i++) {
-                            if (col === LAT[i]) {
-                                latitude = col;
+                    if (data) {
+                        let latitude;
+                        let longitude;
+                        console.log(data);
+                        const columns = data[0];
+                        columns.map((col) => {
+                            for (let i = 0; i < LAT.length; i++) {
+                                if (col === LAT[i]) {
+                                    latitude = col;
+                                }
                             }
-                        }
-                        for (let i = 0; i < LONG.length; i++) {
-                            if (col === LONG[i]) {
-                                longitude = col;
+                            for (let i = 0; i < LONG.length; i++) {
+                                if (col === LONG[i]) {
+                                    longitude = col;
+                                }
                             }
+                        })
+                        if (latitude) {
+                            setHasCoordinate(true)
+                        } else {
+                            setHasCoordinate(false)
                         }
-                    })
-                    if (latitude) {
-                        setHasCoordinate(true)
-                    } else {
-                        setHasCoordinate(false)
-                    }
-                    let arr = [];
-                    for (let j = 1; j < data.length; j++) {
-                        let obj = {}
-                        for (let i = 0; i < columns.length; i++) {
-                            obj[columns[i]] = data[j][i]
+                        let arr = [];
+                        for (let j = 1; j < data.length; j++) {
+                            let obj = {}
+                            for (let i = 0; i < columns.length; i++) {
+                                obj[columns[i]] = data[j][i]
+                            }
+                            arr[j] = obj;
                         }
-                        arr[j] = obj;
-                    }
-                    arr.splice(0, 1)
-                    try {
-                        let gJson = GeoJSON.parse(arr, { Point: [latitude, longitude] });
-                        setDatasetContent(gJson);
-                    } catch (e) {
-                        setHasCoordinate(false);
+                        arr.splice(0, 1)
+                        try {
+                            let gJson = GeoJSON.parse(arr, { Point: [latitude, longitude] });
+                            setDatasetContent(gJson);
+                        } catch (e) {
+                            setHasCoordinate(false);
+                        }
                     }
                 })
             }
