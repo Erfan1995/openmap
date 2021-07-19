@@ -14,7 +14,7 @@ import { useRouter } from 'next/router';
 import { DATASET } from '../../../static/constant'
 import { ExclamationCircleOutlined, DownOutlined, } from '@ant-design/icons';
 import DatasetConf from './DetasetConf';
-import InjectCode from '../Forms/InjectCode.js';
+import InjectCode from '../Forms/CodeInjection/index.js';
 
 const { TabPane } = Tabs;
 const { confirm } = Modal;
