@@ -59,12 +59,12 @@ const TopButtonWrapper = styled.div`
 `;
 
 
-const Map = ({ styleId, center, setCenter, style, mapData, manualMapData, datasets, edit, draw, userType, userId, onMapDataChange }) => {
+const Map = ({ styleId, center, setCenter, style, mapData, manualMapData, datasets, edit, draw, userType, userId, onMapDataChange ,injectedcodes}) => {
 
   const [openModal, setOpenModal] = useState(null);
   const [place, setPlace] = useState(null);
   const [zoomLevel, setZoomLevel] = useState(mapData.zoomLevel);
-  
+
   const closePlaceDetails = () => {
     setOpenModal(false)
   }
@@ -84,6 +84,7 @@ const Map = ({ styleId, center, setCenter, style, mapData, manualMapData, datase
     setPlace(event.target.feature);
     setOpenModal(true);
   }
+
 
 
 
@@ -163,8 +164,12 @@ const Map = ({ styleId, center, setCenter, style, mapData, manualMapData, datase
             userType === 'customer' &&
             <ZoomButton className='leaflet-control leaflet-bottom leaflet-left' style={{ bottom: '74px', left: '10px' }} type='default'>{zoomLevel}</ZoomButton>
           }
+
+
+         
         </MapContainer>
 
+  
       </div>
     </div>
   );

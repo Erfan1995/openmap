@@ -62,7 +62,7 @@ const PublicMap = ({ styleId, mapZoom, style, mapData, manualMapData, datasets, 
                 url={styleId}
             />
 
-            <LeafletgeoSearch  />
+            <LeafletgeoSearch />
             <MapEvents />
             <EditControlExample onChange={onChange} draw={draw}
                 edit={edit} manualMapData={customMapData} mapData={mapData} userType={userType} userId={userId} />

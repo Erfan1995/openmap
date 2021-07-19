@@ -37,9 +37,21 @@ const CreateMapContainer = ({ authenticatedUser, collapsed, styledMaps, tags, se
   const [center, setCenter] = useState(serverSideMapData.center);
   const [customMapData, setCustomMapData] = useState(manualMapData);
 
+
+
+  
+
   const MapWithNoSSR = dynamic(() => import("../../components/map"), {
     ssr: false
   });
+
+
+
+  const appendHtml=()=>{
+
+  }
+
+
   const key = 'updatable';
 
   const router = useRouter();
@@ -106,6 +118,9 @@ const CreateMapContainer = ({ authenticatedUser, collapsed, styledMaps, tags, se
     });
   }
 
+
+
+
   return (
     <Layout collapsed={collapsed} user={authenticatedUser}>
       <MapsWrapper  >
@@ -151,6 +166,7 @@ const CreateMapContainer = ({ authenticatedUser, collapsed, styledMaps, tags, se
               center={center}
               setCenter={changeMapCenter}
               onMapDataChange={onCustomDataChange}
+              injectedcodes={injectedcodes}
               draw={{
                 rectangle: true,
                 polygon: true,
@@ -168,6 +184,8 @@ const CreateMapContainer = ({ authenticatedUser, collapsed, styledMaps, tags, se
           </Col>
         </Row>
       </MapsWrapper>
+
+     
     </Layout>
   )
 }
@@ -194,7 +212,7 @@ export const getServerSideProps = withPrivateServerSideProps(
       const data = await getMapStyles({ type: 'default' }, token);
       const tags = await getTags(token);
       const injectedcodes = await getInjectedCodes({ map: id }, token);
-      injectedcodes.map((item) => {
+      injectedcodes?.map((item) => {
         item.id = Number(item.id);
       })
       const icons = await getIcons(token);
@@ -212,6 +230,7 @@ export const getServerSideProps = withPrivateServerSideProps(
         }
       }
     } catch (error) {
+      console.log(error)
       return {
         redirect: {
           destination: '/server-error',

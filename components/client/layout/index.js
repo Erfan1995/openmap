@@ -5,7 +5,7 @@ import NavBar from './NavBar';
 
 const { Content } = Layout;
 
-const AppLayout = ({ children, walletAddress, datasets, onDataSetChange, mapInfo, publicUser, mapData }) => {
+const AppLayout = ({ children, walletAddress, datasets, onDataSetChange, mapInfo, publicUser, mapData, injectedcodes }) => {
   const [isMobileSize, setIsMobileSize] = useState(false);
   const [collapsed, setCollapsed] = useState(false);
   const [layerStyle, setLayerStyle] = useState('');
@@ -37,6 +37,8 @@ const AppLayout = ({ children, walletAddress, datasets, onDataSetChange, mapInfo
           toggle={toggle}
           publicUser={publicUser}
           mapData={mapData}
+          injectedcodes={injectedcodes}
+
         />
 
       </Layout>

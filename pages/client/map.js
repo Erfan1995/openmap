@@ -2,16 +2,15 @@ import dynamic from "next/dynamic";
 import LayoutPage from "components/client/layout";
 import { useEffect, useState } from "react";
 import UseAuth from "hooks/useAuth";
-import { getMethod, getOneMap, getAllMaps, getDatasetsByMap } from "lib/api";
+import {  getOneMap, getDatasetsByMap, getInjectedCodes } from "lib/api";
 import { extractMapData, getPublicAuthenticatedMapData } from "lib/general-functions";
-const Map = ({ manualMapData, mapData, datasets }) => {
+const Map = ({ manualMapData, mapData, datasets, injectedcodes }) => {
 
   const [loading, setLoading] = useState(true);
   const [publicUser, setPublicUser] = useState(true);
   const [datasetData, setDatasetData] = useState(datasets);
   const [zoomLevel, setZoomLevel] = useState(mapData.zoomLevel);
 
-  console.log(mapData);
   const { login, logout } = UseAuth();
 
   useEffect(async () => {
@@ -42,7 +41,8 @@ const Map = ({ manualMapData, mapData, datasets }) => {
   return (
     <div>
       {!loading &&
-        <LayoutPage walletAddress={publicUser.publicAddress} datasets={datasets} onDataSetChange={onDataSetChange}
+        
+        <LayoutPage injectedcodes={injectedcodes} walletAddress={publicUser.publicAddress} datasets={datasets}  onDataSetChange={onDataSetChange}
           mapInfo={mapData} userId={publicUser.id} publicUser={publicUser} mapData={mapData}  >
           <MapWithNoSSR
             mapZoom={zoomLevel}
@@ -66,6 +66,7 @@ const Map = ({ manualMapData, mapData, datasets }) => {
             style={{ height: "100vh" }} />
         </LayoutPage>
       }
+     
     </div>
   );
 }
@@ -73,6 +74,7 @@ export default Map;
 
 export async function getServerSideProps(ctx) {
   let mapData = null;
+  let injectedcodes = null;
   const { mapToken, id, publicUser } = ctx.query;
   try {
     let datasets = [];
@@ -85,17 +87,19 @@ export async function getServerSideProps(ctx) {
           return { ...item, config: temp ? temp : null }
         })
       }
+
+      injectedcodes = await getInjectedCodes({ map: id }, null, false);
     }
 
     return {
       props: {
         manualMapData: [...await extractMapData(mapData), ...await getPublicAuthenticatedMapData(publicUser, mapData.id)]
         , mapData: mapData,
-        datasets: datasets
+        datasets: datasets,
+        injectedcodes: injectedcodes
       },
     };
   } catch (e) {
-    console.log(e);
     return {
       redirect: {
         destination: '/server-error',

@@ -29,7 +29,7 @@ const ImageWrapper = styled.img`
 `;
 
 const { Header } = Layout;
-const NavBar = ({ isMobileSize, toggle, walletAddress, publicUser, mapData }) => {
+const NavBar = ({ isMobileSize, toggle, walletAddress, publicUser, mapData,injectedcodes }) => {
     const router = useRouter();
     const childRef = useRef();
     const customWalletAddress = walletAddress.substring(0, 12) + '...' + walletAddress.substr(walletAddress.length - 5);
@@ -46,6 +46,17 @@ const NavBar = ({ isMobileSize, toggle, walletAddress, publicUser, mapData }) =>
         setPublicUserImage(res.picture);
         // setModalVisible(false);
     }
+
+    
+  function createMarkup() {
+    let text = '';
+    injectedcodes?.map((item) => {
+      text += `<span>${item.body}</span>`
+    })
+    console.log(text);
+    return { __html: text };
+  }
+
     const openFormModal = async () => {
         setModalVisible(true);
         const res = await login(mapData);
@@ -84,7 +95,9 @@ const NavBar = ({ isMobileSize, toggle, walletAddress, publicUser, mapData }) =>
                 <img src='/chat.png' />
             </Button>
 
+            <div dangerouslySetInnerHTML={createMarkup()}>
 
+            </div>
         </Header>
     );
 };

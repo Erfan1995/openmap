@@ -1,34 +1,12 @@
-import { PlusOutlined } from "@ant-design/icons";
-import { Row, Select, Divider, Col, message, Upload, Spin, Button, Modal, Menu, List, Dropdown } from "antd";
-import { postMethod, putMethod, deleteMethod } from "lib/api";
+import { Row, Col, Spin, Button, Modal, Menu, List, Dropdown } from "antd";
+import {  deleteMethod } from "lib/api";
 import { useState, useRef } from "react";
 import styled from 'styled-components';
 import { DATASET } from '../../../../static/constant';
-import { InboxOutlined, UploadOutlined, ExclamationCircleOutlined } from '@ant-design/icons';
+import {  ExclamationCircleOutlined } from '@ant-design/icons';
+import dynamic from "next/dynamic";
 const { confirm } = Modal;
-import Editor from "react-simple-code-editor";
-import { highlight, languages } from "prismjs/components/prism-core";
-import "prismjs/components/prism-clike";
-import "prismjs/components/prism-javascript";
-import InjectCodeForm from "./InjectCodeForm";
-import { set } from "nprogress";
 
-const CryptoJS = require("crypto-js");
-const { Option } = Select;
-const { Dragger } = Upload;
-const StyledDivider = styled(Divider)`
-  margin: 4px 0;
-`;
-const LinkWrapper = styled.div`
-  display: flex;
-  flex-wrap: nowrap;
-`;
-const StyledLink = styled.a`
-  flex: none;
-  padding: 8px;
-  display: block;
-  cursor: pointer;
-`;
 const code1 = `function add(a, b) {
     return a + b;
   }
@@ -57,14 +35,22 @@ const InjectedCodeName = styled.p`
     margin-left:10px;
 `;
 const InjectCode = ({ mapData, injectedcodes }) => {
-  const [editorCode, setCode] = useState(code1);
   const [modalVisible, setModalVisible] = useState(false);
   const [injectedCode, setInjectedCodes] = useState(injectedcodes);
   const [injectedCodeId, setInjectedCodeId] = useState();
   const [loading, setLoading] = useState(false);
   const [editableCode, setEditableCode] = useState([]);
   const [displayCode, setDisplayCode] = useState();
+
+
+  const InjectCodeForm = dynamic(() => import("./injectCodeForm"), {
+    ssr: false
+  });
+
+
+
   const childRef = useRef();
+
   const onModalClose = (res, actionType) => {
     setModalVisible(false);
     if (actionType === "store") {
@@ -123,6 +109,10 @@ const InjectCode = ({ mapData, injectedcodes }) => {
     setEditableCode(code);
     setModalVisible(true);
   }
+
+
+  
+
   return (
     <Spin spinning={loading}>
       <Button type="dashed" size='large' block onClick={() => addInjectedCode()} >
@@ -133,25 +123,15 @@ const InjectCode = ({ mapData, injectedcodes }) => {
         width={700}
         visible={modalVisible}
         destroyOnClose={true}
-        onOk={() => childRef.current.injectCode()}
-        onCancel={() => setModalVisible(false)}>
-        <br />
-        <br />
-
+        title={'Inject code'}
+        footer={null}
+        onCancel={() => setModalVisible(false)}
+      >
+      
         <InjectCodeForm ref={childRef} onModalClose={onModalClose} id={mapData.id} editableCode={editableCode}
-          displayCode={displayCode} />
+          displayCode={displayCode} setModalVisible={setModalVisible} />
       </Modal>
 
-      {/* <Editor
-        value={editorCode}
-        onValueChange={code => setCode(code)}
-        highlight={code => highlight(code, languages.js)}
-        padding={10}
-        style={{
-          fontFamily: '"Fira code", "Fira Mono", monospace',
-          fontSize: 12,
-        }}
-      /> */}
       <List
         dataSource={injectedCode}
         renderItem={item => (
