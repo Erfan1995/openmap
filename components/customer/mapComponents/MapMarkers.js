@@ -55,6 +55,7 @@ const MapMarkers = ({ icons, mdcId, selectedDIcons, layerType, setDataset, onMap
             return (file.type.split("/")[0]) === "image" ? true : Upload.LIST_IGNORE;
         },
         onChange: info => {
+            setUploadIconsLoading(true)
             if (info.file.status === "done") {
                 uploadIcon(info.file);
             }
@@ -62,19 +63,23 @@ const MapMarkers = ({ icons, mdcId, selectedDIcons, layerType, setDataset, onMap
 
     };
     const uploadIcon = async (file) => {
-        setUploadIconsLoading(true);
-        setMarkers((markers) => [...markers].reverse());
+        // setMarkers((markers) => [...markers].reverse());
         const data = new FormData();
         data.append('data', JSON.stringify({ 'name': file.originFileObj.name }))
         data.append('files.icon', file.originFileObj, file.originFileObj.name);
-        const res = await postFileMethod('icons', data);
-        if (res) {
-            setMarkers([...markers, res]);
-            message.success('uploaded successfully')
-            setMarkers((markers) => [...markers].reverse());
-
+        try {
+            const res = await postFileMethod('icons', data);
+            if (res) {
+                setMarkers([...markers, res]);
+                message.success('uploaded successfully')
+                setMarkers((markers) => [...markers].reverse());
+                setUploadIconsLoading(false);
+            }
         }
-        setUploadIconsLoading(false);
+        catch (e) {
+            setUploadIconsLoading(false);
+            console.log(e)
+        }
     }
     const selectIcon = async (item) => {
         setUploadIconsLoading(true);
@@ -145,9 +150,8 @@ const MapMarkers = ({ icons, mdcId, selectedDIcons, layerType, setDataset, onMap
             },
         });
     }
-    const handleChange = () => {
 
-    }
+
     return (
         <div>
             {selectedIcons &&

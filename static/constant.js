@@ -134,7 +134,7 @@ export const MAP = {
 
 
 export const DATASET_CONF = {
-    MARKERS: 'marker',
+    MARKERS: 'Marker',
     PUPOP: 'Pop-Up',
 }
 export const CUSTOMERS = {

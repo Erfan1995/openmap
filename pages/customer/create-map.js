@@ -31,10 +31,10 @@ const CardTitle = styled(Title)`
 
 const CreateMapContainer = ({ authenticatedUser, collapsed, styledMaps, tags, serverSideMapData, injectedcodes,
   manualMapData, serverSideDatasets, token, icons }) => {
-  const [mapStyle, setMapStyle] = useState(serverSideMapData.mapstyle.link || '');
+  const [mapStyle, setMapStyle] = useState(serverSideMapData?.mapstyle?.link || process.env.NEXT_PUBLIC_MAPBOX_DEFAULT_MAP);
   const [datasets, setDatasets] = useState(serverSideDatasets);
   const [mapData, setMapData] = useState(serverSideMapData);
-  const [center, setCenter] = useState(serverSideMapData.center);
+  const [center, setCenter] = useState(serverSideMapData?.center);
   const [customMapData, setCustomMapData] = useState(manualMapData);
 
 
@@ -82,7 +82,7 @@ const CreateMapContainer = ({ authenticatedUser, collapsed, styledMaps, tags, se
         const { manualArray, data } = await getMapData(mapData.id);
         setMapData(data);
         setCustomMapData(manualArray);
-      }, 200)
+      }, 1400)
     } catch (e) {
       message.error(e.message);
     }
@@ -216,10 +216,10 @@ export const getServerSideProps = withPrivateServerSideProps(
         item.id = Number(item.id);
       })
       const icons = await getIcons(token);
-      icons.map((icon) => {
+      icons?.map((icon) => {
         icon.id = Number(icon.id);
       })
-      tags.map((item) => {
+      tags?.map((item) => {
         item.id = Number(item.id);
       })
       return {

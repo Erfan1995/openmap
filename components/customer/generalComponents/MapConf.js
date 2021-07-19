@@ -73,13 +73,6 @@ const MapConf = ({ authenticatedUser, styledMaps, tags, mapData, serverSideDatas
         </Menu>
     );
     const changeStyle = async (item) => {
-
-        console.log(item.link)
-        // var index = str.indexOf("Half");
-        // var substring = str.substr(0, index);
-
-
-
         setLoading(true);
         const res = await putMethod(`maps/${mapData.id}`, { mapstyle: item.id });
         if (res) {
