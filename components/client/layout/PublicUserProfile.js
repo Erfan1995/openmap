@@ -109,8 +109,6 @@ const PublicUserProfile = ({ userId, onModalClose, serverPublicUser, customWalle
             .validateFields()
             .then(async (values) => {
                 const fData = new FormData();
-                console.log(values);
-                console.log(imageFile);
                 fData.append('data', JSON.stringify(values));
                 setLoading(true);
                 if (imageSelected) {

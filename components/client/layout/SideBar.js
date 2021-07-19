@@ -54,6 +54,7 @@ const SideBar = ({ siderCollapsed, toggle, datasets, onDataSetChange, mapInfo })
     firstMounted.current = true;
   });
 
+
   return (
     <Sider className="site-layout-sider"
       trigger={null}
