@@ -133,13 +133,13 @@ const Dataset = ({ authenticatedUser, collapsed, locked_data, unlocked_data, tag
                 setLoading(true);
                 try {
                     if (datasetContent) {
-                        console.log(datasetContent);
                         const res = await postMethod('datasets', { title: file.originFileObj.name, is_locked: false, user: authenticatedUser.id, size: file.originFileObj.size })
                         res.title = res.title.split(".")[0];
                         res.updated_at = formatDate(res.updated_at);
                         res.maps = res.maps.length;
                         res.size = fileSizeReadable(res.size);
                         if (res) {
+
                             const resdataset = await postMethod('datasetcontents', { dataset: datasetContent.features, id: res.id });
                             setDataset([...dataset, res]);
                         }

@@ -95,7 +95,7 @@ export default class EditControlExample extends Component {
       let leafletGeoJSON = new L.GeoJSON(this.props.manualMapData, {
         pointToLayer: (feature, latlng) => {
 
-          const iconUrl = getStrapiMedia(this.props.mapData.icons.length > 0 ? this.props.mapData.icons[0]?.icon[0] : null);
+          const iconUrl = getStrapiMedia(this.props.mapData?.icons.length > 0 ? this.props.mapData?.icons[0]?.icon[0] : null);
           if (!iconUrl) return L.marker(latlng);
 
 
@@ -106,7 +106,7 @@ export default class EditControlExample extends Component {
         onEachFeature: (feature = {}, layer) => {
           const { properties } = feature;
           if (!properties) return;
-          layer.bindPopup(`<div>${getSpecifictPopup(properties, this.props.mapData.default_popup_style_slug || '', this.props.mapData.mmd_properties || [])}</div>`)
+          layer.bindPopup(`<div>${getSpecifictPopup(properties, this.props.mapData?.default_popup_style_slug || '', this.props.mapData?.mmd_properties || [])}</div>`)
         }
       });
       let leafletFG = reactFGref;

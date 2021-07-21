@@ -132,7 +132,7 @@ const Map = ({ styleId, center, setCenter, style, mapData, manualMapData, datase
           {
             datasets && datasets.map((item) => {
               return <GeoJSON pointToLayer={(feature, latlng) => {
-                const iconUrl = getStrapiMedia(item.config.icon?.icon[0]);
+                const iconUrl = getStrapiMedia(item.config?.icon?.icon[0]);
 
                 if (!iconUrl) return L.marker(latlng);
 
@@ -142,7 +142,7 @@ const Map = ({ styleId, center, setCenter, style, mapData, manualMapData, datase
               }} key={item.title + item.id} data={item.datasetcontents} onEachFeature={(feature, layer) => {
                 const { properties } = feature;
                 if (!properties) return;
-                layer.bindPopup(`<div>${getSpecifictPopup(properties, item.config.default_popup_style_slug || '', item.config.selected_dataset_properties || [])}</div>`)
+                layer.bindPopup(`<div>${getSpecifictPopup(properties, item.config?.default_popup_style_slug || '', item.config?.selected_dataset_properties || [])}</div>`)
 
               }} />
             })
