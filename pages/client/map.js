@@ -46,7 +46,7 @@ const Map = ({ manualMapData, mapData, datasets, injectedcodes }) => {
           mapInfo={mapData} userId={publicUser.id} publicUser={publicUser} mapData={mapData}  >
           <MapWithNoSSR
             mapZoom={zoomLevel}
-            styleId={mapData.mapstyle.link || ''}
+            styleId={mapData.mapstyle?.link  || process.env.NEXT_PUBLIC_MAPBOX_DEFAULT_MAP}
             edit={{
               edit: false,
               remove: false,
