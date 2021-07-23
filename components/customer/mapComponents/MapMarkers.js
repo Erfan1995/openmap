@@ -91,6 +91,7 @@ const MapMarkers = ({ icons, mdcId, selectedDIcons, layerType, setDataset, onMap
                 const res = putMethod('maps/' + mdcId, { icons: selectedIconsToUpload.map(item => item.id) });
                 if (res) {
                     onMapDataChange();
+                    setUploadIconsLoading(false);
                 }
             }
 
@@ -101,9 +102,9 @@ const MapMarkers = ({ icons, mdcId, selectedDIcons, layerType, setDataset, onMap
                 ics[0] = item;
                 setSelectedIcons(ics);
                 setDataset();
+                setUploadIconsLoading(false);
             }
         }
-        setUploadIconsLoading(false);
 
     }
     const deleteIcon = async (id) => {
@@ -113,8 +114,8 @@ const MapMarkers = ({ icons, mdcId, selectedDIcons, layerType, setDataset, onMap
             const dd = markers.filter(dData => dData.id !== res.id);
             setMarkers(dd);
             message.success('deleted successfully');
+            setUploadIconsLoading(false);
         }
-        setUploadIconsLoading(false);
     }
     const deleteSelectedIcon = async (id) => {
         if (layerType === "main") {
@@ -125,8 +126,8 @@ const MapMarkers = ({ icons, mdcId, selectedDIcons, layerType, setDataset, onMap
                 setSelectedIcons(dd);
                 onMapDataChange();
                 message.success('deleted successfully');
+                setUploadIconsLoading(false);
             }
-            setUploadIconsLoading(false);
         } else if (layerType === "dataset") {
             const res = putMethod('mapdatasetconfs/' + mdcId, { icon: null });
             if (res) {

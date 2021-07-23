@@ -194,7 +194,7 @@ const MapConf = ({ authenticatedUser, styledMaps, tags, mapData, serverSideDatas
                 setDatasetProperties(datasetDetails[0]?.properties)
             }
             const mapDatasetConf = await getMapDatasetConf({ dataset: id, map: mapData.id }, token);
-            if (mapDatasetConf) setmdcId(mapDatasetConf[0]?.id);
+            if (mapDatasetConf) setmdcId(Number(mapDatasetConf[0]?.id));
             const selectedIcons = await getDatasetConfContent({ id: mapDatasetConf[0]?.id }, token);
             if (selectedIcons.length > 0) {
                 if (selectedIcons[0].icon !== null) {
