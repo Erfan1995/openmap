@@ -78,17 +78,16 @@ const MapMarkers = ({ icons, mdcId, selectedDIcons, layerType, setDataset, onMap
         }
         catch (e) {
             setUploadIconsLoading(false);
-            console.log(e)
         }
     }
     const selectIcon = async (item) => {
-        setUploadIconsLoading(true);
         if (layerType === "main") {
             const found = selectedIcons.some(el => el.id === item.id);
             if (!found) {
+                setUploadIconsLoading(true);
                 setSelectedIcons([...selectedIcons, item]);
                 selectedIconsToUpload.push(item);
-                const res = putMethod('maps/' + mdcId, { icons: selectedIconsToUpload.map(item => item.id) });
+                const res = await putMethod('maps/' + mdcId, { icons: selectedIconsToUpload.map(item => item.id) });
                 if (res) {
                     onMapDataChange();
                     setUploadIconsLoading(false);
@@ -96,10 +95,11 @@ const MapMarkers = ({ icons, mdcId, selectedDIcons, layerType, setDataset, onMap
             }
 
         } else if (layerType === "dataset") {
-            const res = putMethod('mapdatasetconfs/' + mdcId, { icon: item.id });
+            setUploadIconsLoading(true);
+            const res = await putMethod('mapdatasetconfs/' + mdcId, { icon: item.id });
             if (res) {
                 let ics = [];
-                ics[0] = item;
+                ics[0] = res.icon;
                 setSelectedIcons(ics);
                 setDataset();
                 setUploadIconsLoading(false);
@@ -196,15 +196,6 @@ const MapMarkers = ({ icons, mdcId, selectedDIcons, layerType, setDataset, onMap
                     />
                 </MarkerCard>
             </Spin>
-            {/* <br />
-            <Wrapper>
-                <Dragger  {...props} name="file" maxCount={1} >
-                    <p className="ant-upload-drag-icon">
-                        <InboxOutlined />
-                    </p>
-                    <p>{DATASET.CLICK_OR_DRAG}</p>
-                </Dragger>
-            </Wrapper> */}
         </div>
     )
 }
