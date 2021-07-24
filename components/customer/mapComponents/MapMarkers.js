@@ -28,7 +28,7 @@ const DeleteButton = styled.div`
 
 cursor:pointer;
 `
-const MapMarkers = ({ icons, mdcId, selectedDIcons, layerType, setDataset, onMapDataChange }) => {
+const MapMarkers = ({ icons, mdcId, selectedDIcons, layerType, setDataset, onMapDataChange, changeSelectedIcons }) => {
     selectedDIcons.map(data => data.id = Number(data.id));
     const { token } = nookies.get();
     const [uploadIconsLoading, setUploadIconsLoading] = useState(false);
@@ -103,6 +103,7 @@ const MapMarkers = ({ icons, mdcId, selectedDIcons, layerType, setDataset, onMap
                 setSelectedIcons(ics);
                 setDataset();
                 setUploadIconsLoading(false);
+                changeSelectedIcons(ics);
             }
         }
 

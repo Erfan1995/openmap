@@ -1,7 +1,7 @@
 import Layout from '../../components/customer/layout/Layout';
 import withPrivateServerSideProps from '../../utils/withPrivateServerSideProps';
 import { useState } from 'react';
-import { Row, Col, Divider, Typography, Button, message } from 'antd';
+import { Row, Col, Divider, Typography, Button, message, Spin } from 'antd';
 import styled from 'styled-components';
 import nookies from 'nookies';
 import dynamic from "next/dynamic";
@@ -36,10 +36,10 @@ const CreateMapContainer = ({ authenticatedUser, collapsed, styledMaps, tags, se
   const [mapData, setMapData] = useState(serverSideMapData);
   const [center, setCenter] = useState(serverSideMapData?.center);
   const [customMapData, setCustomMapData] = useState(manualMapData);
+  const [loading, setLoading] = useState(false);
 
 
 
-  
 
   const MapWithNoSSR = dynamic(() => import("../../components/map"), {
     ssr: false
@@ -47,7 +47,7 @@ const CreateMapContainer = ({ authenticatedUser, collapsed, styledMaps, tags, se
 
 
 
-  const appendHtml=()=>{
+  const appendHtml = () => {
 
   }
 
@@ -59,10 +59,14 @@ const CreateMapContainer = ({ authenticatedUser, collapsed, styledMaps, tags, se
 
   const onDatasetChange = () => {
     try {
+      setLoading(true);
       setTimeout(async () => {
         const data = await getOneMap({ id: mapData.id }, token);
         if (data) {
           const res = await getDatasetsByMap({ maps: mapData.id }, token);
+          if (res) {
+            setLoading(false);
+          }
           setDatasets(res.map((item) => {
             let temp = data.mapdatasetconfs.find((obj) => obj.dataset.id === item.id);
             return { ...item, config: temp ? temp : null }
@@ -71,19 +75,25 @@ const CreateMapContainer = ({ authenticatedUser, collapsed, styledMaps, tags, se
         }
       }, 200)
     } catch (e) {
-      console.log(e);
+      message.error(e.message);
+      setLoading(false);
     }
   }
 
 
   const onCustomDataChange = () => {
     try {
+      setLoading(true);
       setTimeout(async () => {
         const { manualArray, data } = await getMapData(mapData.id);
+        if (manualArray) {
+          setLoading(false);
+        }
         setMapData(data);
         setCustomMapData(manualArray);
-      }, 1400)
+      }, 200)
     } catch (e) {
+      setLoading(false);
       message.error(e.message);
     }
   }
@@ -155,37 +165,39 @@ const CreateMapContainer = ({ authenticatedUser, collapsed, styledMaps, tags, se
           </Col>
 
           <Col xs={24} sm={24} md={24} lg={17} xl={17}>
-            <MapWithNoSSR
-              manualMapData={customMapData}
-              styleId={mapStyle}
-              style={{ height: "71vh" }}
-              datasets={datasets}
-              mapData={mapData}
-              userType='customer'
-              userId={authenticatedUser.id}
-              center={center}
-              setCenter={changeMapCenter}
-              onMapDataChange={onCustomDataChange}
-              injectedcodes={injectedcodes}
-              draw={{
-                rectangle: true,
-                polygon: true,
-                circle: false,
-                circlemarker: false,
-                polyline: false
-              }}
-              edit={
-                {
-                  edit: false,
-                  remove: false,
+            <Spin spinning={loading}>
+              <MapWithNoSSR
+                manualMapData={customMapData}
+                styleId={mapStyle}
+                style={{ height: "71vh" }}
+                datasets={datasets}
+                mapData={mapData}
+                userType='customer'
+                userId={authenticatedUser.id}
+                center={center}
+                setCenter={changeMapCenter}
+                onMapDataChange={onCustomDataChange}
+                injectedcodes={injectedcodes}
+                draw={{
+                  rectangle: true,
+                  polygon: true,
+                  circle: false,
+                  circlemarker: false,
+                  polyline: false
+                }}
+                edit={
+                  {
+                    edit: false,
+                    remove: false,
+                  }
                 }
-              }
-            />
+              />
+            </Spin>
           </Col>
         </Row>
       </MapsWrapper>
 
-     
+
     </Layout>
   )
 }

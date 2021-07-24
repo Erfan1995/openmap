@@ -181,6 +181,9 @@ const MapConf = ({ authenticatedUser, styledMaps, tags, mapData, serverSideDatas
         });
     }
 
+    const changeSelectedIcons = (newIcons) => {
+        setSelectedDIcons(newIcons);
+    }
     //this function gets called whenever the user click on a dataset or main map popup styles button
     const mdc = async (id, state, type) => {
         setLayerClicked(state)
@@ -309,7 +312,7 @@ const MapConf = ({ authenticatedUser, styledMaps, tags, mapData, serverSideDatas
                             setLayerClicked(true);
                         }} type='link'>back</Button>
                         <DatasetConf setDataset={setDataset} onMapDataChange={onMapDataChange} icons={icons} mdcId={mdcId} selectedDIcons={selectedDIcons}
-                            datasetProperties={datasetProperties} selectedDatasetProperties={selectedDatasetProperties} layerType={layerType} />
+                            datasetProperties={datasetProperties} selectedDatasetProperties={selectedDatasetProperties} layerType={layerType} changeSelectedIcons={changeSelectedIcons} />
                     </div>
                 }
             </Card>
