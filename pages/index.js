@@ -19,7 +19,6 @@ export async function getServerSideProps(ctx) {
     const { mapToken, id } = ctx.query;
     if (id) {
       const res = await getMethod(`maps?mapId=${decodeURI(mapToken)}&id=${id}`, null, false);
-       // const res = await getOneMap({mapId:decodeURI(mapToken),id:id},null,false);
       if (!(res.length > 0)) {
         return {
           redirect: {
