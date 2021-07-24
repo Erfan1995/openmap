@@ -78,7 +78,7 @@ const CreateMap = ({ serverSideTags, user, mapData, onModalClose, addImageFile }
                     setLoading(false);
                     if (res) {
                         message.success(DATASET.CREATE_MAP_SUCCESS_MSG);
-                        onModalClose(res);
+                        // onModalClose(res);
                         localStorage.clear('zoom');
                     }
                 })
