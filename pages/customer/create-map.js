@@ -72,7 +72,7 @@ const CreateMapContainer = ({ authenticatedUser, collapsed, styledMaps, tags, se
           }));
 
         }
-      }, 200)
+      }, 3000)
     } catch (e) {
       message.error(e.message);
       setLoading(false);
@@ -90,7 +90,7 @@ const CreateMapContainer = ({ authenticatedUser, collapsed, styledMaps, tags, se
         }
         setMapData(data);
         setCustomMapData(manualArray);
-      }, 200)
+      }, 3000)
     } catch (e) {
       setLoading(false);
       message.error(e.message);

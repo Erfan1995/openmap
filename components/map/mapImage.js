@@ -16,7 +16,7 @@ const MapImage = ({  mapData, manualMapData, datasets }) => {
       style={{ height: "100vh" }} >
 
       <TileLayer
-        url={mapData.mapstyle.link}
+        url={mapData.mapstyle?.link || process.env.NEXT_PUBLIC_MAPBOX_DEFAULT_MAP}
       />
       {
         datasets && datasets.map((item) => {

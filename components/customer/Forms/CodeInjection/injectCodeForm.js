@@ -19,15 +19,19 @@ const ButtonWrapper= styled(Col)`
 
 `;
 
+const CodeMirrorWrapper= styled.div`
+  width:100%;
+  border:1px solid #eee;
+`
 
 const options = {
     mode: 'htmlmixed',
-    lineNumbers: true
+    lineNumbers: false
 };
 const InjectCodeForm = ({ onModalClose, id, editableCode, displayCode ,setModalVisible}) => {
     const [form] = Form.useForm();
     const [loading, setLoading] = useState(false);
-    const [codes, setCodes] = useState('');
+    const [codes, setCodes] = useState('<h1> Code Here</h1>');
     const injectCode = () => {
         form
             .validateFields()
@@ -73,6 +77,9 @@ const InjectCodeForm = ({ onModalClose, id, editableCode, displayCode ,setModalV
                             </Col>
 
                             <Col span={24}>
+                                <label>Please inject code here</label>
+                              <CodeMirrorWrapper >
+
                                 <CodeMirror
                                     value={codes}
                                     options={options}
@@ -80,6 +87,8 @@ const InjectCodeForm = ({ onModalClose, id, editableCode, displayCode ,setModalV
                                         setCodes(value)
                                     }}
                                 />
+                              </CodeMirrorWrapper>
+
                             </Col>
 
 
