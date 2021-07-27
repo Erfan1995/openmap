@@ -56,7 +56,6 @@ const Dataset = ({ authenticatedUser, collapsed, locked_data, unlocked_data, tag
                         if (data) {
                             let latitude;
                             let longitude;
-                            console.log(data);
                             const columns = data[0];
                             columns.map((col) => {
                                 for (let i = 0; i < LAT.length; i++) {
