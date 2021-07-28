@@ -60,9 +60,12 @@ const MapItem = ({ item, filterDeletedMap }) => {
     const router = useRouter();
     const deleteMap = async (id) => {
         setLoading(true);
-        const res = await deleteMethod('maps/' + id)
-        if (res) {
-            filterDeletedMap(id);
+        const dConf = await deleteMethod('mapdatasetconfs/map:' + id);
+        if (dConf) {
+            const res = await deleteMethod('maps/' + id)
+            if (res) {
+                filterDeletedMap(id);
+            }
         }
         setLoading(false);
     }

@@ -2,6 +2,7 @@ import { List, Row, Card, Button, Form, Input, Col, message, Spin, Typography } 
 import { useImperativeHandle, useState, forwardRef } from "react";
 import styled from 'styled-components';
 import { postMethod } from 'lib/api';
+import Link from 'next/link';
 const { Title } = Typography;
 
 
@@ -43,8 +44,12 @@ const MapStyleDialog = ({ onModalClose }, ref) => {
                         rules={[{ required: true }]}
                     >
                         <Input placeholder="E.g. http://api.mapbox.com/styles/v1/username/basemap/tiles/256/{z}/{X}" />
+                        <div style={{ fontSize: "11px",color:"gray" }}>
+                            <p >Learn how to get your Mapbox Style URL <span><Link href="mapbox-style-guide"><a target="_blank">here</a></Link></span></p>
+                        </div>
                     </Form.Item>
                 </Form>
+
             </FormWrapper>
         </Spin>
     )

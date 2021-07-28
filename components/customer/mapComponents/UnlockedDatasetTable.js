@@ -1,4 +1,4 @@
-import { Table, Dropdown, Menu, Modal, Spin, Button } from 'antd';
+import { Table, Dropdown, Menu, Modal, Spin, Button, message } from 'antd';
 import React, { useEffect, useState, useRef } from 'react';
 import { DownOutlined, ExclamationCircleOutlined } from '@ant-design/icons';
 import { deleteMethod, putMethod, getMaps, postMethod } from "../../../lib/api";
@@ -30,15 +30,23 @@ const UnlockedDataset = ({ data, updateLockedData, user, tags, updatedData }) =>
     }, [data])
 
     const deleteDataset = async () => {
-        const deletedDataset = await deleteMethod('datasetcontents/' + datasetId)
-        if (deletedDataset) {
-            const res = await deleteMethod('datasets/' + datasetId)
-            if (res) {
-                const dd = dataset.filter(dData => dData.id !== res.id);
-                setDataset(dd);
-                updatedData(dd);
+        try {
+            setLoading(true);
+            const dConf = await deleteMethod('mapdatasetconfs/dataset:' + datasetId);
+            if (dConf) {
+                const deletedDataset = await deleteMethod('datasetcontents/' + datasetId)
+                if (deletedDataset) {
+                    const res = await deleteMethod('datasets/' + datasetId)
+                    if (res) {
+                        const dd = dataset.filter(dData => dData.id !== res.id);
+                        setDataset(dd);
+                        updatedData(dd);
+                    }
+                    setLoading(false)
+                }
             }
-            setLoading(false)
+        } catch (e) {
+            message.error(e.message);
         }
     }
     const lockDataset = async () => {
