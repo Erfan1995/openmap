@@ -13,6 +13,8 @@ import L from 'leaflet';
 import LeafletgeoSearch from "./MapSearch";
 import { getStrapiMedia } from "lib/media";
 import { MapIconSize } from "lib/constants";
+import MarkerClusterGroup from 'react-leaflet-markercluster';
+
 
 delete L.Icon.Default.prototype._getIconUrl;
 L.Icon.Default.mergeOptions({
@@ -59,7 +61,7 @@ const TopButtonWrapper = styled.div`
 `;
 
 
-const Map = ({ styleId, center, setCenter, style, mapData, manualMapData, datasets, edit, draw, userType, userId, onMapDataChange ,injectedcodes}) => {
+const Map = ({ styleId, center, setCenter, style, mapData, manualMapData, datasets, edit, draw, userType, userId, onMapDataChange, injectedcodes }) => {
 
   const [openModal, setOpenModal] = useState(null);
   const [place, setPlace] = useState(null);
@@ -131,20 +133,22 @@ const Map = ({ styleId, center, setCenter, style, mapData, manualMapData, datase
 
           {
             datasets && datasets.map((item) => {
-              return <GeoJSON pointToLayer={(feature, latlng) => {
-                const iconUrl = getStrapiMedia(item.config?.icon?.icon[0]);
+              return  <MarkerClusterGroup>
+                <GeoJSON pointToLayer={(feature, latlng) => {
+                  const iconUrl = getStrapiMedia(item.config?.icon?.icon[0]);
 
-                if (!iconUrl) return L.marker(latlng);
+                  if (!iconUrl) return L.marker(latlng);
 
-                return L.marker(latlng, {
-                  icon: new L.icon({ iconUrl: iconUrl, iconSize: MapIconSize })
-                })
-              }} key={item.title + item.id} data={item.datasetcontents} onEachFeature={(feature, layer) => {
-                const { properties } = feature;
-                if (!properties) return;
-                layer.bindPopup(`<div>${getSpecifictPopup(properties, item.config?.default_popup_style_slug || '', item.config?.selected_dataset_properties || [])}</div>`)
+                  return L.marker(latlng, {
+                    icon: new L.icon({ iconUrl: iconUrl, iconSize: MapIconSize })
+                  })
+                }} key={item.title + item.id} data={item.datasetcontents} onEachFeature={(feature, layer) => {
+                  const { properties } = feature;
+                  if (!properties) return;
+                  layer.bindPopup(`<div>${getSpecifictPopup(properties, item.config?.default_popup_style_slug || '', item.config?.selected_dataset_properties || [])}</div>`)
 
-              }} />
+                }} />
+              </MarkerClusterGroup>
             })
           }
 
@@ -166,10 +170,10 @@ const Map = ({ styleId, center, setCenter, style, mapData, manualMapData, datase
           }
 
 
-         
+
         </MapContainer>
 
-  
+
       </div>
     </div>
   );
