@@ -11,6 +11,9 @@ import { getSpecifictPopup } from 'lib/general-functions';
 import { getStrapiMedia } from 'lib/media';
 import { MapIconSize } from 'lib/constants';
 
+import "leaflet.markercluster/dist/leaflet.markercluster";
+import "leaflet.markercluster/dist/MarkerCluster.css";
+import "leaflet.markercluster/dist/MarkerCluster.Default.css";
 const PupopDiv = styled.div`
 height:200px;
 background-color:#000;
@@ -32,7 +35,7 @@ L.Icon.Default.mergeOptions({
 
 
 
-
+const mcg = L.markerClusterGroup();
 export default class EditControlExample extends Component {
 
   state = {
@@ -88,14 +91,17 @@ export default class EditControlExample extends Component {
   _editableFG = null;
 
   _onFeatureGroupReady = (reactFGref) => {
+   
     if (this.state.type === 'create') {
       reactFGref?.clearLayers();
+      mcg.clearLayers();
     }
     if (this.props.manualMapData.length > 0) {
       let leafletGeoJSON = new L.GeoJSON(this.props.manualMapData, {
         pointToLayer: (feature, latlng) => {
 
           const iconUrl = getStrapiMedia(this.props.mapData?.icons.length > 0 ? this.props.mapData?.icons[0]?.icon[0] : null);
+          // alert(iconUrl);
           if (!iconUrl) return L.marker(latlng);
 
 
@@ -108,15 +114,14 @@ export default class EditControlExample extends Component {
           if (!properties) return;
           layer.bindPopup(`<div>${getSpecifictPopup(properties, this.props.mapData?.default_popup_style_slug || '', this.props.mapData?.mmd_properties || [])}</div>`)
         }
-      });
+      }).addTo(mcg);
       let leafletFG = reactFGref;
       leafletGeoJSON.eachLayer((layer) => {
-
         // layer.on("click", function (e) {
         //   this.setState({ modalVisible: true, place: layer.feature });
         // }.bind(this));
         if (leafletFG) {
-          leafletFG.addLayer(layer);
+          leafletFG.addLayer(mcg);
         }
       });
     }

@@ -132,8 +132,8 @@ const Map = ({ styleId, center, setCenter, style, mapData, manualMapData, datase
             edit={edit} manualMapData={manualMapData} mapData={mapData} userType={userType} userId={userId} />
 
           {
-            datasets && datasets.map((item) => {
-              return  <MarkerClusterGroup>
+            datasets && datasets.map((item, index) => {
+              return <MarkerClusterGroup key={`dataset${index}`}>
                 <GeoJSON pointToLayer={(feature, latlng) => {
                   const iconUrl = getStrapiMedia(item.config?.icon?.icon[0]);
 

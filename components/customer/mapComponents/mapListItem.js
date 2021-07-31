@@ -137,7 +137,7 @@ const MapItem = ({ item, filterDeletedMap }) => {
                             <div><CalendarOutlined />  {new Date(item.updated_at).toLocaleDateString()}</div>
                             <div >
                                 {
-                                    item.tags.map((tag) => (
+                                    item?.tags?.map((tag) => (
                                         <Tag color='cyan' key={`tag${tag.id}`} className='margin-top-5'>
                                             {tag.name}
                                         </Tag>
