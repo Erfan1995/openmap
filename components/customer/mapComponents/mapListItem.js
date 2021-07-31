@@ -58,11 +58,14 @@ const ActionButton = ({ handleMenuClick }) => {
 const MapItem = ({ item, filterDeletedMap }) => {
     const [loading, setLoading] = useState(false);
     const router = useRouter();
-    const deleteDataset = async (id) => {
+    const deleteMap = async (id) => {
         setLoading(true);
-        const res = await deleteMethod('maps/' + id)
-        if (res) {
-            filterDeletedMap(id);
+        const dConf = await deleteMethod('mapdatasetconfs/map:' + id);
+        if (dConf) {
+            const res = await deleteMethod('maps/' + id)
+            if (res) {
+                filterDeletedMap(id);
+            }
         }
         setLoading(false);
     }
@@ -71,7 +74,7 @@ const MapItem = ({ item, filterDeletedMap }) => {
             icon: <ExclamationCircleOutlined />,
             content: <p>{DATASET.DELETE_CONFIRM}</p>,
             onOk() {
-                deleteDataset(id)
+                deleteMap(id)
             },
             onCancel() {
             },

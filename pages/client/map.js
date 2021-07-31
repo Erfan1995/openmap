@@ -2,7 +2,7 @@ import dynamic from "next/dynamic";
 import LayoutPage from "components/client/layout";
 import { useEffect, useState } from "react";
 import UseAuth from "hooks/useAuth";
-import {  getOneMap, getDatasetsByMap, getInjectedCodes } from "lib/api";
+import { getOneMap, getDatasetsByMap, getInjectedCodes, getClientMapData } from "lib/api";
 import { extractMapData, getPublicAuthenticatedMapData } from "lib/general-functions";
 const Map = ({ manualMapData, mapData, datasets, injectedcodes }) => {
 
@@ -41,12 +41,12 @@ const Map = ({ manualMapData, mapData, datasets, injectedcodes }) => {
   return (
     <div>
       {!loading &&
-        
-        <LayoutPage injectedcodes={injectedcodes} walletAddress={publicUser.publicAddress} datasets={datasets}  onDataSetChange={onDataSetChange}
+
+        <LayoutPage injectedcodes={injectedcodes} walletAddress={publicUser.publicAddress} datasets={datasets} onDataSetChange={onDataSetChange}
           mapInfo={mapData} userId={publicUser.id} publicUser={publicUser} mapData={mapData}  >
           <MapWithNoSSR
             mapZoom={zoomLevel}
-            styleId={mapData.mapstyle?.link  || process.env.NEXT_PUBLIC_MAPBOX_DEFAULT_MAP}
+            styleId={mapData.mapstyle?.link || process.env.NEXT_PUBLIC_MAPBOX_DEFAULT_MAP}
             edit={{
               edit: false,
               remove: false,
@@ -66,7 +66,7 @@ const Map = ({ manualMapData, mapData, datasets, injectedcodes }) => {
             style={{ height: "100vh" }} />
         </LayoutPage>
       }
-     
+
     </div>
   );
 }
@@ -79,7 +79,8 @@ export async function getServerSideProps(ctx) {
   try {
     let datasets = [];
     if (id) {
-      mapData = await getOneMap({ id: id });
+      const data = await getClientMapData(id);
+      mapData = data?.maps[0];
       if (mapData) {
         datasets = await getDatasetsByMap({ maps: id }, null, false);
         datasets = datasets.map((item) => {
@@ -87,8 +88,7 @@ export async function getServerSideProps(ctx) {
           return { ...item, config: temp ? temp : null }
         })
       }
-
-      injectedcodes = await getInjectedCodes({ map: id }, null, false);
+      injectedcodes = data?.injectedcodes;
     }
 
     return {

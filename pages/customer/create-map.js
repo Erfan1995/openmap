@@ -6,8 +6,7 @@ import styled from 'styled-components';
 import nookies from 'nookies';
 import dynamic from "next/dynamic";
 import {
-  fetchApi, putMethod, getOneMap, getDatasetsByMap, getTags, getInjectedCodes,
-  getIcons, getMapStyles
+  putMethod, getOneMap, getDatasetsByMap, getCreateMapData
 } from 'lib/api';
 import { getMapData, extractMapData } from "../../lib/general-functions";
 import { useRouter } from 'next/router';
@@ -221,13 +220,14 @@ export const getServerSideProps = withPrivateServerSideProps(
           })
         }
       }
-      const data = await getMapStyles({ type: 'default' }, token);
-      const tags = await getTags(token);
-      const injectedcodes = await getInjectedCodes({ map: id }, token);
+      const data = await getCreateMapData(id, token);
+      const mapStyles = data?.mapstyles;
+      const tags = data?.tags;
+      const injectedcodes = data?.injectedcodes;
+      const icons = data?.icons;
       injectedcodes?.map((item) => {
         item.id = Number(item.id);
       })
-      const icons = await getIcons(token);
       icons?.map((icon) => {
         icon.id = Number(icon.id);
       })
@@ -236,13 +236,12 @@ export const getServerSideProps = withPrivateServerSideProps(
       })
       return {
         props: {
-          authenticatedUser: verifyUser, styledMaps: data, tags: tags, injectedcodes: injectedcodes,
+          authenticatedUser: verifyUser, styledMaps: mapStyles, tags: tags, injectedcodes: injectedcodes,
           serverSideMapData: mapData, manualMapData: manualArray, serverSideDatasets: datasets, token: token, icons: icons
 
         }
       }
     } catch (error) {
-      console.log(error)
       return {
         redirect: {
           destination: '/server-error',

@@ -37,9 +37,8 @@ border-radius:15px;
     font-size:14px;
 `
 const UpdateButton = styled.div`
-    position:absolute;
-    right:12%;
-    top:47%;
+    margin-top:1px;
+    margin-left:350px;
     font-size:12px;
     color:DodgerBlue;
     &:hover{
@@ -48,7 +47,7 @@ const UpdateButton = styled.div`
 `
 const AccountInfo = styled.div`
     border-radius:17px;
-    margin:20px 5% 0px 5%;
+    margin:13px 5% 0px 5%;
     background-image: linear-gradient(to right,  DodgerBlue , blue);
 `
 const AccountInfoRow = styled(Row)`

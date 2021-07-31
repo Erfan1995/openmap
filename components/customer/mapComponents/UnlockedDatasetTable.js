@@ -1,7 +1,7 @@
-import { Table, Dropdown, Menu, Modal, Spin, Button } from 'antd';
+import { Table, Dropdown, Menu, Modal, Spin, Button, message } from 'antd';
 import React, { useEffect, useState, useRef } from 'react';
 import { DownOutlined, ExclamationCircleOutlined } from '@ant-design/icons';
-import { deleteMethod, putMethod, getMaps } from "../../../lib/api";
+import { deleteMethod, putMethod, getMaps, postMethod } from "../../../lib/api";
 import 'antd/dist/antd.css';
 import styled from 'styled-components';
 import DatasetDetails from './DatasatDetails';
@@ -30,16 +30,23 @@ const UnlockedDataset = ({ data, updateLockedData, user, tags, updatedData }) =>
     }, [data])
 
     const deleteDataset = async () => {
-        setLoading(true)
-        const deletedDataset = await deleteMethod('datasetcontents/' + datasetId)
-        if (deletedDataset) {
-            const res = await deleteMethod('datasets/' + datasetId)
-            if (res) {
-                const dd = dataset.filter(dData => dData.id !== res.id);
-                setDataset(dd);
-                updatedData(dd);
+        try {
+            setLoading(true);
+            const dConf = await deleteMethod('mapdatasetconfs/dataset:' + datasetId);
+            if (dConf) {
+                const deletedDataset = await deleteMethod('datasetcontents/' + datasetId)
+                if (deletedDataset) {
+                    const res = await deleteMethod('datasets/' + datasetId)
+                    if (res) {
+                        const dd = dataset.filter(dData => dData.id !== res.id);
+                        setDataset(dd);
+                        updatedData(dd);
+                    }
+                    setLoading(false)
+                }
             }
-            setLoading(false)
+        } catch (e) {
+            message.error(e.message);
         }
     }
     const lockDataset = async () => {
@@ -133,15 +140,20 @@ const UnlockedDataset = ({ data, updateLockedData, user, tags, updatedData }) =>
     const addImageFile = (file) => {
         setFile(file);
     }
-    const onModalClose = (res) => {
-        setCreateMapModalVisible(false);
-        router.push({
-            pathname: 'create-map',
-            query: { id: res.id }
-        })
+    const createMapDatasetConf = async (mapId) => {
+        const dd = await postMethod('mapdatasetconfs', { map: mapId, dataset: datasetId });
+        if (dd) {
+            setCreateMapModalVisible(false);
+            router.push({
+                pathname: 'create-map',
+                query: { id: mapId }
+            })
+        }
 
     }
-
+    const onModalClose = (res) => {
+        createMapDatasetConf(res.id)
+    }
     return (
         <>
             <Modal
