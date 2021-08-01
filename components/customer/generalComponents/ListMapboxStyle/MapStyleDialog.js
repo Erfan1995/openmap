@@ -44,10 +44,11 @@ const MapStyleDialog = ({ onModalClose }, ref) => {
                         rules={[{ required: true }]}
                     >
                         <Input placeholder="E.g. http://api.mapbox.com/styles/v1/username/basemap/tiles/256/{z}/{X}" />
-                        <div style={{ fontSize: "11px",color:"gray" }}>
-                            <p >Learn how to get your Mapbox Style URL <span><Link href="mapbox-style-guide"><a target="_blank">here</a></Link></span></p>
-                        </div>
+
                     </Form.Item>
+                    <div style={{ fontSize: "11px", color: "gray" }}>
+                        <p style={{marginLeft:"135px",marginTop:"-20px"}} >Learn how to get your Mapbox Style URL <span><Link href="mapbox-style-guide"><a target="_blank">here</a></Link></span></p>
+                    </div>
                 </Form>
 
             </FormWrapper>
