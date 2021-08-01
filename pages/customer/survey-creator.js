@@ -26,7 +26,7 @@ const SurveyWrapper = styled.div`
 border: 1px solid #eeeeee;
  border-radius: 5px;
  width:100%;
- height:70px;
+ 
 `;
 const SurveyName = styled.p`
     &:hover{
@@ -164,6 +164,7 @@ const SurveryCreator = ({ collapsed, authenticatedUser, token }) => {
                                 </div> :
                                 <div>
                                     <List
+                                        pagination={true}
                                         dataSource={surveyList}
                                         renderItem={item => (
                                             <List.Item>
