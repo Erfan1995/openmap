@@ -1,4 +1,6 @@
 
+@import '~react-leaflet-markercluster/dist/styles.min.css';
+
  .mobile-trigger {
   cursor: pointer;
   transition: color 0.3s;

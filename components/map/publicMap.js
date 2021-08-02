@@ -11,6 +11,7 @@ import { getCustomerMapData, getPublicMapData, getSpecifictPopup } from "lib/gen
 import LeafletgeoSearch from "./MapSearch";
 import { getStrapiMedia } from "lib/media";
 import { MapIconSize } from "lib/constants";
+import MarkerClusterGroup from 'react-leaflet-markercluster';
 
 const PublicMap = ({ styleId, mapZoom, style, mapData, manualMapData, datasets, edit, draw, userType, userId }) => {
 
@@ -68,9 +69,9 @@ const PublicMap = ({ styleId, mapZoom, style, mapData, manualMapData, datasets, 
                 edit={edit} manualMapData={customMapData} mapData={mapData} userType={userType} userId={userId} />
 
             {
-                datasets && datasets.map((item) => {
-                    return <GeoJSON pointToLayer={(feature, latlng) => {
-                        const iconUrl = getStrapiMedia(item.config.icon?.icon[0]);
+                datasets && datasets.map((item, index) => {
+                    return <MarkerClusterGroup key={`dataset${index}`}> <GeoJSON pointToLayer={(feature, latlng) => {
+                        const iconUrl = getStrapiMedia(item.config?.icon?.icon[0]);
 
                         if (!iconUrl) return L.marker(latlng);
 
@@ -80,9 +81,10 @@ const PublicMap = ({ styleId, mapZoom, style, mapData, manualMapData, datasets, 
                     }} key={item.title + item.id} data={item.datasetcontents} onEachFeature={(feature, layer) => {
                         const { properties } = feature;
                         if (!properties) return;
-                        layer.bindPopup(`<div>${getSpecifictPopup(properties, item.config.default_popup_style_slug || '', item.config.selected_dataset_properties || [])}</div>`)
+                        layer.bindPopup(`<div>${getSpecifictPopup(properties, item.config?.default_popup_style_slug || '', item.config?.selected_dataset_properties || [])}</div>`)
 
                     }} />
+                    </MarkerClusterGroup>
                 })
             }
 
