@@ -23,17 +23,12 @@ padding:20px;
 margin:10px;
 `;
 const SurveyWrapper = styled.div`
-border: 1px solid #eeeeee;
- border-radius: 5px;
+
  width:100%;
  
 `;
 const SurveyName = styled.p`
-    &:hover{
-        text-decoration:underline;
-        cursor:pointer;
-    }
-    margin-top:23px;
+    margin-top:15px;
     margin-left:10px;
 `;
 const SurveyDeleteButton = styled.span`
@@ -113,12 +108,12 @@ const SurveryCreator = ({ collapsed, authenticatedUser, token }) => {
             message.error(e);
         }
     }
-    function showConfirm() {
+    function showConfirm(id) {
         confirm({
             icon: <ExclamationCircleOutlined />,
             content: <p>{DATASET.DELETE_CONFIRM}</p>,
             onOk() {
-                deleteSurvey(surveyId)
+                deleteSurvey(id)
             },
             onCancel() {
             },
@@ -167,28 +162,13 @@ const SurveryCreator = ({ collapsed, authenticatedUser, token }) => {
                                         pagination={true}
                                         dataSource={surveyList}
                                         renderItem={item => (
-                                            <List.Item>
+                                            <List.Item style={{ margin: "0px 30px" }} actions={[<a onClick={() => showConfirm(item.id)} >delete</a>]}>
+
                                                 <SurveyWrapper >
-                                                    <Row>
-                                                        <Col span={4}>
-                                                            <SurveyName onClick={() => displaySurvey(item, true)}>{item.name}</SurveyName>
-                                                        </Col>
-                                                        <Col span={18}>
-                                                            <SurveyName>{item.description}</SurveyName>
-                                                        </Col>
-                                                        <Col span={2}>
-                                                            <div style={{ marginTop: "13px", padding: "4px" }}>
-                                                                <Dropdown size="big" overlay={menu} trigger={['click']} >
-                                                                    <a className="ant-dropdown-link"
-                                                                        onClick={(e) => {
-                                                                            setSurveyId(item.id);
-                                                                        }} >
-                                                                        <SurveyDeleteButton>:</SurveyDeleteButton>
-                                                                    </a>
-                                                                </Dropdown>
-                                                            </div>
-                                                        </Col>
-                                                    </Row>
+                                                    <List.Item.Meta
+                                                        title={<a onClick={() => displaySurvey(item, true)} >{item.name}</a>}
+                                                        description={item.description}
+                                                    />
                                                 </SurveyWrapper>
                                             </List.Item>
                                         )}
