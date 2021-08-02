@@ -128,8 +128,8 @@ const Map = ({ styleId, center, setCenter, style, mapData, manualMapData, datase
           />
           <LeafletgeoSearch />
           <MapEvents />
-          <EditControlExample onChange={onChange} draw={draw}
-            edit={edit} manualMapData={manualMapData} mapData={mapData} userType={userType} userId={userId} />
+          {/* <EditControlExample onChange={onChange} draw={draw}
+            edit={edit} manualMapData={manualMapData} mapData={mapData} userType={userType} userId={userId} /> */}
 
           {
             datasets && datasets.map((item, index) => {
@@ -150,6 +150,29 @@ const Map = ({ styleId, center, setCenter, style, mapData, manualMapData, datase
                 }} />
               </MarkerClusterGroup>
             })
+          }
+
+          {
+            manualMapData &&
+            <MarkerClusterGroup key={`man`}>
+              <GeoJSON pointToLayer={(feature, latlng) => {
+
+                const iconUrl = getStrapiMedia(mapData?.icons.length > 0 ? mapData?.icons[0]?.icon[0] : null);
+                // alert(iconUrl);
+                if (!iconUrl) return L.marker(latlng);
+
+
+                return L.marker(latlng, {
+                  icon: new L.icon({ iconUrl: feature?.icon?.icon[0] ? getStrapiMedia(feature?.icon?.icon[0]) : iconUrl, iconSize: MapIconSize })
+                })
+              }}  data={manualMapData} onEachFeature={(feature, layer) => {
+                const { properties } = feature;
+                if (!properties) return;
+                layer.bindPopup(`<div>${getSpecifictPopup(properties, mapData?.default_popup_style_slug || '', mapData?.mmd_properties || [])}</div>`)
+
+              }} />
+            </MarkerClusterGroup>
+
           }
 
           {openModal &&

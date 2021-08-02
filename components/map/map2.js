@@ -1,6 +1,6 @@
 import React, { Component } from 'react';
 import { FeatureGroup } from 'react-leaflet';
-import L from 'leaflet';
+import L, { geoJSON } from 'leaflet';
 import { EditControl } from 'react-leaflet-draw';
 import AddMap from './AddMap';
 import Preview from './Preview';
@@ -114,14 +114,16 @@ export default class EditControlExample extends Component {
           if (!properties) return;
           layer.bindPopup(`<div>${getSpecifictPopup(properties, this.props.mapData?.default_popup_style_slug || '', this.props.mapData?.mmd_properties || [])}</div>`)
         }
-      }).addTo(mcg);
+      })
+      // mcg.addLayer(leafletGeoJSON);
       let leafletFG = reactFGref;
       leafletGeoJSON.eachLayer((layer) => {
         // layer.on("click", function (e) {
         //   this.setState({ modalVisible: true, place: layer.feature });
         // }.bind(this));
+        // mcg.addLayer(layer)
         if (leafletFG) {
-          leafletFG.addLayer(mcg);
+          leafletFG.addLayer(layer);
         }
       });
     }
