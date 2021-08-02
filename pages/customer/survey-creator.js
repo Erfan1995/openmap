@@ -6,58 +6,44 @@ import styled from 'styled-components';
 import React, { useEffect, useState, Component } from "react";
 import * as SurveyJSCreator from "survey-creator";
 import * as Survey from "survey-react"
-import { Button, Divider, Typography, Tabs, Modal, Spin, message, notification, Menu, Dropdown, Row, Col, List } from 'antd';
+import { Button, Divider, Typography, Tabs, Modal, Spin, message, notification, Menu, Dropdown, Row, Col, List, Empty } from 'antd';
 import "survey-creator/survey-creator.css";
 import "survey-react/survey.css";
-import { deleteMethod, getSurveyForms } from 'lib/api';
+import { deleteMethod, getSurveyForms, postMethod } from 'lib/api';
 import { DATASET } from 'static/constant';
 import { ExclamationCircleOutlined, DownOutlined, } from '@ant-design/icons';
 import { ArrowLeftOutlined, DeleteTwoTone } from '@ant-design/icons';
 const { confirm } = Modal;
 const { TabPane } = Tabs;
 import nookies from 'nookies';
-import SurveyCreator from 'components/customer/surveyComponents/Forms/SurveyCreator';
 const Wrapper = styled.div`
 background:#ffffff;
 padding:20px;
 margin:10px;
 `;
-const SurveyWrapper = styled.div`
-
- width:100%;
- 
-`;
-const SurveyName = styled.p`
-    margin-top:15px;
-    margin-left:10px;
-`;
-const SurveyDeleteButton = styled.span`
-    font-size:20px;
-    font-weight:bold;
-    &:hover{
-        font-size:22px;
-    }
-    padding:4px;
-`;
-
 const SurveryCreator = ({ collapsed, authenticatedUser, token }) => {
     let surveyCreator;
-    const [isSavedSurvey, saveSurvey] = useState(false);
     const [Json, setJson] = useState([]);
     const [loading, setLoading] = useState(false);
     const [visible, setVisible] = useState(false);
     const [surveyClicked, setSurveyClicked] = useState(false);
     const [surveyList, setSurveyList] = useState([]);
-    const [surveyId, setSurveyId] = useState();
-    const menu = (
-        <Menu >
-            <Menu.Item key="1" style={{ padding: "3px 20px" }}><a onClick={() => showConfirm()} >{DATASET.DELETE}</a></Menu.Item>
-        </Menu>
-    );
     const saveMySurvey = async () => {
-        setVisible(true);
-        console.log('data :', JSON.stringify(surveyCreator.text));
-        setJson(surveyCreator.text)
+        const dd = JSON.parse(surveyCreator.text)
+        if (!dd.pages[0].elements) {
+            message.error("please add form!")
+        } else {
+            if (dd.title && dd.description) {
+                setLoading(true);
+                const postSurvey = await postMethod('surveys', { user: authenticatedUser.id, forms: JSON.stringify(surveyCreator.text) })
+                if (postSurvey) {
+                    setLoading(false);
+                    message.success("survey added successfully!")
+                }
+            } else {
+                message.error("please add title and description")
+            }
+        }
     };
 
     const onCompleteSurvey = (data) => {
@@ -78,7 +64,6 @@ const SurveryCreator = ({ collapsed, authenticatedUser, token }) => {
             setLoading(true);
             const res = await getSurveyForms({ user: authenticatedUser.id }, token);
             if (res) {
-                console.log(res);
                 res.map((data) => {
                     data.id = Number(data.id);
                 })
@@ -87,14 +72,9 @@ const SurveryCreator = ({ collapsed, authenticatedUser, token }) => {
             }
         }
     }
-    const onModalClose = (res) => {
-        setVisible(false);
-
-    }
 
     const deleteSurvey = async (id) => {
         setLoading(true);
-
         try {
             const deletedSurvey = await deleteMethod('surveys/' + id);
             if (deletedSurvey) {
@@ -132,16 +112,6 @@ const SurveryCreator = ({ collapsed, authenticatedUser, token }) => {
                             <div>
                                 <div id="surveyCreatorContainer" />
                             </div>
-                            <Modal
-                                title="add survey meta data"
-                                centered
-                                width={700}
-                                visible={visible}
-                                destroyOnClose={true}
-                                footer={null}
-                                onCancel={() => setVisible(false)}>
-                                <SurveyCreator surveyCreator={Json} user={authenticatedUser.id} onModalClose={onModalClose} />
-                            </Modal>
                         </TabPane>
                         <TabPane tab={<span>view survey</span>} key="2">
                             {surveyClicked ?
@@ -163,13 +133,10 @@ const SurveryCreator = ({ collapsed, authenticatedUser, token }) => {
                                         dataSource={surveyList}
                                         renderItem={item => (
                                             <List.Item style={{ margin: "0px 30px" }} actions={[<a onClick={() => showConfirm(item.id)} >delete</a>]}>
-
-                                                <SurveyWrapper >
-                                                    <List.Item.Meta
-                                                        title={<a onClick={() => displaySurvey(item, true)} >{item.name}</a>}
-                                                        description={item.description}
-                                                    />
-                                                </SurveyWrapper>
+                                                <List.Item.Meta
+                                                    title={<a onClick={() => displaySurvey(item, true)} >{(JSON.parse(item.forms)).title}</a>}
+                                                    description={(JSON.parse(item.forms)).description}
+                                                />
                                             </List.Item>
                                         )}
                                     />
