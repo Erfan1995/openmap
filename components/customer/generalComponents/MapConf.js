@@ -49,7 +49,7 @@ const DatasetDeleteButton = styled.span`
     padding:4px;
 `;
 const MapConf = ({ authenticatedUser, styledMaps, tags, mapData, serverSideDatasets, token, icons, setMapStyle,
-    setDataset, onMapDataChange, injectedcodes }) => {
+    setDataset, onMapDataChange, injectedcodes,onConfigTabChanged }) => {
     const [styleId, setStyleID] = useState(mapData.styleId || process.env.NEXT_PUBLIC_MAPBOX_DEFAULT_MAP);
     const childRef = useRef();
     const selectDatasetChildRef = useRef();
@@ -186,7 +186,8 @@ const MapConf = ({ authenticatedUser, styledMaps, tags, mapData, serverSideDatas
     }
     //this function gets called whenever the user click on a dataset or main map popup styles button
     const mdc = async (id, state, type) => {
-        setLayerClicked(state)
+        setLayerClicked(state);
+        onConfigTabChanged(state);
         setLayerType(type);
         setSelectedDIcons([]);
         setSelectedDatasetProperties([]);
@@ -310,6 +311,7 @@ const MapConf = ({ authenticatedUser, styledMaps, tags, mapData, serverSideDatas
 
                         <Button style={{ marginLeft: -20, marginTop: -30 }} icon={<ArrowLeftOutlined />} onClick={() => {
                             setLayerClicked(true);
+                            onConfigTabChanged(true);
                         }} type='link'>back</Button>
                         <DatasetConf setDataset={setDataset} onMapDataChange={onMapDataChange} icons={icons} mdcId={mdcId} selectedDIcons={selectedDIcons}
                             datasetProperties={datasetProperties} selectedDatasetProperties={selectedDatasetProperties} layerType={layerType} changeSelectedIcons={changeSelectedIcons} />

@@ -2,14 +2,17 @@ import dynamic from "next/dynamic";
 import LayoutPage from "components/client/layout";
 import { useEffect, useState } from "react";
 import UseAuth from "hooks/useAuth";
+import { Spin } from 'antd';
 import { getOneMap, getDatasetsByMap, getInjectedCodes, getClientMapData } from "lib/api";
-import { extractMapData, getPublicAuthenticatedMapData } from "lib/general-functions";
+import { extractMapData, getCustomerMapData, getPublicAuthenticatedMapData, getPublicMapData } from "lib/general-functions";
 const Map = ({ manualMapData, mapData, datasets, injectedcodes }) => {
 
-  const [loading, setLoading] = useState(true);
+  const [intiLoading, setInitLoading] = useState(true);
   const [publicUser, setPublicUser] = useState(true);
   const [datasetData, setDatasetData] = useState(datasets);
   const [zoomLevel, setZoomLevel] = useState(mapData.zoomLevel);
+  const [customMapData, setCustomMapData] = useState(manualMapData);
+  const [loading, setLoading] = useState(false);
 
   const { login, logout } = UseAuth();
 
@@ -17,9 +20,8 @@ const Map = ({ manualMapData, mapData, datasets, injectedcodes }) => {
     const res = await login(mapData);
     if (res) {
       setPublicUser(res[0]);
-      setLoading(false);
+      setInitLoading(false);
     }
-    // setDatasetData(datasets);
   }, [])
 
   const onDataSetChange = (list) => {
@@ -38,12 +40,31 @@ const Map = ({ manualMapData, mapData, datasets, injectedcodes }) => {
     ssr: false
   });
 
+  const onCustomeDataChange = async () => {
+    setLoading(true);
+    try {
+      const customerData = await getCustomerMapData(mapData.id);
+      const publicData = await getPublicMapData(publicUser.id, mapData.id)
+      if (customerData && publicData) {
+        setCustomMapData([...customerData, ...publicData]);
+        setLoading(false)
+      }
+    } catch (e) {
+      setLoading(false);
+      message.error(e.message);
+    }
+  }
+
+
   return (
     <div>
-      {!loading &&
+      {!intiLoading &&
 
         <LayoutPage injectedcodes={injectedcodes} walletAddress={publicUser.publicAddress} datasets={datasets} onDataSetChange={onDataSetChange}
           mapInfo={mapData} userId={publicUser.id} publicUser={publicUser} mapData={mapData}  >
+          <Spin spinning={loading}>
+
+          </Spin>
           <MapWithNoSSR
             mapZoom={zoomLevel}
             styleId={mapData.mapstyle?.link || process.env.NEXT_PUBLIC_MAPBOX_DEFAULT_MAP}
@@ -59,8 +80,9 @@ const Map = ({ manualMapData, mapData, datasets, injectedcodes }) => {
               polyline: false
             }}
             userType='public'
-            manualMapData={manualMapData}
+            manualMapData={customMapData}
             datasets={datasetData}
+            onCustomeDataChange={onCustomeDataChange}
             mapData={mapData}
             userId={publicUser.id}
             style={{ height: "100vh" }} />

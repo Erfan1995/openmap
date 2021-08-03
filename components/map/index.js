@@ -61,7 +61,7 @@ const TopButtonWrapper = styled.div`
 `;
 
 
-const Map = ({ styleId, center, setCenter, style, mapData, manualMapData, datasets, edit, draw, userType, userId, onMapDataChange, injectedcodes }) => {
+const Map = ({ styleId, center, setCenter, style, mapData, manualMapData, datasets, edit, draw, userType, userId, onMapDataChange, layerClicked }) => {
 
   const [openModal, setOpenModal] = useState(null);
   const [place, setPlace] = useState(null);
@@ -81,15 +81,6 @@ const Map = ({ styleId, center, setCenter, style, mapData, manualMapData, datase
     })
     return <div></div>
   }
-
-  const changeCountryColor = (event) => {
-    setPlace(event.target.feature);
-    setOpenModal(true);
-  }
-
-
-
-
 
   const onChange = async () => {
     onMapDataChange();
@@ -123,13 +114,13 @@ const Map = ({ styleId, center, setCenter, style, mapData, manualMapData, datase
 
           <ZoomControl position='bottomleft' />
           <TileLayer
-            // url={`${process.env.NEXT_PUBLIC_MAPBOX_API_URL}/styles/v1/mbshaban/${styleId || process.env.NEXT_PUBLIC_MAPBOX_DEFAULT_MAP}/tiles/256/{z}/{x}/{y}@2x?access_token=${process.env.NEXT_PUBLIC_MAPBOX_TOKEN}`}
             url={styleId}
           />
           <LeafletgeoSearch />
           <MapEvents />
-          {/* <EditControlExample onChange={onChange} draw={draw}
-            edit={edit} manualMapData={manualMapData} mapData={mapData} userType={userType} userId={userId} /> */}
+          <EditControlExample
+            layerClicked={layerClicked} onChange={onChange} draw={draw}
+            edit={edit} manualMapData={manualMapData} mapData={mapData} userType={userType} userId={userId} />
 
           {
             datasets && datasets.map((item, index) => {
@@ -139,12 +130,23 @@ const Map = ({ styleId, center, setCenter, style, mapData, manualMapData, datase
 
                   if (!iconUrl) return L.marker(latlng);
 
+
                   return L.marker(latlng, {
                     icon: new L.icon({ iconUrl: iconUrl, iconSize: MapIconSize })
                   })
                 }} key={item.title + item.id} data={item.datasetcontents} onEachFeature={(feature, layer) => {
                   const { properties } = feature;
                   if (!properties) return;
+
+                  if (!(item.config.selected_dataset_properties)) {
+                    return;
+                  }
+
+                  if (!(item.config.selected_dataset_properties?.length > 0)) {
+                    return;
+                  }
+
+
                   layer.bindPopup(`<div>${getSpecifictPopup(properties, item.config?.default_popup_style_slug || '', item.config?.selected_dataset_properties || [])}</div>`)
 
                 }} />
@@ -152,7 +154,7 @@ const Map = ({ styleId, center, setCenter, style, mapData, manualMapData, datase
             })
           }
 
-          {
+          {/* {
             manualMapData &&
             <MarkerClusterGroup key={`man`}>
               <GeoJSON pointToLayer={(feature, latlng) => {
@@ -173,7 +175,7 @@ const Map = ({ styleId, center, setCenter, style, mapData, manualMapData, datase
               }} />
             </MarkerClusterGroup>
 
-          }
+          } */}
 
           {openModal &&
             <Preview
