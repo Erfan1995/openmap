@@ -21,6 +21,7 @@
     "file-system": "^2.2.2",
     "geojson": "^0.5.0",
     "graphql": "^15.5.1",
+    "jquery": "^3.6.0",
     "leaflet": "^1.7.1",
     "leaflet-defaulticon-compatibility": "^0.1.1",
     "leaflet-draw": "^1.0.4",
