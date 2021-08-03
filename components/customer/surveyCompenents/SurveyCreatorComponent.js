@@ -25,6 +25,8 @@ const SurveyCreatorComponent = ({ authenticatedUser, token }) => {
     const [visible, setVisible] = useState(false);
     const [surveyClicked, setSurveyClicked] = useState(false);
     const [surveyList, setSurveyList] = useState([]);
+    const [surveyId, setSurveyId] = useState();
+    const [surveyResult, setSurveyResult] = useState();
     const saveMySurvey = async () => {
         const dd = JSON.parse(surveyCreator.text)
         if (!dd.pages[0].elements) {
@@ -42,8 +44,13 @@ const SurveyCreatorComponent = ({ authenticatedUser, token }) => {
             }
         }
     };
-    const onCompleteSurvey = (data) => {
-        console.log('data1 : ', data.valuesHash)
+    const onCompleteSurvey = async (data) => {
+        setLoading(true);
+        const res = await postMethod('surveyresults', { survey: surveyId, result: data.valuesHash });
+        if (res) {
+            setLoading(false);
+        }
+
     }
     useEffect(() => {
         let options = { showEmbededSurveyTab: false };
@@ -97,6 +104,7 @@ const SurveyCreatorComponent = ({ authenticatedUser, token }) => {
     }
     const displaySurvey = (item, state) => {
         setSurveyClicked(state);
+        setSurveyId(item.id);
         setJson(item.forms);
     }
     return (
