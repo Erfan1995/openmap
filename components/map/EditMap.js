@@ -8,6 +8,7 @@ import EditableGroup from "./Map";
 
 const EditMap = ({ styleId, style, manualMapData, draw, edit,onUpdateEvent,mapData }) => {
 
+
   let dataLayer = new L.GeoJSON(manualMapData);
 
   const defaultPosition =dataLayer.getBounds().getCenter();
@@ -38,7 +39,7 @@ const EditMap = ({ styleId, style, manualMapData, draw, edit,onUpdateEvent,mapDa
       style={style} >
       <ZoomControl position='bottomleft' />
       <TileLayer
-        url={`${process.env.NEXT_PUBLIC_MAPBOX_API_URL}/styles/v1/mbshaban/${styleId || process.env.NEXT_PUBLIC_MAPBOX_DEFAULT_MAP}/tiles/256/{z}/{x}/{y}@2x?access_token=${process.env.NEXT_PUBLIC_MAPBOX_TOKEN}`}
+        url={`${styleId || process.env.NEXT_PUBLIC_MAPBOX_DEFAULT_MAP}`}
       />
       <EditableGroup dataLayer={dataLayer} onUpdate={onUpdate} draw={draw} edit={edit} onDeleted={onDeleted} manualMapData={manualMapData} />
     </MapContainer>

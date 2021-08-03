@@ -37,6 +37,7 @@ const CreateMapContainer = ({ authenticatedUser, collapsed, styledMaps, tags, se
   const [customMapData, setCustomMapData] = useState(manualMapData);
   const [loading, setLoading] = useState(false);
 
+  const [layerClicked, setLayerClicked] = useState(true);
 
 
 
@@ -44,11 +45,6 @@ const CreateMapContainer = ({ authenticatedUser, collapsed, styledMaps, tags, se
     ssr: false
   });
 
-
-
-  const appendHtml = () => {
-
-  }
 
 
   const key = 'updatable';
@@ -129,7 +125,6 @@ const CreateMapContainer = ({ authenticatedUser, collapsed, styledMaps, tags, se
 
 
 
-
   return (
     <Layout collapsed={collapsed} user={authenticatedUser}>
       <MapsWrapper  >
@@ -157,7 +152,7 @@ const CreateMapContainer = ({ authenticatedUser, collapsed, styledMaps, tags, se
               setDataset={onDatasetChange}
               onMapDataChange={onCustomDataChange}
               injectedcodes={injectedcodes}
-
+              onConfigTabChanged={setLayerClicked}
             />
 
             <Button type={'primary'} onClick={showGeneratedLink} className='margin-top-10' size='large'>Publish</Button>
@@ -177,6 +172,7 @@ const CreateMapContainer = ({ authenticatedUser, collapsed, styledMaps, tags, se
                 setCenter={changeMapCenter}
                 onMapDataChange={onCustomDataChange}
                 injectedcodes={injectedcodes}
+                layerClicked={layerClicked}
                 draw={{
                   rectangle: true,
                   polygon: true,

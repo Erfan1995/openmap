@@ -1,6 +1,6 @@
 import React, { Component } from 'react';
 import { FeatureGroup } from 'react-leaflet';
-import L from 'leaflet';
+import L, { geoJSON } from 'leaflet';
 import { EditControl } from 'react-leaflet-draw';
 import AddMap from './AddMap';
 import Preview from './Preview';
@@ -45,7 +45,7 @@ export default class EditControlExample extends Component {
     type: 'create',
     place: {}
   }
-  
+
   constructor(props) {
     super(props);
     this.childRef = React.createRef()
@@ -91,7 +91,7 @@ export default class EditControlExample extends Component {
   _editableFG = null;
 
   _onFeatureGroupReady = (reactFGref) => {
-   
+
     if (this.state.type === 'create') {
       reactFGref?.clearLayers();
       mcg.clearLayers();
@@ -99,11 +99,9 @@ export default class EditControlExample extends Component {
     if (this.props.manualMapData.length > 0) {
       let leafletGeoJSON = new L.GeoJSON(this.props.manualMapData, {
         pointToLayer: (feature, latlng) => {
-
           const iconUrl = getStrapiMedia(this.props.mapData?.icons.length > 0 ? this.props.mapData?.icons[0]?.icon[0] : null);
-          // alert(iconUrl);
-          if (!iconUrl) return L.marker(latlng);
 
+            if (!iconUrl) return L.marker(latlng);
 
           return L.marker(latlng, {
             icon: new L.icon({ iconUrl: feature?.icon?.icon[0] ? getStrapiMedia(feature?.icon?.icon[0]) : iconUrl, iconSize: MapIconSize })
@@ -112,16 +110,23 @@ export default class EditControlExample extends Component {
         onEachFeature: (feature = {}, layer) => {
           const { properties } = feature;
           if (!properties) return;
+
+          if (!(this.props.mapData?.mmd_properties)) return;
+
+          if (!(this.props.mapData?.mmd_properties?.length > 0)) return;
+
           layer.bindPopup(`<div>${getSpecifictPopup(properties, this.props.mapData?.default_popup_style_slug || '', this.props.mapData?.mmd_properties || [])}</div>`)
         }
-      }).addTo(mcg);
+      })
       let leafletFG = reactFGref;
       leafletGeoJSON.eachLayer((layer) => {
-        // layer.on("click", function (e) {
-        //   this.setState({ modalVisible: true, place: layer.feature });
-        // }.bind(this));
+        if (this.props.layerClicked) {
+          layer.on("click", function (e) {
+            this.setState({ modalVisible: true, place: layer.feature });
+          }.bind(this));
+        }
         if (leafletFG) {
-          leafletFG.addLayer(mcg);
+          leafletFG.addLayer(layer);
         }
       });
     }
@@ -136,6 +141,8 @@ export default class EditControlExample extends Component {
     onChange();
   };
   render() {
+
+
     return (
 
       <div>

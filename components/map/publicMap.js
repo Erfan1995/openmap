@@ -5,15 +5,14 @@ import "leaflet-defaulticon-compatibility/dist/leaflet-defaulticon-compatibility
 import "leaflet-defaulticon-compatibility";
 import { useState } from "react";
 import Preview from "./Preview";
-import EditControlExample from "./map2";
 import { message } from "antd";
 import { getCustomerMapData, getPublicMapData, getSpecifictPopup } from "lib/general-functions";
 import LeafletgeoSearch from "./MapSearch";
 import { getStrapiMedia } from "lib/media";
 import { MapIconSize } from "lib/constants";
 import MarkerClusterGroup from 'react-leaflet-markercluster';
-
-const PublicMap = ({ styleId, mapZoom, style, mapData, manualMapData, datasets, edit, draw, userType, userId }) => {
+import EditControlExample from './publicEditControl'
+const PublicMap = ({ styleId, mapZoom, style, mapData, manualMapData,onCustomeDataChange, datasets, edit, draw, userType, userId }) => {
 
     const [openModal, setOpenModal] = useState(null);
     const [place, setPlace] = useState(null);
@@ -39,12 +38,18 @@ const PublicMap = ({ styleId, mapZoom, style, mapData, manualMapData, datasets, 
         setOpenModal(true);
     }
 
-    const onChange = async () => {
-        try {
-            setCustomMapData([...await getCustomerMapData(mapData.id), ...await getPublicMapData(userId, mapData.id)]);
-        } catch (e) {
-            message.error(e.message);
-        }
+    const onChange = () => {
+        // setCustomMapData([])
+        // try {
+        //     setTimeout(async () => {
+        //         setCustomMapData([...await getCustomerMapData(mapData.id), ...await getPublicMapData(userId, mapData.id)]);
+        //         console.log('yes');
+
+        //     }, 3000)
+        // } catch (e) {
+        //     message.error(e.message);
+        // }
+        onCustomeDataChange();
     }
 
     return (
@@ -65,8 +70,10 @@ const PublicMap = ({ styleId, mapZoom, style, mapData, manualMapData, datasets, 
 
             <LeafletgeoSearch />
             <MapEvents />
+
             <EditControlExample onChange={onChange} draw={draw}
-                edit={edit} manualMapData={customMapData} mapData={mapData} userType={userType} userId={userId} />
+                edit={edit} mapData={mapData} userType={userType} userId={userId} />
+
 
             {
                 datasets && datasets.map((item, index) => {
@@ -81,12 +88,47 @@ const PublicMap = ({ styleId, mapZoom, style, mapData, manualMapData, datasets, 
                     }} key={item.title + item.id} data={item.datasetcontents} onEachFeature={(feature, layer) => {
                         const { properties } = feature;
                         if (!properties) return;
+
+                        if (!(item.config.selected_dataset_properties)) return;
+
                         layer.bindPopup(`<div>${getSpecifictPopup(properties, item.config?.default_popup_style_slug || '', item.config?.selected_dataset_properties || [])}</div>`)
 
                     }} />
                     </MarkerClusterGroup>
                 })
             }
+
+
+            {
+
+                <MarkerClusterGroup key={`manaualGroup`}> 
+                
+                <GeoJSON  data={customMapData} pointToLayer={(feature, latlng) => {
+                    const iconUrl = getStrapiMedia(mapData?.icons.length > 0 ? mapData?.icons[0]?.icon[0] : null);
+
+                    if (!iconUrl) return L.marker(latlng);
+
+                    return L.marker(latlng, {
+                        icon: new L.icon({ iconUrl: feature?.icon?.icon[0] ? getStrapiMedia(feature?.icon?.icon[0]) : iconUrl, iconSize: MapIconSize })
+                    })
+                }} key={'manual'}  onEachFeature={(feature, layer) => {
+                    const { properties } = feature;
+                    if (!properties) return;
+
+                    if (!(mapData?.mmd_properties)) return;
+
+                    if (!(mapData?.mmd_properties?.length > 0)) return;
+
+                    layer.bindPopup(`<div>${getSpecifictPopup(properties, mapData?.default_popup_style_slug || '', mapData?.mmd_properties || [])}</div>`)
+
+                }} />
+                </MarkerClusterGroup>
+
+            }
+
+
+
+
 
             {openModal &&
                 <Preview
