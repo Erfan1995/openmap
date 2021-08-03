@@ -7,6 +7,9 @@
     "build": "next build",
     "start": "next start"
   },
+  "browser": {
+    "image-size": false
+  },
   "dependencies": {
     "@ant-design/icons": "^4.5.0",
     "@binance-chain/bsc-connector": "^1.0.0",
