@@ -1,22 +1,15 @@
 import "survey-analytics/survey.analytics.css";
 import * as Survey from "survey-react";
-import { data, json } from "./analytics_data";
 import { VisualizationPanel } from "survey-analytics";
-import styled from 'styled-components';
 import React, { useEffect, useState } from "react";
 import { Button, Tabs, Modal, Spin, message, List } from 'antd';
 import { getSurveyFormsValues } from 'lib/api';
-import { DATASET } from 'static/constant';
-import { ExclamationCircleOutlined } from '@ant-design/icons';
 import { ArrowLeftOutlined } from '@ant-design/icons';
 const SurveyAnalyticsComponent = ({ user, surveyForms, token }) => {
     const [loading, setLoading] = useState(false);
     const [surveyClicked, setSurveyClicked] = useState(false);
-    const [surveyList, setSurveyList] = useState([]);
-    const [surveyId, setSurveyId] = useState();
     const [surveyJson, setSurveyJson] = useState();
     const [surveyResult, setSurveyResult] = useState([]);
-
     let visPanel;
     useEffect(() => {
         if (surveyClicked) {
@@ -27,10 +20,19 @@ const SurveyAnalyticsComponent = ({ user, surveyForms, token }) => {
     })
 
     const displayAnalytics = async (item, state) => {
+        setSurveyJson();
+        setSurveyResult([]);
+        setLoading(true);
         const res = await getSurveyFormsValues({ survey: item.id }, token);
         if (res) {
-            console.log(res);
-            setSurveyResult(res)
+            let arr = [];
+            let i = 0;
+            res.map((data) => {
+                arr[i] = data.result;
+                i++;
+            })
+            setSurveyResult(arr);
+            setLoading(false);
         }
         setSurveyClicked(state);
         setSurveyJson(JSON.parse(item.forms));
