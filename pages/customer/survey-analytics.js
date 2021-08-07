@@ -12,8 +12,6 @@ padding:20px;
 margin:10px;
 `;
 const SurveryAnalytics = ({ collapsed, authenticatedUser, token, surveyForms }) => {
-    // let surveyF = JSON.parse(surveyForms);
-    console.log(surveyForms);
     const SurveyAnalyticsComponent = dynamic(() => import('components/customer/surveyCompenents/SurveyAnalyticsComponent'), {
         ssr: false
     })
