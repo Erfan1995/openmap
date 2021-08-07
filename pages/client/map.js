@@ -3,7 +3,7 @@ import LayoutPage from "components/client/layout";
 import { useEffect, useState } from "react";
 import UseAuth from "hooks/useAuth";
 import { Spin } from 'antd';
-import { getOneMap, getDatasetsByMap, getInjectedCodes, getClientMapData } from "lib/api";
+import {  getDatasetsByMap, getClientMapData } from "lib/api";
 import { extractMapData, getCustomerMapData, getPublicAuthenticatedMapData, getPublicMapData } from "lib/general-functions";
 const Map = ({ manualMapData, mapData, datasets, injectedcodes }) => {
 
@@ -56,8 +56,24 @@ const Map = ({ manualMapData, mapData, datasets, injectedcodes }) => {
   }
 
 
+  const injectCode = (isEnd) => {
+
+    let text = '';
+    injectedcodes?.map((item) => {
+      if (item.isEndOfBody === isEnd) {
+        text += `<div>${item.body}</div>`
+      }
+    })
+    return { __html: text };
+  }
+
+
+
+
   return (
     <div>
+      <div dangerouslySetInnerHTML={injectCode(false)}>
+      </div>
       {!intiLoading &&
 
         <LayoutPage injectedcodes={injectedcodes} walletAddress={publicUser.publicAddress} datasets={datasets} onDataSetChange={onDataSetChange}
@@ -88,7 +104,8 @@ const Map = ({ manualMapData, mapData, datasets, injectedcodes }) => {
             style={{ height: "100vh" }} />
         </LayoutPage>
       }
-
+      <div dangerouslySetInnerHTML={injectCode(true)}>
+      </div>
     </div>
   );
 }

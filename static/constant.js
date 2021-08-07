@@ -97,6 +97,8 @@ export const DATASET = {
     HEAD_PLACEHOLDER: "Insert head here",
     BODY_PLACEHOLDER: "Insert body here",
     TITLE_PLACEHOLDER: "Insert title here",
+    
+    IS_END_OF_BODY:'should it be at end of body?'
 
 
 }

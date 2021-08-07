@@ -1,5 +1,5 @@
-import { Row, Button, Form, Input, Col, message, Spin } from 'antd';
-import {useState } from "react";
+import { Row, Button, Form, Input, Col, message, Spin, Radio } from 'antd';
+import { useState } from "react";
 import styled from 'styled-components';
 import { postMethod, putMethod } from 'lib/api';
 import { DATASET } from '../../../../static/constant';
@@ -13,13 +13,13 @@ const FormWrapper = styled.div`
 `;
 
 
-const ButtonWrapper= styled(Col)`
+const ButtonWrapper = styled(Col)`
     margin-top:10px;
     text-align:right;
 
 `;
 
-const CodeMirrorWrapper= styled.div`
+const CodeMirrorWrapper = styled.div`
   width:100%;
   border:1px solid #eee;
 `
@@ -28,7 +28,7 @@ const options = {
     mode: 'htmlmixed',
     lineNumbers: false
 };
-const InjectCodeForm = ({ onModalClose, id, editableCode, displayCode ,setModalVisible}) => {
+const InjectCodeForm = ({ onModalClose, id, editableCode, displayCode, setModalVisible }) => {
     const [form] = Form.useForm();
     const [loading, setLoading] = useState(false);
     const [codes, setCodes] = useState('<h1> Code Here</h1>');
@@ -36,7 +36,6 @@ const InjectCodeForm = ({ onModalClose, id, editableCode, displayCode ,setModalV
         form
             .validateFields()
             .then(async (values) => {
-
                 values.map = id;
                 values.body = codes;
                 setLoading(true);
@@ -77,26 +76,42 @@ const InjectCodeForm = ({ onModalClose, id, editableCode, displayCode ,setModalV
                             </Col>
 
                             <Col span={24}>
-                                <label>Please inject code here</label>
-                              <CodeMirrorWrapper >
+                                <Form.Item
+                                    name="isEndOfBody"
+                                    label={DATASET.IS_END_OF_BODY}
+                                    rules={[
+                                        {
+                                            required: true,
+                                        },
+                                    ]}>
+                                    <Radio.Group name="radiogroup" defaultValue={1}>
+                                        <Radio value={0}>no</Radio>
+                                        <Radio value={1}>yes</Radio>
+                                    </Radio.Group>
+                                </Form.Item>
+                            </Col>
 
-                                <CodeMirror
-                                    value={codes}
-                                    options={options}
-                                    onBeforeChange={(editor, data, value) => {
-                                        setCodes(value)
-                                    }}
-                                />
-                              </CodeMirrorWrapper>
+                            <Col span={24}>
+                                <label>Please inject code here</label>
+                                <CodeMirrorWrapper >
+
+                                    <CodeMirror
+                                        value={codes}
+                                        options={options}
+                                        onBeforeChange={(editor, data, value) => {
+                                            setCodes(value)
+                                        }}
+                                    />
+                                </CodeMirrorWrapper>
 
                             </Col>
 
 
                             <ButtonWrapper span={24} >
-                               <Button className='margin-right-5' onClick={()=>{setModalVisible(false)}} type='default' size='middle' >
+                                <Button className='margin-right-5' onClick={() => { setModalVisible(false) }} type='default' size='middle' >
                                     close
                                 </Button>
-                               
+
                                 <Button onClick={injectCode} type='primary' size='middle' >
                                     save
                                 </Button>
@@ -117,7 +132,7 @@ const InjectCodeForm = ({ onModalClose, id, editableCode, displayCode ,setModalV
 
 
 
-                            
+
                             {/* <Col span={24}>
                                 <For m.Item
                                     name="body"

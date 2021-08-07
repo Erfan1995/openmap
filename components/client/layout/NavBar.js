@@ -31,12 +31,8 @@ const ImageWrapper = styled.img`
 const { Header } = Layout;
 const NavBar = ({ isMobileSize, toggle, walletAddress, publicUser, mapData,injectedcodes }) => {
     const router = useRouter();
-    const childRef = useRef();
     const customWalletAddress = walletAddress.substring(0, 12) + '...' + walletAddress.substr(walletAddress.length - 5);
-    const handleModeChange = (e) => {
-        e.preventDefault();
-        router.push(e.target.value);
-    }
+   
     const [modalVisible, setModalVisible] = useState(false);
     const [serverPublicUser, setServerPublicUser] = useState(publicUser);
     const { login, logout } = UseAuth();
@@ -48,15 +44,6 @@ const NavBar = ({ isMobileSize, toggle, walletAddress, publicUser, mapData,injec
     }
 
     
-  function createMarkup() {
-    let text = '';
-    injectedcodes?.map((item) => {
-      text += `<span>${item.body}</span>`
-    })
-    console.log(text);
-    return { __html: text };
-  }
-
     const openFormModal = async () => {
         setModalVisible(true);
         const res = await login(mapData);
@@ -91,13 +78,9 @@ const NavBar = ({ isMobileSize, toggle, walletAddress, publicUser, mapData,injec
                 <PublicUserProfile userId={publicUser.id} onModalClose={onModalClose} serverPublicUser={serverPublicUser}
                     customWalletAddress={customWalletAddress} />
             </Modal>
-            <Button shape='circle' type='primary' className='chatBot' size='large'>
+            {/* <Button shape='circle' type='primary' className='chatBot' size='large'>
                 <img src='/chat.png' />
-            </Button>
-
-            <div dangerouslySetInnerHTML={createMarkup()}>
-
-            </div>
+            </Button> */}
         </Header>
     );
 };
