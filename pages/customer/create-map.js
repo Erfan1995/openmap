@@ -125,76 +125,97 @@ const CreateMapContainer = ({ authenticatedUser, collapsed, styledMaps, tags, se
 
 
 
+
+  const injectCode = (isEnd) => {
+    let text = '';
+    injectedcodes?.map((item) => {
+      if (item.isEndOfBody === isEnd) {
+        text += `<div>${item.body}</div>`
+      }
+    })
+    return { __html: text };
+  }
+
+
+
+
   return (
-    <Layout collapsed={collapsed} user={authenticatedUser}>
-      <MapsWrapper  >
-        <CardTitle level={4}>
-          {DATASET.ADD_NEW}
-        </CardTitle>
+    <div>
+      <div dangerouslySetInnerHTML={injectCode(false)}>
+      </div>
+      <Layout collapsed={collapsed} user={authenticatedUser}>
+        <MapsWrapper  >
+          <CardTitle level={4}>
+            {DATASET.ADD_NEW}
+          </CardTitle>
 
 
-        <Divider />
+          <Divider />
 
-        <Row gutter={[24, 24]}>
+          <Row gutter={[24, 24]}>
 
-          <Col xs={24} sm={24} md={24} lg={7} xl={7} >
+            <Col xs={24} sm={24} md={24} lg={7} xl={7} >
 
-            <MapConf
+              <MapConf
 
-              authenticatedUser={authenticatedUser}
-              styledMaps={styledMaps}
-              tags={tags}
-              mapData={mapData}
-              serverSideDatasets={serverSideDatasets}
-              token={token}
-              icons={icons}
-              setMapStyle={setMapStyle}
-              setDataset={onDatasetChange}
-              onMapDataChange={onCustomDataChange}
-              injectedcodes={injectedcodes}
-              onConfigTabChanged={setLayerClicked}
-              serverSideMapSurveys={serverSideMapSurveys}
-            />
-
-            <Button type={'primary'} onClick={showGeneratedLink} className='margin-top-10' size='large'>Publish</Button>
-          </Col>
-
-          <Col xs={24} sm={24} md={24} lg={17} xl={17}>
-            <Spin spinning={loading}>
-              <MapWithNoSSR
-                manualMapData={customMapData}
-                styleId={mapStyle}
-                style={{ height: "71vh" }}
-                datasets={datasets}
+                authenticatedUser={authenticatedUser}
+                styledMaps={styledMaps}
+                tags={tags}
                 mapData={mapData}
-                userType='customer'
-                userId={authenticatedUser.id}
-                center={center}
-                setCenter={changeMapCenter}
+                serverSideDatasets={serverSideDatasets}
+                token={token}
+                icons={icons}
+                setMapStyle={setMapStyle}
+                setDataset={onDatasetChange}
                 onMapDataChange={onCustomDataChange}
                 injectedcodes={injectedcodes}
-                layerClicked={layerClicked}
-                draw={{
-                  rectangle: true,
-                  polygon: true,
-                  circle: false,
-                  circlemarker: false,
-                  polyline: false
-                }}
-                edit={
-                  {
-                    edit: false,
-                    remove: false,
-                  }
-                }
+                onConfigTabChanged={setLayerClicked}
+                serverSideMapSurveys={serverSideMapSurveys}
               />
-            </Spin>
-          </Col>
-        </Row>
-      </MapsWrapper>
+
+              <Button type={'primary'} onClick={showGeneratedLink} className='margin-top-10' size='large'>Publish</Button>
+            </Col>
+
+            <Col xs={24} sm={24} md={24} lg={17} xl={17}>
+              <Spin spinning={loading}>
+                <MapWithNoSSR
+                  manualMapData={customMapData}
+                  styleId={mapStyle}
+                  style={{ height: "71vh" }}
+                  datasets={datasets}
+                  mapData={mapData}
+                  userType='customer'
+                  userId={authenticatedUser.id}
+                  center={center}
+                  setCenter={changeMapCenter}
+                  onMapDataChange={onCustomDataChange}
+                  injectedcodes={injectedcodes}
+                  layerClicked={layerClicked}
+                  draw={{
+                    rectangle: true,
+                    polygon: true,
+                    circle: false,
+                    circlemarker: false,
+                    polyline: false
+                  }}
+                  edit={
+                    {
+                      edit: false,
+                      remove: false,
+                    }
+                  }
+                />
+              </Spin>
+            </Col>
+          </Row>
+        </MapsWrapper>
 
 
-    </Layout>
+      </Layout>
+
+      <div dangerouslySetInnerHTML={injectCode(true)}>
+      </div>
+    </div>
   )
 }
 export const getServerSideProps = withPrivateServerSideProps(
