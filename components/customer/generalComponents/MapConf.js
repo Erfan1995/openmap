@@ -15,6 +15,7 @@ import { DATASET } from '../../../static/constant'
 import { ExclamationCircleOutlined, DownOutlined, } from '@ant-design/icons';
 import DatasetConf from './DetasetConf';
 import InjectCode from '../Forms/CodeInjection/index.js';
+import MapSurveys from './MapSurveys';
 
 const { TabPane } = Tabs;
 const { confirm } = Modal;
@@ -49,7 +50,7 @@ const DatasetDeleteButton = styled.span`
     padding:4px;
 `;
 const MapConf = ({ authenticatedUser, styledMaps, tags, mapData, serverSideDatasets, token, icons, setMapStyle,
-    setDataset, onMapDataChange, injectedcodes,onConfigTabChanged }) => {
+    setDataset, onMapDataChange, injectedcodes, onConfigTabChanged, serverSideMapSurveys }) => {
     const [styleId, setStyleID] = useState(mapData.styleId || process.env.NEXT_PUBLIC_MAPBOX_DEFAULT_MAP);
     const childRef = useRef();
     const selectDatasetChildRef = useRef();
@@ -304,6 +305,9 @@ const MapConf = ({ authenticatedUser, styledMaps, tags, mapData, serverSideDatas
                                     </List.Item>
                                 )}
                             />
+                        </TabPane>
+                        <TabPane tab={DATASET.SURVEYS} key="5" >
+                            <MapSurveys mapData={mapData} token={token} user={authenticatedUser} serverSideMapSurveys={serverSideMapSurveys} />
                         </TabPane>
                     </Tabs>
                     :

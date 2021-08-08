@@ -1,29 +1,36 @@
-import "survey-analytics/survey.analytics.css";
-import * as Survey from "survey-react";
-import { VisualizationPanel } from "survey-analytics";
 import React, { useEffect, useState } from "react";
+import { data, json } from "./analytics_data";
 import { Button, Tabs, Modal, Spin, message, List } from 'antd';
-import { getSurveyFormsValues } from 'lib/api';
 import { ArrowLeftOutlined } from '@ant-design/icons';
-const SurveyAnalyticsComponent = ({ user, surveyForms, token }) => {
+import { getSurveyFormsValues } from 'lib/api';
+import jsPDF from "jspdf";
+import * as XLSX from "xlsx";
+import "jspdf-autotable";
+import { Tabulator } from "survey-analytics/survey.analytics.tabulator.js";
+import "survey-analytics/survey.analytics.tabulator.css";
+import "tabulator-tables/dist/css/tabulator.min.css";
+window.jsPDF = jsPDF;
+window.XLSX = XLSX;
+import * as Survey from "survey-react";
+const SurveyReportComponent = ({ user, surveyForms, token }) => {
+    let visPanel;
     const [loading, setLoading] = useState(false);
     const [surveyClicked, setSurveyClicked] = useState(false);
     const [surveyJson, setSurveyJson] = useState();
     const [surveyResult, setSurveyResult] = useState([]);
-    let visPanel;
     useEffect(() => {
         if (surveyClicked) {
             const survey = new Survey.SurveyModel(surveyJson);
-            visPanel = new VisualizationPanel(survey.getAllQuestions(), surveyResult);
+            visPanel = new Tabulator(survey, surveyResult);
+            console.log(visPanel.data);
             visPanel.render(document.getElementById("summaryContainer"));
         }
     })
-
-    const displayAnalytics = async (item) => {
+    const displayResult = async (item) => {
         setSurveyJson();
         setSurveyResult([]);
         setLoading(true);
-        let res;
+        let res ;
         // const res = await getSurveyFormsValues({ survey: item.id }, token);
         if (res) {
             let arr = [];
@@ -53,7 +60,7 @@ const SurveyAnalyticsComponent = ({ user, surveyForms, token }) => {
                     renderItem={item => (
                         <List.Item >
                             <List.Item.Meta
-                                title={<a onClick={() => displayAnalytics(item)} >{(JSON.parse(item.forms)).title}</a>}
+                                title={<a onClick={() => displayResult(item)} >{(JSON.parse(item.forms)).title}</a>}
                                 description={(JSON.parse(item.forms)).description}
                             />
                         </List.Item>
@@ -61,6 +68,6 @@ const SurveyAnalyticsComponent = ({ user, surveyForms, token }) => {
                 />
             </div>}
         </Spin>
-    )
+    );
 }
-export default SurveyAnalyticsComponent;
+export default SurveyReportComponent;

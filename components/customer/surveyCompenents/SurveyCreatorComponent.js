@@ -18,13 +18,14 @@ background:#ffffff;
 padding:20px;
 margin:10px;
 `;
-const SurveyCreatorComponent = ({ authenticatedUser, token }) => {
+const SurveyCreatorComponent = ({ authenticatedUser, token, surveyForms }) => {
     let surveyCreator;
     const [Json, setJson] = useState([]);
     const [loading, setLoading] = useState(false);
     const [visible, setVisible] = useState(false);
     const [surveyClicked, setSurveyClicked] = useState(false);
-    const [surveyList, setSurveyList] = useState([]);
+    const [surveyList, setSurveyList] = useState(surveyForms);
+    const [surveyId, setSurveyId] = useState();
     const saveMySurvey = async () => {
         const dd = JSON.parse(surveyCreator.text)
         if (!dd.pages[0].elements) {
@@ -42,8 +43,13 @@ const SurveyCreatorComponent = ({ authenticatedUser, token }) => {
             }
         }
     };
-    const onCompleteSurvey = (data) => {
-        console.log('data1 : ', data.valuesHash)
+    const onCompleteSurvey = async (data) => {
+        setLoading(true);
+        const res = await postMethod('surveyresults', { survey: surveyId, result: data.valuesHash });
+        if (res) {
+            setLoading(false);
+        }
+
     }
     useEffect(() => {
         let options = { showEmbededSurveyTab: false };
@@ -57,7 +63,7 @@ const SurveyCreatorComponent = ({ authenticatedUser, token }) => {
     const callback = async (key) => {
         setSurveyClicked(false)
         setJson([]);
-        if (key === "2") {
+        if (key === "1") {
             setLoading(true);
             const res = await getSurveyForms({ user: authenticatedUser.id }, token);
             if (res) {
@@ -97,19 +103,14 @@ const SurveyCreatorComponent = ({ authenticatedUser, token }) => {
     }
     const displaySurvey = (item, state) => {
         setSurveyClicked(state);
+        setSurveyId(item.id);
         setJson(item.forms);
     }
     return (
         <Spin spinning={loading}>
             <Tabs defaultActiveKey="1" onChange={callback}>
-                <TabPane tab={<span>create survey</span>} key="1">
-                    <div>
-                        <div id="surveyCreatorContainer" />
-                    </div>
-                </TabPane>
-                <TabPane tab={<span>view survey</span>} key="2">
+                <TabPane tab={<span>view survey</span>} key="1">
                     {surveyClicked ?
-
                         <div>
                             <Button style={{ marginLeft: -10, marginTop: -30 }} icon={<ArrowLeftOutlined />} onClick={() => {
                                 setSurveyClicked(false);
@@ -136,6 +137,11 @@ const SurveyCreatorComponent = ({ authenticatedUser, token }) => {
                             />
                         </div>
                     }
+                </TabPane>
+                <TabPane tab={<span>create survey</span>} key="2">
+                    <div>
+                        <div id="surveyCreatorContainer" />
+                    </div>
                 </TabPane>
             </Tabs>
         </Spin>

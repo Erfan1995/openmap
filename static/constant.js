@@ -48,7 +48,7 @@ export const DATASET = {
     LAYERS: 'Layers',
     CHOOSE_DATASET: 'Choose Dataset',
     SUCCESS: 'success!',
-    DUPLICATE_DATASET: 'This dataset is already added!',
+    DUPLICATE_DATASET: 'This dataset has been added already!',
     EDIT: 'Edit',
     LOADING: 'Loading ...',
     SUCCESS: 'Successfull!',
@@ -97,7 +97,11 @@ export const DATASET = {
     HEAD_PLACEHOLDER: "Insert head here",
     BODY_PLACEHOLDER: "Insert body here",
     TITLE_PLACEHOLDER: "Insert title here",
-    
+    SURVEYS: "Surveys",
+    ADD_SURVEY: "Add Survey",
+    COOSE_SURVEY: "Choose Survey",
+    SELECT_SURVEY: "Select Survey",
+    DUPLICATE_SURVEY: 'This survey has been added already!',
     IS_END_OF_BODY:'should it be at end of body?'
 
 
