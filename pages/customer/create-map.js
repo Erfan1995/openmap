@@ -6,7 +6,7 @@ import styled from 'styled-components';
 import nookies from 'nookies';
 import dynamic from "next/dynamic";
 import {
-  putMethod, getOneMap, getDatasetsByMap, getCreateMapData
+  putMethod, getOneMap, getDatasetsByMap, getCreateMapData, getSurveysAndDatasetByMap
 } from 'lib/api';
 import { getMapData, extractMapData } from "../../lib/general-functions";
 import { useRouter } from 'next/router';
@@ -29,7 +29,7 @@ const CardTitle = styled(Title)`
 
 
 const CreateMapContainer = ({ authenticatedUser, collapsed, styledMaps, tags, serverSideMapData, injectedcodes,
-  manualMapData, serverSideDatasets, token, icons }) => {
+  manualMapData, serverSideDatasets, token, icons, serverSideMapSurveys }) => {
   const [mapStyle, setMapStyle] = useState(serverSideMapData?.mapstyle?.link || process.env.NEXT_PUBLIC_MAPBOX_DEFAULT_MAP);
   const [datasets, setDatasets] = useState(serverSideDatasets);
   const [mapData, setMapData] = useState(serverSideMapData);
@@ -153,6 +153,7 @@ const CreateMapContainer = ({ authenticatedUser, collapsed, styledMaps, tags, se
               onMapDataChange={onCustomDataChange}
               injectedcodes={injectedcodes}
               onConfigTabChanged={setLayerClicked}
+              serverSideMapSurveys={serverSideMapSurveys}
             />
 
             <Button type={'primary'} onClick={showGeneratedLink} className='margin-top-10' size='large'>Publish</Button>
@@ -204,15 +205,23 @@ export const getServerSideProps = withPrivateServerSideProps(
       let mapData = null;
       let manualArray = [];
       let datasets = [];
+      let surveys = [];
       if (id) {
         mapData = await getOneMap({ id: id }, token);
         if (mapData) {
           mapData.tags = mapData.tags.map(item => Number(item.id));
           manualArray = await extractMapData(mapData);
-          datasets = await getDatasetsByMap({ maps: id }, token);
+          let res = await getSurveysAndDatasetByMap(id, token);
+          datasets = res.datasets;
           datasets = datasets.map((item) => {
             let temp = mapData.mapdatasetconfs.find((obj) => obj.dataset.id === item.id);
             return { ...item, config: temp ? temp : null }
+          })
+          surveys = res.surveys;
+          surveys.map((item) => {
+            item.id = Number(item.id);
+            item.forms = JSON.parse(item.forms);
+            item.key = item.id;
           })
         }
       }
@@ -233,7 +242,8 @@ export const getServerSideProps = withPrivateServerSideProps(
       return {
         props: {
           authenticatedUser: verifyUser, styledMaps: mapStyles, tags: tags, injectedcodes: injectedcodes,
-          serverSideMapData: mapData, manualMapData: manualArray, serverSideDatasets: datasets, token: token, icons: icons
+          serverSideMapData: mapData, manualMapData: manualArray, serverSideDatasets: datasets, token: token, icons: icons,
+          serverSideMapSurveys: surveys
 
         }
       }

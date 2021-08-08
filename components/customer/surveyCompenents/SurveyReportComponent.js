@@ -30,7 +30,8 @@ const SurveyReportComponent = ({ user, surveyForms, token }) => {
         setSurveyJson();
         setSurveyResult([]);
         setLoading(true);
-        const res = await getSurveyFormsValues({ survey: item.id }, token);
+        let res ;
+        // const res = await getSurveyFormsValues({ survey: item.id }, token);
         if (res) {
             let arr = [];
             let i = 0;
