@@ -39,8 +39,6 @@ const CreateMapContainer = ({ authenticatedUser, collapsed, styledMaps, tags, se
 
   const [layerClicked, setLayerClicked] = useState(true);
 
-
-
   const MapWithNoSSR = dynamic(() => import("../../components/map"), {
     ssr: false
   });
@@ -50,7 +48,6 @@ const CreateMapContainer = ({ authenticatedUser, collapsed, styledMaps, tags, se
   const key = 'updatable';
 
   const router = useRouter();
-
 
   const onDatasetChange = () => {
     try {

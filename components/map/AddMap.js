@@ -1,10 +1,11 @@
-import { Drawer, Form, Button, Col, Row, Input, message, List, Card, Spin } from 'antd';
+import { Modal, Form, Button, Col, Row, Input, message, List, Card, Spin } from 'antd';
 import { useEffect, useState } from 'react';
-import { postMethod, putMethod } from 'lib/api';
+import { getSurveyForms, postMethod, putMethod } from 'lib/api';
 import { API, MAP } from '../../static/constant';
 import { getStrapiMedia } from 'lib/media';
 
 import styled from 'styled-components';
+import Modal from 'antd/lib/modal/Modal';
 
 const Photo = styled.img`
   width:43px;
@@ -20,6 +21,8 @@ const MarkerCard = styled(Card)`
 }
 `
 
+import * as Survey from "survey-react"
+
 const AddMap = ({ onDataSaved, myVisible, geoData, mapData, modalClose, userType, userId }) => {
     const [form] = Form.useForm();
     const [visible, setVisible] = useState(false);
@@ -28,6 +31,11 @@ const AddMap = ({ onDataSaved, myVisible, geoData, mapData, modalClose, userType
     const [icons, setIcons] = useState(mapData?.icons.map(item => ({ ...item, isSelected: false })));
     const [selectedIcons, setSelectedIcons] = useState();
     const [loading, setLoading] = useState(false);
+
+
+    const onCompleteSurvey = (data) => {
+        console.log('data1 : ', data.valuesHash)
+    }
 
     const closeDrawer = () => {
         setVisible(false)
@@ -43,6 +51,24 @@ const AddMap = ({ onDataSaved, myVisible, geoData, mapData, modalClose, userType
                 return { ...obj, isSelected: false }
             }
         }));
+    }
+
+
+    const callback = async () => {
+        setLoading(true);
+        try {
+
+            const res = await getSurveyForms({ user: userId });
+            if (res) {
+                res.map((data) => {
+                    data.id = Number(data.id);
+                })
+                setLoading(false);
+            }
+        } catch (e) {
+            setLoading(false);
+        }
+
     }
 
     useEffect(() => {
@@ -91,7 +117,7 @@ const AddMap = ({ onDataSaved, myVisible, geoData, mapData, modalClose, userType
 
 
     return <>
-        <Drawer
+        <Modal
             title={MAP.CREATE_NEW_ACCOUNT}
             width={350}
             onClose={closeDrawer}
@@ -113,6 +139,13 @@ const AddMap = ({ onDataSaved, myVisible, geoData, mapData, modalClose, userType
             }
         >
             <Spin spinning={loading} >
+
+                <Survey.Survey
+                    json={Json}
+                    showCompletedPage={true}
+                    onComplete={data => onCompleteSurvey(data)}
+                >
+                </Survey.Survey>
 
                 <Form layout="vertical" preserve={false} form={form} hideRequiredMark>
                     <Row gutter={16}>
@@ -172,7 +205,7 @@ const AddMap = ({ onDataSaved, myVisible, geoData, mapData, modalClose, userType
                 </Form>
             </Spin>
 
-        </Drawer>
+        </Modal>
 
     </>
 
