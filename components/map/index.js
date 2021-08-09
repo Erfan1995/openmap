@@ -67,6 +67,8 @@ const Map = ({ styleId, center, setCenter, style, mapData, manualMapData, datase
   const [place, setPlace] = useState(null);
   const [zoomLevel, setZoomLevel] = useState(mapData.zoomLevel);
 
+
+
   const closePlaceDetails = () => {
     setOpenModal(false)
   }

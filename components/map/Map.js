@@ -18,7 +18,6 @@ function EditableLayer(props) {
     editLayerRef.current.addLayer(props.layer);
     
     props.layer.on("click", function (e) {
-      console.log('fff')
       props.onLayerClicked(e, drawControlRef.current);
     });
   }, [props, map]);
