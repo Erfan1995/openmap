@@ -48,7 +48,8 @@ padding: 10px;
  cursor:pointer;
 `
 
-const Popup = ({ mdcId, datasetProperties, selectedDatasetProperties, layerType, setDataset,onMapDataChange }) => {
+const Popup = ({ mdcId, datasetProperties, selectedDatasetProperties, layerType, setDataset, onMapDataChange }) => {
+
     const [selectedStyle, setSelectedStyle] = useState(false);
     const [loading, setLoading] = useState(false);
     const [checkedList, setCheckedList] = useState(selectedDatasetProperties);
@@ -74,13 +75,13 @@ const Popup = ({ mdcId, datasetProperties, selectedDatasetProperties, layerType,
         setLoading(true);
         if (layerType === "dataset") {
             const res = await putMethod('mapdatasetconfs/' + mdcId, { selected_dataset_properties: checkedValues });
-            if(res){
+            if (res) {
                 setDataset();
             }
 
         } else if (layerType === "main") {
             const res = await putMethod('maps/' + mdcId, { mmd_properties: checkedValues });
-            if(res){
+            if (res) {
                 onMapDataChange();
             }
         }
@@ -128,7 +129,7 @@ const Popup = ({ mdcId, datasetProperties, selectedDatasetProperties, layerType,
                                 grid={{ gutter: 16, column: 3 }}
                                 itemLayout='horizontal'
                                 renderItem={item => (
-                                    <PopUpCart  onClick={() => selectPopupStyle(item.name)}
+                                    <PopUpCart onClick={() => selectPopupStyle(item.name)}
                                         cover={<img alt="example" src={item.cover}
                                         />}
                                     />
@@ -139,15 +140,20 @@ const Popup = ({ mdcId, datasetProperties, selectedDatasetProperties, layerType,
                     </Scrollbars>
                 </PopUpContainer>
 
-                <SubTitle number={2} title={'Show Items'} />
+                {options.length > 0 && <div>
 
-                <Div>
-                    <Checkbox indeterminate={indeterminate} onChange={onCheckAllChange} checked={checkAll}>
-                        Check all
-                    </Checkbox>
-                    <Divider />
-                    <CheckboxGroup options={options} value={checkedList} onChange={onChange} />
-                </Div>
+                    <SubTitle number={2} title={'Show Items'} />
+
+                    <Div>
+                        <Checkbox indeterminate={indeterminate} onChange={onCheckAllChange} checked={checkAll}>
+                            Check all
+                        </Checkbox>
+                        <Divider />
+                        <CheckboxGroup options={options} value={checkedList} onChange={onChange} />
+                    </Div>
+                </div>
+
+                }
             </Row>
         </Spin>
     )

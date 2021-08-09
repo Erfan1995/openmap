@@ -1,4 +1,4 @@
-import { Modal, Form, Button, Col, Row, Input, message, List, Card, Spin, Typography } from 'antd';
+import { Modal, Form, Button, Col, Row, Input, message, List, Card, Spin, Typography, Drawer } from 'antd';
 import { useEffect, useState } from 'react';
 import { getSurveyForms, postMethod, putMethod } from 'lib/api';
 import { API, MAP } from '../../static/constant';
@@ -34,7 +34,6 @@ const SurveyCard = styled(Card)`
 
 
 const AddMap = ({ onDataSaved, myVisible, geoData, mapData, modalClose, userType, userId }) => {
-    const [form] = Form.useForm();
     const [visible, setVisible] = useState(false);
     const [mainMapData, setMainMapData] = useState(null);
     const [mapManualData, setMapManualData] = useState(null);
@@ -45,13 +44,13 @@ const AddMap = ({ onDataSaved, myVisible, geoData, mapData, modalClose, userType
     const [selectedSurvey, setSelectedSurveys] = useState();
 
 
-    const onCompleteSurvey =async (data) => {
+    const onCompleteSurvey = async (data) => {
         setLoading(true);
         try {
-            let values={};
+            let values = {};
             values.map = mainMapData.id;
             values.geometry = mapManualData;
-            values.properties= data.valuesHash;
+            values.properties = data.valuesHash;
             if (geoData.type === 'Point') {
                 values.icon = selectedIcons ? selectedIcons.id : null;
             }
@@ -59,7 +58,7 @@ const AddMap = ({ onDataSaved, myVisible, geoData, mapData, modalClose, userType
             if (userType === 'public') {
                 values.is_approved = false;
                 values.public_user = userId;
-                res = await postMethod('mmdpublicusers', values,false);
+                res = await postMethod('mmdpublicusers', values, false);
             } else {
                 values.is_approved = true;
                 values.user = userId;
@@ -69,7 +68,6 @@ const AddMap = ({ onDataSaved, myVisible, geoData, mapData, modalClose, userType
 
             if (res) {
                 setVisible(false);
-                form.resetFields();
                 onDataSaved();
                 setLoading(false)
             }
@@ -113,7 +111,7 @@ const AddMap = ({ onDataSaved, myVisible, geoData, mapData, modalClose, userType
     const callback = async () => {
         setLoading(true);
         try {
-            let res = await getSurveyForms({ maps: mapData.id },null,false);
+            let res = await getSurveyForms({ maps: mapData.id }, null, false);
             if (res) {
                 setSurveys(res);
                 setLoading(false);
@@ -135,66 +133,26 @@ const AddMap = ({ onDataSaved, myVisible, geoData, mapData, modalClose, userType
 
 
 
-    const saveData = () => {
-        setLoading(true);
-        form
-            .validateFields()
-            .then(async (values) => {
-                values.map = mainMapData.id;
-                values.geometry = mapManualData;
-                if (geoData.type === 'Point') {
-                    values.icon = selectedIcons ? selectedIcons.id : null;
-                }
-                let res = null;
-                if (userType === 'public') {
-                    values.is_approved = false;
-                    values.public_user = userId;
-                    res = await postMethod('mmdpublicusers', values, false);
-                } else {
-                    values.is_approved = true;
-                    values.user = userId;
-                    res = await postMethod('mmdcustomers', values);
-                }
-
-                if (res) {
-                    setVisible(false);
-                    form.resetFields();
-                    onDataSaved();
-                    setLoading(false)
-                }
-            })
-            .catch((info) => {
-                setLoading(false)
-                message.error(info.message);
-            });
-    }
 
 
     return <>
         <Modal
             title={MAP.CREATE_NEW_ACCOUNT}
-            width={850}
-            onClose={closeDrawer}
+            width={550}
             visible={visible}
             destroyOnClose={true}
-            footer={[
-
-                <Button onClick={closeDrawer} style={{ marginRight: 8 }}>
-                    {MAP.CANCEl}
-                </Button>,
-                <Button onClick={saveData} type="primary">
-                    {MAP.SUBMIT}
-                </Button>]
-            }
+            footer={null}
+            style={{ top: 10 }}
+            onCancel={closeDrawer}
         >
             <Spin spinning={loading} >
 
 
 
-                <Row>
+                <Row className='padding-10'>
 
                     {!selectedSurvey &&
-                        <Col span={24} className='padding-20 text-center'>
+                        <Col span={24} className='padding-10 text-center'>
                             <List
                                 grid={{
                                     gutter: 16,
@@ -207,8 +165,8 @@ const AddMap = ({ onDataSaved, myVisible, geoData, mapData, modalClose, userType
                                 }}
                                 dataSource={surveys}
                                 renderItem={(item, index) => (
-                                    <List.Item key={'dd' + index}>
-                                        <SurveyCard className={item.isSelected ? 'selectedBox' : ''} onClick={() => selectSurvey(item)} >
+                                    <List.Item >
+                                        <SurveyCard key={`surveyCard${index}`} className={item.isSelected ? 'selectedBox' : ''} onClick={() => selectSurvey(item)} >
                                             <img src={JSON.parse(item.forms)?.logo} style={{ height: 70 }} />
 
                                             <Title level={5} className='margin-top-10 text-center'>
@@ -224,65 +182,52 @@ const AddMap = ({ onDataSaved, myVisible, geoData, mapData, modalClose, userType
                     {
                         selectedSurvey &&
                         <Col span={24}>
-                            <Form style={{ padding: 10 }} layout="vertical" preserve={false} form={form} hideRequiredMark>
-                                <Row gutter={16}>
-                                    <Col xs={24} sm={24} md={12} lg={12} xl={12}>
-                                        {/* <Form.Item
-                                            name="title"
-                                            label={MAP.TITLE}
-                                            rules={[{ required: true, message: MAP.ENTER_TITLE }]}
-                                        >
-                                            <Input placeholder={MAP.ENTER_TITLE} />
-                                        </Form.Item>
+                            <Row gutter={16}>
+
+                                {
+                                    geoData.type === 'Point' &&
+                                    <Col xs={24} sm={24} md={24} lg={24} xl={24}>
                                         <Form.Item
-                                            name="description"
-                                            label={MAP.DESCRIPTION}
-                                            rules={[
-                                                {
-                                                    required: true,
-                                                    message: MAP.ENTER_DESCRIPTION,
-                                                },
-                                            ]}
+                                            name="icon"
+                                            label={MAP.SELECT_ICON}
                                         >
-                                            <Input.TextArea rows={4} placeholder={MAP.ENTER_DESCRIPTION} />
-                                        </Form.Item> */}
-                                        <Survey.Survey
-                                            json={selectedSurvey}
-                                            showCompletedPage={true}
-                                            onComplete={data => onCompleteSurvey(data)}>
-                                        </Survey.Survey>
+                                            <List
+                                                // pagination={true}
+                                                grid={{
+                                                    gutter: 16,
+                                                    xs: 3,
+                                                    sm: 4,
+                                                    md: 5,
+                                                    lg: 5,
+                                                    xl: 5,
+                                                    xxl: 5,
+
+                                                }}
+                                                dataSource={icons || []}
+                                                renderItem={(item) => (
+                                                    <List.Item key={`listItem` + item.id} >
+                                                        <MarkerCard className={'text-center '+( item.isSelected ? 'selectedBox' : '')} onClick={() => selectMarker(item)} >
+                                                            <Photo src={getStrapiMedia(item.icon[0])} />
+                                                        </MarkerCard>
+                                                    </List.Item>
+                                                )}
+                                            />
+                                        </Form.Item>
 
                                     </Col>
-                                    {
-                                        geoData.type === 'Point' &&
-                                        <Col xs={24} sm={24} md={12} lg={12} xl={12}>
-                                            <Form.Item
-                                                name="icon"
-                                                label={MAP.SELECT_ICON}
-                                            >
-                                                <List
-                                                    // pagination={true}
-                                                    grid={{
-                                                        gutter: 10,
-                                                        column: 4
+                                }
 
-                                                    }}
-                                                    dataSource={icons || []}
-                                                    renderItem={(item) => (
-                                                        <List.Item key={`listItem` + item.id} >
-                                                            <MarkerCard className={item.isSelected ? 'selectedBox' : ''} onClick={() => selectMarker(item)} >
-                                                                <Photo src={getStrapiMedia(item.icon[0])} />
-                                                            </MarkerCard>
-                                                        </List.Item>
-                                                    )}
-                                                />
-                                            </Form.Item>
+                                <Col xs={24} sm={24} md={24} lg={24} xl={24}>
 
-                                        </Col>
-                                    }
+                                    <Survey.Survey
+                                        json={selectedSurvey}
+                                        showCompletedPage={true}
+                                        onComplete={data => onCompleteSurvey(data)}>
+                                    </Survey.Survey>
 
-                                </Row>
-                            </Form>
+                                </Col>
+
+                            </Row>
                         </Col>
                     }
                 </Row>

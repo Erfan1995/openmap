@@ -224,7 +224,7 @@ const MapConf = ({ authenticatedUser, styledMaps, tags, mapData, serverSideDatas
                     })
                     setSelectedDIcons(arr);
                     setSelectedDatasetProperties(mmdProperties[0]?.mmd_properties)
-                    setDatasetProperties(['title', 'description']);
+                    setDatasetProperties([]);
                 }
             }
         }
