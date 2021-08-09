@@ -3,7 +3,7 @@ import LayoutPage from "components/client/layout";
 import { useEffect, useState } from "react";
 import UseAuth from "hooks/useAuth";
 import { Spin } from 'antd';
-import {  getDatasetsByMap, getClientMapData } from "lib/api";
+import { getDatasetsByMap, getClientMapData } from "lib/api";
 import { extractMapData, getCustomerMapData, getPublicAuthenticatedMapData, getPublicMapData } from "lib/general-functions";
 const Map = ({ manualMapData, mapData, datasets, injectedcodes }) => {
 
@@ -119,6 +119,7 @@ export async function getServerSideProps(ctx) {
     let datasets = [];
     if (id) {
       const data = await getClientMapData(id);
+      console.log(data);
       mapData = data?.maps[0];
       if (mapData) {
         datasets = await getDatasetsByMap({ maps: id }, null, false);
@@ -139,6 +140,7 @@ export async function getServerSideProps(ctx) {
       },
     };
   } catch (e) {
+    console.log(e.message);
     return {
       redirect: {
         destination: '/server-error',
