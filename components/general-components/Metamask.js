@@ -5,7 +5,10 @@ import { Router, useRouter } from "next/router";
 import UseAuth from "hooks/useAuth";
 import { useEffect, useState } from "react";
 import { MAP, Map } from 'static/constant';
-import { getMapVisits, putMethodPublicUser, checkPublicUsersMapBased, postMethod } from '../../lib/api'
+import {
+    getMapVisits, putMethodPublicUser, checkPublicUsersMapBased, getPublicUsers,
+    postMethodPublicUser
+} from '../../lib/api'
 export const NextButton = styled(Button)`
   margin-top: 20px;
   padding: 30px;
@@ -68,30 +71,18 @@ const Metamask = ({ mapDetails }) => {
                     return;
                 }
                 const publicAddress = coinbase.toLowerCase();
-                const res = await fetch(
-                    `${process.env.NEXT_PUBLIC_STRAPI_API_URL}/public-users?publicAddress=${publicAddress}`
-                )
-                    .then((response) => response.json())
-                    // If yes, retrieve it. If no, create it.
-                    .then((users) =>
-                        users.length ? users[0] : handleSignup(publicAddress)
-
-                    )
-                    .catch((err) => {
-                        message.info(err.message);
-                    });
-                console.log(res, 'res');
-                if (res) {
-                    console.log(res);
+                const res = await getPublicUsers({ publicAddress: publicAddress })
+                if (res.length !== 0) {
+                    console.log(res, 'res');
                     setMapIds([]);
-                    res?.maps.map((data) => {
-                        mapIds.push(data.id);
+                    res[0]?.maps.map((data) => {
+                        mapIds.push(Number(data.id));
                     })
                     const checkUser = await checkPublicUsersMapBased({ publicAddress: publicAddress, maps: mapDetails.id });
                     if (checkUser.publicUsers.length === 0) {
                         console.log("fals check")
                         mapIds.push(mapDetails.id);
-                        const update = await putMethodPublicUser(`public-users/${res.id}`, { maps: mapIds.map(dd => dd) });
+                        const update = await putMethodPublicUser(`public-users/${res[0].id}`, { maps: mapIds.map(dd => dd) });
                         if (update) {
                             router.push({
                                 pathname: 'client/map',
@@ -99,13 +90,19 @@ const Metamask = ({ mapDetails }) => {
                             });
                         }
                     } else {
-                        console.log(checkUser, 'checkuser');
                         router.push({
                             pathname: 'client/map',
                             query: { mapToken: mapDetails.mapId, id: mapDetails.id, publicUser: res.id }
                         });
                     }
-
+                } else {
+                    const response = await postMethodPublicUser('public-users', { publicAddress: publicAddress, maps: mapDetails.id });
+                    if (response) {
+                        router.push({
+                            pathname: 'client/map',
+                            query: { mapToken: mapDetails.mapId, id: mapDetails.id, publicUser: res.id }
+                        });
+                    }
                 }
             }
 

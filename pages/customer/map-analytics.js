@@ -1,10 +1,10 @@
 import Layout from '../../components/customer/layout/Layout';
 import withPrivateServerSideProps from '../../utils/withPrivateServerSideProps';
 import { Statistic, Card, Row, Col, Table, List } from 'antd';
-import { ArrowUpOutlined, ArrowDownOutlined } from '@ant-design/icons';
+import { ArrowUpOutlined, ArrowDownOutlined, ConsoleSqlOutlined } from '@ant-design/icons';
 import styled from 'styled-components';
 import nookies from 'nookies';
-import { getMethod, getMapAnalytics } from 'lib/api';
+import { getMethod, getMapAnalytics, getMapAnalyticsDataByDate } from 'lib/api';
 import { getStrapiMedia } from 'lib/media';
 import { formatDate } from 'lib/general-functions';
 import { DATASET } from '../../static/constant'
@@ -42,55 +42,113 @@ text-align: center;
 `;
 
 
-const MapAnalytics = ({ collapsed, authenticatedUser, mapData }) => {
+const MapAnalytics = ({ collapsed, authenticatedUser, mapData, allMaps }) => {
     const [oneMonthDate, setOneMonthDate] = useState();
+    let mapList = [];
+    let index = 0;
+    // here we assign all maps received from singups in one array as an object no matter if they are duplicate; maybe they are from different users;
+    allMaps.map((data) => {
+        data.maps.map((m) => {
+            let obj = {};
+            obj.created_at = data.created_at;
+            obj.id = Number(m.id);
+            obj.visits = m.visits;
+            obj.title = m.title;
+            mapList[index] = obj;
+            index++;
+        })
+    })
+    // all the duplicate maps are unified and assigned to another array to be used in chart
+    const unifiedMaps = Array.from(new Set(mapList.map(s => s.id))).map(id => {
+        return {
+            id: id,
+            title: mapList.find(s => s.id === id).title,
+            signUps: [Number(0), Number(0), Number(0), Number(0), Number(0)]
 
+        }
+    });
+    // A four week duration is created here
+    let today = new Date().toISOString().slice(0, 10)
+    let result = new Date(today);
+    result.setDate(result.getDate() - 28);
+    let labelDateList = [];
+    let dateList = [];
+    let dateProps = 0;
+    for (let i = 0; i <= 4; i++) {
+        let dd = new Date(result);
+        dd.setDate(dd.getDate() + dateProps);
+        labelDateList[i] = `${dd.getMonth() + 1}-${dd.getDate()}`;
+        dateList[i] = new Date(dd);
+        dateProps += 7;
+    }
+
+    // Number of signups are counted based on created date of each public user.
+    mapList.map((data) => {
+        let myDate = new Date(data.created_at);
+        console.log(myDate, 'mydate')
+        if (myDate >= dateList[0] && myDate < dateList[1]) {
+            console.log("first phase")
+            unifiedMaps.map(dd => {
+                if (dd.id === data.id) {
+                    dd.signUps[1] = Number(dd.signUps[1]) + 1;
+                }
+            })
+
+        } else if (myDate >= dateList[1] && myDate < dateList[2]) {
+            console.log("second phase")
+            unifiedMaps.map(dd => {
+                if (dd.id === data.id) {
+                    dd.signUps[2] = Number(dd.signUps[2]) + 1;
+                }
+            })
+
+        } else if (myDate >= dateList[2] && myDate < dateList[3]) {
+            console.log("third phase")
+            unifiedMaps.map(dd => {
+                if (dd.id === data.id) {
+                    dd.signUps[3] = Number(dd.signUps[3]) + 1;
+                }
+            })
+        } else if (myDate >= dateList[3] && myDate <= dateList[4]) {
+            console.log("fourth phase")
+            unifiedMaps.map(dd => {
+                if (dd.id === data.id) {
+                    dd.signUps[4] = Number(dd.signUps[4]) + 1;
+                }
+            })
+        }
+    })
+// the final value of signups and the map title are assigned to another array to be used for the final use in chart.
+    let datasetsValue = [];
+    let datasetIndex = 0;
+    unifiedMaps.map(map => {
+        datasetsValue[datasetIndex] = {
+            data: map.signUps,
+            label: map.title,
+            fill: true,
+            lineTension: 0,
+            backgroundColor: 'rgba(75,192,192,0.4)',
+            borderColor: 'rgba(75,192,192,1)',
+            borderCapStyle: 'butt',
+            borderDash: [],
+            borderDashOffset: 1,
+            borderJoinStyle: 'miter',
+            pointBorderColor: 'rgba(75,192,192,1)',
+            pointBackgroundColor: '#fff',
+            pointBorderWidth: 0.1,
+            pointHoverRadius: 5,
+            pointHoverBackgroundColor: 'rgba(75,192,192,1)',
+            pointHoverBorderColor: 'rgba(220,220,220,1)',
+            pointHoverBorderWidth: 2,
+            pointRadius: 5,
+            pointHitRadius: 10,
+        }
+        datasetIndex++;
+    })
+    console.log(datasetsValue);
     const data = {
-        labels: ['First Week', 'Second Week', 'Third Week', 'Fourth Week'],
-        datasets: [
-            {
-                label: 'My First dataset',
-                fill: true,
-                lineTension: 0,
-                backgroundColor: 'rgba(75,192,192,0.4)',
-                borderColor: 'rgba(75,192,192,1)',
-                borderCapStyle: 'butt',
-                borderDash: [],
-                borderDashOffset: 1,
-                borderJoinStyle: 'miter',
-                pointBorderColor: 'rgba(75,192,192,1)',
-                pointBackgroundColor: '#fff',
-                pointBorderWidth: 0.1,
-                pointHoverRadius: 5,
-                pointHoverBackgroundColor: 'rgba(75,192,192,1)',
-                pointHoverBorderColor: 'rgba(220,220,220,1)',
-                pointHoverBorderWidth: 2,
-                pointRadius: 5,
-                pointHitRadius: 10,
-                data: [0, 20, 20, 60]
-            },
-            {
-                label: 'My Second dataset',
-                fill: false,
-                lineTension: 0,
-                backgroundColor: 'rgba(20,17,91,20)',
-                borderColor: 'rgba(20,17,91,20)',
-                borderCapStyle: 'butt',
-                borderDash: [],
-                borderDashOffset: 0.0,
-                borderJoinStyle: 'miter',
-                pointBorderColor: 'rgba(20,17,91,20)',
-                pointBackgroundColor: '#fff',
-                pointBorderWidth: 0.1,
-                pointHoverRadius: 5,
-                pointHoverBackgroundColor: 'rgba(20,17,91,20)',
-                pointHoverBorderColor: 'rgba(20,17,91,20)',
-                pointHoverBorderWidth: 2,
-                pointRadius: 5,
-                pointHitRadius: 10,
-                data: [0, 30, 30, 30]
-            }
-        ]
+        labels: labelDateList,
+        datasets: datasetsValue
     };
 
     const config = {
@@ -296,7 +354,22 @@ export const getServerSideProps = withPrivateServerSideProps(
             const { token } = nookies.get(ctx);
             const { id } = ctx.query;
             let mapData = null;
+            let today = new Date().toISOString().slice(0, 10)
+            let result = new Date(today);
+            result.setDate(result.getDate() - 28);
+            let year = (result.getFullYear()).toString();
+            let month = (result.getMonth() + 1).toString();
+            let day = (result.getDate()).toString();
+            if (month.length < 2) {
+                month = '0' + month
+            };
+            if (day.length < 2) {
+                day = '0' + day;
+            }
+            let myDate = `${year}-${month}-${day}`;
+            const res = await getMapAnalyticsDataByDate(myDate, token)
             if (id) {
+
                 mapData = await getMapAnalytics({ id: id }, token);
                 mapData.map((data) => {
                     data.created_at = formatDate(data.created_at);
@@ -306,10 +379,13 @@ export const getServerSideProps = withPrivateServerSideProps(
             return {
                 props: {
                     authenticatedUser: verifyUser,
-                    mapData: mapData
+                    mapData: mapData,
+                    allMaps: res
+
                 }
             }
         } catch (error) {
+            console.log(error.message);
             return {
                 redirect: {
                     destination: '/server-error',

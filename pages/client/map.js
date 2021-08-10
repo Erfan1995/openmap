@@ -119,7 +119,6 @@ export async function getServerSideProps(ctx) {
     let datasets = [];
     if (id) {
       const data = await getClientMapData(id);
-      console.log(data);
       mapData = data?.maps[0];
       if (mapData) {
         datasets = await getDatasetsByMap({ maps: id }, null, false);
@@ -140,7 +139,6 @@ export async function getServerSideProps(ctx) {
       },
     };
   } catch (e) {
-    console.log(e.message);
     return {
       redirect: {
         destination: '/server-error',
