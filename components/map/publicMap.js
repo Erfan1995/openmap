@@ -119,7 +119,7 @@ const PublicMap = ({ styleId, mapZoom, style, mapData, manualMapData,onCustomeDa
 
                     if (!(mapData?.mmd_properties?.length > 0)) return;
 
-                    layer.bindPopup(`<div>${getSpecifictPopup(properties, mapData?.default_popup_style_slug || '', mapData?.mmd_properties || [])}</div>`)
+                    layer.bindPopup(`<div>${getSpecifictPopup(properties, mapData?.default_popup_style_slug || '',  [])}</div>`)
 
                 }} />
                 </MarkerClusterGroup>

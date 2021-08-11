@@ -114,7 +114,9 @@
   padding: 10px;
 }
 
-
+.padding-20{
+  padding: 20px;
+}
 .login-form-forgot {
   float: right;
 }

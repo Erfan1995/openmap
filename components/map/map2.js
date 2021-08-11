@@ -115,7 +115,7 @@ export default class EditControlExample extends Component {
 
           if (!(this.props.mapData?.mmd_properties?.length > 0)) return;
 
-          layer.bindPopup(`<div>${getSpecifictPopup(properties, this.props.mapData?.default_popup_style_slug || '', this.props.mapData?.mmd_properties || [])}</div>`)
+          layer.bindPopup(`<div>${getSpecifictPopup(properties, this.props.mapData?.default_popup_style_slug || '', [])}</div>`)
         }
       })
       let leafletFG = reactFGref;
