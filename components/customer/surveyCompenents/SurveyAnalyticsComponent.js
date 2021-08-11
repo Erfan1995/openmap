@@ -24,7 +24,7 @@ const SurveyAnalyticsComponent = ({ user, surveyForms, token }) => {
         setSurveyResult([]);
         setLoading(true);
         let res;
-        // const res = await getSurveyFormsValues({ survey: item.id }, token);
+        const data = await getSurveyFormsValues({ survey: item.id }, token);
         if (res) {
             let arr = [];
             let i = 0;
