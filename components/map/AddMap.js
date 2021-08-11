@@ -51,6 +51,7 @@ const AddMap = ({ onDataSaved, myVisible, geoData, mapData, modalClose, userType
             values.map = mainMapData.id;
             values.geometry = mapManualData;
             values.properties = data.valuesHash;
+            values.survey = selectedSurvey.id;
             if (geoData.type === 'Point') {
                 values.icon = selectedIcons ? selectedIcons.id : null;
             }
@@ -97,7 +98,7 @@ const AddMap = ({ onDataSaved, myVisible, geoData, mapData, modalClose, userType
 
 
     const selectSurvey = (item) => {
-        setSelectedSurveys(JSON.parse(item.forms));
+        setSelectedSurveys(item);
         setSurveys(surveys.map((obj) => {
             if (item.id === obj.id) {
                 return { ...obj, isSelected: true }
@@ -220,7 +221,7 @@ const AddMap = ({ onDataSaved, myVisible, geoData, mapData, modalClose, userType
                                 <Col xs={24} sm={24} md={24} lg={24} xl={24}>
 
                                     <Survey.Survey
-                                        json={selectedSurvey}
+                                        json={JSON.parse(selectedSurvey.forms)}
                                         showCompletedPage={true}
                                         onComplete={data => onCompleteSurvey(data)}>
                                     </Survey.Survey>
