@@ -102,7 +102,7 @@ export const DATASET = {
     COOSE_SURVEY: "Choose Survey",
     SELECT_SURVEY: "Select Survey",
     DUPLICATE_SURVEY: 'This survey has been added already!',
-    IS_END_OF_BODY:'should it be at end of body?'
+    IS_END_OF_BODY: 'should it be at end of body?'
 
 
 }
@@ -150,3 +150,23 @@ export const CUSTOMERS = {
     CUSTOMERS: 'Customers',
     ADD_NEW_CUSTOMERS: 'Add New Customers'
 }
+export const COLORS = [
+    "rgb(128, 0, 128)",
+    "rgb(255, 0, 255)",
+    "rgb(0, 0, 128)",
+    "rgb(0, 0, 255)",
+    "rgb(0, 128, 128)",
+    "rgb(0, 255, 255)",
+    "rgb(0, 128, 0)",
+    "rgb(0, 255, 0)",
+    "rgb(128, 128, 0)",
+    "rgb(255, 255, 0)",
+    "rgb(128, 0, 0)",
+    "rgb(255, 0, 0)",
+    "rgb(64, 224, 208)",
+    "rgb(100, 149, 237)",
+    "rgb(159, 226, 191)",
+    "rgb(255, 191, 0)",
+    "rgb(255, 127, 80)",
+    "rgb(222, 49, 99)"
+];

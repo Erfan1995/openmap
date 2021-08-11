@@ -7,7 +7,7 @@ import nookies from 'nookies';
 import { getMethod, getMapAnalytics, getMapAnalyticsDataByDate } from 'lib/api';
 import { getStrapiMedia } from 'lib/media';
 import { formatDate } from 'lib/general-functions';
-import { DATASET } from '../../static/constant'
+import { DATASET, COLORS } from '../../static/constant'
 import { Line } from 'react-chartjs-2';
 import { useState } from 'react';
 const MapsWrapper = styled.div`
@@ -44,6 +44,7 @@ text-align: center;
 
 const MapAnalytics = ({ collapsed, authenticatedUser, mapData, allMaps }) => {
     const [oneMonthDate, setOneMonthDate] = useState();
+    console.log(allMaps)
     let mapList = [];
     let index = 0;
     // here we assign all maps received from singups in one array as an object no matter if they are duplicate; maybe they are from different users;
@@ -81,13 +82,12 @@ const MapAnalytics = ({ collapsed, authenticatedUser, mapData, allMaps }) => {
         dateList[i] = new Date(dd);
         dateProps += 7;
     }
+    console.log(dateList)
 
     // Number of signups are counted based on created date of each public user.
     mapList.map((data) => {
         let myDate = new Date(data.created_at);
-        console.log(myDate, 'mydate')
         if (myDate >= dateList[0] && myDate < dateList[1]) {
-            console.log("first phase")
             unifiedMaps.map(dd => {
                 if (dd.id === data.id) {
                     dd.signUps[1] = Number(dd.signUps[1]) + 1;
@@ -95,7 +95,6 @@ const MapAnalytics = ({ collapsed, authenticatedUser, mapData, allMaps }) => {
             })
 
         } else if (myDate >= dateList[1] && myDate < dateList[2]) {
-            console.log("second phase")
             unifiedMaps.map(dd => {
                 if (dd.id === data.id) {
                     dd.signUps[2] = Number(dd.signUps[2]) + 1;
@@ -103,14 +102,12 @@ const MapAnalytics = ({ collapsed, authenticatedUser, mapData, allMaps }) => {
             })
 
         } else if (myDate >= dateList[2] && myDate < dateList[3]) {
-            console.log("third phase")
             unifiedMaps.map(dd => {
                 if (dd.id === data.id) {
                     dd.signUps[3] = Number(dd.signUps[3]) + 1;
                 }
             })
         } else if (myDate >= dateList[3] && myDate <= dateList[4]) {
-            console.log("fourth phase")
             unifiedMaps.map(dd => {
                 if (dd.id === data.id) {
                     dd.signUps[4] = Number(dd.signUps[4]) + 1;
@@ -118,34 +115,39 @@ const MapAnalytics = ({ collapsed, authenticatedUser, mapData, allMaps }) => {
             })
         }
     })
-// the final value of signups and the map title are assigned to another array to be used for the final use in chart.
+    // the final value of signups and the map title are assigned to another array to be used for the final use in chart.
     let datasetsValue = [];
     let datasetIndex = 0;
+    let colorIndex = 0;
     unifiedMaps.map(map => {
-        datasetsValue[datasetIndex] = {
-            data: map.signUps,
-            label: map.title,
-            fill: true,
-            lineTension: 0,
-            backgroundColor: 'rgba(75,192,192,0.4)',
-            borderColor: 'rgba(75,192,192,1)',
-            borderCapStyle: 'butt',
-            borderDash: [],
-            borderDashOffset: 1,
-            borderJoinStyle: 'miter',
-            pointBorderColor: 'rgba(75,192,192,1)',
-            pointBackgroundColor: '#fff',
-            pointBorderWidth: 0.1,
-            pointHoverRadius: 5,
-            pointHoverBackgroundColor: 'rgba(75,192,192,1)',
-            pointHoverBorderColor: 'rgba(220,220,220,1)',
-            pointHoverBorderWidth: 2,
-            pointRadius: 5,
-            pointHitRadius: 10,
+        if (datasetIndex <= COLORS.length) {
+            datasetsValue[datasetIndex] = {
+                data: map.signUps,
+                label: map.title,
+                fill: true,
+                lineTension: 0,
+                // backgroundColor: 'rgba(75,192,192,0.4)',
+                borderColor: COLORS[colorIndex],
+                borderCapStyle: 'butt',
+                borderDash: [],
+                borderDashOffset: 1,
+                borderJoinStyle: 'miter',
+                pointBorderColor: COLORS[colorIndex],
+                pointBackgroundColor: '#fff',
+                pointBorderWidth: 0.1,
+                pointHoverRadius: 5,
+                pointHoverBackgroundColor: COLORS[colorIndex],
+                // pointHoverBorderColor: 'rgba(220,220,220,1)',
+                pointHoverBorderWidth: 2,
+                pointRadius: 5,
+                pointHitRadius: 10,
+            }
+        } else {
+            colorIndex = 0;
         }
         datasetIndex++;
+        colorIndex++;
     })
-    console.log(datasetsValue);
     const data = {
         labels: labelDateList,
         datasets: datasetsValue
@@ -333,6 +335,9 @@ const MapAnalytics = ({ collapsed, authenticatedUser, mapData, allMaps }) => {
                         </Col>
 
                         <Col xs={6} sm={8} md={12} lg={16} xl={19}>
+                            <div style={{ textAlign: "center" }}>
+                                <h2 style={{ fontWeight: "bold" }}>User Signups(Past 4 weeks)</h2>
+                            </div>
                             <Line
                                 data={data}
                                 width={750}
@@ -357,17 +362,9 @@ export const getServerSideProps = withPrivateServerSideProps(
             let today = new Date().toISOString().slice(0, 10)
             let result = new Date(today);
             result.setDate(result.getDate() - 28);
-            let year = (result.getFullYear()).toString();
-            let month = (result.getMonth() + 1).toString();
-            let day = (result.getDate()).toString();
-            if (month.length < 2) {
-                month = '0' + month
-            };
-            if (day.length < 2) {
-                day = '0' + day;
-            }
-            let myDate = `${year}-${month}-${day}`;
-            const res = await getMapAnalyticsDataByDate(myDate, token)
+            let timestamp = Date.parse(result);
+            timestamp = timestamp/1000;
+            const res = await getMapAnalyticsDataByDate(timestamp, token)
             if (id) {
 
                 mapData = await getMapAnalytics({ id: id }, token);
