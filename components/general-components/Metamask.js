@@ -5,7 +5,10 @@ import { Router, useRouter } from "next/router";
 import UseAuth from "hooks/useAuth";
 import { useEffect, useState } from "react";
 import { MAP, Map } from 'static/constant';
-import { getMapVisits, putMethodPublicUser } from '../../lib/api'
+import {
+    getMapVisits, putMethodPublicUser, checkPublicUsersMapBased, getPublicUsers,
+    postMethodPublicUser
+} from '../../lib/api'
 export const NextButton = styled(Button)`
   margin-top: 20px;
   padding: 30px;
@@ -35,9 +38,11 @@ export const NextButton = styled(Button)`
 let web3 = undefined;
 const Metamask = ({ mapDetails }) => {
     const router = useRouter();
+    const [mapIds, setMapIds] = useState([]);
     const handleSignup = async (publicAddress) => {
+        const data = { publicAddress: publicAddress, maps: mapDetails.id };
         const res = await fetch(`${process.env.NEXT_PUBLIC_STRAPI_API_URL}/public-users`, {
-            body: JSON.stringify({ publicAddress }),
+            body: JSON.stringify(data),
             headers: {
                 'Content-Type': 'application/json',
             },
@@ -66,24 +71,38 @@ const Metamask = ({ mapDetails }) => {
                     return;
                 }
                 const publicAddress = coinbase.toLowerCase();
-                const res = await fetch(
-                    `${process.env.NEXT_PUBLIC_STRAPI_API_URL}/public-users?publicAddress=${publicAddress}`
-                )
-                    .then((response) => response.json())
-                    // If yes, retrieve it. If no, create it.
-                    .then((users) =>
-                        users.length ? users[0] : handleSignup(publicAddress)
-
-                    )
-                    .catch((err) => {
-                        message.info(err.message);
-                    });
-
-                if (res) {
-                    router.push({
-                        pathname: 'client/map',
-                        query: { mapToken: mapDetails.mapId, id: mapDetails.id, publicUser: res.id }
-                    });
+                const res = await getPublicUsers({ publicAddress: publicAddress })
+                if (res.length !== 0) {
+                    console.log(res, 'res');
+                    setMapIds([]);
+                    res[0]?.maps.map((data) => {
+                        mapIds.push(Number(data.id));
+                    })
+                    const checkUser = await checkPublicUsersMapBased({ publicAddress: publicAddress, maps: mapDetails.id });
+                    if (checkUser.publicUsers.length === 0) {
+                        console.log("fals check")
+                        mapIds.push(mapDetails.id);
+                        const update = await putMethodPublicUser(`public-users/${res[0].id}`, { maps: mapIds.map(dd => dd) });
+                        if (update) {
+                            router.push({
+                                pathname: 'client/map',
+                                query: { mapToken: mapDetails.mapId, id: mapDetails.id, publicUser: res.id }
+                            });
+                        }
+                    } else {
+                        router.push({
+                            pathname: 'client/map',
+                            query: { mapToken: mapDetails.mapId, id: mapDetails.id, publicUser: res.id }
+                        });
+                    }
+                } else {
+                    const response = await postMethodPublicUser('public-users', { publicAddress: publicAddress, maps: mapDetails.id });
+                    if (response) {
+                        router.push({
+                            pathname: 'client/map',
+                            query: { mapToken: mapDetails.mapId, id: mapDetails.id, publicUser: res.id }
+                        });
+                    }
                 }
             }
 

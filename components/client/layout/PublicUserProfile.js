@@ -111,6 +111,7 @@ const PublicUserProfile = ({ userId, onModalClose, serverPublicUser, customWalle
                 fData.append('data', JSON.stringify(values));
                 setLoading(true);
                 if (imageSelected) {
+                    console.log(imageFile.originFileObj)
                     fData.append('files.picture', imageFile.originFileObj, imageFile.originFileObj.name);
                 }
                 let res = await putPublicUserFileMethod(`public-users/${userId}`, fData)
@@ -118,12 +119,13 @@ const PublicUserProfile = ({ userId, onModalClose, serverPublicUser, customWalle
                 if (res) {
                     message.success(DATASET.CREATE_MAP_SUCCESS_MSG);
                     onModalClose(res);
-
+                    setLoading(false);
                 }
 
             })
-            .catch((info) => {
-                message.error(info.message)
+            .catch((error) => {
+                setLoading(false);
+                message.error(error)
             })
         setUpdateActive(false);
     }
@@ -179,7 +181,7 @@ const PublicUserProfile = ({ userId, onModalClose, serverPublicUser, customWalle
                                     </p>
                                     <p className="ant-upload-text">{DATASET.LOGO_FILE}</p>
                                 </Dragger> :
-                                    <Row style={{textAlign: "center" }}>
+                                    <Row style={{ textAlign: "center" }}>
                                         <Col span={24}>
                                             {!uploadImageAvailable ? <ProfileImage src={getStrapiMedia(serverPublicUser.picture)} />
                                                 : <ProfileImage src={imageUrl} />}
