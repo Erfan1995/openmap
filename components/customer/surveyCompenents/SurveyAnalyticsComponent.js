@@ -23,13 +23,13 @@ const SurveyAnalyticsComponent = ({ user, surveyForms, token }) => {
         setSurveyJson();
         setSurveyResult([]);
         setLoading(true);
-        let res;
-        // const res = await getSurveyFormsValues({ survey: item.id }, token);
-        if (res) {
+        const data = await getSurveyFormsValues(item.id, token);
+        if (data) {
+            let mergedData = data.mmdcustomers.concat(data.mmdpublicusers);
             let arr = [];
             let i = 0;
-            res.map((data) => {
-                arr[i] = data.result;
+            mergedData.map((data) => {
+                arr[i] = data.properties;
                 i++;
             })
             setSurveyResult(arr);
