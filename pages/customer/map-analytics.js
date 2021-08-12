@@ -385,7 +385,7 @@ export const getServerSideProps = withPrivateServerSideProps(
             console.log(error.message);
             return {
                 redirect: {
-                    destination: '/server-error',
+                    destination: 'errors/500',
                     permanent: false,
                 },
             }

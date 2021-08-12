@@ -141,7 +141,7 @@ export async function getServerSideProps(ctx) {
   } catch (e) {
     return {
       redirect: {
-        destination: '/server-error',
+        destination: 'errors/500',
         permanent: false,
       }
     }

@@ -22,7 +22,7 @@ export async function getServerSideProps(ctx) {
       if (!(res.length > 0)) {
         return {
           redirect: {
-            destination: '/server-error',
+            destination: '/errors/404',
             permanent: false,
           }
         }
