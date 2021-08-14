@@ -66,6 +66,7 @@ const MapConf = ({ authenticatedUser, styledMaps, tags, mapData, serverSideDatas
     const [loading, setLoading] = useState(false);
     const [file, setFile] = useState();
     const [datasetId, setDatasetId] = useState();
+    const [surveyForms, setSurveyForms] = useState(serverSideMapSurveys);
     const router = useRouter();
 
     const menu = (
@@ -85,7 +86,9 @@ const MapConf = ({ authenticatedUser, styledMaps, tags, mapData, serverSideDatas
 
     }
 
-
+    const updateSurveyForms = (surveys) => {
+        setSurveyForms(surveys);
+    }
     const chooseDataset = async () => {
         setLoading(true);
         let res = await getDatasets({ user: authenticatedUser.id }, token);
@@ -307,7 +310,8 @@ const MapConf = ({ authenticatedUser, styledMaps, tags, mapData, serverSideDatas
                             />
                         </TabPane>
                         <TabPane tab={DATASET.SURVEYS} key="5" >
-                            <MapSurveys mapData={mapData} token={token} user={authenticatedUser} serverSideMapSurveys={serverSideMapSurveys} />
+                            <MapSurveys mapData={mapData} token={token} user={authenticatedUser} surveyForms={surveyForms}
+                                updateSurveyForms={updateSurveyForms} />
                         </TabPane>
                     </Tabs>
                     :

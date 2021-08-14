@@ -102,7 +102,8 @@ export const DATASET = {
     COOSE_SURVEY: "Choose Survey",
     SELECT_SURVEY: "Select Survey",
     DUPLICATE_SURVEY: 'This survey has been added already!',
-    IS_END_OF_BODY: 'should it be at end of body?'
+    IS_END_OF_BODY: 'should it be at end of body?',
+    DETAILS: 'Details',
 
 
 }

@@ -1,32 +1,31 @@
 import { Table, Dropdown, Menu, Modal, Spin, Select, message } from 'antd';
-import React, { useEffect, useState, useRef } from 'react';
+import React, { useEffect, useState, forwardRef, useImperativeHandle } from 'react';
 import { DownOutlined, ExclamationCircleOutlined } from '@ant-design/icons';
 import { deleteMethod, putMethod } from "../../../lib/api";
 import 'antd/dist/antd.css';
 import { DATASET } from '../../../static/constant'
 const { confirm } = Modal;
-const CustomerManualMapData = ({ data, mapFilterData }) => {
+const CustomerManualMapData = ({ data, mapFilterData, formElementsName }, ref) => {
     const [loading, setLoading] = useState(false);
     const [dataset, setDataset] = useState([]);
     const [row, setRow] = useState({ is_approved: "no" });
     useEffect(() => {
         setDataset(data);
     }, [data])
-
-    const deleteDataset = async () => {
+    const deleteDataset = async (record) => {
         setLoading(true)
         try {
-            const res = await deleteMethod('mmdcustomers/' + row.id)
+            const res = await deleteMethod('mmdcustomers/' + record.id)
             if (res) setDataset(dataset.filter(dData => dData.id !== res.id));
         } catch (e) {
             message.error(e);
         }
         setLoading(false)
     }
-    const updateState = async () => {
+    const updateState = async (record) => {
         let state;
         let stateText;
-        if (row.is_approved === "no") {
+        if (record.is_approved === "no") {
             stateText = "yes";
             state = true;
         } else {
@@ -35,7 +34,7 @@ const CustomerManualMapData = ({ data, mapFilterData }) => {
         }
         setLoading(true);
         try {
-            const res = await putMethod('mmdcustomers/' + row.id, { is_approved: state });
+            const res = await putMethod('mmdcustomers/' + record.id, { is_approved: state });
             if (res) {
                 setDataset(dataset.map(item => {
                     if (item.id === res.id) {
@@ -52,102 +51,41 @@ const CustomerManualMapData = ({ data, mapFilterData }) => {
         setLoading(false);
 
     }
-    function showConfirm() {
-        confirm({
-            icon: <ExclamationCircleOutlined />,
-            content: <p>{DATASET.DELETE_CONFIRM}</p>,
-            onOk() {
-                deleteDataset()
-            },
-            onCancel() {
-            },
-        });
-    }
-    function showChangeStateConfirm() {
-        confirm({
-            icon: <ExclamationCircleOutlined />,
-            content: <p>{DATASET.CHANGE_CONFIRM}</p>,
-            onOk() {
-                updateState()
+    useImperativeHandle(ref, () => ({
+        showConfirm(record) {
+            confirm({
+                icon: <ExclamationCircleOutlined />,
+                content: <p>{DATASET.DELETE_CONFIRM}</p>,
+                onOk() {
+                    deleteDataset(record)
+                },
+                onCancel() {
+                },
+            });
+        },
+        showChangeStateConfirm(record) {
+            confirm({
+                icon: <ExclamationCircleOutlined />,
+                content: <p>{DATASET.CHANGE_CONFIRM}</p>,
+                onOk() {
+                    updateState(record)
 
-            },
-            onCancel() {
-            },
-        });
-    }
-    const menu = (
-        <Menu >
-            <Menu.Item key="0"><a onClick={() => showChangeStateConfirm()} >{DATASET.CHANGE_STATE}</a></Menu.Item>
-            <Menu.Divider />
-            <Menu.Item key="1"><a onClick={() => showConfirm()}>{DATASET.DELETE}</a></Menu.Item>
-        </Menu>
-    );
-    const columns = [
-        {
-            title: DATASET.ID,
-            dataIndex: 'id',
-            key: 'id',
-            fixed: 'left',
-            width: 80
-        },
-        {
-            title: DATASET.NAME,
-            dataIndex: 'title',
-            key: 'title'
-        },
-        {
-            title: DATASET.DESCRIPTION,
-            dataIndex: 'description',
-            key: 'description'
-        },
-        {
-            title: DATASET.MAPS,
-            dataIndex: 'maps',
-            key: 'maps',
-            filters: mapFilterData,
-            onFilter: (value, record) => record.maps.includes(value),
-        },
-        {
-            title: DATASET.APPROVED,
-            dataIndex: 'is_approved',
-            key: 'is_approved',
-            filters: [
-                { text: 'Approved', value: 'yes' },
-                { text: 'Unapproved', value: 'no' },
-            ],
-            onFilter: (value, record) => record.is_approved.includes(value),
-        },
-        {
-            title: DATASET.DATE,
-            dataIndex: 'updated_at',
-            key: 'updated_at'
+                },
+                onCancel() {
+                },
+            });
+        }
 
-        },
-        {
-            title: DATASET.ACTIONS,
-            key: 'action',
-            fixed: 'right',
-            render: (record) => (
-                <Dropdown size="big" overlay={menu} trigger={['click']} >
-                    <a className="ant-dropdown-link"
-                        onClick={(e) => {
-                            setRow(record);
-                        }} >
-                        {DATASET.MORE_ACTIONs} <DownOutlined />
-                    </a>
-                </Dropdown>
-            ),
-        },
-    ];
+    }), [])
 
     return (
         <>
             <Spin spinning={loading}>
-                <Table dataSource={dataset} columns={columns} scroll={{ x: 1300 }}/>
+                <Table dataSource={data} columns={formElementsName} scroll={{ x: 1300 }} />
             </Spin>
         </>
     )
 
 
 }
-export default CustomerManualMapData;
+export default forwardRef(CustomerManualMapData);

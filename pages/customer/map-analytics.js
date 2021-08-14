@@ -43,8 +43,6 @@ text-align: center;
 
 
 const MapAnalytics = ({ collapsed, authenticatedUser, mapData, allMaps }) => {
-    const [oneMonthDate, setOneMonthDate] = useState();
-    console.log(allMaps)
     let mapList = [];
     let index = 0;
     // here we assign all maps received from singups in one array as an object no matter if they are duplicate; maybe they are from different users;
@@ -82,7 +80,6 @@ const MapAnalytics = ({ collapsed, authenticatedUser, mapData, allMaps }) => {
         dateList[i] = new Date(dd);
         dateProps += 7;
     }
-    console.log(dateList)
 
     // Number of signups are counted based on created date of each public user.
     mapList.map((data) => {
