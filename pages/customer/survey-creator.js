@@ -28,10 +28,9 @@ export const getServerSideProps = withPrivateServerSideProps(
             const surveyForms = await getSurveyForms({ user: verifyUser.id }, token);
             return { props: { authenticatedUser: verifyUser, token: token, surveyForms: surveyForms } }
         } catch (error) {
-            console.log(error.message);
             return {
                 redirect: {
-                    destination: '/server-error',
+                    destination: '/errors/500',
                     permanent: false,
                 },
             }
