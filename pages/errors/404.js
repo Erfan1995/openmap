@@ -2,6 +2,7 @@
 
 import { Button, Col, Row } from "antd";
 import ServerErrorStyle from '../../styles/ServerError.module.css'
+import { useRouter } from "next/router";
 
 function NotFoundPage() {
 
