@@ -74,7 +74,7 @@ export const getServerSideProps = withPrivateServerSideProps(
         } catch (error) {
             return {
                 redirect: {
-                    destination: 'errors/500',
+                    destination: '/errors/500',
                     permanent: false,
                 },
             }
