@@ -275,6 +275,9 @@ const MapConf = ({ authenticatedUser, styledMaps, tags, mapData, serverSideDatas
                                 width={700}
                                 visible={modalVisible}
                                 destroyOnClose={true}
+                                onCancel={()=>{
+                                    setModalVisible(false)
+                                }}
                                 footer={[
                                     <Button key="close" onClick={() => { setModalVisible(false) }}> {DATASET.CLOSE}</Button>
                                 ]}

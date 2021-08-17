@@ -188,32 +188,29 @@ const AddMap = ({ onDataSaved, myVisible, geoData, mapData, modalClose, userType
                                 {
                                     geoData.type === 'Point' &&
                                     <Col xs={24} sm={24} md={24} lg={24} xl={24}>
-                                        <Form.Item
-                                            name="icon"
-                                            label={MAP.SELECT_ICON}
-                                        >
-                                            <List
-                                                // pagination={true}
-                                                grid={{
-                                                    gutter: 16,
-                                                    xs: 3,
-                                                    sm: 4,
-                                                    md: 5,
-                                                    lg: 5,
-                                                    xl: 5,
-                                                    xxl: 5,
+                                        <h5>{MAP.SELECT_ICON}</h5>
 
-                                                }}
-                                                dataSource={icons || []}
-                                                renderItem={(item) => (
-                                                    <List.Item key={`listItem` + item.id} >
-                                                        <MarkerCard className={'text-center '+( item.isSelected ? 'selectedBox' : '')} onClick={() => selectMarker(item)} >
-                                                            <Photo src={getStrapiMedia(item.icon[0])} />
-                                                        </MarkerCard>
-                                                    </List.Item>
-                                                )}
-                                            />
-                                        </Form.Item>
+                                        <List
+                                            // pagination={true}
+                                            grid={{
+                                                gutter: 16,
+                                                xs: 3,
+                                                sm: 4,
+                                                md: 5,
+                                                lg: 5,
+                                                xl: 5,
+                                                xxl: 5,
+
+                                            }}
+                                            dataSource={icons || []}
+                                            renderItem={(item) => (
+                                                <List.Item key={`listItem` + item.id} >
+                                                    <MarkerCard className={'text-center ' + (item.isSelected ? 'selectedBox' : '')} onClick={() => selectMarker(item)} >
+                                                        <Photo src={getStrapiMedia(item.icon[0])} />
+                                                    </MarkerCard>
+                                                </List.Item>
+                                            )}
+                                        />
 
                                     </Col>
                                 }

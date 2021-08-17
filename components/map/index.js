@@ -46,8 +46,6 @@ border: 1px solid #aaa;
 
 `;
 
-
-
 const TopButtonWrapper = styled.div`
   margin-top: -60px;
   margin-right:-10px;
@@ -140,11 +138,11 @@ const Map = ({ styleId, center, setCenter, style, mapData, manualMapData, datase
                   const { properties } = feature;
                   if (!properties) return;
 
-                  if (!(item.config.selected_dataset_properties)) {
+                  if (!(item.config?.selected_dataset_properties)) {
                     return;
                   }
 
-                  if (!(item.config.selected_dataset_properties?.length > 0)) {
+                  if (!(item.config?.selected_dataset_properties?.length > 0)) {
                     return;
                   }
 
