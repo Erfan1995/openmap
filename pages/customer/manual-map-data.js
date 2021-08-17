@@ -128,6 +128,9 @@ export const getServerSideProps = withPrivateServerSideProps(
                 surveyForms.map(data => {
                     data.id = Number(data.id);
                     data.key = data.id;
+                    data.maps = data.maps.length;
+                    data.updated_at = formatDate(data.updated_at);
+
                 })
             }
             return { props: { authenticatedUser: verifyUser, token: token, surveyForms: surveyForms } }
