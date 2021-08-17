@@ -7,7 +7,7 @@ import { DATASET } from '../../../static/constant'
 const { confirm } = Modal;
 const CustomerManualMapData = ({ data, mapFilterData, formElementsName }, ref) => {
     const [loading, setLoading] = useState(false);
-    const [dataset, setDataset] = useState([]);
+    const [dataset, setDataset] = useState(data);
     const [row, setRow] = useState({ is_approved: "no" });
     useEffect(() => {
         setDataset(data);
@@ -43,7 +43,6 @@ const CustomerManualMapData = ({ data, mapFilterData, formElementsName }, ref) =
                         return item;
                     }
                 }))
-
             }
         } catch (e) {
             message.error(e);
@@ -69,7 +68,6 @@ const CustomerManualMapData = ({ data, mapFilterData, formElementsName }, ref) =
                 content: <p>{DATASET.CHANGE_CONFIRM}</p>,
                 onOk() {
                     updateState(record)
-
                 },
                 onCancel() {
                 },
@@ -81,7 +79,7 @@ const CustomerManualMapData = ({ data, mapFilterData, formElementsName }, ref) =
     return (
         <>
             <Spin spinning={loading}>
-                <Table dataSource={data} columns={formElementsName} scroll={{ x: 1300 }} />
+                <Table dataSource={dataset} columns={formElementsName} scroll={{ x: 1300 }} />
             </Spin>
         </>
     )

@@ -34,7 +34,8 @@ const ManualMapDataDialog = ({ authenticatedUser, token, row, formElementsName }
 
     const menu = (
         <Menu >
-            <Menu.Item key="0"><a onClick={() => childRef.current.showChangeStateConfirm(selectedRow)} >{DATASET.CHANGE_STATE}</a></Menu.Item>
+            <Menu.Item key="0"><a onClick={() => childRef.current.showChangeStateConfirm(selectedRow)} >
+                {DATASET.CHANGE_STATE}</a></Menu.Item>
             <Menu.Divider />
             <Menu.Item key="1"><a onClick={() => childRef.current.showConfirm(selectedRow)}>{DATASET.DELETE}</a></Menu.Item>
         </Menu>
@@ -97,7 +98,7 @@ const ManualMapDataDialog = ({ authenticatedUser, token, row, formElementsName }
         if (key === "1") {
             res = await getMMDCustomers({ user: authenticatedUser.id, survey: row.id }, token);
         } else if (key === "2") {
-            res = await getMethod(`mmdpublicusers?_where[0][map.user]=${authenticatedUser.id}`)
+            res = await getMethod(`mmdpublicusers?_where[0][map.user]=${authenticatedUser.id}&survey=${row.id}`);
             if (res) {
                 res.map((map) => {
                     map.publicAddress = map.public_user.publicAddress

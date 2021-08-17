@@ -43,19 +43,31 @@ text-align: center;
 
 
 const MapAnalytics = ({ collapsed, authenticatedUser, mapData, allMaps }) => {
+    let totalSigups = 0;
+    let totalVisits = 0;
+    let submissions = 0;
     let mapList = [];
     let index = 0;
+    let fromDate = "";
     // here we assign all maps received from singups in one array as an object no matter if they are duplicate; maybe they are from different users;
     allMaps.map((data) => {
         data.maps.map((m) => {
-            let obj = {};
-            obj.created_at = data.created_at;
-            obj.id = Number(m.id);
-            obj.visits = m.visits;
-            obj.title = m.title;
-            mapList[index] = obj;
-            index++;
+            console.log(m);
+            if (Number(m.user.id) === authenticatedUser.id) {
+                let obj = {};
+                obj.created_at = data.created_at;
+                obj.id = Number(m.id);
+                obj.visits = m.visits;
+                obj.title = m.title;
+                mapList[index] = obj;
+                totalSigups += 1;
+                index++;
+            }
         })
+    })
+    mapData.map(data => {
+        totalVisits += data.visits;
+        submissions += data.mmdpublicusers.length;
     })
     // all the duplicate maps are unified and assigned to another array to be used in chart
     const unifiedMaps = Array.from(new Set(mapList.map(s => s.id))).map(id => {
@@ -70,6 +82,7 @@ const MapAnalytics = ({ collapsed, authenticatedUser, mapData, allMaps }) => {
     let today = new Date().toISOString().slice(0, 10)
     let result = new Date(today);
     result.setDate(result.getDate() - 28);
+    fromDate = `${result.getFullYear()}-${result.getMonth() + 1}-${result.getDate()}`;
     let labelDateList = [];
     let dateList = [];
     let dateProps = 0;
@@ -207,126 +220,45 @@ const MapAnalytics = ({ collapsed, authenticatedUser, mapData, allMaps }) => {
     return (
         <Layout collapsed={collapsed} user={authenticatedUser} >
             <MapsWrapper>
-                {/* <div className="site-statistic-demo-card">
-
-                    <Row gutter={16}>
-                        <Col span={6}>
-                            <CardWrapper>
-                                <Statistic
-
-                                    title="Map Name"
-                                    value={mapData[0].title}
-                                    precision={2}
-                                    valueStyle={{ color: '#3f8600' }}
-                                />
-                            </CardWrapper>
-                        </Col>
-                        <Col span={12}>
-                            <CardWrapper>
-                                <Statistic
-
-                                    title="Map Description"
-                                    value={mapData[0].description}
-                                    precision={2}
-                                    valueStyle={{ color: '#3f8600' }}
-                                />
-                            </CardWrapper>
-                        </Col>
-                        <Col span={6}>
-                            <CardImage>
-                                <MapImage
-
-                                    title="Map Logo"
-                                    src={getStrapiMedia(mapData[0].logo)}
-
-                                />
-                            </CardImage>
-                        </Col>
-
-                    </Row>
-                    <Row gutter={16}>
-                        <Col span={6}>
-                            <CardWrapper>
-                                <Statistic
-                                    title="Map Visits"
-                                    value={mapData[0].visits}
-                                    valueStyle={{ color: '#3f8600' }}
-                                    prefix={<ArrowUpOutlined />}
-                                />
-                            </CardWrapper>
-                        </Col>
-                        <Col span={6}>
-                            <CardWrapper>
-                                <Statistic
-                                    title="Map Submissions"
-                                    value={mapData[0].mmdpublicusers.length}
-                                    valueStyle={{ color: '#3f8600' }}
-                                    prefix={<ArrowUpOutlined />}
-                                />
-                            </CardWrapper>
-                        </Col>
-                        <Col span={6}>
-                            <CardWrapper>
-                                <Statistic
-                                    title="Created Date"
-                                    value={mapData[0].created_at}
-                                    precision={2}
-                                    valueStyle={{ color: '#3f8600' }}
-                                />
-                            </CardWrapper>
-                        </Col>
-                        <Col span={6}>
-                            <CardWrapper>
-                                <Statistic
-                                    title="Modified Date"
-                                    value={mapData[0].updated_at}
-                                    precision={2}
-                                    valueStyle={{ color: '#3f8600' }}
-                                />
-                            </CardWrapper>
-                        </Col>
-                    </Row>
-                </div> */}
                 <div>
                     <Row gutter={16}>
-                        <Col xs={1} sm={2} md={3} lg={4} xl={5}>
+                        <Col xs={1} sm={2} md={3} lg={4} xl={5} style={{marginTop:"100px"}}>
                             <Cards>
                                 <Title >SIGNUPS</Title>
+                                <Week>from : {fromDate}</Week>
+                                <Content >{totalSigups}</Content>
+                                {/* <State >State</State> */}
+                            </Cards>
+
+
+                            <Cards>
+                                <Title >TOTAL USERS</Title>
                                 <Week>Date</Week>
                                 <Content >12</Content>
                                 <State >State</State>
                             </Cards>
 
-
+{/* 
                             <Cards>
                                 <Title >SIGNUPS</Title>
                                 <Week>Date</Week>
                                 <Content >12</Content>
                                 <State >State</State>
+                            </Cards> */}
+
+
+                            <Cards>
+                                <Title >VISITS</Title>
+                                {/* <Week>Date</Week> */}
+                                <Content >{totalVisits}</Content>
+                                {/* <State >State</State> */}
                             </Cards>
 
 
                             <Cards>
-                                <Title >SIGNUPS</Title>
-                                <Week>Date</Week>
-                                <Content >12</Content>
-                                <State >State</State>
-                            </Cards>
-
-
-                            <Cards>
-                                <Title >SIGNUPS</Title>
-                                <Week>Date</Week>
-                                <Content >12</Content>
-                                <State >State</State>
-                            </Cards>
-
-
-                            <Cards>
-                                <Title >SIGNUPS</Title>
-                                <Week>Date</Week>
-                                <Content >12</Content>
-                                <State >State</State>
+                                <Title >SUBMISSIONS</Title>
+                                <Content >{submissions}</Content>
+                                {/* <State >State</State> */}
                             </Cards>
 
                         </Col>
@@ -360,16 +292,14 @@ export const getServerSideProps = withPrivateServerSideProps(
             let result = new Date(today);
             result.setDate(result.getDate() - 28);
             let timestamp = Date.parse(result);
-            timestamp = timestamp/1000;
+            timestamp = timestamp / 1000;
             const res = await getMapAnalyticsDataByDate(timestamp, token)
-            if (id) {
 
-                mapData = await getMapAnalytics({ id: id }, token);
-                mapData.map((data) => {
-                    data.created_at = formatDate(data.created_at);
-                    data.updated_at = formatDate(data.updated_at);
-                })
-            }
+            mapData = await getMapAnalytics({ user: verifyUser.id }, token);
+            mapData.map((data) => {
+                data.created_at = formatDate(data.created_at);
+                data.updated_at = formatDate(data.updated_at);
+            })
             return {
                 props: {
                     authenticatedUser: verifyUser,
