@@ -162,9 +162,11 @@ const UnlockedDataset = ({ data, updateLockedData, user, tags, updatedData }) =>
                 centered
                 visible={modalVisible}
                 destroyOnClose={true}
+                onCancel={() => { setModalVisible(false) }}
                 footer={[
                     <Button key="close" onClick={() => { setModalVisible(false) }}> close</Button>
                 ]}
+
             >
                 <DatasetDetails rowId={datasetId} />
             </Modal>

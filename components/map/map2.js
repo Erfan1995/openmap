@@ -111,9 +111,9 @@ export default class EditControlExample extends Component {
           const { properties } = feature;
           if (!properties) return;
 
-          if (!(this.props.mapData?.mmd_properties)) return;
+          // if (!(this.props.mapData?.mmd_properties)) return;
 
-          if (!(this.props.mapData?.mmd_properties?.length > 0)) return;
+          // if (!(this.props.mapData?.mmd_properties?.length > 0)) return;
 
           layer.bindPopup(`<div>${getSpecifictPopup(properties, this.props.mapData?.default_popup_style_slug || '', [])}</div>`)
         }

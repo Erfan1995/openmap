@@ -89,7 +89,7 @@ const PublicMap = ({ styleId, mapZoom, style, mapData, manualMapData,onCustomeDa
                         const { properties } = feature;
                         if (!properties) return;
 
-                        if (!(item.config.selected_dataset_properties)) return;
+                        if (!(item.config?.selected_dataset_properties)) return;
 
                         layer.bindPopup(`<div>${getSpecifictPopup(properties, item.config?.default_popup_style_slug || '', item.config?.selected_dataset_properties || [])}</div>`)
 
@@ -113,11 +113,14 @@ const PublicMap = ({ styleId, mapZoom, style, mapData, manualMapData,onCustomeDa
                     })
                 }} key={'manual'}  onEachFeature={(feature, layer) => {
                     const { properties } = feature;
+
+                    // mapData?.mmd_properties  
+
                     if (!properties) return;
 
-                    if (!(mapData?.mmd_properties)) return;
+                    // if (!(mapData?.mmd_properties)) return;
 
-                    if (!(mapData?.mmd_properties?.length > 0)) return;
+                    // if (!(mapData?.mmd_properties?.length > 0)) return;
 
                     layer.bindPopup(`<div>${getSpecifictPopup(properties, mapData?.default_popup_style_slug || '',  [])}</div>`)
 
