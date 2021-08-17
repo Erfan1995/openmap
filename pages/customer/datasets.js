@@ -29,6 +29,7 @@ const CardTitle = styled(Title)`
 `;
 
 const Dataset = ({ authenticatedUser, collapsed, locked_data, unlocked_data, tags }) => {
+    console.log("hellllllllllll")
     const [dataset, setDataset] = useState(unlocked_data);
     const [lockedDataset, setLockedDataset] = useState(locked_data);
     const [visible, setVisible] = useState(false);
@@ -174,6 +175,9 @@ const Dataset = ({ authenticatedUser, collapsed, locked_data, unlocked_data, tag
     const updatedLockedData = (data) => {
         setLockedDataset(data);
     }
+    const change = () => {
+        console.log("changes")
+    }
     return (
         <Layout collapsed={collapsed} user={authenticatedUser}>
             <MapsWrapper  >
@@ -183,7 +187,7 @@ const Dataset = ({ authenticatedUser, collapsed, locked_data, unlocked_data, tag
                 <Divider />
 
 
-                <Tabs defaultActiveKey="1">
+                <Tabs defaultActiveKey="1" onChange={change}>
                     <TabPane tab={<span>{DATASET.UNLOCKED_DATASETS}</span>} key="1">
                         <UnlockedDataset data={dataset} updateLockedData={updateLockedData} updatedData={updatedData}
                             user={authenticatedUser} tags={tags} />

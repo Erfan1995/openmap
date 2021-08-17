@@ -98,8 +98,8 @@ const CreateMap = ({ serverSideTags, user, mapData, onModalClose, addImageFile }
                     values.zoomLevel = 2;
                     values.center = [29.9635203, -10.1238717];
                     fData.append('data', JSON.stringify(values));
-                    setLoading(true);
                     if (image) {
+                        setLoading(true);
                         fData.append('files.logo', image.file.originFileObj, image.file.originFileObj.name);
                         let res = await postFileMethod('maps', fData)
                         setLoading(false);
@@ -109,10 +109,12 @@ const CreateMap = ({ serverSideTags, user, mapData, onModalClose, addImageFile }
                         }
                     } else {
                         message.error('please select the logo');
+                        setLoading(false);
                     }
                 })
                 .catch((info) => {
                     message.error(info.message)
+                    setLoading(false);
                 })
         }
     }), [])

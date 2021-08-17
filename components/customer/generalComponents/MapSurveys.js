@@ -30,11 +30,17 @@ const SurveyDeleteButton = styled.span`
     }
     padding:4px;
 `;
-const MapSurveys = ({ mapData, token, user, serverSideMapSurveys }) => {
+const MapSurveys = ({ mapData, token, user, surveyForms, updateSurveyForms }) => {
     const [loading, setLoading] = useState(false);
     const [modalVisible, setModalVisible] = useState(false);
-    const [selectedSurveys, setSelectedSurveys] = useState(serverSideMapSurveys);
+    const [selectedSurveys, setSelectedSurveys] = useState(surveyForms);
+    const [surveyId, setSurveyId] = useState();
     const [surveys, setSurveys] = useState();
+    const menu = (
+        <Menu >
+            <Menu.Item key="1" style={{ padding: "3px 20px" }}><a onClick={() => showConfirm()} >{DATASET.DELETE}</a></Menu.Item>
+        </Menu>
+    );
     const chooseSurvey = async () => {
         setLoading(true);
         const res = await getSurveyForms({ user: user.id }, token);
@@ -68,6 +74,7 @@ const MapSurveys = ({ mapData, token, user, serverSideMapSurveys }) => {
                     setSelectedSurveys(res.surveys);
                     message.success(DATASET.SUCCESS);
                     setModalVisible(false);
+                    updateSurveyForms(res.surveys);
                 }
             } catch (e) {
                 setLoading(false);
@@ -93,12 +100,12 @@ const MapSurveys = ({ mapData, token, user, serverSideMapSurveys }) => {
         }
         setLoading(false);
     }
-    function showConfirm(id) {
+    function showConfirm() {
         confirm({
             icon: <ExclamationCircleOutlined />,
             content: <p>{DATASET.DELETE_CONFIRM}</p>,
             onOk() {
-                deleteMapSurvey(id)
+                deleteMapSurvey(surveyId)
             },
             onCancel() {
             },
@@ -125,34 +132,34 @@ const MapSurveys = ({ mapData, token, user, serverSideMapSurveys }) => {
             <List
                 dataSource={selectedSurveys}
                 renderItem={item => (
-                    // <List.Item>
-                    //     <SurveyWrapper >
-                    //         <Row>
-                    //             <Col span={21}>
-                    //                 <SurveyName >{item.forms.title}</SurveyName>
-                    //             </Col>
-                    //             <Col span={3}>
-                    //                 <div style={{ marginTop: "13px", padding: "4px" }}>
-                    //                     <Dropdown size="big" overlay={menu} trigger={['click']} >
-                    //                         <a className="ant-dropdown-link"
-                    //                             onClick={(e) => {
-                    //                                 setSurveyId(item.id);
-                    //                             }} >
-                    //                             <SurveyDeleteButton>:</SurveyDeleteButton>
-                    //                         </a>
-                    //                     </Dropdown>
-                    //                 </div>
-                    //             </Col>
-                    //         </Row>
-                    //     </SurveyWrapper>
-                    // </List.Item>
-                    <List.Item style={{ margin: "0px 30px" }} actions={[<a onClick={() => showConfirm(item.id)} >
-                        <DeleteTwoTone twoToneColor="#eb2f96" /></a>]}>
-                        <List.Item.Meta
-                            title={item.forms.title}
-                        // description={item.forms.title}
-                        />
+                    <List.Item>
+                        <SurveyWrapper >
+                            <Row>
+                                <Col span={21}>
+                                    <SurveyName >{item.forms.title}</SurveyName>
+                                </Col>
+                                <Col span={3}>
+                                    <div style={{ marginTop: "13px", padding: "4px" }}>
+                                        <Dropdown size="big" overlay={menu} trigger={['click']} >
+                                            <a className="ant-dropdown-link"
+                                                onClick={(e) => {
+                                                    setSurveyId(item.id);
+                                                }} >
+                                                <SurveyDeleteButton>:</SurveyDeleteButton>
+                                            </a>
+                                        </Dropdown>
+                                    </div>
+                                </Col>
+                            </Row>
+                        </SurveyWrapper>
                     </List.Item>
+                    // <List.Item style={{ margin: "0px 30px" }} actions={[<a onClick={() => showConfirm(item.id)} >
+                    //     <DeleteTwoTone twoToneColor="#eb2f96" /></a>]}>
+                    //     <List.Item.Meta
+                    //         title={item.forms.title}
+                    //     // description={item.forms.title}
+                    //     />
+                    // </List.Item>
                 )}
             />
         </Spin>

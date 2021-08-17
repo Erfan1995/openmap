@@ -43,14 +43,14 @@ const SurveyCreatorComponent = ({ authenticatedUser, token, surveyForms }) => {
             }
         }
     };
-    const onCompleteSurvey = async (data) => {
-        setLoading(true);
-        const res = await postMethod('surveyresults', { survey: surveyId, result: data.valuesHash });
-        if (res) {
-            setLoading(false);
-        }
+    // const onCompleteSurvey = async (data) => {
+    //     setLoading(true);
+    //     const res = await postMethod('surveyresults', { survey: surveyId, result: data.valuesHash });
+    //     if (res) {
+    //         setLoading(false);
+    //     }
 
-    }
+    // }
     useEffect(() => {
         let options = { showEmbededSurveyTab: false };
         surveyCreator = new SurveyJSCreator.SurveyCreator(
@@ -117,8 +117,8 @@ const SurveyCreatorComponent = ({ authenticatedUser, token, surveyForms }) => {
                             }} type='link'>back</Button>
                             <Survey.Survey
                                 json={Json}
-                                showCompletedPage={true}
-                                onComplete={data => onCompleteSurvey(data)}
+                                showCompletedPage={false}
+                            // onComplete={data => onCompleteSurvey(data)}
                             >
                             </Survey.Survey>
                         </div> :
