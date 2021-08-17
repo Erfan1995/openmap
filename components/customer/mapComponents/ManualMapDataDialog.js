@@ -34,7 +34,7 @@ const ManualMapDataDialog = ({ authenticatedUser, token, row, formElementsName }
 
     const menu = (
         <Menu >
-            <Menu.Item key="0"><a onClick={() => childRef.current.showChangeStateConfirm(selectedRow)} >
+            <Menu.Item key="0"><a onClick={() => childRef.current.showChangeStateConfirm(selectedRow, manualMapData)} >
                 {DATASET.CHANGE_STATE}</a></Menu.Item>
             <Menu.Divider />
             <Menu.Item key="1"><a onClick={() => childRef.current.showConfirm(selectedRow)}>{DATASET.DELETE}</a></Menu.Item>
@@ -47,6 +47,7 @@ const ManualMapDataDialog = ({ authenticatedUser, token, row, formElementsName }
     const createMapFilterData = (mMapData) => {
         let arr = [];
         let finalMapsDataToFilter = [];
+        setSurveyFormElement([]);
         mMapData.map((m) => {
             arr.push(m.map);
         })

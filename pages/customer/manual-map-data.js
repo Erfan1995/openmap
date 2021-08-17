@@ -2,17 +2,16 @@ import Layout from '../../components/customer/layout/Layout';
 import { Divider, Typography, Tabs, Spin, Menu, Modal, Button, Table, Dropdown } from 'antd';
 import withPrivateServerSideProps from '../../utils/withPrivateServerSideProps';
 const { Title } = Typography;
-const { TabPane } = Tabs;
-import { getSurveyForms } from "../../lib/api";
+import { getSurveyForms, getMMDCustomers, getMethod } from "../../lib/api";
 import nookies from 'nookies';
 import styled from 'styled-components';
 import { formatDate } from "../../lib/general-functions";
 import { DATASET } from '../../static/constant'
-import CustomerManualMapData from 'components/customer/mapComponents/CustomerManualMapData';
-import PublicUserManualMapData from 'components/customer/mapComponents/PublicUserManualMapData';
 import { useEffect, useState } from 'react';
 import ManualMapDataDialog from 'components/customer/mapComponents/ManualMapDataDialog';
-import { DownOutlined, ExclamationCircleOutlined } from '@ant-design/icons';
+import { DownOutlined, ExclamationCircleOutlined, ArrowLeftOutlined } from '@ant-design/icons';
+import CustomerManualMapData from 'components/customer/mapComponents/CustomerManualMapData';
+import PublicUserManualMapData from 'components/customer/mapComponents/PublicUserManualMapData';
 
 const MapsWrapper = styled.div`
 background:#ffffff;
@@ -27,15 +26,31 @@ const CardTitle = styled(Title)`
 const ManualMapData = ({ authenticatedUser, collapsed, token, surveyForms }) => {
     const [loading, setLoading] = useState(false);
     const [modalVisible, setModalVisible] = useState(false);
-    const [dataset, setDataset] = useState([]);
     const [row, setRow] = useState();
     const [formElementsName, setFormElementsName] = useState([]);
+    const [manualMapData, setManualMapData] = useState();
+    const [mapsDataTofilter, setMapsDataToFilter] = useState();
+    const [mapDataClicked, setMapDataClicked] = useState(false);
+
     surveyForms.map(data => {
         data.title = (JSON.parse(data.forms)).title;
         data.description = (JSON.parse(data.forms)).description;
         data.id = Number(data.id);
 
     })
+    const createMapFilterData = (mMapData) => {
+        let arr = [];
+        let finalMapsDataToFilter = [];
+        mMapData.map((m) => {
+            arr.push(m.map);
+        })
+        let uniqueMaps = [...new Map(arr.map(item => [item['title'], item])).values()]
+        uniqueMaps.map((mapData) => {
+            finalMapsDataToFilter.push({ "text": mapData.title, "value": mapData.title })
+        })
+        setMapsDataToFilter(finalMapsDataToFilter);
+
+    }
     const showManualMapDataDetails = () => {
         let arr = [];
         let surveyFormElements = JSON.parse(row.forms);
@@ -47,9 +62,51 @@ const ManualMapData = ({ authenticatedUser, collapsed, token, surveyForms }) => 
         setFormElementsName(arr);
         setModalVisible(true);
     }
+    const getCustomerAndPublicUserData = async (type) => {
+        showManualMapDataDetails();
+        setManualMapData([]);
+        let res;
+        setLoading(true);
+        if (type === "customer") {
+            res = await getMMDCustomers({ user: authenticatedUser.id, survey: row.id }, token);
+            setMapDataClicked(true)
+        } else {
+            res = await getMethod(`mmdpublicusers?_where[0][map.user]=${authenticatedUser.id}&survey=${row.id}`);
+            if (res) {
+                res.map((map) => {
+                    map.publicAddress = map.public_user.publicAddress
+                })
+            }
+            setMapDataClicked(false);
+        }
+        setLoading(false);
+        if (res) {
+            res.forEach(element => {
+                element.properties.key = element.id;
+                element.properties.id = Number(element.id);
+                element.properties.updated_at = formatDate(element.updated_at);
+                if (element.is_approved === true) {
+                    element.properties.is_approved = "yes"
+                } else {
+                    element.properties.is_approved = "no"
+                }
+                element.properties.maps = element.map.title
+
+            });
+            let arr = [];
+            res.map(dd => {
+                arr.push(dd.properties);
+            })
+            setManualMapData(arr);
+            createMapFilterData(res);
+        }
+    }
+
     const menu = (
         <Menu >
-            <Menu.Item key="0"><a onClick={() => showManualMapDataDetails()}>{DATASET.DETAILS}</a></Menu.Item>
+            <Menu.Item key="0"><a onClick={() => getCustomerAndPublicUserData("customer")}>{DATASET.CUSTOMERS}</a></Menu.Item>
+
+            <Menu.Item key="1"><a onClick={() => getCustomerAndPublicUserData("public")}>{DATASET.PUBLIC_USERS}</a></Menu.Item>
         </Menu>
     );
     const columns = [
@@ -112,8 +169,10 @@ const ManualMapData = ({ authenticatedUser, collapsed, token, surveyForms }) => 
                     ]}
                     destroyOnClose={true}
                 >
-                    <ManualMapDataDialog authenticatedUser={authenticatedUser} token={token} row={row}
-                        formElementsName={formElementsName} />
+                    {mapDataClicked ? <CustomerManualMapData authenticatedUser={authenticatedUser} token={token} row={row}
+                        formElementsName={formElementsName} data={manualMapData} mapFilterData={mapsDataTofilter} /> :
+                        <PublicUserManualMapData authenticatedUser={authenticatedUser} token={token} row={row}
+                            formElementsName={formElementsName} data={manualMapData} mapFilterData={mapsDataTofilter} />}
                 </Modal>
             </MapsWrapper>
         </Layout>

@@ -105,6 +105,8 @@ export const DATASET = {
     DUPLICATE_SURVEY: 'This survey has been added already!',
     IS_END_OF_BODY: 'should it be at end of body?',
     DETAILS: 'Details',
+    CUSTOMERS: 'Customers',
+    PUBLIC_USERS: 'Public Users'
 
 
 }

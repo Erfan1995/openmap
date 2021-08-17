@@ -1,14 +1,69 @@
-import { Table, Dropdown, Menu, Modal, Spin, Select, message } from 'antd';
+import { Table, Dropdown, Menu, Modal, Spin, Select, message, Typography } from 'antd';
 import React, { useEffect, useState, forwardRef, useImperativeHandle } from 'react';
 import { DownOutlined, ExclamationCircleOutlined } from '@ant-design/icons';
 import { deleteMethod, putMethod } from "../../../lib/api";
-import 'antd/dist/antd.css';
+import styled from 'styled-components';
 import { DATASET } from '../../../static/constant'
 const { confirm } = Modal;
-const CustomerManualMapData = ({ data, mapFilterData, formElementsName }, ref) => {
+const { Title } = Typography;
+const MapsWrapper = styled.div`
+background:#ffffff;
+padding:20px;
+margin:10px;
+`;
+const CardTitle = styled(Title)`
+  margin-bottom: 10px;
+  float: left !important;
+`;
+
+const CustomerManualMapData = ({ data, mapFilterData, formElementsName, token }) => {
     const [loading, setLoading] = useState(false);
-    const [dataset, setDataset] = useState(data);
-    const [row, setRow] = useState({ is_approved: "no" });
+    const [dataset, setDataset] = useState();
+    let selectedRow;
+    const menu = (
+        <Menu >
+            <Menu.Item key="0"><a onClick={() => showChangeStateConfirm(selectedRow)} >
+                {DATASET.CHANGE_STATE}</a></Menu.Item>
+            <Menu.Divider />
+            <Menu.Item key="1"><a onClick={() => showConfirm(selectedRow)}>{DATASET.DELETE}</a></Menu.Item>
+        </Menu>
+    );
+    let columns = [
+        {
+            title: DATASET.APPROVED,
+            dataIndex: 'is_approved',
+            key: 'is_approved',
+            filters: [
+                { text: 'Approved', value: 'yes' },
+                { text: 'Unapproved', value: 'no' },
+            ],
+            onFilter: (value, record) => record.is_approved.includes(value),
+        },
+        {
+            title: "maps",
+            dataIndex: 'maps',
+            key: 'maps',
+            filters: mapFilterData,
+            onFilter: (value, record) => record.maps.includes(value),
+        },
+        {
+            title: DATASET.ACTIONS,
+            key: 'action',
+            render: (record) => (
+                <Dropdown size="big" overlay={menu} trigger={['click']} >
+                    <a className="ant-dropdown-link"
+                        onClick={(e) => {
+                            selectedRow = record;
+                            console.log(record);
+                        }} >
+                        {DATASET.MORE_ACTIONs} <DownOutlined />
+                    </a>
+                </Dropdown>
+            ),
+        }
+    ];
+    let mmData = formElementsName.concat(columns);
+
     useEffect(() => {
         setDataset(data);
     }, [data])
@@ -50,40 +105,36 @@ const CustomerManualMapData = ({ data, mapFilterData, formElementsName }, ref) =
         setLoading(false);
 
     }
-    useImperativeHandle(ref, () => ({
-        showConfirm(record) {
-            confirm({
-                icon: <ExclamationCircleOutlined />,
-                content: <p>{DATASET.DELETE_CONFIRM}</p>,
-                onOk() {
-                    deleteDataset(record)
-                },
-                onCancel() {
-                },
-            });
-        },
-        showChangeStateConfirm(record) {
-            confirm({
-                icon: <ExclamationCircleOutlined />,
-                content: <p>{DATASET.CHANGE_CONFIRM}</p>,
-                onOk() {
-                    updateState(record)
-                },
-                onCancel() {
-                },
-            });
-        }
-
-    }), [])
-
+    const showConfirm = (record) => {
+        confirm({
+            icon: <ExclamationCircleOutlined />,
+            content: <p>{DATASET.DELETE_CONFIRM}</p>,
+            onOk() {
+                deleteDataset(record)
+            },
+            onCancel() {
+            },
+        });
+    }
+    const showChangeStateConfirm = (record) => {
+        console.log(data);
+        confirm({
+            icon: <ExclamationCircleOutlined />,
+            content: <p>{DATASET.CHANGE_CONFIRM}</p>,
+            onOk() {
+                updateState(record)
+            },
+            onCancel() {
+            },
+        });
+    }
     return (
-        <>
+        <MapsWrapper>
+            <CardTitle level={4}>{DATASET.MANUAL_MAP_DATA}</CardTitle>
             <Spin spinning={loading}>
-                <Table dataSource={dataset} columns={formElementsName} scroll={{ x: 1300 }} />
+                <Table dataSource={dataset} columns={mmData} scroll={{ x: 1300 }} />
             </Spin>
-        </>
+        </MapsWrapper>
     )
-
-
 }
-export default forwardRef(CustomerManualMapData);
+export default CustomerManualMapData;
