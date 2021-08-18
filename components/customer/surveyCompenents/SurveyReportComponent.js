@@ -22,6 +22,7 @@ const SurveyReportComponent = ({ user, surveyForms, token }) => {
         if (surveyClicked) {
             const survey = new Survey.SurveyModel(surveyJson);
             visPanel = new Tabulator(survey, surveyResult);
+            visPanel.haveCommercialLicense = true;
             visPanel.render(document.getElementById("summaryContainer"));
         }
     })

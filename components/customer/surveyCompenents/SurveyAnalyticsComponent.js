@@ -13,8 +13,11 @@ const SurveyAnalyticsComponent = ({ user, surveyForms, token }) => {
     let visPanel;
     useEffect(() => {
         if (surveyClicked) {
+            let options = {
+                haveCommercialLicense: true //Add this line
+            };
             const survey = new Survey.SurveyModel(surveyJson);
-            visPanel = new VisualizationPanel(survey.getAllQuestions(), surveyResult);
+            visPanel = new VisualizationPanel(survey.getAllQuestions(), surveyResult, options);
             visPanel.render(document.getElementById("summaryContainer"));
         }
     })

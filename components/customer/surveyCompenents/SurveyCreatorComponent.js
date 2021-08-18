@@ -52,7 +52,10 @@ const SurveyCreatorComponent = ({ authenticatedUser, token, surveyForms }) => {
 
     // }
     useEffect(() => {
-        let options = { showEmbededSurveyTab: false };
+        let options = {
+            showEmbededSurveyTab: false,
+            haveCommercialLicense: true
+        };
         surveyCreator = new SurveyJSCreator.SurveyCreator(
             null,
             options
