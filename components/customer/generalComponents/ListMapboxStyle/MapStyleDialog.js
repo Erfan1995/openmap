@@ -21,15 +21,20 @@ const MapStyleDialog = ({ onModalClose }, ref) => {
             form
                 .validateFields()
                 .then(async (values) => {
-                    values.type = "custom";
-                    setLoading(true);
-                    const res = await postMethod('mapstyles', values);
-                    if (res) {
-                        message.success("style added successfully");
-                        form.resetFields();
-                        onModalClose(res);
+
+                    if (values.link.includes('tiles') && values.link.includes('https://api.mapbox.com/styles/v1') && values.link.includes('access_token')) {
+                        values.type = "custom";
+                        setLoading(true);
+                        const res = await postMethod('mapstyles', values);
+                        if (res) {
+                            message.success("style added successfully");
+                            form.resetFields();
+                            onModalClose(res);
+                        }
+                        setLoading(false);
+                    }else{
+                        message.error('Link is not valid!');
                     }
-                    setLoading(false);
                 })
         }
     }))
@@ -47,7 +52,7 @@ const MapStyleDialog = ({ onModalClose }, ref) => {
 
                     </Form.Item>
                     <div style={{ fontSize: "11px", color: "gray" }}>
-                        <p style={{marginLeft:"135px",marginTop:"-20px"}} >Learn how to get your Mapbox Style URL <span><Link href="mapbox-style-guide"><a target="_blank">here</a></Link></span></p>
+                        <p style={{ marginLeft: "135px", marginTop: "-20px" }} >Learn how to get your Mapbox Style URL <span><Link href="mapbox-style-guide"><a target="_blank">here</a></Link></span></p>
                     </div>
                 </Form>
 

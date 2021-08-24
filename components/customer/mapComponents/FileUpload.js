@@ -1,10 +1,9 @@
-
-import { List, Divider, Upload, message, Button } from 'antd';
+import { List, Divider, Upload, message, Button, Typography } from 'antd';
 import styled from 'styled-components';
 import { useState } from 'react';
 import { InboxOutlined } from '@ant-design/icons';
 import { DATASET } from '../../../static/constant'
-
+const { Title } = Typography;
 const { Dragger } = Upload;
 const SelectType = styled(Button)`
   margin-bottom: 10px;
@@ -30,12 +29,22 @@ const data = [
 const FileUpload = ({ onChangeEvent }) => {
 
     const [fileType, setFileType] = useState();
+    const [fileTypes, setFileTypes] = useState(data);
     const [uploadVisible, setUploadVisible] = useState(false);
 
     const changeType = (type) => {
+        console.log(type)
         setFileType(type);
-        setUploadVisible(!uploadVisible);
+        setFileTypes(data.map((obj) => {
+            if (type === obj.type) {
+                return { ...obj, isSelected: true }
+            } else {
+                return { ...obj, isSelected: false }
+            }
+        }));
+        setUploadVisible(true);
     }
+
     const props = {
         beforeUpload: file => {
             if (file.type !== fileType) {
@@ -47,8 +56,8 @@ const FileUpload = ({ onChangeEvent }) => {
             onChangeEvent(info);
         },
     };
-    return (
 
+    return (
         <DataTypeLayout>
             <List
                 grid={{
@@ -60,27 +69,28 @@ const FileUpload = ({ onChangeEvent }) => {
                     xl: 5,
                     xxl: 6
                 }}
-                dataSource={data}
+                dataSource={fileTypes}
                 renderItem={item => (
                     <List.Item key={item.key}>
-                        <SelectType onClick={() => changeType(item.type)} >{item.title}</SelectType>
+                        <SelectType className={item.isSelected ? 'selectedBox' : ''} onClick={() => changeType(item.type)} >{item.title}</SelectType>
                     </List.Item>
                 )}
             />
-            <Divider />
             {uploadVisible === true ? (
-                <Dragger  {...props} name="file" maxCount={1} >
-                    <p className="ant-upload-drag-icon">
-                        <InboxOutlined />
-                    </p>
-                    <p className="ant-upload-text">{DATASET.CLICK_OR_DRAG}</p>
+                <div>
+                    <Divider />
+                    <Title level={5}>{fileType === 'application/vnd.ms-excel' ? DATASET.UPLOAD_CSV : DATASET.UPLOAD_JSON}</Title>
+                    <Dragger  {...props} name="file" maxCount={1} >
+                        <p className="ant-upload-drag-icon">
+                            <InboxOutlined />
+                        </p>
+                        <p className="ant-upload-text">{fileType === 'application/vnd.ms-excel' ? DATASET.CLICK_OR_DRAG_CSV : DATASET.CLICK_OR_DRAG_JSON}</p>
+                    </Dragger>
 
-                </Dragger>
+                </div>
             ) : (<p></p>)
-
             }
-        </DataTypeLayout >
-    )
+        </DataTypeLayout >)
 }
 
 export default FileUpload

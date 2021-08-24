@@ -9,10 +9,9 @@ import { DATASET } from '../../../../static/constant'
 import MapStyleDialog from './MapStyleDialog';
 import { generateImageLinkFormStyleUrl } from 'lib/general-functions';
 const StyleWrapper = styled.div`
-border: 1px solid #eeeeee;
  border-radius: 5px;
+ margin-top:5px;
  &:hover{
-  border:1px solid #5bc0de;
   cursor:pointer
  }
 `;
@@ -28,6 +27,7 @@ margin-left:7px;
 const ListWrapper = styled(Row)`
   padding-left:35px;
   margin-top:10px;
+
 `
 const SourceCard = styled.div`
 height: 60px; 
@@ -139,7 +139,7 @@ const StyledMaps = ({ changeStyle, mapData }) => {
                         }
                         <List
                             itemLayout='vertical'
-                            grid={{ gutter: 10, column: 1 }}
+                            grid={{ gutter: 10, column: 2 }}
                             dataSource={dataSource}
                             renderItem={(item) => (
                                 < List.Item >
