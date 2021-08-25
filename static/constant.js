@@ -123,6 +123,7 @@ export const API = {
 }
 export const MAP = {
     CREATE_NEW_ACCOUNT: 'create a new account',
+    ADD_NEW_POINT: 'Add point to the map',
     CANCEL: 'cancel',
     SUBMIT: 'submit',
     ENTER_TITLE: 'Please enter title',

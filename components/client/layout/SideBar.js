@@ -19,7 +19,9 @@ const ChildWrapper = styled.div`
 `
 
 const Photo = styled.img`
-  height:70px;
+  // width:100%;
+  height:120px;
+  margin-bottom:20px;
 `
 const StyledCheckBox = styled(Checkbox)`
   margin-bottom:20px;
@@ -36,8 +38,9 @@ text-align:center;
 
 `
 const NeedHelp = styled.div`
-  margin-top:120px;
-  padding-left:20px;
+position:fixed;
+bottom:20px;
+left:30px;
 `
 
 const SideBar = ({ siderCollapsed, toggle, datasets, onDataSetChange, mapInfo }) => {
@@ -88,14 +91,14 @@ const SideBar = ({ siderCollapsed, toggle, datasets, onDataSetChange, mapInfo })
           <Checkbox.Group options={datasets.map((item) => ({ label: item.title, value: item.id }))} value={checkedList} onChange={onLayerChange} />
         </ChildWrapper>
         <Divider />
-        <ChildWrapper >
+        {/* <ChildWrapper >
           <Title style={{ textAlign: "center" }} level={5}>Can you add to our map?</Title>
           <ButtonWrapper>
             <StyledButton type="primary" shape="round" size={'large'}>
 
               Button</StyledButton>
           </ButtonWrapper>
-        </ChildWrapper>
+        </ChildWrapper> */}
       </ParentWrapper>
       <NeedHelp>
         <a href={mapInfo.link} target="_blank" rel="noopener noreferrer">Need Help?</a>

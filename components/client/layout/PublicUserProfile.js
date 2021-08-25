@@ -195,7 +195,9 @@ const PublicUserProfile = ({ userId, onModalClose, serverPublicUser, customWalle
                         <SaveButton onClick={() => createProfile()} type="primary" shape="round">Save Profile</SaveButton>
                     </Row> :
                     <div style={{ textAlign: "center" }}>
-                        <StyledImage src={getStrapiMedia(serverPublicUser.picture)} />
+                        {serverPublicUser.picture ? <StyledImage src={getStrapiMedia(serverPublicUser.picture)} />
+                            : <StyledImage src={'/user.png'} />}
+
                         <AccountName>{serverPublicUser.name}</AccountName>
                         <WalletAdd>{customWalletAddress}</WalletAdd>
                         <UpdateButton onClick={() => setUpdateActive(true)}>Edit Profile</UpdateButton>
