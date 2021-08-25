@@ -44,7 +44,7 @@ const AddMap = ({ onDataSaved, myVisible, geoData, mapData, modalClose, userType
     const [loading, setLoading] = useState(false);
     const [surveys, setSurveys] = useState([]);
     const [selectedSurvey, setSelectedSurveys] = useState();
-
+    const [topPadding, setTopPadding] = useState(150);
 
     const onCompleteSurvey = async (data) => {
         setLoading(true);
@@ -108,6 +108,7 @@ const AddMap = ({ onDataSaved, myVisible, geoData, mapData, modalClose, userType
                 return { ...obj, isSelected: false }
             }
         }));
+        setTopPadding(20);
     }
 
 
@@ -145,7 +146,7 @@ const AddMap = ({ onDataSaved, myVisible, geoData, mapData, modalClose, userType
             visible={visible}
             destroyOnClose={true}
             footer={null}
-            style={{ top: 150 }}
+            style={{ top: topPadding }}
             onCancel={closeDrawer}
         >
             <Spin spinning={loading} >
