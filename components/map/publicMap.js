@@ -58,7 +58,6 @@ const PublicMap = ({ styleId, mapZoom, style, mapData, manualMapData,onCustomeDa
         <MapContainer
             center={mapData.center}
             zoom={mapZoom}
-            scrollWheelZoom={false}
             zoomControl={false}
 
             style={style} >
