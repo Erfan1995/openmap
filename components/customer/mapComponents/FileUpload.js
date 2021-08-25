@@ -33,7 +33,8 @@ const FileUpload = ({ onChangeEvent }) => {
     const [uploadVisible, setUploadVisible] = useState(false);
 
     const changeType = (type) => {
-        console.log(type)
+        console.log(type,'type');
+        console.log(fileTypes,'file types');
         setFileType(type);
         setFileTypes(data.map((obj) => {
             if (type === obj.type) {
@@ -47,8 +48,11 @@ const FileUpload = ({ onChangeEvent }) => {
 
     const props = {
         beforeUpload: file => {
+            console.log(file.type,'file type');
+            console.log(file,'file');
+            console.log(file.type !== fileType,' file.type !== fileType')
             if (file.type !== fileType) {
-                message.error(`${file.name} is not a valid file`);
+                message.error(`${file.type} is not a valid file`);
             }
             return file.type === fileType ? true : Upload.LIST_IGNORE;
         },
@@ -80,7 +84,7 @@ const FileUpload = ({ onChangeEvent }) => {
                 <div>
                     <Divider />
                     <Title level={5}>{fileType === 'application/vnd.ms-excel' ? DATASET.UPLOAD_CSV : DATASET.UPLOAD_JSON}</Title>
-                    <Dragger  {...props} name="file" maxCount={1} >
+                    <Dragger  {...props} name="file" maxCount={1} multiple={false} >
                         <p className="ant-upload-drag-icon">
                             <InboxOutlined />
                         </p>
