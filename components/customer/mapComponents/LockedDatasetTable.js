@@ -5,7 +5,6 @@ import { deleteMethod, putMethod } from "../../../lib/api";
 import 'antd/dist/antd.css';
 import { DATASET } from '../../../static/constant'
 const { confirm } = Modal;
-
 const LockedDatasetTable = ({ data, updateUnlockedData, updatedLockedData }) => {
     const [datasetId, setDatasetId] = useState();
     const [dataset, setDataset] = useState([]);

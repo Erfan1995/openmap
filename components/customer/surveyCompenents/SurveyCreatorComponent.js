@@ -53,8 +53,10 @@ const SurveyCreatorComponent = ({ authenticatedUser, token, surveyForms }) => {
     // }
     useEffect(() => {
         let options = {
-            showEmbededSurveyTab: false,
-            haveCommercialLicense: true
+            showEmbededSurveyTab: true,
+            haveCommercialLicense: true,
+            showLogicTab : true,
+            showTranslationTab: true
         };
         surveyCreator = new SurveyJSCreator.SurveyCreator(
             null,
@@ -143,6 +145,9 @@ const SurveyCreatorComponent = ({ authenticatedUser, token, surveyForms }) => {
                 </TabPane>
                 <TabPane tab={<span>create survey</span>} key="2">
                     <div>
+                        <script type="text/html" id="custom-tab-survey-templates">
+                            {`<div id="test">TEST</div>`}
+                        </script>
                         <div id="surveyCreatorContainer" />
                     </div>
                 </TabPane>
