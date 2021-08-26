@@ -135,10 +135,6 @@ const AddMap = ({ onDataSaved, myVisible, geoData, mapData, modalClose, userType
     }, [])
 
 
-
-
-
-
     return <>
         <Modal
             title={MAP.ADD_NEW_POINT}

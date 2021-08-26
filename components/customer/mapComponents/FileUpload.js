@@ -16,25 +16,23 @@ const DataTypeLayout = styled.div`
 const data = [
     {
         title: 'csv',
-        type: 'application/vnd.ms-excel',
+        type: ['application/vnd.ms-excel', 'text/csv'],
         key: 1
     },
     {
         title: 'geojson',
-        type: 'application/json',
+        type: ['application/json'],
         key: 2
     }
 
 ];
 const FileUpload = ({ onChangeEvent }) => {
 
-    const [fileType, setFileType] = useState();
+    const [fileType, setFileType] = useState([]);
     const [fileTypes, setFileTypes] = useState(data);
     const [uploadVisible, setUploadVisible] = useState(false);
 
     const changeType = (type) => {
-        console.log(type,'type');
-        console.log(fileTypes,'file types');
         setFileType(type);
         setFileTypes(data.map((obj) => {
             if (type === obj.type) {
@@ -46,15 +44,17 @@ const FileUpload = ({ onChangeEvent }) => {
         setUploadVisible(true);
     }
 
+
+    const compareFileType = (type) => {
+        return fileType.find((item) => item === type);
+    }
+
     const props = {
         beforeUpload: file => {
-            console.log(file.type,'file type');
-            console.log(file,'file');
-            console.log(file.type !== fileType,' file.type !== fileType')
-            if (file.type !== fileType) {
+            if (!compareFileType(file.type)) {
                 message.error(`${file.type} is not a valid file`);
             }
-            return file.type === fileType ? true : Upload.LIST_IGNORE;
+            return compareFileType(file.type) ? true : Upload.LIST_IGNORE;
         },
         onChange: info => {
             onChangeEvent(info);
@@ -83,12 +83,12 @@ const FileUpload = ({ onChangeEvent }) => {
             {uploadVisible === true ? (
                 <div>
                     <Divider />
-                    <Title level={5}>{fileType === 'application/vnd.ms-excel' ? DATASET.UPLOAD_CSV : DATASET.UPLOAD_JSON}</Title>
+                    <Title level={5}>{compareFileType('application/vnd.ms-excel') ? DATASET.UPLOAD_CSV : DATASET.UPLOAD_JSON}</Title>
                     <Dragger  {...props} name="file" maxCount={1} multiple={false} >
                         <p className="ant-upload-drag-icon">
                             <InboxOutlined />
                         </p>
-                        <p className="ant-upload-text">{fileType === 'application/vnd.ms-excel' ? DATASET.CLICK_OR_DRAG_CSV : DATASET.CLICK_OR_DRAG_JSON}</p>
+                        <p className="ant-upload-text">{compareFileType('application/vnd.ms-excel') ? DATASET.CLICK_OR_DRAG_CSV : DATASET.CLICK_OR_DRAG_JSON}</p>
                     </Dragger>
 
                 </div>
