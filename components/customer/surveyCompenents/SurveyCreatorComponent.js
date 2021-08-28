@@ -170,6 +170,9 @@ const SurveyCreatorComponent = ({ authenticatedUser, token, surveyForms }) => {
                             setVisible(false)
                         }}
                         destroyOnClose={true}
+                        footer={[
+                            <Button key="close" onClick={() => { setVisible(false) }}> {DATASET.CLOSE}</Button>
+                        ]}
                     >
                         <EditSurvey surveyJson={Json} updateSurveyList={updateSurveyList} />
                     </Modal>
