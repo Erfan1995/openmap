@@ -11,6 +11,7 @@ export const DATASET = {
     DATASET_DETAILS: 'Dataset Details',
     CREATE_MAP: 'Create Map',
     DELETE_CONFIRM: 'Are you sure you want to delete this data?',
+    SURVEY_CONFIRM: 'please save the survey .',
     LOCK_CONFIRM: 'ou sure you want to lock this dataset?',
     UNLOCK_CONFIRM: 'ou sure you want to unlock this dataset?',
     CHANGE_CONFIRM: 'Are you sure you want to change the state?',
