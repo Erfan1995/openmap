@@ -26,6 +26,9 @@ export const getServerSideProps = withPrivateServerSideProps(
         try {
             const { token } = nookies.get(ctx);
             const surveyForms = await getSurveyForms({ user: verifyUser.id }, token);
+            surveyForms.map((data) => {
+                data.id = Number(data.id);
+            })
             return { props: { authenticatedUser: verifyUser, token: token, surveyForms: surveyForms } }
         } catch (error) {
             return {
