@@ -11,6 +11,8 @@ SurveyJSCreator.StylesManager.applyTheme('default');
 
 import "survey-creator/survey-creator.css";
 import "survey-react/survey.css";
+import EditSurvey from './EditSurvey';
+// import { json } from './analytics_data';
 const { confirm } = Modal;
 const { TabPane } = Tabs;
 const Wrapper = styled.div`
@@ -26,6 +28,7 @@ const SurveyCreatorComponent = ({ authenticatedUser, token, surveyForms }) => {
     const [surveyClicked, setSurveyClicked] = useState(false);
     const [surveyList, setSurveyList] = useState(surveyForms);
     const [surveyId, setSurveyId] = useState();
+    // SurveyJSCreator.SurveyEditor.dataSource
     const saveMySurvey = async () => {
         const dd = JSON.parse(surveyCreator.text)
         if (!dd.pages[0].elements) {
@@ -43,6 +46,15 @@ const SurveyCreatorComponent = ({ authenticatedUser, token, surveyForms }) => {
             }
         }
     };
+    const updateSurveyList = (survey, id) => {
+        console.log(survey);
+        surveyList.map((data) => {
+            if (data.id === id) {
+                data.forms = survey;
+            }
+        });
+        setSurveyList(surveyList);
+    }
     // const onCompleteSurvey = async (data) => {
     //     setLoading(true);
     //     const res = await postMethod('surveyresults', { survey: surveyId, result: data.valuesHash });
@@ -55,9 +67,10 @@ const SurveyCreatorComponent = ({ authenticatedUser, token, surveyForms }) => {
         let options = {
             showEmbededSurveyTab: true,
             haveCommercialLicense: true,
-            showLogicTab : true,
+            showLogicTab: true,
             showTranslationTab: true
         };
+
         surveyCreator = new SurveyJSCreator.SurveyCreator(
             null,
             options
@@ -111,6 +124,10 @@ const SurveyCreatorComponent = ({ authenticatedUser, token, surveyForms }) => {
         setSurveyId(item.id);
         setJson(item.forms);
     }
+    const editSurvey = (item) => {
+        setJson(item);
+        setVisible(true);
+    }
     return (
         <Spin spinning={loading}>
             <Tabs defaultActiveKey="1" onChange={callback}>
@@ -132,7 +149,8 @@ const SurveyCreatorComponent = ({ authenticatedUser, token, surveyForms }) => {
                                 pagination={true}
                                 dataSource={surveyList}
                                 renderItem={item => (
-                                    <List.Item style={{ margin: "0px 30px" }} actions={[<a onClick={() => showConfirm(item.id)} >delete</a>]}>
+                                    <List.Item style={{ margin: "0px 30px" }} actions={[<a onClick={() => showConfirm(item.id)} >delete</a>,
+                                    <a onClick={() => editSurvey(item)} >edit</a>]}>
                                         <List.Item.Meta
                                             title={<a onClick={() => displaySurvey(item, true)} >{(JSON.parse(item.forms)).title}</a>}
                                             description={(JSON.parse(item.forms)).description}
@@ -142,6 +160,19 @@ const SurveyCreatorComponent = ({ authenticatedUser, token, surveyForms }) => {
                             />
                         </div>
                     }
+                    <Modal
+                        centered
+                        bodyStyle={{ overflowX: 'scroll' }}
+                        width={1300}
+                        visible={visible}
+                        destroyOnClose={true}
+                        onCancel={() => {
+                            setVisible(false)
+                        }}
+                        destroyOnClose={true}
+                    >
+                        <EditSurvey surveyJson={Json} updateSurveyList={updateSurveyList} />
+                    </Modal>
                 </TabPane>
                 <TabPane tab={<span>create survey</span>} key="2">
                     <div>
