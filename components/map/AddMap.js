@@ -19,15 +19,17 @@ const Photo = styled.img`
 `
 
 const MarkerCard = styled(Card)`
-:hover{
+&:hover{
     cursor:pointer;
 }
 `
 
 const SurveyCard = styled(Card)`
- height:170px;
- :hover{
+ min-height:200px;
+ &:hover{
     cursor:pointer;
+    border:1px solid #a1a1a1;
+
 }
 `
 
@@ -42,7 +44,7 @@ const AddMap = ({ onDataSaved, myVisible, geoData, mapData, modalClose, userType
     const [loading, setLoading] = useState(false);
     const [surveys, setSurveys] = useState([]);
     const [selectedSurvey, setSelectedSurveys] = useState();
-
+    const [topPadding, setTopPadding] = useState(150);
 
     const onCompleteSurvey = async (data) => {
         setLoading(true);
@@ -106,6 +108,7 @@ const AddMap = ({ onDataSaved, myVisible, geoData, mapData, modalClose, userType
                 return { ...obj, isSelected: false }
             }
         }));
+        setTopPadding(20);
     }
 
 
@@ -132,18 +135,14 @@ const AddMap = ({ onDataSaved, myVisible, geoData, mapData, modalClose, userType
     }, [])
 
 
-
-
-
-
     return <>
         <Modal
-            title={MAP.CREATE_NEW_ACCOUNT}
+            title={MAP.ADD_NEW_POINT}
             width={550}
             visible={visible}
             destroyOnClose={true}
             footer={null}
-            style={{ top: 10 }}
+            style={{ top: topPadding }}
             onCancel={closeDrawer}
         >
             <Spin spinning={loading} >

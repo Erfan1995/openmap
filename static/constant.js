@@ -71,6 +71,10 @@ export const DATASET = {
     SELECT: 'Select',
     CREATE_LINK: 'Create Link',
     CLICK_OR_DRAG: 'Click or drag file to this area to upload',
+    CLICK_OR_DRAG_CSV: 'Click or drag CSV file to this area to upload',
+    CLICK_OR_DRAG_JSON: 'Click or drag JSON file to this area to upload',
+    UPLOAD_CSV: 'Please upload CSV file',
+    UPLOAD_JSON: 'Please upload JSON file',
     LOGO_FILE: 'Please Add Your Logo [recommended size (70px)]',
     SEND: 'send',
     SIGN_IN_TO_VIEW_DASHBOARD: 'sign in to view the dashboard',
@@ -120,6 +124,7 @@ export const API = {
 }
 export const MAP = {
     CREATE_NEW_ACCOUNT: 'create a new account',
+    ADD_NEW_POINT: 'Add point to the map',
     CANCEL: 'cancel',
     SUBMIT: 'submit',
     ENTER_TITLE: 'Please enter title',

@@ -108,7 +108,6 @@ const Map = ({ styleId, center, setCenter, style, mapData, manualMapData, datase
         <MapContainer
           center={center || [10, 20]}
           zoom={zoomLevel || 8}
-          scrollWheelZoom={false}
           zoomControl={false}
           style={style} >
 

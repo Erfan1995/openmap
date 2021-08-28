@@ -47,6 +47,7 @@ const Dataset = ({ authenticatedUser, collapsed, locked_data, unlocked_data, tag
     };
     const onChangeFile = ({ file }) => {
 
+        console.log(file.originFileObj)
         if (file.originFileObj.size < 1e6) {
             setInvalidFileSize(false);
             fileReader = new FileReader();
