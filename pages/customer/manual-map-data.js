@@ -91,6 +91,7 @@ const ManualMapData = ({ authenticatedUser, collapsed, token, surveyForms }) => 
                     element.properties.is_approved = "no"
                 }
                 element.properties.maps = element.map.title
+                element.properties.publicAddress = element.publicAddress;
 
             });
             let arr = [];
@@ -164,6 +165,9 @@ const ManualMapData = ({ authenticatedUser, collapsed, token, surveyForms }) => 
                     width={1500}
                     visible={modalVisible}
                     destroyOnClose={true}
+                    onCancel={() => {
+                        setModalVisible(false)
+                    }}
                     footer={[
                         <Button key="close" onClick={() => { setModalVisible(false) }}> {DATASET.CLOSE}</Button>
                     ]}
