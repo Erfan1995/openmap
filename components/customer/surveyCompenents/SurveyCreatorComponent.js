@@ -25,10 +25,11 @@ const SurveyCreatorComponent = ({ authenticatedUser, token, surveyForms }) => {
     const [Json, setJson] = useState([]);
     const [loading, setLoading] = useState(false);
     const [visible, setVisible] = useState(false);
+    const [activeKey, setActiveKey] = useState('1');
     const [surveyClicked, setSurveyClicked] = useState(false);
     const [surveyList, setSurveyList] = useState(surveyForms);
     const [surveyId, setSurveyId] = useState();
-    // SurveyJSCreator.SurveyEditor.dataSource
+
     const saveMySurvey = async () => {
         const dd = JSON.parse(surveyCreator.text)
         if (!dd.pages[0].elements) {
@@ -39,7 +40,8 @@ const SurveyCreatorComponent = ({ authenticatedUser, token, surveyForms }) => {
                 const postSurvey = await postMethod('surveys', { user: authenticatedUser.id, forms: JSON.stringify(surveyCreator.text) })
                 if (postSurvey) {
                     setLoading(false);
-                    message.success("survey added successfully!")
+                    message.success("survey added successfully!");
+                    tabChangeEvent('2');
                 }
             } else {
                 message.error("please add title and description")
@@ -47,7 +49,6 @@ const SurveyCreatorComponent = ({ authenticatedUser, token, surveyForms }) => {
         }
     };
     const updateSurveyList = (survey, id) => {
-        console.log(survey);
         surveyList.map((data) => {
             if (data.id === id) {
                 data.forms = survey;
@@ -68,6 +69,8 @@ const SurveyCreatorComponent = ({ authenticatedUser, token, surveyForms }) => {
             showEmbededSurveyTab: true,
             haveCommercialLicense: true,
             showLogicTab: true,
+            showJSONEditorTab:true,
+            showTestSurveyTab:true,
             showTranslationTab: true
         };
 
@@ -75,13 +78,26 @@ const SurveyCreatorComponent = ({ authenticatedUser, token, surveyForms }) => {
             null,
             options
         );
+      
         surveyCreator.saveSurveyFunc = saveMySurvey;
         surveyCreator.render("surveyCreatorContainer");
     });
     const callback = async (key) => {
+
+        if (!(JSON.parse(surveyCreator.text)?.pages[0]?.elements?.length > 0)) {
+            tabChangeEvent(key);
+        } else {
+            showSurvayConfirm(key);
+           
+        }
+    }
+
+
+    const tabChangeEvent =async (key) => {
         setSurveyClicked(false)
+        setActiveKey(key);
         setJson([]);
-        if (key === "1") {
+        if (key === "2") {
             setLoading(true);
             const res = await getSurveyForms({ user: authenticatedUser.id }, token);
             if (res) {
@@ -93,6 +109,7 @@ const SurveyCreatorComponent = ({ authenticatedUser, token, surveyForms }) => {
             }
         }
     }
+
     const deleteSurvey = async (id) => {
         setLoading(true);
         try {
@@ -116,9 +133,26 @@ const SurveyCreatorComponent = ({ authenticatedUser, token, surveyForms }) => {
                 deleteSurvey(id)
             },
             onCancel() {
+                
             },
         });
     }
+
+
+
+    function showSurvayConfirm(key) {
+        confirm({
+            icon: <ExclamationCircleOutlined />,
+            content: <p>{DATASET.SURVEY_CONFIRM}</p>,
+            onOk() {
+                saveMySurvey()
+            },
+            onCancel() {
+                tabChangeEvent(key)
+            },
+        });
+    }
+
     const displaySurvey = (item, state) => {
         setSurveyClicked(state);
         setSurveyId(item.id);
@@ -130,8 +164,20 @@ const SurveyCreatorComponent = ({ authenticatedUser, token, surveyForms }) => {
     }
     return (
         <Spin spinning={loading}>
-            <Tabs defaultActiveKey="1" onChange={callback}>
-                <TabPane tab={<span>view survey</span>} key="1">
+            <Tabs 
+            // defaultActiveKey="1" 
+            activeKey={activeKey} 
+            onChange={callback}>
+                
+                <TabPane tab={<span>create survey</span>} key="1">
+                    <div>
+                        <script type="text/html" id="custom-tab-survey-templates">
+                            {`<div id="test">TEST</div>`}
+                        </script>
+                        <div id="surveyCreatorContainer" />
+                    </div>
+                </TabPane>
+                <TabPane tab={<span>view survey</span>} key="2">
                     {surveyClicked ?
                         <div>
                             <Button style={{ marginLeft: -10, marginTop: -30 }} icon={<ArrowLeftOutlined />} onClick={() => {
@@ -177,14 +223,8 @@ const SurveyCreatorComponent = ({ authenticatedUser, token, surveyForms }) => {
                         <EditSurvey surveyJson={Json} updateSurveyList={updateSurveyList} />
                     </Modal>
                 </TabPane>
-                <TabPane tab={<span>create survey</span>} key="2">
-                    <div>
-                        <script type="text/html" id="custom-tab-survey-templates">
-                            {`<div id="test">TEST</div>`}
-                        </script>
-                        <div id="surveyCreatorContainer" />
-                    </div>
-                </TabPane>
+
+              
             </Tabs>
         </Spin>
     )

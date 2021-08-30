@@ -45,13 +45,14 @@ const Dataset = ({ authenticatedUser, collapsed, locked_data, unlocked_data, tag
                 description,
         });
     };
+   
     const onChangeFile = ({ file }) => {
 
         console.log(file.originFileObj)
         if (file.originFileObj.size < 1e6) {
             setInvalidFileSize(false);
             fileReader = new FileReader();
-            if (file.originFileObj.type === "application/vnd.ms-excel") {
+            if (["application/vnd.ms-excel", 'text/csv'].find((item) => item === file.originFileObj.type)) {
                 fileReader.onloadend = () => {
                     csv.parse(fileReader.result, (err, data) => {
                         if (data) {
