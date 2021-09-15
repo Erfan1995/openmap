@@ -30,6 +30,11 @@ const PublicUserManualMapData = ({ data, mapFilterData, formElementsName }, ref)
     );
     let columns = [
         {
+            title: DATASET.PUBLIC_USERS,
+            dataIndex: 'publicAddress',
+            key: 'publicAddress',
+        },
+        {
             title: DATASET.APPROVED,
             dataIndex: 'is_approved',
             key: 'is_approved',
@@ -54,7 +59,6 @@ const PublicUserManualMapData = ({ data, mapFilterData, formElementsName }, ref)
                     <a className="ant-dropdown-link"
                         onClick={(e) => {
                             selectedRow = record;
-                            console.log(record);
                         }} >
                         {DATASET.MORE_ACTIONs} <DownOutlined />
                     </a>
