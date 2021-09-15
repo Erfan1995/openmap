@@ -4,7 +4,7 @@ import MapMarkers from "../mapComponents/MapMarkers";
 const { TabPane } = Tabs;
 import Popup from "../mapComponents/popup";
 const DatasetConf = ({ icons, mdcId, selectedDIcons, datasetProperties, selectedDatasetProperties, layerType,
-    setDataset, onMapDataChange, changeSelectedIcons }) => {
+    setDataset, onMapDataChange, changeSelectedIcons, token }) => {
     return (
         <div>
             <Tabs defaultActiveKey="1">
@@ -14,7 +14,7 @@ const DatasetConf = ({ icons, mdcId, selectedDIcons, datasetProperties, selected
                 </TabPane>
                 <TabPane tab={DATASET_CONF.PUPOP} key="3" >
                     <Popup mdcId={mdcId} onMapDataChange={onMapDataChange} setDataset={setDataset} datasetProperties={datasetProperties}
-                        selectedDatasetProperties={selectedDatasetProperties} layerType={layerType} />
+                        selectedDatasetProperties={selectedDatasetProperties} layerType={layerType} token={token} />
                 </TabPane>
             </Tabs>
         </div>
