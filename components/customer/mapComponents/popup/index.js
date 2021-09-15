@@ -56,40 +56,23 @@ const Popup = ({ mdcId, datasetProperties, selectedDatasetProperties, layerType,
     const [indeterminate, setIndeterminate] = useState(true);
     const [checkAll, setCheckAll] = useState(false);
     const [cBoxes, setCBoxes] = useState([]);
-    // const [initialFormValues, setInitialFormValues] = useState();
-    const checked = true;
     let options = [];
     const dynamicFormContent = [];
-    const dynamicFormCheckbox = [];
+    let dynamicFormCheckbox = [];
     let initialValues = {};
     let initialFormValues = {};
     if (layerType === "dataset") {
         let i = 0;
         for (const [key, value] of Object.entries(datasetProperties)) {
             options[i] = key;
-            checkedList.map((map) => {
-                if (key === map) {
-                    let checkbox = {
-                        label: key,
-                        required: false,
-                        name: key,
-                        key: key,
-                        checked: true
-                    }
-                    dynamicFormCheckbox.push(checkbox);
-                } else {
-                    let checkbox = {
-                        label: key,
-                        required: false,
-                        name: key,
-                        key: key,
-                        checked: false,
-                    }
-                    dynamicFormCheckbox.push(checkbox);
-                }
-            })
-
-            // dynamicFormContent.push(checkbox);
+            let checkbox = {
+                label: key,
+                required: false,
+                name: key,
+                key: key,
+                checked: false
+            }
+            dynamicFormCheckbox.push(checkbox);
             let input = {
                 component: "input",
                 name: key,
@@ -100,7 +83,13 @@ const Popup = ({ mdcId, datasetProperties, selectedDatasetProperties, layerType,
             initialValues[key] = key;
             i++;
         }
-        console.log(dynamicFormCheckbox);
+        dynamicFormCheckbox.map((map) => {
+            checkedList.map((checked) => {
+                if (map.key === checked) {
+                    map.checked = true;
+                }
+            })
+        })
         if (selectedDatasetProperties.edited_dataset_properties) {
             for (const [key, value] of Object.entries(selectedDatasetProperties?.edited_dataset_properties)) {
                 initialFormValues[key] = value;
@@ -111,29 +100,27 @@ const Popup = ({ mdcId, datasetProperties, selectedDatasetProperties, layerType,
     } else if (layerType === "main") {
         options = datasetProperties;
     }
-    const onChange = async (check) => {
-        console.log(check, 'check')
-        const res = await getDatasetConfSelectedDataset({ id: mdcId }, token);
-        if (res) {
-            console.log(res, 'ressssssssssssss');
-        }
-        const checkedCheckboxes = res[0]?.selected_dataset_properties;
-        let response;
-        // setCheckedList(list);
-
-        // setIndeterminate(!!list.length && list.length < options.length);
-        // setCheckAll(list.length === options.length);
-        if (check.target.checked) {
-            checkedCheckboxes.push(check.target.value);
-        } else {
-            for (let i = 0; i < checkedCheckboxes.length; i++) {
-                if (checkedCheckboxes[i] === check.target.value) {
-                    checkedCheckboxes.splice(i, 1)
-                }
-            }
-        }
-        console.log(checkedCheckboxes, 'list');
-        updateCheckedProperties(checkedCheckboxes);
+    const onChange = async (list) => {
+        // let checkedCheckboxes;
+        // const res = await getDatasetConfSelectedDataset({ id: mdcId }, token);
+        // if (res) {
+        //     checkedCheckboxes = res[0]?.selected_dataset_properties;
+        // }
+        // let response;
+        setCheckedList(list);
+        setIndeterminate(!!list.length && list.length < options.length);
+        setCheckAll(list.length === options.length);
+        // if (check.target.checked) {
+        //     checkedCheckboxes.push(check.target.value);
+        // } else {
+        //     for (let i = 0; i < checkedCheckboxes.length; i++) {
+        //         if (checkedCheckboxes[i] === check.target.value) {
+        //             checkedCheckboxes.splice(i, 1)
+        //         }
+        //     }
+        // }
+        // console.log(checkedCheckboxes, 'list');
+        updateCheckedProperties(list);
     };
     const updateCheckedProperties = async (checkedValues) => {
         setLoading(true);
@@ -141,7 +128,6 @@ const Popup = ({ mdcId, datasetProperties, selectedDatasetProperties, layerType,
             const res = await putMethod('mapdatasetconfs/' + mdcId, { selected_dataset_properties: checkedValues });
             if (res) {
                 setDataset();
-                // setCBoxes(res.selected_dataset_properties);
             }
         } else if (layerType === "main") {
             const res = await putMethod('maps/' + mdcId, { mmd_properties: checkedValues });
@@ -181,21 +167,15 @@ const Popup = ({ mdcId, datasetProperties, selectedDatasetProperties, layerType,
         setLoading(false);
     }
     const handleInputField = async (e) => {
-        // initialFormValues = {};
         if (e.key === 'Enter') {
             setLoading(true);
             initialFormValues[e.target.id] = e.target.value;
-            console.log(initialFormValues);
             const res = await putMethod('mapdatasetconfs/' + mdcId, { edited_dataset_properties: initialFormValues });
             if (res) {
-                console.log(res, 'res');
                 initialFormValues = res.edited_dataset_properties;
             }
             setLoading(false);
         }
-    }
-    const onChangeGroup = (check) => {
-        console.log(check, 'check');
     }
     return (
         <Spin spinning={loading}>
@@ -228,33 +208,22 @@ const Popup = ({ mdcId, datasetProperties, selectedDatasetProperties, layerType,
                         <Scrollbars style={{ width: 300, height: 300 }} className='track-horizontal'>
                             <Row gutter={8}>
                                 <Col span={8}>
-                                    <Form >
-                                        {/* <CheckboxGroup options={options} value={checkedList} onChange={onChange} /> */}
-                                        <Checkbox.Group  >
-                                            {
-                                                options.map((component) => (
-                                                    // <Form.Item
-                                                    //     label={component}
-                                                    //     name={component}
-                                                    //     initialValue={true}
-                                                    //     valuePropName={checked}
-                                                    // >
-                                                    //     <Checkbox onChange={onChange}  />
-                                                    // </Form.Item>
-                                                    <Form.Item>
-                                                        <Checkbox value={component} checked={true} onChange={onChange}>{component}</Checkbox>
-                                                    </Form.Item>
+                                    {/* <Form > */}
+                                        <CheckboxGroup options={options} value={checkedList} onChange={onChange} />
+                                        {/* {
+                                            dynamicFormCheckbox.map((component) => (
+                                                <Form.Item>
+                                                    <Checkbox value={component.key} checked={component.checked}
+                                                        onChange={onChange}>{component.name}</Checkbox>
+                                                </Form.Item>
 
-                                                ))
-                                            }
-                                        </Checkbox.Group>
-                                    </Form>
+                                            ))
+                                        } */}
+                                    {/* </Form> */}
                                 </Col>
                                 <Col span={12}>
                                     <Form initialValues={initialFormValues}>
-
                                         {dynamicFormContent.map((component) => (
-                                            // <FormElement {...component} onKeyDown={handleInputField} />
                                             <Form.Item
                                                 label={component.label}
                                                 name={component.name}
