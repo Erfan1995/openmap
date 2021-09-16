@@ -83,7 +83,7 @@ const CreateMap = ({ serverSideTags, user, mapData, onModalClose, addImageFile }
                     }
                 })
                 .catch((info) => {
-                    message.error(info.message)
+                    message.error(info)
                 });
         },
         createMap(datasetId = null, image) {
@@ -113,7 +113,7 @@ const CreateMap = ({ serverSideTags, user, mapData, onModalClose, addImageFile }
                     }
                 })
                 .catch((info) => {
-                    message.error(info.message)
+                    message.error(info)
                     setLoading(false);
                 })
         }

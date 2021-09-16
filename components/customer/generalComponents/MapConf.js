@@ -69,6 +69,7 @@ const MapConf = ({ authenticatedUser, styledMaps, tags, mapData, serverSideDatas
     const [surveyForms, setSurveyForms] = useState(serverSideMapSurveys);
     const router = useRouter();
 
+
     const menu = (
         <Menu >
             <Menu.Item key="1" style={{ padding: "3px 20px" }}><a onClick={() => showConfirm()} >{DATASET.DELETE}</a></Menu.Item>
@@ -212,7 +213,7 @@ const MapConf = ({ authenticatedUser, styledMaps, tags, mapData, serverSideDatas
                 } else {
                     setSelectedDIcons([]);
                 }
-                setSelectedDatasetProperties(selectedIcons[0]?.selected_dataset_properties);
+                setSelectedDatasetProperties(selectedIcons[0]);
             }
         } else if (type === "main") {
             const mmdProperties = await getMapPopupProperties({ id: mapData.id }, token);
@@ -275,7 +276,7 @@ const MapConf = ({ authenticatedUser, styledMaps, tags, mapData, serverSideDatas
                                 width={700}
                                 visible={modalVisible}
                                 destroyOnClose={true}
-                                onCancel={()=>{
+                                onCancel={() => {
                                     setModalVisible(false)
                                 }}
                                 footer={[
@@ -324,7 +325,7 @@ const MapConf = ({ authenticatedUser, styledMaps, tags, mapData, serverSideDatas
                             setLayerClicked(true);
                             onConfigTabChanged(true);
                         }} type='link'>back</Button>
-                        <DatasetConf setDataset={setDataset} onMapDataChange={onMapDataChange} icons={icons} mdcId={mdcId} selectedDIcons={selectedDIcons}
+                        <DatasetConf setDataset={setDataset} onMapDataChange={onMapDataChange} icons={icons} mdcId={mdcId} selectedDIcons={selectedDIcons} token={token}
                             datasetProperties={datasetProperties} selectedDatasetProperties={selectedDatasetProperties} layerType={layerType} changeSelectedIcons={changeSelectedIcons} />
                     </div>
                 }

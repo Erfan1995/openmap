@@ -54,7 +54,6 @@ const CustomerManualMapData = ({ data, mapFilterData, formElementsName, token })
                     <a className="ant-dropdown-link"
                         onClick={(e) => {
                             selectedRow = record;
-                            console.log(record);
                         }} >
                         {DATASET.MORE_ACTIONs} <DownOutlined />
                     </a>
