@@ -5,6 +5,8 @@ import { PopUp } from "lib/constants";
 import { Scrollbars } from 'react-custom-scrollbars';
 import SubTitle from "components/customer/generalComponents/SubTitle";
 import { putMethod } from "../../../../lib/api";
+import { useState, useEffect } from 'react';
+
 const CheckboxGroup = Checkbox.Group;
 
 const Div = styled.div`
@@ -78,6 +80,7 @@ const Popup = ({ mdcId, datasetProperties, selectedDatasetProperties, layerType,
             initialFormValues = initialValues;
         }
     } else if (layerType === "main") {
+        console.log(datasetProperties);
         options = datasetProperties;
     }
     const onChange = async (list) => {
