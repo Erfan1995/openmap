@@ -1,15 +1,11 @@
 import { Slider, Row, Col, Input, Checkbox, Card, List, Spin, Modal, Divider, Form, Button } from "antd";
 import styled from 'styled-components'
-import styles from './Sidebar.module.css'
-import ColorPicker from "rc-color-picker";
 import "rc-color-picker/assets/index.css";
 import { PopUp } from "lib/constants";
 import { Scrollbars } from 'react-custom-scrollbars';
 import SubTitle from "components/customer/generalComponents/SubTitle";
-import { deleteMethod, postFileMethod, putMethod, getDatasetConfSelectedDataset } from "../../../../lib/api";
-import { useEffect, useState } from "react";
-import FormElement from "./FormElement"
-const { confirm } = Modal;
+import { putMethod } from "../../../../lib/api";
+import { useState, useEffect } from 'react';
 const CheckboxGroup = Checkbox.Group;
 
 const Div = styled.div`
@@ -49,7 +45,8 @@ padding: 10px;
  cursor:pointer;
 `
 
-const Popup = ({ mdcId, datasetProperties, selectedDatasetProperties, layerType, setDataset, onMapDataChange, token }) => {
+
+const Popup = ({ mdcId, datasetProperties, selectedDatasetProperties, layerType, setDataset, onMapDataChange, token, editedProperties }) => {
     const [selectedStyle, setSelectedStyle] = useState(false);
     const [loading, setLoading] = useState(false);
     const [checkedList, setCheckedList] = useState(selectedDatasetProperties.selected_dataset_properties);
@@ -58,21 +55,12 @@ const Popup = ({ mdcId, datasetProperties, selectedDatasetProperties, layerType,
     const [cBoxes, setCBoxes] = useState([]);
     let options = [];
     const dynamicFormContent = [];
-    let dynamicFormCheckbox = [];
     let initialValues = {};
     let initialFormValues = {};
     if (layerType === "dataset") {
         let i = 0;
         for (const [key, value] of Object.entries(datasetProperties)) {
             options[i] = key;
-            let checkbox = {
-                label: key,
-                required: false,
-                name: key,
-                key: key,
-                checked: false
-            }
-            dynamicFormCheckbox.push(checkbox);
             let input = {
                 component: "input",
                 name: key,
@@ -83,14 +71,7 @@ const Popup = ({ mdcId, datasetProperties, selectedDatasetProperties, layerType,
             initialValues[key] = key;
             i++;
         }
-        dynamicFormCheckbox.map((map) => {
-            checkedList.map((checked) => {
-                if (map.key === checked) {
-                    map.checked = true;
-                }
-            })
-        })
-        if (selectedDatasetProperties.edited_dataset_properties) {
+        if (editedProperties) {
             for (const [key, value] of Object.entries(selectedDatasetProperties?.edited_dataset_properties)) {
                 initialFormValues[key] = value;
             }
@@ -98,28 +79,13 @@ const Popup = ({ mdcId, datasetProperties, selectedDatasetProperties, layerType,
             initialFormValues = initialValues;
         }
     } else if (layerType === "main") {
+        console.log(datasetProperties);
         options = datasetProperties;
     }
     const onChange = async (list) => {
-        // let checkedCheckboxes;
-        // const res = await getDatasetConfSelectedDataset({ id: mdcId }, token);
-        // if (res) {
-        //     checkedCheckboxes = res[0]?.selected_dataset_properties;
-        // }
-        // let response;
         setCheckedList(list);
         setIndeterminate(!!list.length && list.length < options.length);
         setCheckAll(list.length === options.length);
-        // if (check.target.checked) {
-        //     checkedCheckboxes.push(check.target.value);
-        // } else {
-        //     for (let i = 0; i < checkedCheckboxes.length; i++) {
-        //         if (checkedCheckboxes[i] === check.target.value) {
-        //             checkedCheckboxes.splice(i, 1)
-        //         }
-        //     }
-        // }
-        // console.log(checkedCheckboxes, 'list');
         updateCheckedProperties(list);
     };
     const updateCheckedProperties = async (checkedValues) => {
@@ -208,18 +174,7 @@ const Popup = ({ mdcId, datasetProperties, selectedDatasetProperties, layerType,
                         <Scrollbars style={{ width: 300, height: 300 }} className='track-horizontal'>
                             <Row gutter={8}>
                                 <Col span={8}>
-                                    {/* <Form > */}
-                                        <CheckboxGroup options={options} value={checkedList} onChange={onChange} />
-                                        {/* {
-                                            dynamicFormCheckbox.map((component) => (
-                                                <Form.Item>
-                                                    <Checkbox value={component.key} checked={component.checked}
-                                                        onChange={onChange}>{component.name}</Checkbox>
-                                                </Form.Item>
-
-                                            ))
-                                        } */}
-                                    {/* </Form> */}
+                                    <CheckboxGroup options={options} value={checkedList} onChange={onChange} />
                                 </Col>
                                 <Col span={12}>
                                     <Form initialValues={initialFormValues}>
