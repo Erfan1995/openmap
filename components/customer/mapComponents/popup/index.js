@@ -46,16 +46,14 @@ padding: 10px;
  cursor:pointer;
 `
 
-const Popup = ({ mdcId, datasetProperties, selectedDatasetProperties, layerType, setDataset, onMapDataChange, token }) => {
+const Popup = ({ mdcId, datasetProperties, selectedDatasetProperties, layerType, setDataset, onMapDataChange, token, editedProperties }) => {
     const [selectedStyle, setSelectedStyle] = useState(false);
     const [loading, setLoading] = useState(false);
-    const [checkedList, setCheckedList] = useState(selectedDatasetProperties.selected_dataset_properties);
+    const [checkedList, setCheckedList] = useState(selectedDatasetProperties);
     const [indeterminate, setIndeterminate] = useState(true);
     const [checkAll, setCheckAll] = useState(false);
-    const [cBoxes, setCBoxes] = useState([]);
     let options = [];
     const dynamicFormContent = [];
-    let dynamicFormCheckbox = [];
     let initialValues = {};
     let initialFormValues = {};
     if (layerType === "dataset") {
@@ -72,7 +70,7 @@ const Popup = ({ mdcId, datasetProperties, selectedDatasetProperties, layerType,
             initialValues[key] = key;
             i++;
         }
-        if (selectedDatasetProperties.edited_dataset_properties) {
+        if (editedProperties) {
             for (const [key, value] of Object.entries(selectedDatasetProperties?.edited_dataset_properties)) {
                 initialFormValues[key] = value;
             }

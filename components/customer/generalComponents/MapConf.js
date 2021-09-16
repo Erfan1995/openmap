@@ -67,6 +67,7 @@ const MapConf = ({ authenticatedUser, styledMaps, tags, mapData, serverSideDatas
     const [file, setFile] = useState();
     const [datasetId, setDatasetId] = useState();
     const [surveyForms, setSurveyForms] = useState(serverSideMapSurveys);
+    const [editedProperties, setEditedProperties] = useState();
     const router = useRouter();
 
 
@@ -213,7 +214,8 @@ const MapConf = ({ authenticatedUser, styledMaps, tags, mapData, serverSideDatas
                 } else {
                     setSelectedDIcons([]);
                 }
-                setSelectedDatasetProperties(selectedIcons[0]);
+                setSelectedDatasetProperties(selectedIcons[0]?.selected_dataset_properties);
+                setEditedProperties(selectedIcons[0]?.edited_dataset_properties)
             }
         } else if (type === "main") {
             const mmdProperties = await getMapPopupProperties({ id: mapData.id }, token);
@@ -227,7 +229,8 @@ const MapConf = ({ authenticatedUser, styledMaps, tags, mapData, serverSideDatas
                         i++;
                     })
                     setSelectedDIcons(arr);
-                    setSelectedDatasetProperties(mmdProperties[0]?.mmd_properties)
+                    setSelectedDatasetProperties(mmdProperties[0]?.mmd_properties);
+                    setEditedProperties(mmdProperties[0]?.edited_properties);
                     setDatasetProperties([]);
                 }
             }
@@ -325,8 +328,10 @@ const MapConf = ({ authenticatedUser, styledMaps, tags, mapData, serverSideDatas
                             setLayerClicked(true);
                             onConfigTabChanged(true);
                         }} type='link'>back</Button>
-                        <DatasetConf setDataset={setDataset} onMapDataChange={onMapDataChange} icons={icons} mdcId={mdcId} selectedDIcons={selectedDIcons} token={token}
-                            datasetProperties={datasetProperties} selectedDatasetProperties={selectedDatasetProperties} layerType={layerType} changeSelectedIcons={changeSelectedIcons} />
+                        <DatasetConf setDataset={setDataset} onMapDataChange={onMapDataChange}
+                            icons={icons} mdcId={mdcId} selectedDIcons={selectedDIcons} token={token}
+                            datasetProperties={datasetProperties} selectedDatasetProperties={selectedDatasetProperties}
+                            layerType={layerType} changeSelectedIcons={changeSelectedIcons} editedProperties={editedProperties} />
                     </div>
                 }
             </Card>
