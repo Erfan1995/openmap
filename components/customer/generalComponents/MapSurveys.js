@@ -1,4 +1,4 @@
-import { Divider, Typography, Card, Tabs, Button, Modal, List, Spin, message, Menu, Dropdown, Row, Col } from 'antd';
+import { Divider, Typography, Card, Tabs, Button, Modal, List, Spin, message, Menu, Dropdown, Row, Col, Image } from 'antd';
 import { useState, useRef } from 'react';
 import styled from 'styled-components';
 import {
@@ -8,6 +8,7 @@ import { DATASET } from '../../../static/constant'
 import SelectNewMapSurvey from '../mapComponents/SelectNewMapSurvey';
 import { formatDate, fileSizeReadable } from "../../../lib/general-functions";
 import { ExclamationCircleOutlined, DownOutlined, DeleteTwoTone } from '@ant-design/icons';
+import EditSurveyMeta from '../mapComponents/EditSurveyMeta';
 
 const { confirm } = Modal;
 
@@ -31,14 +32,21 @@ const SurveyDeleteButton = styled.span`
     padding:4px;
 `;
 const MapSurveys = ({ mapData, token, user, surveyForms, updateSurveyForms }) => {
+    console.log('sssss', surveyForms);
+    const childRef = useRef();
     const [loading, setLoading] = useState(false);
     const [modalVisible, setModalVisible] = useState(false);
     const [selectedSurveys, setSelectedSurveys] = useState(surveyForms);
     const [surveyId, setSurveyId] = useState();
     const [surveys, setSurveys] = useState();
+    const [editModalVisible, setEditModalVisible] = useState();
+    const [editableSurvey, setEditableSurvey] = useState();
+    const [file, setFile] = useState();
+
     const menu = (
         <Menu >
-            <Menu.Item key="1" style={{ padding: "3px 20px" }}><a onClick={() => showConfirm()} >{DATASET.DELETE}</a></Menu.Item>
+            <Menu.Item key="1" style={{ padding: "3px 20px" }}><a onClick={() => editSurvey()} >{DATASET.EDIT}</a></Menu.Item>
+            <Menu.Item key="2" style={{ padding: "3px 20px" }}><a onClick={() => showConfirm()} >{DATASET.DELETE}</a></Menu.Item>
         </Menu>
     );
     const chooseSurvey = async () => {
@@ -46,7 +54,7 @@ const MapSurveys = ({ mapData, token, user, surveyForms, updateSurveyForms }) =>
         const res = await getSurveyForms({ user: user.id }, token);
         if (res) {
             res.map((data) => {
-                data.title = (JSON.parse(data.forms)).title;
+                data.title = data.forms.title;
                 data.updated_at = formatDate(data.updated_at);
                 data.id = Number(data.id);
             })
@@ -55,6 +63,14 @@ const MapSurveys = ({ mapData, token, user, surveyForms, updateSurveyForms }) =>
         }
         setModalVisible(true);
 
+    }
+    const editSurvey = () => {
+        setEditModalVisible(true);
+        surveyForms.map(data => {
+            if (data.id === surveyId) {
+                setEditableSurvey(data);
+            }
+        })
     }
     const addSelectedSurvey = async (selectedRow) => {
         let alreadyExist = false;
@@ -69,7 +85,7 @@ const MapSurveys = ({ mapData, token, user, surveyForms, updateSurveyForms }) =>
                 const res = await putMethod(`maps/${mapData.id}`, { surveys: [...selectedSurveys.map(item => item.id), selectedRow.id] });
                 if (res) {
                     res.surveys.map((item) => {
-                        item.forms = JSON.parse(item.forms);
+                        item.forms = item.forms;
                     })
                     setSelectedSurveys(res.surveys);
                     message.success(DATASET.SUCCESS);
@@ -111,6 +127,13 @@ const MapSurveys = ({ mapData, token, user, surveyForms, updateSurveyForms }) =>
             },
         });
     }
+    const onModalClose = (res) => {
+        console.log(res, 'res')
+        setEditModalVisible(false);
+    }
+    const addImageFile = (file) => {
+        setFile(file);
+    }
     return (
         <Spin spinning={loading}>
             <Button type="dashed" size='large' block onClick={() => chooseSurvey()}>
@@ -129,15 +152,32 @@ const MapSurveys = ({ mapData, token, user, surveyForms, updateSurveyForms }) =>
             >
                 <SelectNewMapSurvey surveys={surveys} addSelectedSurvey={addSelectedSurvey} />
             </Modal>
+            <Modal
+                title={DATASET.EDIT}
+                centered
+                width={700}
+                visible={editModalVisible}
+                onOk={() => childRef.current.saveData(file)}
+                destroyOnClose={true}
+                onCancel={() => setEditModalVisible(false)}>
+                <EditSurveyMeta editableSurvey={editableSurvey} onModalClose={onModalClose} ref={childRef} addImageFile={addImageFile} />
+            </Modal>
             <List
                 dataSource={selectedSurveys}
                 renderItem={item => (
                     <List.Item>
                         <SurveyWrapper >
                             <Row>
-                                <Col span={21}>
+                                <Col span={5}>
+                                    <div style={{ marginTop: '16px', marginLeft: '5px' }}>
+                                        <Image width={30} src={item.forms.logo} />
+                                        {/* {item.name} */}
+                                    </div>
+                                </Col>
+                                <Col span={16}>
                                     <SurveyName >{item.forms.title}</SurveyName>
                                 </Col>
+
                                 <Col span={3}>
                                     <div style={{ marginTop: "13px", padding: "4px" }}>
                                         <Dropdown size="big" overlay={menu} trigger={['click']} >

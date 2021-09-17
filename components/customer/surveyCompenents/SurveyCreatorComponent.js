@@ -37,7 +37,7 @@ const SurveyCreatorComponent = ({ authenticatedUser, token, surveyForms }) => {
         } else {
             if (dd.title && dd.description) {
                 setLoading(true);
-                const postSurvey = await postMethod('surveys', { user: authenticatedUser.id, forms: JSON.stringify(surveyCreator.text) })
+                const postSurvey = await postMethod('surveys', { user: authenticatedUser.id, forms: JSON.stringify(dd) })
                 if (postSurvey) {
                     setLoading(false);
                     message.success("survey added successfully!");
@@ -198,8 +198,8 @@ const SurveyCreatorComponent = ({ authenticatedUser, token, surveyForms }) => {
                                     <List.Item style={{ margin: "0px 30px" }} actions={[<a onClick={() => showConfirm(item.id)} >delete</a>,
                                     <a onClick={() => editSurvey(item)} >edit</a>]}>
                                         <List.Item.Meta
-                                            title={<a onClick={() => displaySurvey(item, true)} >{(JSON.parse(item.forms)).title}</a>}
-                                            description={(JSON.parse(item.forms)).description}
+                                            title={<a onClick={() => displaySurvey(item, true)} >{item.forms.title}</a>}
+                                            description={item.forms.description}
                                         />
                                     </List.Item>
                                 )}

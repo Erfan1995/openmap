@@ -71,7 +71,7 @@ const Popup = ({ mdcId, datasetProperties, selectedDatasetProperties, layerType,
             i++;
         }
         if (editedProperties) {
-            for (const [key, value] of Object.entries(selectedDatasetProperties?.edited_dataset_properties)) {
+            for (const [key, value] of Object.entries(editedProperties)) {
                 initialFormValues[key] = value;
             }
         } else {

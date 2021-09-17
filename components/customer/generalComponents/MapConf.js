@@ -51,6 +51,7 @@ const DatasetDeleteButton = styled.span`
 `;
 const MapConf = ({ authenticatedUser, styledMaps, tags, mapData, serverSideDatasets, token, icons, setMapStyle,
     setDataset, onMapDataChange, injectedcodes, onConfigTabChanged, serverSideMapSurveys }) => {
+    console.log(serverSideMapSurveys,'mmmmmmmmmmmm');
     const [styleId, setStyleID] = useState(mapData.styleId || process.env.NEXT_PUBLIC_MAPBOX_DEFAULT_MAP);
     const childRef = useRef();
     const selectDatasetChildRef = useRef();
