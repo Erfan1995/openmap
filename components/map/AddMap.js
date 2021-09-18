@@ -137,7 +137,7 @@ const AddMap = ({ onDataSaved, myVisible, geoData, mapData, modalClose, userType
 
     return <>
         <Modal
-            title={MAP.ADD_NEW_POINT}
+            title={mapData.dialog_title}
             width={550}
             visible={visible}
             destroyOnClose={true}
