@@ -238,7 +238,6 @@ export const getServerSideProps = withPrivateServerSideProps(
           surveys = res.surveys;
           surveys.map((item) => {
             item.id = Number(item.id);
-            item.forms = JSON.parse(item.forms);
             item.key = item.id;
           })
         }
@@ -267,7 +266,7 @@ export const getServerSideProps = withPrivateServerSideProps(
       }
     } catch (error) {
 
-      console.log(error,'::::::::::')
+      console.log(error.message, '::::::::::')
 
       return {
         redirect: {
