@@ -14,11 +14,9 @@ import "survey-creator/survey-creator.css";
 import "survey-react/survey.css";
 
 const EditSurvey = ({ surveyJson, updateSurveyList }) => {
-    console.log(JSON.stringify(surveyJson.forms))
     let surveyCreator;
     const [loading, setLoading] = useState(false);
     const [surveyForms, setSurveyForm] = useState(surveyJson.forms)
-    // console.log(JSON.stringify(JSON.parse(surveyForms)))
     const saveMySurvey = async () => {
         const dd = JSON.parse(surveyCreator.text)
         if (!dd.pages[0].elements) {
@@ -26,7 +24,6 @@ const EditSurvey = ({ surveyJson, updateSurveyList }) => {
         } else {
             if (dd.title && dd.description) {
                 setLoading(true);
-                console.log('survye', JSON.stringify(surveyCreator.text))
                 const result = await putMethod('surveys/' + surveyJson.id, { forms: JSON.stringify(dd) })
                 if (result) {
                     setSurveyForm(result.forms);
@@ -51,7 +48,6 @@ const EditSurvey = ({ surveyJson, updateSurveyList }) => {
             null,
             options
         );
-        // console.log(JSON.stringify(JSON.parse(surveyForms)));
         surveyCreator.saveSurveyFunc = showConfirm;
         surveyCreator.text = JSON.stringify(surveyForms);
         surveyCreator.render("surveyContainer");

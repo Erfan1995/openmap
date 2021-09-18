@@ -16,7 +16,6 @@ const Photo = styled.div`
   padding-top:30px;
 `
 const EditSurveyMeta = ({ editableSurvey, onModalClose, addImageFile }, ref) => {
-    console.log(editableSurvey.forms);
     const [form] = Form.useForm();
     const [loading, setLoading] = useState(false);
     const [imageUrl, setImageUrl] = useState(editableSurvey.forms?.logo);
@@ -36,7 +35,8 @@ const EditSurveyMeta = ({ editableSurvey, onModalClose, addImageFile }, ref) => 
                 setImage(info.file);
                 setImageFile(info.file);
                 setImageSelected(true);
-                addImageFile(info);
+                // addImageFile(info);
+
             }
         },
     };
@@ -44,7 +44,12 @@ const EditSurveyMeta = ({ editableSurvey, onModalClose, addImageFile }, ref) => 
         const src = await new Promise(resolve => {
             const reader = new FileReader();
             reader.readAsDataURL(file.originFileObj);
-            reader.onload = () => resolve(reader.result);
+            reader.onload = () => {
+                console.log(reader.result,'result')
+                addImageFile(reader.result);
+                resolve(reader.result);
+            }
+
         });
         setUploadImageAvailable(true);
         setImageUrl(src);
@@ -60,12 +65,10 @@ const EditSurveyMeta = ({ editableSurvey, onModalClose, addImageFile }, ref) => 
                 .then(async (values) => {
                     const fData = new FormData();
                     let res = null;
-                    // console.log(values, 'values');
-                    // console.log(imageFile.originFileObj, 'image')
                     if (image) {
                         surveyForm.title = values.title;
                         surveyForm.description = values.description;
-                        // surveyForm.logo = image.file.originFileObj;
+                        surveyForm.logo = image;
                         console.log(JSON.stringify(surveyForm), 'forms');
                         setLoading(true);
                         res = await putMethod('surveys/' + editableSurvey.id, { forms: JSON.stringify(surveyForm) })

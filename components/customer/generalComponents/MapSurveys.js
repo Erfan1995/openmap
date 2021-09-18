@@ -32,7 +32,6 @@ const SurveyDeleteButton = styled.span`
     padding:4px;
 `;
 const MapSurveys = ({ mapData, token, user, surveyForms, updateSurveyForms }) => {
-    console.log('sssss', surveyForms);
     const childRef = useRef();
     const [loading, setLoading] = useState(false);
     const [modalVisible, setModalVisible] = useState(false);
@@ -128,7 +127,6 @@ const MapSurveys = ({ mapData, token, user, surveyForms, updateSurveyForms }) =>
         });
     }
     const onModalClose = (res) => {
-        console.log(res, 'res')
         setEditModalVisible(false);
     }
     const addImageFile = (file) => {
