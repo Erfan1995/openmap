@@ -49,7 +49,7 @@ padding: 10px;
 const Popup = ({ mdcId, datasetProperties, selectedDatasetProperties, layerType, setDataset, onMapDataChange, token, editedProperties }) => {
     const [selectedStyle, setSelectedStyle] = useState(false);
     const [loading, setLoading] = useState(false);
-    const [checkedList, setCheckedList] = useState(selectedDatasetProperties.selected_dataset_properties);
+    const [checkedList, setCheckedList] = useState(selectedDatasetProperties);
     const [indeterminate, setIndeterminate] = useState(true);
     const [checkAll, setCheckAll] = useState(false);
     const [cBoxes, setCBoxes] = useState([]);
