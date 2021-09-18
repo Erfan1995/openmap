@@ -6,7 +6,6 @@ import { Scrollbars } from 'react-custom-scrollbars';
 import SubTitle from "components/customer/generalComponents/SubTitle";
 import { putMethod } from "../../../../lib/api";
 import { useState, useEffect } from 'react';
-
 const CheckboxGroup = Checkbox.Group;
 
 const Div = styled.div`
@@ -46,12 +45,14 @@ padding: 10px;
  cursor:pointer;
 `
 
+
 const Popup = ({ mdcId, datasetProperties, selectedDatasetProperties, layerType, setDataset, onMapDataChange, token, editedProperties }) => {
     const [selectedStyle, setSelectedStyle] = useState(false);
     const [loading, setLoading] = useState(false);
-    const [checkedList, setCheckedList] = useState(selectedDatasetProperties);
+    const [checkedList, setCheckedList] = useState(selectedDatasetProperties.selected_dataset_properties);
     const [indeterminate, setIndeterminate] = useState(true);
     const [checkAll, setCheckAll] = useState(false);
+    const [cBoxes, setCBoxes] = useState([]);
     let options = [];
     const dynamicFormContent = [];
     let initialValues = {};

@@ -214,6 +214,7 @@ const MapConf = ({ authenticatedUser, styledMaps, tags, mapData, serverSideDatas
                 } else {
                     setSelectedDIcons([]);
                 }
+
                 setSelectedDatasetProperties(selectedIcons[0]?.selected_dataset_properties);
                 setEditedProperties(selectedIcons[0]?.edited_dataset_properties)
             }
