@@ -133,6 +133,15 @@ const CreateMap = ({ serverSideTags, user, mapData, onModalClose, addImageFile }
         <Spin spinning={loading}>
             <Form form={form} layout="vertical" initialValues={mapData} hideRequiredMark>
                 <Row gutter={16}>
+                <Col span={24}>
+                        <Form.Item
+                            name="dialog_title"
+                            label={DATASET.DIALOG_TITLE}
+                            rules={[{ required: true }]}
+                        >
+                            <Input placeholder={DATASET.DIALOG_PLACE_HOLDER} />
+                        </Form.Item>
+                    </Col>
                     <Col span={12}>
                         <Form.Item
                             name="title"
