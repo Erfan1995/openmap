@@ -36,12 +36,13 @@ const SurveyCreatorComponent = ({ authenticatedUser, token, surveyForms }) => {
             message.error("please add form!")
         } else {
             if (dd.title && dd.description) {
+                const length = '';
+                dd.pages[0].elements.push({
+                    "type": "text",
+                    "name": "geolocation"
+                })
                 setLoading(true);
-                // if (!dd.logo) {
-                //     dd.logo = "";
-                // }
-                // console.log(dd);
-                const postSurvey = await postMethod('surveys', { user: authenticatedUser.id, forms: JSON.stringify(dd),title:dd.title })
+                const postSurvey = await postMethod('surveys', { user: authenticatedUser.id, forms: JSON.stringify(dd), title: dd.title })
                 if (postSurvey) {
                     setLoading(false);
                     message.success("survey added successfully!");
