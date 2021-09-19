@@ -4,8 +4,8 @@ import { DownOutlined, ExclamationCircleOutlined } from '@ant-design/icons';
 import { deleteMethod, putMethod } from "../../../lib/api";
 import styled from 'styled-components';
 import { DATASET } from '../../../static/constant'
-import jsPDF from 'jspdf';
-import 'jspdf-autotable'
+
+import {exportToPDF} from '../../../lib/general-functions'
 const { confirm } = Modal;
 const { Title } = Typography;
 const MapsWrapper = styled.div`
@@ -137,47 +137,14 @@ const PublicUserManualMapData = ({ data, mapFilterData, formElementsName }, ref)
         });
     }
 
-    const changeJsonToArray=(dataSource,cols)=>{
 
-        
-        var result=[];
-           dataSource.map((row)=>{
-               var item=[];
-               for(var i in row){
-                    if(cols.includes(i)){
-                        item.push(row[i]);
-                    }
-               }
-               result.push(item);
-           })
-
-        return result;
-      }
-      
-    const exportToPDF = () => {
-        var cols=[];
-        mmData.map((data)=>{
-            if(data.dataIndex){
-                cols.push(data.dataIndex)
-            }
-        })
-        const doc=jsPDF();
-        const bodyData=changeJsonToArray(data,cols);
-        doc.autoTable({
-          head:[cols],
-          body:bodyData
-        });
-        doc.save('table.pdf')
-  
-
-    }
     return (
         <MapsWrapper>
             <CardTitle level={4}>{DATASET.MANUAL_MAP_DATA}</CardTitle>
             <Spin spinning={loading}>
                 <Table dataSource={dataset} columns={mmData} scroll={{ x: 1300 }} />
             </Spin>
-            <Button onClick={exportToPDF}>{DATASET.DOWNLOAD}</Button>
+            <Button onClick={()=>exportToPDF(dataset,mmData)}>{DATASET.DOWNLOAD}</Button>
         </MapsWrapper>
     )
 }
