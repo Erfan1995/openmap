@@ -167,10 +167,10 @@ const AddMap = ({ onDataSaved, myVisible, geoData, mapData, modalClose, userType
                                 renderItem={(item, index) => (
                                     <List.Item >
                                         <SurveyCard key={`surveyCard${index}`} className={item.isSelected ? 'selectedBox' : ''} onClick={() => selectSurvey(item)} >
-                                            <img src={JSON.parse(item.forms)?.logo} style={{ height: 70 }} />
+                                            <img src={item.forms?.logo} style={{ height: 70 }} />
 
                                             <Title level={5} className='margin-top-10 text-center'>
-                                                {JSON.parse(item.forms)?.title}
+                                                {item.forms?.title}
                                             </Title>
 
                                         </SurveyCard>
@@ -217,7 +217,7 @@ const AddMap = ({ onDataSaved, myVisible, geoData, mapData, modalClose, userType
                                 <Col xs={24} sm={24} md={24} lg={24} xl={24}>
 
                                     <Survey.Survey
-                                        json={JSON.parse(selectedSurvey.forms)}
+                                        json={selectedSurvey.forms}
                                         showCompletedPage={true}
                                         onComplete={data => onCompleteSurvey(data)}>
                                     </Survey.Survey>
