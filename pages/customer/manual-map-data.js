@@ -34,8 +34,8 @@ const ManualMapData = ({ authenticatedUser, collapsed, token, surveyForms }) => 
     const [mapDataClicked, setMapDataClicked] = useState(false);
 
     surveyForms.map(data => {
-        data.title = (JSON.parse(data.forms)).title;
-        data.description = (JSON.parse(data.forms)).description;
+        data.title = data.forms.title;
+        data.description = data.forms.description;
         data.id = Number(data.id);
 
     })
@@ -54,7 +54,7 @@ const ManualMapData = ({ authenticatedUser, collapsed, token, surveyForms }) => 
     }
     const showManualMapDataDetails = () => {
         let arr = [];
-        let surveyFormElements = JSON.parse(row.forms);
+        let surveyFormElements = row.forms;
         surveyFormElements.pages.map((data) => {
             data.elements.map((element) => {
                 arr.push({ 'title': element.name, 'dataIndex': element.name, 'key': element.name })
