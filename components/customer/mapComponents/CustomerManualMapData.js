@@ -4,7 +4,6 @@ import { DownOutlined, ExclamationCircleOutlined } from '@ant-design/icons';
 import { deleteMethod, putMethod } from "../../../lib/api";
 import styled from 'styled-components';
 import { DATASET } from '../../../static/constant'
-import { exportToPDF } from 'lib/general-functions';
 import Dataset from 'pages/customer/datasets';
 const { confirm } = Modal;
 const { Title } = Typography;
@@ -137,7 +136,6 @@ const CustomerManualMapData = ({ data, mapFilterData, formElementsName, token })
             <Spin spinning={loading}>
                 <Table dataSource={dataset} columns={mmData} scroll={{ x: 1300 }} />
             </Spin>
-            <Button onClick={()=>exportToPDF(dataset,mmData)}>{DATASET.DOWNLOAD}</Button>
         </MapsWrapper>
     )
 }

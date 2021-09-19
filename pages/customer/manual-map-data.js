@@ -12,6 +12,7 @@ import ManualMapDataDialog from 'components/customer/mapComponents/ManualMapData
 import { DownOutlined, ExclamationCircleOutlined, ArrowLeftOutlined } from '@ant-design/icons';
 import CustomerManualMapData from 'components/customer/mapComponents/CustomerManualMapData';
 import PublicUserManualMapData from 'components/customer/mapComponents/PublicUserManualMapData';
+import { exportToPDF } from '../../lib/general-functions';
 
 const MapsWrapper = styled.div`
 background:#ffffff;
@@ -110,6 +111,7 @@ const ManualMapData = ({ authenticatedUser, collapsed, token, surveyForms }) => 
             <Menu.Item key="1"><a onClick={() => getCustomerAndPublicUserData("public")}>{DATASET.PUBLIC_USERS}</a></Menu.Item>
         </Menu>
     );
+
     const columns = [
         {
             title: DATASET.ID,
@@ -154,6 +156,41 @@ const ManualMapData = ({ authenticatedUser, collapsed, token, surveyForms }) => 
         },
     ];
 
+
+    {
+        var printColumn=mapDataClicked ? [
+            {
+                title: DATASET.APPROVED,
+                dataIndex: 'is_approved',
+                key: 'is_approved',
+            },
+            {
+                title: "maps",
+                dataIndex: 'maps',
+                key: 'maps',
+            },
+        ] :[
+            {
+                title: DATASET.PUBLIC_USERS,
+                dataIndex: 'publicAddress',
+                key: 'publicAddress',
+            },
+            {
+                title: DATASET.APPROVED,
+                dataIndex: 'is_approved',
+                key: 'is_approved',
+            },
+            {
+                title: "maps",
+                dataIndex: 'maps',
+                key: 'maps',
+            },
+    
+        ]
+    }
+
+
+
     return (
         <Layout collapsed={collapsed} user={authenticatedUser}>
             <MapsWrapper  >
@@ -169,6 +206,7 @@ const ManualMapData = ({ authenticatedUser, collapsed, token, surveyForms }) => 
                         setModalVisible(false)
                     }}
                     footer={[
+                        <Button key="download" onClick={()=>exportToPDF(manualMapData,formElementsName.concat(printColumn))}>{DATASET.DOWNLOAD}</Button>,
                         <Button key="close" onClick={() => { setModalVisible(false) }}> {DATASET.CLOSE}</Button>
                     ]}
                     destroyOnClose={true}

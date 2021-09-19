@@ -29,7 +29,7 @@ export const DATASET = {
     DOWNLOAD:'Download',
     TITLE: 'Title',
     DIALOG_TITLE:'Map Dialog Title',
-    DIALOG_PLACE_HOLDER:'Please Enter Dialog Title',
+    PLACE_HOLDER_DIALOG:'Please Enter Dialog Title',
     TYPE: 'Type',
     TAGS: 'Tags',
     DESCRIPTION: 'Description',
