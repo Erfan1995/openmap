@@ -95,6 +95,7 @@ const MapMarkers = ({ icons, mdcId, selectedDIcons, layerType, setDataset, onMap
             }
 
         } else if (layerType === "dataset") {
+            console.log(mdcId)
             setUploadIconsLoading(true);
             const res = await putMethod('mapdatasetconfs/' + mdcId, { icon: item.id });
             if (res) {
@@ -189,7 +190,7 @@ const MapMarkers = ({ icons, mdcId, selectedDIcons, layerType, setDataset, onMap
                         renderItem={(item) => (
                             <List.Item key={`listItem` + item.id}>
                                 <div >
-                                    {/* <DeleteButton onClick={() => showDeleteConfirm(item.id, 'allIcons')}>x</DeleteButton> */}
+                                    <DeleteButton onClick={() => showDeleteConfirm(item.id, 'allIcons')}>x</DeleteButton>
                                     <Photo src={getStrapiMedia(item.icon[0])} onClick={() => selectIcon(item)} />
                                 </div>
                             </List.Item>

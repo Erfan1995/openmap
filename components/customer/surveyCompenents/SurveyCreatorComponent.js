@@ -36,8 +36,13 @@ const SurveyCreatorComponent = ({ authenticatedUser, token, surveyForms }) => {
             message.error("please add form!")
         } else {
             if (dd.title && dd.description) {
+                const length = '';
+                dd.pages[0].elements.push({
+                    "type": "text",
+                    "name": "geolocation"
+                })
                 setLoading(true);
-                const postSurvey = await postMethod('surveys', { user: authenticatedUser.id, forms: JSON.stringify(surveyCreator.text) })
+                const postSurvey = await postMethod('surveys', { user: authenticatedUser.id, forms: JSON.stringify(dd), title: dd.title })
                 if (postSurvey) {
                     setLoading(false);
                     message.success("survey added successfully!");
@@ -45,6 +50,7 @@ const SurveyCreatorComponent = ({ authenticatedUser, token, surveyForms }) => {
                 }
             } else {
                 message.error("please add title and description")
+
             }
         }
     };
@@ -69,8 +75,8 @@ const SurveyCreatorComponent = ({ authenticatedUser, token, surveyForms }) => {
             showEmbededSurveyTab: true,
             haveCommercialLicense: true,
             showLogicTab: true,
-            showJSONEditorTab:true,
-            showTestSurveyTab:true,
+            showJSONEditorTab: true,
+            showTestSurveyTab: true,
             showTranslationTab: true
         };
 
@@ -78,7 +84,7 @@ const SurveyCreatorComponent = ({ authenticatedUser, token, surveyForms }) => {
             null,
             options
         );
-      
+
         surveyCreator.saveSurveyFunc = saveMySurvey;
         surveyCreator.render("surveyCreatorContainer");
     });
@@ -88,12 +94,12 @@ const SurveyCreatorComponent = ({ authenticatedUser, token, surveyForms }) => {
             tabChangeEvent(key);
         } else {
             showSurvayConfirm(key);
-           
+
         }
     }
 
 
-    const tabChangeEvent =async (key) => {
+    const tabChangeEvent = async (key) => {
         setSurveyClicked(false)
         setActiveKey(key);
         setJson([]);
@@ -133,7 +139,7 @@ const SurveyCreatorComponent = ({ authenticatedUser, token, surveyForms }) => {
                 deleteSurvey(id)
             },
             onCancel() {
-                
+
             },
         });
     }
@@ -164,11 +170,11 @@ const SurveyCreatorComponent = ({ authenticatedUser, token, surveyForms }) => {
     }
     return (
         <Spin spinning={loading}>
-            <Tabs 
-            // defaultActiveKey="1" 
-            activeKey={activeKey} 
-            onChange={callback}>
-                
+            <Tabs
+                // defaultActiveKey="1" 
+                activeKey={activeKey}
+                onChange={callback}>
+
                 <TabPane tab={<span>create survey</span>} key="1">
                     <div>
                         <script type="text/html" id="custom-tab-survey-templates">
@@ -198,8 +204,8 @@ const SurveyCreatorComponent = ({ authenticatedUser, token, surveyForms }) => {
                                     <List.Item style={{ margin: "0px 30px" }} actions={[<a onClick={() => showConfirm(item.id)} >delete</a>,
                                     <a onClick={() => editSurvey(item)} >edit</a>]}>
                                         <List.Item.Meta
-                                            title={<a onClick={() => displaySurvey(item, true)} >{(JSON.parse(item.forms)).title}</a>}
-                                            description={(JSON.parse(item.forms)).description}
+                                            title={<a onClick={() => displaySurvey(item, true)} >{item.forms.title}</a>}
+                                            description={item.forms.description}
                                         />
                                     </List.Item>
                                 )}
@@ -224,7 +230,7 @@ const SurveyCreatorComponent = ({ authenticatedUser, token, surveyForms }) => {
                     </Modal>
                 </TabPane>
 
-              
+
             </Tabs>
         </Spin>
     )

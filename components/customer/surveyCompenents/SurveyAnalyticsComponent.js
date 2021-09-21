@@ -38,7 +38,7 @@ const SurveyAnalyticsComponent = ({ user, surveyForms, token }) => {
             setSurveyResult(arr);
             setLoading(false);
         }
-        setSurveyJson(JSON.parse(item.forms));
+        setSurveyJson(item.forms);
         setSurveyClicked(true);
     }
     return (
@@ -56,8 +56,8 @@ const SurveyAnalyticsComponent = ({ user, surveyForms, token }) => {
                     renderItem={item => (
                         <List.Item >
                             <List.Item.Meta
-                                title={<a onClick={() => displayAnalytics(item)} >{(JSON.parse(item.forms)).title}</a>}
-                                description={(JSON.parse(item.forms)).description}
+                                title={<a onClick={() => displayAnalytics(item)} >{item.forms.title}</a>}
+                                description={item.forms.description}
                             />
                         </List.Item>
                     )}

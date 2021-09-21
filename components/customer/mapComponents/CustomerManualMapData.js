@@ -1,9 +1,10 @@
-import { Table, Dropdown, Menu, Modal, Spin, Select, message, Typography } from 'antd';
+import { Table, Dropdown, Menu, Modal, Spin, Button, message, Typography } from 'antd';
 import React, { useEffect, useState, forwardRef, useImperativeHandle } from 'react';
 import { DownOutlined, ExclamationCircleOutlined } from '@ant-design/icons';
 import { deleteMethod, putMethod } from "../../../lib/api";
 import styled from 'styled-components';
 import { DATASET } from '../../../static/constant'
+import Dataset from 'pages/customer/datasets';
 const { confirm } = Modal;
 const { Title } = Typography;
 const MapsWrapper = styled.div`
@@ -16,7 +17,7 @@ const CardTitle = styled(Title)`
   float: left !important;
 `;
 
-const CustomerManualMapData = ({ data, mapFilterData, formElementsName, token }) => {
+const CustomerManualMapData = ({ data, mapFilterData, formElementsName, token ,setMapsDataToFilter}) => {
     const [loading, setLoading] = useState(false);
     const [dataset, setDataset] = useState();
     let selectedRow;
@@ -54,7 +55,6 @@ const CustomerManualMapData = ({ data, mapFilterData, formElementsName, token })
                     <a className="ant-dropdown-link"
                         onClick={(e) => {
                             selectedRow = record;
-                            console.log(record);
                         }} >
                         {DATASET.MORE_ACTIONs} <DownOutlined />
                     </a>
@@ -128,11 +128,17 @@ const CustomerManualMapData = ({ data, mapFilterData, formElementsName, token })
             },
         });
     }
+      
+
+    function onChange(pagination,filter,sorter,extra){
+        setMapsDataToFilter(extra);
+    }
+
     return (
         <MapsWrapper>
             <CardTitle level={4}>{DATASET.MANUAL_MAP_DATA}</CardTitle>
             <Spin spinning={loading}>
-                <Table dataSource={dataset} columns={mmData} scroll={{ x: 1300 }} />
+                <Table dataSource={dataset} onChange={onChange} columns={mmData} scroll={{ x: 1300 }} />
             </Spin>
         </MapsWrapper>
     )
