@@ -86,6 +86,7 @@ const Dataset = ({ authenticatedUser, collapsed, locked_data, unlocked_data, tag
                             }
                             arr.splice(0, 1)
                             try {
+
                                 let gJson = GeoJSON.parse(arr, { Point: [latitude, longitude] });
                                 setDatasetContent(gJson);
                             } catch (e) {
@@ -183,8 +184,6 @@ const Dataset = ({ authenticatedUser, collapsed, locked_data, unlocked_data, tag
                 <CardTitle level={4}>{DATASET.DATASETS}</CardTitle>
                 <AddNew type='primary' onClick={() => setVisible(true)}>{DATASET.ADD_DATASET}</AddNew>
                 <Divider />
-
-
                 <Tabs defaultActiveKey="1">
                     <TabPane tab={<span>{DATASET.UNLOCKED_DATASETS}</span>} key="1">
                         <UnlockedDataset data={dataset} updateLockedData={updateLockedData} updatedData={updatedData}
