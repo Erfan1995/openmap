@@ -46,7 +46,7 @@ padding: 10px;
 `
 
 
-const Popup = ({ mdcId, datasetProperties, selectedDatasetProperties, layerType, setDataset, onMapDataChange, token, editedProperties }) => {
+const Popup = ({ mdcId, properties, selectedDatasetProperties, layerType, setDataset, onMapDataChange, token, editedProperties }) => {
     const [selectedStyle, setSelectedStyle] = useState(false);
     const [loading, setLoading] = useState(false);
     const [checkedList, setCheckedList] = useState(selectedDatasetProperties);
@@ -57,9 +57,11 @@ const Popup = ({ mdcId, datasetProperties, selectedDatasetProperties, layerType,
     const dynamicFormContent = [];
     let initialValues = {};
     let initialFormValues = {};
+    console.log(properties, ' properteis');
+    console.log(selectedDatasetProperties, 'selected properties');
     if (layerType === "dataset") {
         let i = 0;
-        for (const [key, value] of Object.entries(datasetProperties)) {
+        for (const [key, value] of Object.entries(properties)) {
             options[i] = key;
             let input = {
                 component: "input",
@@ -79,8 +81,26 @@ const Popup = ({ mdcId, datasetProperties, selectedDatasetProperties, layerType,
             initialFormValues = initialValues;
         }
     } else if (layerType === "main") {
-        console.log(datasetProperties);
-        options = datasetProperties;
+        let i = 0;
+        properties.map((data) => {
+            options[i] = data.title;
+            let input = {
+                component: "input",
+                name: data.title,
+                required: false,
+                key: data.key
+            }
+            dynamicFormContent.push(input);
+            initialValues[data.key] = data.key;
+            i++;
+        })
+        if (editedProperties) {
+            for (const [key, value] of Object.entries(editedProperties)) {
+                initialFormValues[key] = value;
+            }
+        } else {
+            initialFormValues = initialValues;
+        }
     }
     const onChange = async (list) => {
         setCheckedList(list);
@@ -96,7 +116,7 @@ const Popup = ({ mdcId, datasetProperties, selectedDatasetProperties, layerType,
                 setDataset();
             }
         } else if (layerType === "main") {
-            const res = await putMethod('maps/' + mdcId, { mmd_properties: checkedValues });
+            const res = await putMethod('mapsurveyconfs/' + mdcId, { selected_survey_properties: checkedValues });
             if (res) {
                 onMapDataChange();
             }
@@ -124,7 +144,7 @@ const Popup = ({ mdcId, datasetProperties, selectedDatasetProperties, layerType,
             }
 
         } else if (layerType === "main") {
-            const res = await putMethod('maps/' + mdcId, { default_popup_style_slug: item })
+            const res = await putMethod('mapsurveyconfs/' + mdcId, { default_popup_style_slug: item })
             if (res) {
                 onMapDataChange();
             }
@@ -136,9 +156,16 @@ const Popup = ({ mdcId, datasetProperties, selectedDatasetProperties, layerType,
         if (e.key === 'Enter') {
             setLoading(true);
             initialFormValues[e.target.id] = e.target.value;
-            const res = await putMethod('mapdatasetconfs/' + mdcId, { edited_dataset_properties: initialFormValues });
-            if (res) {
-                initialFormValues = res.edited_dataset_properties;
+            if (layerType === "dataset") {
+                const res = await putMethod('mapdatasetconfs/' + mdcId, { edited_dataset_properties: initialFormValues });
+                if (res) {
+                    initialFormValues = res.edited_dataset_properties;
+                }
+            } else if (layerType === "main") {
+                const res = await putMethod('mapsurveyconfs/' + mdcId, { edited_survey_properties: initialFormValues });
+                if (res) {
+                    initialFormValues = res.edited_survey_properties;
+                }
             }
             setLoading(false);
         }
