@@ -85,6 +85,7 @@ const CreateMap = ({ serverSideTags, user, mapData, onModalClose, addImageFile }
                 .catch((info) => {
                     message.error(info)
                 });
+                return true;
         },
         createMap(datasetId = null, image) {
             form
@@ -139,7 +140,7 @@ const CreateMap = ({ serverSideTags, user, mapData, onModalClose, addImageFile }
                             label={DATASET.DIALOG_TITLE}
                             rules={[{ required: true }]}
                         >
-                            <Input placeholder={DATASET.DIALOG_PLACE_HOLDER} />
+                            <Input placeholder={DATASET.PLACE_HOLDER_DIALOG} />
                         </Form.Item>
                     </Col>
                     <Col span={12}>

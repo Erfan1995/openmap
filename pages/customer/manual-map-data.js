@@ -1,5 +1,5 @@
 import Layout from '../../components/customer/layout/Layout';
-import { Divider, Typography, Tabs, Spin, Menu, Modal, Button, Table, Dropdown } from 'antd';
+import { Divider, Typography, Tabs, Spin, Menu, Modal, Button, Table, Dropdown, message } from 'antd';
 import withPrivateServerSideProps from '../../utils/withPrivateServerSideProps';
 const { Title } = Typography;
 import { getSurveyForms, getMMDCustomers, getMethod } from "../../lib/api";
@@ -12,6 +12,8 @@ import ManualMapDataDialog from 'components/customer/mapComponents/ManualMapData
 import { DownOutlined, ExclamationCircleOutlined, ArrowLeftOutlined } from '@ant-design/icons';
 import CustomerManualMapData from 'components/customer/mapComponents/CustomerManualMapData';
 import PublicUserManualMapData from 'components/customer/mapComponents/PublicUserManualMapData';
+import jsPDF from 'jspdf';
+import 'jspdf-autotable'
 
 const MapsWrapper = styled.div`
 background:#ffffff;
@@ -31,10 +33,11 @@ const ManualMapData = ({ authenticatedUser, collapsed, token, surveyForms }) => 
     const [manualMapData, setManualMapData] = useState();
     const [mapsDataTofilter, setMapsDataToFilter] = useState();
     const [mapDataClicked, setMapDataClicked] = useState(false);
+    const [printData,setPrintData]=useState([]);
 
     surveyForms.map(data => {
-        data.title = data.forms.title;
-        data.description = data.forms.description;
+        data.title = (JSON.parse(data.forms)).title;
+        data.description = (JSON.parse(data.forms)).description;
         data.id = Number(data.id);
 
     })
@@ -53,7 +56,7 @@ const ManualMapData = ({ authenticatedUser, collapsed, token, surveyForms }) => 
     }
     const showManualMapDataDetails = () => {
         let arr = [];
-        let surveyFormElements = row.forms;
+        let surveyFormElements = JSON.parse(row.forms);
         surveyFormElements.pages.map((data) => {
             data.elements.map((element) => {
                 arr.push({ 'title': element.name, 'dataIndex': element.name, 'key': element.name })
@@ -100,6 +103,7 @@ const ManualMapData = ({ authenticatedUser, collapsed, token, surveyForms }) => 
             })
             setManualMapData(arr);
             createMapFilterData(res);
+            setPrintData(arr);
         }
     }
 
@@ -110,6 +114,7 @@ const ManualMapData = ({ authenticatedUser, collapsed, token, surveyForms }) => 
             <Menu.Item key="1"><a onClick={() => getCustomerAndPublicUserData("public")}>{DATASET.PUBLIC_USERS}</a></Menu.Item>
         </Menu>
     );
+
     const columns = [
         {
             title: DATASET.ID,
@@ -154,6 +159,66 @@ const ManualMapData = ({ authenticatedUser, collapsed, token, surveyForms }) => 
         },
     ];
 
+
+    {
+        var printColumn=mapDataClicked ? [
+            {
+                title: DATASET.APPROVED,
+                dataIndex: 'is_approved',
+                key: 'is_approved',
+            },
+            {
+                title: "maps",
+                dataIndex: 'maps',
+                key: 'maps',
+            },
+        ] :[
+            {
+                title: DATASET.PUBLIC_USERS,
+                dataIndex: 'publicAddress',
+                key: 'publicAddress',
+            },
+            {
+                title: DATASET.APPROVED,
+                dataIndex: 'is_approved',
+                key: 'is_approved',
+            },
+            {
+                title: "maps",
+                dataIndex: 'maps',
+                key: 'maps',
+            },
+    
+        ]
+    }
+
+
+    const exportToPDF = () => {
+        var colItems={};
+        formElementsName.concat(printColumn).map((data)=>{
+            colItems[data.dataIndex]=data.title;
+        });
+    
+        if(printData != null && printData.length > 0){
+            const doc=jsPDF();
+            doc.autoTable({
+              head:[colItems],
+              body:printData
+            });
+            doc.save('table.pdf')
+        }
+        else{
+            message.info('Form is Empty');
+        }
+        
+    }
+
+
+    const onFilterChange = (data) => {
+        setPrintData(data['currentDataSource'])
+      }
+
+
     return (
         <Layout collapsed={collapsed} user={authenticatedUser}>
             <MapsWrapper  >
@@ -169,14 +234,15 @@ const ManualMapData = ({ authenticatedUser, collapsed, token, surveyForms }) => 
                         setModalVisible(false)
                     }}
                     footer={[
+                        <Button key="download" onClick={exportToPDF}>{DATASET.DOWNLOAD}</Button>,
                         <Button key="close" onClick={() => { setModalVisible(false) }}> {DATASET.CLOSE}</Button>
                     ]}
                     destroyOnClose={true}
                 >
                     {mapDataClicked ? <CustomerManualMapData authenticatedUser={authenticatedUser} token={token} row={row}
-                        formElementsName={formElementsName} data={manualMapData} mapFilterData={mapsDataTofilter} /> :
+                        formElementsName={formElementsName} data={manualMapData} mapFilterData={mapsDataTofilter} setMapsDataToFilter={onFilterChange} /> :
                         <PublicUserManualMapData authenticatedUser={authenticatedUser} token={token} row={row}
-                            formElementsName={formElementsName} data={manualMapData} mapFilterData={mapsDataTofilter} />}
+                            formElementsName={formElementsName} data={manualMapData} mapFilterData={mapsDataTofilter} setMapsDataToFilter={onFilterChange} />}
                 </Modal>
             </MapsWrapper>
         </Layout>

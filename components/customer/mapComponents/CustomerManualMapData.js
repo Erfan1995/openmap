@@ -4,7 +4,6 @@ import { DownOutlined, ExclamationCircleOutlined } from '@ant-design/icons';
 import { deleteMethod, putMethod } from "../../../lib/api";
 import styled from 'styled-components';
 import { DATASET } from '../../../static/constant'
-import { exportToPDF } from 'lib/general-functions';
 import Dataset from 'pages/customer/datasets';
 const { confirm } = Modal;
 const { Title } = Typography;
@@ -18,7 +17,7 @@ const CardTitle = styled(Title)`
   float: left !important;
 `;
 
-const CustomerManualMapData = ({ data, mapFilterData, formElementsName, token }) => {
+const CustomerManualMapData = ({ data, mapFilterData, formElementsName, token ,setMapsDataToFilter}) => {
     const [loading, setLoading] = useState(false);
     const [dataset, setDataset] = useState();
     let selectedRow;
@@ -131,13 +130,16 @@ const CustomerManualMapData = ({ data, mapFilterData, formElementsName, token })
     }
       
 
+    function onChange(pagination,filter,sorter,extra){
+        setMapsDataToFilter(extra);
+    }
+
     return (
         <MapsWrapper>
             <CardTitle level={4}>{DATASET.MANUAL_MAP_DATA}</CardTitle>
             <Spin spinning={loading}>
-                <Table dataSource={dataset} columns={mmData} scroll={{ x: 1300 }} />
+                <Table dataSource={dataset} onChange={onChange} columns={mmData} scroll={{ x: 1300 }} />
             </Spin>
-            <Button onClick={()=>exportToPDF(dataset,mmData)}>{DATASET.DOWNLOAD}</Button>
         </MapsWrapper>
     )
 }

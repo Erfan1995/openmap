@@ -369,7 +369,10 @@ const MapConf = ({ authenticatedUser, styledMaps, tags, mapData, serverSideDatas
                         <TabPane tab={DATASET.META_DATA} key="1" >
                             <CreateMap ref={childRef} mapData={mapData} serverSideTags={tags} user={authenticatedUser} onModalClose={onModalClose} addImageFile={addImageFile} />
                             <SaveButton type='primary' onClick={() => {
-                                childRef.current.saveData(styleId, file);
+                                var res=childRef.current.saveData(styleId, file);
+                                if(res){
+                                    onMapDataChange()
+                                }
                             }}>{DATASET.SAVE}</SaveButton>
                         </TabPane>
 
