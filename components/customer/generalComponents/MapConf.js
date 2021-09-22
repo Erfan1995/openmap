@@ -230,6 +230,7 @@ const MapConf = ({ authenticatedUser, styledMaps, tags, mapData, serverSideDatas
                 if (selectedIcons[0].icon !== null) {
                     let arr = [];
                     arr[0] = selectedIcons[0].icon;
+                    console.log(selectedIcons[0].icon);
                     setSelectedDIcons(arr);
                 } else {
                     setSelectedDIcons([]);
@@ -254,9 +255,21 @@ const MapConf = ({ authenticatedUser, styledMaps, tags, mapData, serverSideDatas
             });
             const mapSurveyConf = await getMapSurveyConf({ survey: id, map: mapData.id }, token);
             if (mapSurveyConf) {
+                let i = 0;
                 setmdcId(Number(mapSurveyConf[0]?.id));
                 const selectedproperties = await getSurveyConfContent({ id: mapSurveyConf[0]?.id }, token);
-                if (selectedproperties) {
+
+                if (selectedproperties.length > 0) {
+                    if (selectedproperties[0].icons !== null) {
+                        let arr = [];
+                        selectedproperties[0].icons.map((icon) => {
+                            arr[i] = icon;
+                            i++;
+                        })
+                        setSelectedDIcons(arr);
+                    } else {
+                        setSelectedDIcons([]);
+                    }
                     setSelectedDatasetProperties(selectedproperties[0]?.selected_survey_properties);
                     setEditedProperties(selectedproperties[0]?.edited_survey_properties);
                 }
@@ -367,8 +380,8 @@ const MapConf = ({ authenticatedUser, styledMaps, tags, mapData, serverSideDatas
                         <TabPane tab={DATASET.META_DATA} key="1" >
                             <CreateMap ref={childRef} mapData={mapData} serverSideTags={tags} user={authenticatedUser} onModalClose={onModalClose} addImageFile={addImageFile} />
                             <SaveButton type='primary' onClick={() => {
-                                var res=childRef.current.saveData(styleId, file);
-                                if(res){
+                                var res = childRef.current.saveData(styleId, file);
+                                if (res) {
                                     onMapDataChange()
                                 }
                             }}>{DATASET.SAVE}</SaveButton>
@@ -389,9 +402,9 @@ const MapConf = ({ authenticatedUser, styledMaps, tags, mapData, serverSideDatas
                         </TabPane>
 
                         <TabPane tab={DATASET.LAYERS} key="4" >
-                            {/* <Button type="dashed" size='large' block onClick={() => mdc(mapData.id, false, "main")}>
+                            <Button type="dashed" size='large' block onClick={() => mdc(mapData.id, false, "main")}>
                                 {DATASET.ADD_MAIN_POPUPS_AND_MARKER}
-                            </Button> */}
+                            </Button>
                             <Button type="dashed" size='large' block onClick={() => chooseDataset()}>
                                 {DATASET.ADD_NEW_LAYER}
                             </Button>
