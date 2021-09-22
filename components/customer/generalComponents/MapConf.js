@@ -249,7 +249,6 @@ const MapConf = ({ authenticatedUser, styledMaps, tags, mapData, serverSideDatas
                             arr.push({ 'title': element.name, 'dataIndex': element.name, 'key': element.name })
                         })
                     })
-                    console.log(arr, 'arr')
                     setDatasetProperties(arr);
                 }
             });
@@ -257,7 +256,6 @@ const MapConf = ({ authenticatedUser, styledMaps, tags, mapData, serverSideDatas
             if (mapSurveyConf) {
                 setmdcId(Number(mapSurveyConf[0]?.id));
                 const selectedproperties = await getSurveyConfContent({ id: mapSurveyConf[0]?.id }, token);
-                console.log(selectedproperties, 'sfsjfaksdj');
                 if (selectedproperties) {
                     setSelectedDatasetProperties(selectedproperties[0]?.selected_survey_properties);
                     setEditedProperties(selectedproperties[0]?.edited_survey_properties);

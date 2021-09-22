@@ -61,7 +61,8 @@ const MapItem = ({ item, filterDeletedMap }) => {
     const deleteMap = async (id) => {
         setLoading(true);
         const dConf = await deleteMethod('mapdatasetconfs/map:' + id);
-        if (dConf) {
+        const deleteSurvey = await deleteMethod('mapsurveyconfs/map:' + id);
+        if (dConf && deleteSurvey) {
             const res = await deleteMethod('maps/' + id)
             if (res) {
                 filterDeletedMap(id);
