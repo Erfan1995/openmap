@@ -84,7 +84,6 @@ const MapConf = ({ authenticatedUser, styledMaps, tags, mapData, serverSideDatas
     const [datasetId, setDatasetId] = useState();
     const [surveyForms, setSurveyForms] = useState(serverSideMapSurveys);
     const [editedProperties, setEditedProperties] = useState();
-    // const childRef = useRef();
     const [selectedSurveys, setSelectedSurveys] = useState(surveyForms);
     const [surveyId, setSurveyId] = useState();
     const [surveys, setSurveys] = useState();
@@ -151,7 +150,6 @@ const MapConf = ({ authenticatedUser, styledMaps, tags, mapData, serverSideDatas
                     if (dd) {
                         selectedDataset.push({ ...selectedRow, config: dd });
                         setDataset();
-
                         message.success(DATASET.SUCCESS);
                     }
                     setModalVisible(false);
@@ -183,7 +181,7 @@ const MapConf = ({ authenticatedUser, styledMaps, tags, mapData, serverSideDatas
         try {
             const res = await putMethod(`maps/${mapData.id}`, { datasets: dd.map(item => item.id) });
             if (res) {
-                const mapDatasetConf = await getMapDatasetConf({ dataset: id }, token);
+                const mapDatasetConf = await getMapDatasetConf({ dataset: id, map: mapData.id }, token);
                 if (mapDatasetConf) {
                     const deleteMDC = await deleteMethod('mapdatasetconfs/' + mapDatasetConf[0].id);
                 }
@@ -299,6 +297,7 @@ const MapConf = ({ authenticatedUser, styledMaps, tags, mapData, serverSideDatas
         })
     }
     const addSelectedSurvey = async (selectedRow) => {
+        console.log(selectedRow, 'selected row');
         let alreadyExist = false;
         selectedSurveys.map((dd) => {
             if (dd.id === selectedRow.id) {
@@ -312,9 +311,10 @@ const MapConf = ({ authenticatedUser, styledMaps, tags, mapData, serverSideDatas
                 if (res) {
                     const dd = await postMethod('mapsurveyconfs', { map: mapData.id, survey: selectedRow.id });
                     if (dd) {
+                        console.log(dd, 'res')
                         setSelectedSurveys(res.surveys);
                         message.success(DATASET.SUCCESS);
-                        setModalVisible(false);
+                        setSurveyModalVisible(false);
                         updateSurveyForms(res.surveys);
                     }
                 }
@@ -333,8 +333,7 @@ const MapConf = ({ authenticatedUser, styledMaps, tags, mapData, serverSideDatas
         try {
             const res = await putMethod(`maps/${mapData.id}`, { surveys: dd.map(item => item.id) });
             if (res) {
-                const mapSurveyConf = await getMapSurveyConf({ survey: id }, token);
-                console.log(mapSurveyConf);
+                const mapSurveyConf = await getMapSurveyConf({ survey: id, map: mapData.id }, token);
                 if (mapSurveyConf) {
                     const deleteMDC = await deleteMethod('mapsurveyconfs/' + mapSurveyConf[0].id);
                 }
@@ -446,7 +445,7 @@ const MapConf = ({ authenticatedUser, styledMaps, tags, mapData, serverSideDatas
                                 title={DATASET.COOSE_SURVEY}
                                 centered
                                 width={700}
-                                visible={modalVisible}
+                                visible={surveyModalVisible}
                                 destroyOnClose={true}
                                 footer={[
                                     <Button key="close" onClick={() => { setSurveyModalVisible(false) }}> {DATASET.CLOSE}</Button>

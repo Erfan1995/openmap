@@ -47,18 +47,14 @@ padding: 10px;
 
 
 const Popup = ({ mdcId, properties, selectedDatasetProperties, layerType, setDataset, onMapDataChange, token, editedProperties }) => {
-    const [selectedStyle, setSelectedStyle] = useState(false);
     const [loading, setLoading] = useState(false);
     const [checkedList, setCheckedList] = useState(selectedDatasetProperties);
     const [indeterminate, setIndeterminate] = useState(true);
     const [checkAll, setCheckAll] = useState(false);
-    const [cBoxes, setCBoxes] = useState([]);
     let options = [];
     const dynamicFormContent = [];
     let initialValues = {};
     let initialFormValues = {};
-    console.log(properties, ' properteis');
-    console.log(selectedDatasetProperties, 'selected properties');
     if (layerType === "dataset") {
         let i = 0;
         for (const [key, value] of Object.entries(properties)) {
@@ -137,7 +133,6 @@ const Popup = ({ mdcId, properties, selectedDatasetProperties, layerType, setDat
     const selectPopupStyle = async (item) => {
         setLoading(true);
         if (layerType === "dataset") {
-            setSelectedStyle(true);
             const res = await putMethod('mapdatasetconfs/' + mdcId, { default_popup_style_slug: item });
             if (res) {
                 setDataset();
