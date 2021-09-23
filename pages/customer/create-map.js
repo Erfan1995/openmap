@@ -82,7 +82,6 @@ const CreateMapContainer = ({ authenticatedUser, collapsed, styledMaps, tags, se
           setLoading(false);
         }
         setMapData(data);
-        console.log(manualArray);
         setCustomMapData(manualArray);
       }, 3000)
     } catch (e) {
