@@ -36,10 +36,10 @@ const SurveyCreatorComponent = ({ authenticatedUser, token, surveyForms }) => {
             message.error("please add form!")
         } else {
             if (dd.title && dd.description) {
-                const length = '';
                 dd.pages[0].elements.push({
                     "type": "text",
-                    "name": "geolocation"
+                    "name": "geolocation",
+                    "visible": false
                 })
                 setLoading(true);
                 const postSurvey = await postMethod('surveys', { user: authenticatedUser.id, forms: JSON.stringify(dd), title: dd.title })
@@ -119,13 +119,17 @@ const SurveyCreatorComponent = ({ authenticatedUser, token, surveyForms }) => {
     const deleteSurvey = async (id) => {
         setLoading(true);
         try {
-            const deletedSurvey = await deleteMethod('surveys/' + id);
-            if (deletedSurvey) {
-                const dd = surveyList.filter(dData => dData.id !== id)
-                setSurveyList(dd);
-                message.success(DATASET.SUCCESS);
-                setLoading(false);
+            const surveyConf = await deleteMethod('mapsurveyconfs/survey:' + id);
+            if (surveyConf) {
+                const deletedSurvey = await deleteMethod('surveys/' + id);
+                if (deletedSurvey) {
+                    const dd = surveyList.filter(dData => dData.id !== id)
+                    setSurveyList(dd);
+                    message.success(DATASET.SUCCESS);
+                    setLoading(false);
+                }
             }
+
         } catch (e) {
             setLoading(false);
             message.error(e);

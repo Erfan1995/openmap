@@ -14,7 +14,7 @@ const DatasetConf = ({ icons, mdcId, selectedDIcons, datasetProperties, selected
                 </TabPane>
                 <TabPane tab={DATASET_CONF.PUPOP} key="3" >
                     <Popup mdcId={mdcId} onMapDataChange={onMapDataChange} setDataset={setDataset}
-                        datasetProperties={datasetProperties} editedProperties={editedProperties}
+                        properties={datasetProperties} editedProperties={editedProperties}
                         selectedDatasetProperties={selectedDatasetProperties} layerType={layerType} token={token} />
                 </TabPane>
             </Tabs>
