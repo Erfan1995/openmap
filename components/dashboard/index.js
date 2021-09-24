@@ -1,9 +1,6 @@
 import { Card, Typography } from "antd";
-import UseAuth from "hooks/useAuth";
 import dynamic from "next/dynamic";
 import Link from "next/link";
-import { useRouter } from "next/router";
-import { useEffect } from "react";
 import styled from 'styled-components';
 import { MAP } from 'static/constant';
 
@@ -36,8 +33,7 @@ export const StyledCard = styled(Card)`
 
 
 const { Title } = Typography;
-const Dashboard = ({ mapData,manualMapData,datasets }) => {
-
+const Dashboard = ({ mapData, manualMapData, datasets ,mapToken}) => {
 
   const MapWithNoSSR = dynamic(() => import("../../components/map/mapImage"), {
     ssr: false
@@ -48,35 +44,35 @@ const Dashboard = ({ mapData,manualMapData,datasets }) => {
   });
 
   return (
-    <div>
+        <div>
 
-      <MapWithNoSSR   mapData={mapData} manualMapData={manualMapData} datasets={datasets} />
+          <MapWithNoSSR mapData={mapData} manualMapData={manualMapData} datasets={datasets} />
 
-      <div className='news-relay text-center' >
-        <StyledCard>
-          <Title level={1}>
-            {MAP.OPENMAP_LOGO}
-          </Title>
-          <Title level={3}>
-            {MAP.WELCOME_TO_OPENMAP}
-          </Title>
-
-
-          <Metamask mapDetails={mapData} />
-          <CardMiddle>
-            <img src='metamask-big.png' />
-          </CardMiddle>
-          <CardFooter>
-            <span level={6}>{MAP.AS_CUSTOMER} <Link href='sign-in'>
-              {MAP.SING_IN}
-            </Link></span>
-
-          </CardFooter>
-        </StyledCard>
+          <div className='news-relay text-center' >
+            <StyledCard>
+              <Title level={1}>
+                {MAP.OPENMAP_LOGO}
+              </Title>
+              <Title level={3}>
+                {MAP.WELCOME_TO_OPENMAP}
+              </Title>
 
 
-      </div>
-    </div>
+              <Metamask mapDetails={mapData} />
+              <CardMiddle>
+                <img src='metamask-big.png' />
+              </CardMiddle>
+              <CardFooter>
+                <span level={6}>{MAP.AS_CUSTOMER} <Link href='sign-in'>
+                  {MAP.SING_IN}
+                </Link></span>
+
+              </CardFooter>
+            </StyledCard>
+
+
+          </div>
+        </div>
 
   );
 };
