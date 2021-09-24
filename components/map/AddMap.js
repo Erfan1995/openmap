@@ -48,6 +48,7 @@ const AddMap = ({ onDataSaved, myVisible, geoData, mapData, modalClose, userType
 
     const onCompleteSurvey = async (data) => {
         setLoading(true);
+        data.valuesHash.geolocation = mapManualData.coordinates;
         try {
             let values = {};
             values.map = mainMapData.id;
@@ -57,6 +58,7 @@ const AddMap = ({ onDataSaved, myVisible, geoData, mapData, modalClose, userType
             if (geoData.type === 'Point') {
                 values.icon = selectedIcons ? selectedIcons.id : null;
             }
+            console.log(values, 'values');
             let res = null;
             if (userType === 'public') {
                 values.is_approved = false;

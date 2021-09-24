@@ -87,7 +87,7 @@ const MapMarkers = ({ icons, mdcId, selectedDIcons, layerType, setDataset, onMap
                 setUploadIconsLoading(true);
                 setSelectedIcons([...selectedIcons, item]);
                 selectedIconsToUpload.push(item);
-                const res = await putMethod('maps/' + mdcId, { icons: selectedIconsToUpload.map(item => item.id) });
+                const res = await putMethod('mapsurveyconfs/' + mdcId, { icons: selectedIconsToUpload.map(item => item.id) });
                 if (res) {
                     onMapDataChange();
                     setUploadIconsLoading(false);
