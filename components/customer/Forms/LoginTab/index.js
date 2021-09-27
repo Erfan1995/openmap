@@ -177,6 +177,7 @@ function LoginTab({ mapData }) {
 
 
     const editAttribute = (values) => {
+        console.log('values '+JSON.stringify(values));
         const att = [];
         attributes.forEach((element) => {
             if (element.attribute == selectedAttribute.attribute) {
@@ -219,6 +220,7 @@ function LoginTab({ mapData }) {
                 centered
                 width={700}
                 visible={attributeModelVisibility}
+                onCancel={()=>setAttributeModelVisibility(false)}
                 footer={[
                     <Button form="myForm" key="submit" htmlType="submit">
                         {DATASET.SAVE}
@@ -260,6 +262,7 @@ function LoginTab({ mapData }) {
                 width={700}
                 visible={editModalVisibility}
                 destroyOnClose={true}
+                onCancel={()=>setEditModalVisiblity(false)}
                 footer={[
                     <Button form='editForm' key='submit' htmlType='submit'> {DATASET.SAVE}</Button>,
                     <Button key='close' onClick={() => setEditModalVisiblity(false)}>{DATASET.CLOSE}</Button>,
@@ -269,10 +272,10 @@ function LoginTab({ mapData }) {
                         <Form.Item initialValue={selectedAttribute != null ? selectedAttribute.attribute : null} name="attribute" label={DATASET.TITLE} rules={[{ required: true }]}>
                             <Input />
                         </Form.Item>
-                        <Form.Item name="type" label="Type" rules={[{ required: true }]}>
+                        <Form.Item name="type" label="Type" initialValue={selectedAttribute != null ? selectedAttribute.type : null} rules={[{ required: true }]}>
                             <Select
                                 placeholder={DATASET.SELECT_TYPE_PLACEHOLDER}
-                                allowClear defaultValue={selectedAttribute != null ? selectedAttribute.type : null}
+                                allowClear 
                             >
                                 <Option value="string">{DATASET.STRING}</Option>
                                 <Option value="number">{DATASET.NUMBER}</Option>
