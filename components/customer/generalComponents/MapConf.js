@@ -1,7 +1,8 @@
 import { useState, useRef } from 'react';
-import { Divider, Typography, Card, Tabs, Button, Modal, List, Spin, message, Menu, Dropdown, Row, Col, Image } from 'antd';
+import { Divider, Typography, Checkbox, Card, Tabs, Button, Modal, List, Spin, message, Menu, Dropdown, Row, Col, Image } from 'antd';
 import styled from 'styled-components';
 import CreateMap from 'components/customer/Forms/CreateMap';
+import LoginTab from 'components/customer/Forms/LoginTab';
 import StyledMaps from 'components/customer/generalComponents/ListMapboxStyle';
 import {
     putMethod, getDatasets, getMapSurveyConf, getSurveyForms, getSurveyConfContent,
@@ -91,6 +92,7 @@ const MapConf = ({ authenticatedUser, styledMaps, tags, mapData, serverSideDatas
     const [editableSurvey, setEditableSurvey] = useState();
     const router = useRouter();
     const [surveyModalVisible, setSurveyModalVisible] = useState();
+
 
     const menu = (
         <Menu >
@@ -360,7 +362,7 @@ const MapConf = ({ authenticatedUser, styledMaps, tags, mapData, serverSideDatas
     function showSurveyConfirm() {
         confirm({
             icon: <ExclamationCircleOutlined />,
-            content: <p>{DATASET.DELETE_CONFIRM}</p>,
+            content: <p>Confirm Dialog</p>,
             onOk() {
                 deleteMapSurvey(surveyId)
             },
@@ -371,6 +373,8 @@ const MapConf = ({ authenticatedUser, styledMaps, tags, mapData, serverSideDatas
     const onModalSurveyClose = (res) => {
         setEditModalVisible(false);
     }
+
+
 
     return (
         <Spin spinning={loading}>
@@ -510,6 +514,9 @@ const MapConf = ({ authenticatedUser, styledMaps, tags, mapData, serverSideDatas
                                     </List.Item>
                                 )}
                             />
+                        </TabPane>
+                        <TabPane tab={DATASET.LOGIN} key='6'>
+                                <LoginTab mapData={mapData}/>
                         </TabPane>
                     </Tabs>
                     :

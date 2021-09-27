@@ -237,7 +237,6 @@ const ManualMapData = ({ authenticatedUser, collapsed, token, surveyForms }) => 
                         <Button key="download" onClick={exportToPDF}>{DATASET.DOWNLOAD}</Button>,
                         <Button key="close" onClick={() => { setModalVisible(false) }}> {DATASET.CLOSE}</Button>
                     ]}
-                    destroyOnClose={true}
                 >
                     {mapDataClicked ? <CustomerManualMapData authenticatedUser={authenticatedUser} token={token} row={row}
                         formElementsName={formElementsName} data={manualMapData} mapFilterData={mapsDataTofilter} setMapsDataToFilter={onFilterChange} /> :

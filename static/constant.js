@@ -115,7 +115,25 @@ export const DATASET = {
     DETAILS: 'Details',
     CUSTOMERS: 'Customers',
     PUBLIC_USERS: 'Public Users',
-    UPDATE_WARNING: 'You might lose your data of this form! Do you want to continue?'
+    UPDATE_WARNING: 'You might lose your data of this form! Do you want to continue?',
+    EMAIL_LOGIN:'Email Login',
+    SOCIAL_LOGIN:'Social Login',
+    BLOCKCHAIN_LOGIN:'Blockchain Login',
+    ANNONYMOUS_LOGIN:'Anonymous Login',
+    UNLOCK_PROTOCOL:'Unlock Protocol',
+    ONE:'1',
+    TWO:'2',
+    THREE:'3',
+    FOUR:'4',
+    FIFE:'5',
+    USE_ATTRIBUTE:'Use Attribute',
+    ADD_ATTRIBUTE:'Add Attribute',
+    SELECT_TYPE_PLACEHOLDER:"Select the type of attribute",
+    STRING:'String',
+    DOUBLE:'DOUBLE',
+    NUMBER:'Number',
+    JSON:'Json',
+    EDIT_ATTRIBUTE:'Edit Attribute',
 
 
 }
