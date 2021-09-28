@@ -56,8 +56,6 @@ const Dashboard = ({ mapData, manualMapData, datasets ,mapToken}) => {
               <Title level={3}>
                 {MAP.WELCOME_TO_OPENMAP}
               </Title>
-
-
               <Metamask mapDetails={mapData} />
               <CardMiddle>
                 <img src='metamask-big.png' />

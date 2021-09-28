@@ -402,9 +402,9 @@ const MapConf = ({ authenticatedUser, styledMaps, tags, mapData, serverSideDatas
                         </TabPane>
 
                         <TabPane tab={DATASET.LAYERS} key="4" >
-                            <Button type="dashed" size='large' block onClick={() => mdc(mapData.id, false, "main")}>
+                            {/* <Button type="dashed" size='large' block onClick={() => mdc(mapData.id, false, "main")}>
                                 {DATASET.ADD_MAIN_POPUPS_AND_MARKER}
-                            </Button>
+                            </Button> */}
                             <Button type="dashed" size='large' block onClick={() => chooseDataset()}>
                                 {DATASET.ADD_NEW_LAYER}
                             </Button>

@@ -41,13 +41,14 @@ export const NextButton = styled(Button)`
 
 `;
 let web3 = undefined;
-const Metamask = ({mapDetails}) => {
+const Metamask = ({ mapDetails }) => {
     const router = useRouter();
     const [mapIds, setMapIds] = useState([]);
 
 
     const [disabled, setDisabled] = useState(false);
-    const [user, setUser] = useContext(UserContext);
+    const [user, setUser] = useState('');
+    // const [user, setUser] = useContext(UserContext);
 
 
 
@@ -117,7 +118,7 @@ const Metamask = ({mapDetails}) => {
         handleVisits();
 
         try {
-       
+
             if (ethereum) {
                 await ethereum.enable();
                 if (!web3) {
@@ -174,13 +175,6 @@ const Metamask = ({mapDetails}) => {
 
     return (
         <div>
-            <NextButton onClick={handleClick} icon={<img src='metamask.png' className='margin-right-10' />}>
-                Connect To Metamask
-            </NextButton>
-
-
-                
-
 
             <div className='login'>
                 {/* <BlockChain/> */}
@@ -188,6 +182,9 @@ const Metamask = ({mapDetails}) => {
                 <SocialLogins onSubmit={handleLoginWithSocial} />
 
             </div>
+            <NextButton onClick={handleClick} icon={<img src='metamask.png' className='margin-right-10' />}>
+                Connect To Metamask
+            </NextButton>
 
         </div>
     )
