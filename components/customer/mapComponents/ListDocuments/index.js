@@ -1,7 +1,6 @@
 import React, { useCallback, useState } from 'react';
 import moment from 'moment';
 import { debounce } from 'lodash';
-import csv from 'csv';
 import { gapi } from 'gapi-script';
 import { Col, Drawer, Row, Button, Input, Table, Tooltip, Spin } from 'antd';
 import styled from 'styled-components';
@@ -77,9 +76,9 @@ const ListDocuments = ({ documents = [], onSearch, signedInUser, onSignOut, onMo
           <Col span={24}>
             <div style={{ marginBottom: 20 }}>
               <p>Signed In as: {`${signedInUser?.Ad} (${signedInUser?.cu})`}</p>
-              <Button type="primary" onClick={onSignOut}>
+              {/* <Button type="primary" onClick={onSignOut}>
                 Sign Out
-              </Button>
+              </Button> */}
             </div>
 
             <div className="table-card-actions-container">
@@ -95,7 +94,6 @@ const ListDocuments = ({ documents = [], onSearch, signedInUser, onSignOut, onMo
               </div>
             </div>
             <Table
-              className="table-striped-rows"
               columns={columns}
               dataSource={documents}
               pagination={{ pageSize: 20 }}

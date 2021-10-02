@@ -45,7 +45,6 @@ const NavBar = ({ isMobileSize, toggle, walletAddress, publicUser, mapData, inje
     const [serverPublicUser, setServerPublicUser] = useState(publicUser);
     const { login, logout } = UseAuth();
     const [publicuserImage, setPublicUserImage] = useState(publicUser.picture);
-    console.log(publicuserImage);
     const onModalClose = (res) => {
         setServerPublicUser(res);
         setPublicUserImage(res.picture);

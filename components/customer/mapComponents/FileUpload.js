@@ -1,4 +1,4 @@
-import { List, Divider, Upload, message, Button, Typography, Row, Col, Spin, Modal } from 'antd';
+import { List, Divider, Upload, message, Button, Typography, Row, Col, Spin, Modal, Card } from 'antd';
 import styled from 'styled-components';
 import { useState, useRef } from 'react';
 import { InboxOutlined } from '@ant-design/icons';
@@ -17,11 +17,17 @@ const DISCOVERY_DOCS = ['https://www.googleapis.com/discovery/v1/apis/drive/v3/r
 const SCOPES = 'https://www.googleapis.com/auth/drive';
 const { Title } = Typography;
 const { Dragger } = Upload;
-const SelectType = styled(Button)`
-  margin-bottom: 10px;
-  width:100px;
-  height:80px;
+const DataCard = styled(Card)`
+:hover{
+    opacity:0.8;
+    cursor:pointer;
+}
 `;
+const Photo = styled.img`
+  width:70%;
+  height:70%;
+  
+`
 const DataTypeLayout = styled.div`
     padding:20px;
 `;
@@ -29,17 +35,20 @@ const data = [
     {
         title: 'csv',
         type: ['application/vnd.ms-excel', 'text/csv'],
-        key: 1
+        key: 1,
+        src: '/csv.png'
     },
     {
         title: 'geojson',
         type: ['application/json'],
-        key: 2
+        key: 2,
+        src: '/json-file.png'
     },
     {
-        title: 'google drive',
+        title: 'gdrive',
         type: ['googleDrive'],
-        key: 3
+        key: 3,
+        src: '/google-drive.png'
     }
 
 ];
@@ -54,6 +63,13 @@ const FileUpload = ({ onChangeEvent, googleDriveFile }) => {
 
     //google drive part..............................................................
     const listFiles = (searchTerm = null) => {
+        let query = "";
+        if (searchTerm === null) {
+            query = "mimeType='text/csv' or mimeType='application/json' or mimeType='application/vnd.openxmlformats-officedocument.spreadsheetml.sheet' or mimeType='application/vnd.ms-excel'"
+
+        } else {
+            query = searchTerm;
+        }
         setIsLoadingGoogleDriveApi(true);
         try {
             gapi.client.drive.files
@@ -61,7 +77,7 @@ const FileUpload = ({ onChangeEvent, googleDriveFile }) => {
                     pageSize: 1000,
                     fields: 'nextPageToken, files(id, name, mimeType, modifiedTime, size)',
                     // q: searchTerm,
-                    q: "mimeType='text/csv' or mimeType='application/json' or mimeType='application/vnd.openxmlformats-officedocument.spreadsheetml.sheet' or mimeType='application/vnd.ms-excel'",
+                    q: query
 
                 })
                 .then(function (response) {
@@ -71,7 +87,7 @@ const FileUpload = ({ onChangeEvent, googleDriveFile }) => {
                         setDocuments(res.files);
                         setIsLoadingGoogleDriveApi(false);
                         setListDocumentsVisibility(true);
-                    } 
+                    }
                 });
         } catch (e) {
             setIsLoadingGoogleDriveApi(false);
@@ -91,7 +107,6 @@ const FileUpload = ({ onChangeEvent, googleDriveFile }) => {
      */
     const updateSigninStatus = (isSignedIn) => {
         if (isSignedIn) {
-            console.log(isSignedIn, 'signed in')
             // Set the signed in user
             setSignedInUser(gapi.auth2.getAuthInstance().currentUser.le.wt);
             setIsLoadingGoogleDriveApi(false);
@@ -99,7 +114,6 @@ const FileUpload = ({ onChangeEvent, googleDriveFile }) => {
             listFiles();
         } else {
             // prompt user to sign in
-            console.log('not signed in')
             handleAuthClick();
         }
     };
@@ -110,14 +124,7 @@ const FileUpload = ({ onChangeEvent, googleDriveFile }) => {
     const handleSignOutClick = (event) => {
         setListDocumentsVisibility(false);
         let auth2 = gapi.auth2.getAuthInstance();
-        console.log(auth2);
-        auth2.signOut().then(() => {
-            gapi.signin2.render({
-                prompt: 'select_account'
-            })
-        });
-        console.log('check logged user', gapi.auth2.getAuthInstance().signIn());
-
+        auth2.signOut();
     };
 
     /**
@@ -199,7 +206,7 @@ const FileUpload = ({ onChangeEvent, googleDriveFile }) => {
         <Spin spinning={isLoadingGoogleDriveApi}>
             <DataTypeLayout>
                 <Modal
-                    width={800}
+                    width='80%'
                     title={DATASET.ADD_DATASET}
                     centered
                     visible={listDocumentsVisible}
@@ -222,18 +229,16 @@ const FileUpload = ({ onChangeEvent, googleDriveFile }) => {
                 </Modal>
                 <List
                     grid={{
-                        gutter: [16, 16],
-                        xs: 1,
-                        sm: 2,
-                        md: 3,
-                        lg: 4,
-                        xl: 5,
-                        xxl: 6
+                        gutter: 10,
+                        column: 4
                     }}
                     dataSource={fileTypes}
                     renderItem={item => (
                         <List.Item key={item.key}>
-                            <SelectType className={item.isSelected ? 'selectedBox' : ''} onClick={() => changeType(item.type)} >{item.title}</SelectType>
+                            <DataCard onClick={() => changeType(item.type)} style={{ textAlign: "center" }} >
+                                <Photo src={item.src} />
+                                <h4 >{item.title}</h4>
+                            </DataCard>
                         </List.Item>
                     )}
                 />

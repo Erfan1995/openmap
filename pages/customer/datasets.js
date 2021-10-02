@@ -51,9 +51,6 @@ const Dataset = ({ authenticatedUser, collapsed, locked_data, unlocked_data, tag
                 description,
         });
     };
-    const setFileMetaData = (metaData) => {
-
-    }
     const googleDriveFile = (metaData, data) => {
         setMetaData(
             {
@@ -113,8 +110,6 @@ const Dataset = ({ authenticatedUser, collapsed, locked_data, unlocked_data, tag
         })
     }
     const onChangeFile = ({ file }) => {
-        console.log(file.originFileObj.name, 'file')
-
         setMetaData(
             {
                 title: file.originFileObj.name,
