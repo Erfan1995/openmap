@@ -95,7 +95,6 @@ const MapMarkers = ({ icons, mdcId, selectedDIcons, layerType, setDataset, onMap
             }
 
         } else if (layerType === "dataset") {
-            console.log(mdcId)
             setUploadIconsLoading(true);
             const res = await putMethod('mapdatasetconfs/' + mdcId, { icon: item.id });
             if (res) {

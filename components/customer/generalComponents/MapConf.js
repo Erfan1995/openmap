@@ -464,7 +464,6 @@ const MapConf = ({ authenticatedUser, styledMaps, tags, mapData, serverSideDatas
                                 footer={[
                                     <Button key="close" onClick={() => { setSurveyModalVisible(false) }}> {DATASET.CLOSE}</Button>
                                 ]}
-                                destroyOnClose={true}
                             >
                                 <SelectNewMapSurvey surveys={surveys} addSelectedSurvey={addSelectedSurvey} />
                             </Modal>

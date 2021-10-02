@@ -7,13 +7,15 @@ const { Title } = Typography;
 const { TabPane } = Tabs;
 import { postMethod, getDatasets, getTags, deleteMethod } from "../../lib/api";
 import { formatDate, fileSizeReadable } from "../../lib/general-functions";
-import FileUpload from '../../components/customer/mapComponents/FileUpload';
+// import FileUpload from '../../components/customer/mapComponents/FileUpload';
 import nookies from 'nookies';
 import UnlockedDataset from '../../components/customer/mapComponents/UnlockedDatasetTable';
 import LockedDatasetTable from '../../components/customer/mapComponents/LockedDatasetTable';
 import csv from 'csv';
 import GeoJSON from 'geojson';
 import { LAT, LONG, DATASET } from '../../static/constant'
+import dynamic from 'next/dynamic';
+
 const MapsWrapper = styled.div`
 background:#ffffff;
 padding:20px;
@@ -29,6 +31,9 @@ const CardTitle = styled(Title)`
 `;
 
 const Dataset = ({ authenticatedUser, collapsed, locked_data, unlocked_data, tags }) => {
+    const FileUpload = dynamic(() => import('components/customer/mapComponents/FileUpload'), {
+        ssr: false
+    })
     const [dataset, setDataset] = useState(unlocked_data);
     const [lockedDataset, setLockedDataset] = useState(locked_data);
     const [visible, setVisible] = useState(false);
@@ -37,6 +42,7 @@ const Dataset = ({ authenticatedUser, collapsed, locked_data, unlocked_data, tag
     const [datasetContent, setDatasetContent] = useState();
     const [hasCoordinate, setHasCoordinate] = useState(true);
     const [invalidFileSize, setInvalidFileSize] = useState(false);
+    const [metaData, setMetaData] = useState();
     let fileReader;
     const openNotificationWithIcon = (type, message, description = null) => {
         notification[type]({
@@ -45,59 +51,92 @@ const Dataset = ({ authenticatedUser, collapsed, locked_data, unlocked_data, tag
                 description,
         });
     };
-   
-    const onChangeFile = ({ file }) => {
+    const setFileMetaData = (metaData) => {
 
-        console.log(file.originFileObj)
+    }
+    const googleDriveFile = (metaData, data) => {
+        setMetaData(
+            {
+                title: metaData.name,
+                is_locked: false,
+                user: authenticatedUser.id,
+                size: metaData.size
+            }
+        )
+        if (["application/vnd.ms-excel", 'text/csv', 
+        'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet'].find((item) => item === metaData.mimeType)) {
+            csvToGeojson(data.body)
+        } else if (metaData.mimeType === 'application/json') {
+            handleFileRead(data.result);
+        }
+
+    }
+    const csvToGeojson = (file) => {
+        csv.parse(file, (err, data) => {
+            if (data) {
+                let latitude;
+                let longitude;
+                const columns = data[0];
+                columns.map((col) => {
+                    for (let i = 0; i < LAT.length; i++) {
+                        if (col === LAT[i]) {
+                            latitude = col;
+                        }
+                    }
+                    for (let i = 0; i < LONG.length; i++) {
+                        if (col === LONG[i]) {
+                            longitude = col;
+                        }
+                    }
+                })
+                if (latitude) {
+                    setHasCoordinate(true)
+                } else {
+                    setHasCoordinate(false)
+                }
+                let arr = [];
+                for (let j = 1; j < data.length; j++) {
+                    let obj = {}
+                    for (let i = 0; i < columns.length; i++) {
+                        obj[columns[i]] = data[j][i]
+                    }
+                    arr[j] = obj;
+                }
+                arr.splice(0, 1)
+                try {
+                    let gJson = GeoJSON.parse(arr, { Point: [latitude, longitude] });
+                    setDatasetContent(gJson);
+                } catch (e) {
+                    setHasCoordinate(false);
+                }
+            }
+        })
+    }
+    const onChangeFile = ({ file }) => {
+        console.log(file.originFileObj.name, 'file')
+
+        setMetaData(
+            {
+                title: file.originFileObj.name,
+                is_locked: false,
+                user: authenticatedUser.id,
+                size: file.originFileObj.size
+            }
+        )
         if (file.originFileObj.size < 1e6) {
             setInvalidFileSize(false);
             fileReader = new FileReader();
             if (["application/vnd.ms-excel", 'text/csv'].find((item) => item === file.originFileObj.type)) {
                 fileReader.onloadend = () => {
-                    csv.parse(fileReader.result, (err, data) => {
-                        if (data) {
-                            let latitude;
-                            let longitude;
-                            const columns = data[0];
-                            columns.map((col) => {
-                                for (let i = 0; i < LAT.length; i++) {
-                                    if (col === LAT[i]) {
-                                        latitude = col;
-                                    }
-                                }
-                                for (let i = 0; i < LONG.length; i++) {
-                                    if (col === LONG[i]) {
-                                        longitude = col;
-                                    }
-                                }
-                            })
-                            if (latitude) {
-                                setHasCoordinate(true)
-                            } else {
-                                setHasCoordinate(false)
-                            }
-                            let arr = [];
-                            for (let j = 1; j < data.length; j++) {
-                                let obj = {}
-                                for (let i = 0; i < columns.length; i++) {
-                                    obj[columns[i]] = data[j][i]
-                                }
-                                arr[j] = obj;
-                            }
-                            arr.splice(0, 1)
-                            try {
-                                let gJson = GeoJSON.parse(arr, { Point: [latitude, longitude] });
-                                setDatasetContent(gJson);
-                            } catch (e) {
-                                setHasCoordinate(false);
-                            }
-                        }
-                    })
+                    csvToGeojson(fileReader.result)
                 }
                 fileReader.readAsText(file.originFileObj);
 
             } else {
-                fileReader.onloadend = handleFileRead;
+                console.log(file.originFileObj);
+                fileReader.onloadend = () => {
+                    handleFileRead(fileReader.result);
+                }
                 fileReader.readAsText(file.originFileObj, "UTF-8");
 
             }
@@ -107,11 +146,10 @@ const Dataset = ({ authenticatedUser, collapsed, locked_data, unlocked_data, tag
         }
 
     }
-    const handleFileRead = (e) => {
-        const content = fileReader.result;
+    const handleFileRead = (data) => {
         let jsData;
         try {
-            jsData = JSON.parse(content);
+            jsData = JSON.parse(data);
             if (jsData.features) {
                 if (jsData.features[0].geometry || jsData.features[0].properties || jsData.features[0].type) {
                     setHasCoordinate(true)
@@ -134,7 +172,7 @@ const Dataset = ({ authenticatedUser, collapsed, locked_data, unlocked_data, tag
                 setLoading(true);
                 try {
                     if (datasetContent) {
-                        const res = await postMethod('datasets', { title: file.originFileObj.name, is_locked: false, user: authenticatedUser.id, size: file.originFileObj.size })
+                        const res = await postMethod('datasets', metaData)
                         res.title = res.title.split(".")[0];
                         res.updated_at = formatDate(res.updated_at);
                         res.maps = res.maps.length;
@@ -179,7 +217,6 @@ const Dataset = ({ authenticatedUser, collapsed, locked_data, unlocked_data, tag
     return (
         <Layout collapsed={collapsed} user={authenticatedUser}>
             <MapsWrapper  >
-
                 <CardTitle level={4}>{DATASET.DATASETS}</CardTitle>
                 <AddNew type='primary' onClick={() => setVisible(true)}>{DATASET.ADD_DATASET}</AddNew>
                 <Divider />
@@ -197,7 +234,7 @@ const Dataset = ({ authenticatedUser, collapsed, locked_data, unlocked_data, tag
                             onOk={() => storeData()}
                             onCancel={() => setVisible(false)}>
                             <Spin spinning={loading}>
-                                <FileUpload onChangeEvent={onChangeFile} />
+                                <FileUpload onChangeEvent={onChangeFile} googleDriveFile={googleDriveFile} />
                             </Spin>
                         </Modal>
                     </TabPane>
