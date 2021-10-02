@@ -23,6 +23,11 @@ const ListDocuments = ({ documents = [], onSearch, signedInUser, onSignOut, onMo
       key: 'mimeType',
     },
     {
+      title: 'Size',
+      dataIndex: 'size',
+      key: 'size',
+    },
+    {
       title: 'Last Modified Date',
       dataIndex: 'modifiedTime',
       key: 'modifiedTime',

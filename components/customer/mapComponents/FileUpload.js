@@ -5,7 +5,7 @@ import { InboxOutlined } from '@ant-design/icons';
 import { DATASET } from '../../../static/constant'
 import { gapi } from 'gapi-script';
 import ListDocuments from './ListDocuments';
-
+import { fileSizeReadable } from 'lib/general-functions';
 const CLIENT_ID = process.env.NEXT_PUBLIC_GOOGLE_DRIVE_CLIENT_ID;
 const API_KEY = process.env.NEXT_PUBLIC_GOOGLE_DRIVE_API_KEY;
 
@@ -60,7 +60,7 @@ const FileUpload = ({ onChangeEvent, googleDriveFile }) => {
     const [documents, setDocuments] = useState([]);
     const [isLoadingGoogleDriveApi, setIsLoadingGoogleDriveApi] = useState(false);
     const [signedInUser, setSignedInUser] = useState();
-
+    const [fileName, setFileName] = useState();
     //google drive part..............................................................
     const listFiles = (searchTerm = null) => {
         let query = "";
@@ -76,14 +76,15 @@ const FileUpload = ({ onChangeEvent, googleDriveFile }) => {
                 .list({
                     pageSize: 1000,
                     fields: 'nextPageToken, files(id, name, mimeType, modifiedTime, size)',
-                    // q: searchTerm,
                     q: query
 
                 })
                 .then(function (response) {
                     const res = JSON.parse(response.body);
                     if (res) {
-                        console.log(res);
+                        res.files.map((data) => {
+                            data.size = fileSizeReadable(data.size);
+                        });
                         setDocuments(res.files);
                         setIsLoadingGoogleDriveApi(false);
                         setListDocumentsVisibility(true);
@@ -148,7 +149,9 @@ const FileUpload = ({ onChangeEvent, googleDriveFile }) => {
                     // Handle the initial sign-in state.
                     updateSigninStatus(gapi.auth2.getAuthInstance().isSignedIn.get());
                 },
-                function (error) { }
+                function (error) {
+                    message.error(error);
+                }
             );
     };
 
@@ -163,6 +166,7 @@ const FileUpload = ({ onChangeEvent, googleDriveFile }) => {
     const onModalClose = (data, metaData) => {
         setListDocumentsVisibility(false);
         googleDriveFile(metaData, data)
+        setFileName(metaData.name + "");
     };
 
 
@@ -198,6 +202,7 @@ const FileUpload = ({ onChangeEvent, googleDriveFile }) => {
             return compareFileType(file.type) ? true : Upload.LIST_IGNORE;
         },
         onChange: info => {
+            setFileName(info.file.originFileObj.name + "")
             onChangeEvent(info);
         },
     };
