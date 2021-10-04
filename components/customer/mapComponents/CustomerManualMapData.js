@@ -4,7 +4,6 @@ import { DownOutlined, ExclamationCircleOutlined } from '@ant-design/icons';
 import { deleteMethod, putMethod } from "../../../lib/api";
 import styled from 'styled-components';
 import { DATASET } from '../../../static/constant'
-import Dataset from 'pages/customer/datasets';
 const { confirm } = Modal;
 const { Title } = Typography;
 const MapsWrapper = styled.div`

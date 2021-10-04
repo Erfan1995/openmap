@@ -22,7 +22,6 @@ const EditSurveyMeta = ({ editableSurvey, onModalClose, addImageFile }, ref) => 
     const [imageFile, setImageFile] = useState();
     const [imageSelected, setImageSelected] = useState(false);
     const [uploadImageAvailable, setUploadImageAvailable] = useState(false);
-    let surveyForm = editableSurvey.forms;
     const props = {
         beforeUpload: file => {
             if ((file.type.split("/")[0]) !== "image") {
@@ -45,7 +44,7 @@ const EditSurveyMeta = ({ editableSurvey, onModalClose, addImageFile }, ref) => 
             const reader = new FileReader();
             reader.readAsDataURL(file.originFileObj);
             reader.onload = () => {
-                console.log(reader.result,'result')
+                console.log(reader.result, 'result')
                 addImageFile(reader.result);
                 resolve(reader.result);
             }
@@ -66,10 +65,10 @@ const EditSurveyMeta = ({ editableSurvey, onModalClose, addImageFile }, ref) => 
                     const fData = new FormData();
                     let res = null;
                     if (image) {
+                        let surveyForm = JSON.parse(editableSurvey.forms);
                         surveyForm.title = values.title;
                         surveyForm.description = values.description;
                         surveyForm.logo = image;
-                        console.log(JSON.stringify(surveyForm), 'forms');
                         setLoading(true);
                         res = await putMethod('surveys/' + editableSurvey.id, { forms: JSON.stringify(surveyForm) })
                         setLoading(false);
