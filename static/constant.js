@@ -26,10 +26,10 @@ export const DATASET = {
     ACTIONS: 'Actions',
     MORE_ACTIONs: 'More Actions',
     CREATE_MAP_SUCCESS_MSG: 'map successfully created!',
-    DOWNLOAD:'Download',
+    DOWNLOAD: 'Download',
     TITLE: 'Title',
-    DIALOG_TITLE:'Map Dialog Title',
-    PLACE_HOLDER_DIALOG:'Please Enter Dialog Title',
+    DIALOG_TITLE: 'Map Dialog Title',
+    PLACE_HOLDER_DIALOG: 'Please Enter Dialog Title',
     TYPE: 'Type',
     TAGS: 'Tags',
     DESCRIPTION: 'Description',
@@ -115,7 +115,12 @@ export const DATASET = {
     DETAILS: 'Details',
     CUSTOMERS: 'Customers',
     PUBLIC_USERS: 'Public Users',
-    UPDATE_WARNING: 'You might lose your data of this form! Do you want to continue?'
+    UPDATE_WARNING: 'You might lose your data of this form! Do you want to continue?',
+    DATASET_FILE_UPLOAD_DESC: 'Your CSV or Json file should contain column names in the first line and should be encoded using UTF-8.If your file contains location coordinates, they must be provided as latitude-longitude coordinates inWGS84 (decimal degrees) and the corresponding columns must be named "longitude" and "latitude".',
+    ADD_NEW_DATASET: 'Add New Dataset',
+    BACK: 'Back',
+    SELECTED_FILE_ERROR: 'you have not selected or uploaded any file ',
+    CONNECT_DATASET: 'Connect dataset'
 
 
 }

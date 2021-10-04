@@ -2,14 +2,14 @@ import React, { useCallback, useState } from 'react';
 import moment from 'moment';
 import { debounce } from 'lodash';
 import { gapi } from 'gapi-script';
-import { Col, Drawer, Row, Button, Input, Table, Tooltip, Spin } from 'antd';
+import { Col, Drawer, Row, Button, Input, Table, Tooltip, Spin, Card } from 'antd';
 import styled from 'styled-components';
 const { Search } = Input;
 const DocumentList = styled.div`
-  padding:20px;
+  padding:2px 20px;
 `
 
-const ListDocuments = ({ documents = [], onSearch, signedInUser, onSignOut, onModalClose }) => {
+const ListDocuments = ({ documents = [], onSearch, signedInUser, onSignOut, onDataSeletected, setFileName }) => {
   const [loading, setLoading] = useState(false);
   const columns = [
     {
@@ -56,7 +56,7 @@ const ListDocuments = ({ documents = [], onSearch, signedInUser, onSignOut, onMo
       const res = response;
       if (res) {
         setLoading(false);
-        onModalClose(res, record);
+        onDataSeletected(res, record);
       }
     })
 
@@ -76,36 +76,33 @@ const ListDocuments = ({ documents = [], onSearch, signedInUser, onSignOut, onMo
 
   return (
     <Spin spinning={loading}>
-      <DocumentList>
-        <Row gutter={16}>
-          <Col span={24}>
-            <div style={{ marginBottom: 20 }}>
-              <p>Signed In as: {`${signedInUser?.Ad} (${signedInUser?.cu})`}</p>
-              {/* <Button type="primary" onClick={onSignOut}>
+      <DocumentList style={{ paddingBottom: '10px' }}>
+        <div style={{ marginBottom: 20 }}>
+          <p>Signed In as: {`${signedInUser?.Ad} (${signedInUser?.cu})`}</p>
+          {/* <Button type="primary" onClick={onSignOut}>
                 Sign Out
               </Button> */}
-            </div>
+        </div>
 
-            <div className="table-card-actions-container">
-              <div className="table-search-container">
-                <Search
-                  placeholder="Search Google Drive"
-                  onChange={(e) => search(e.target.value)}
-                  onSearch={(value) => search(value)}
-                  className="table-search-input"
-                  size="large"
-                  enterButton
-                />
-              </div>
-            </div>
-            <Table
-              columns={columns}
-              dataSource={documents}
-              pagination={{ pageSize: 20 }}
-              scroll={{ y: 400 }}
+        <div className="table-card-actions-container">
+          <div className="table-search-container">
+            <Search
+              placeholder="Search Google Drive"
+              onChange={(e) => search(e.target.value)}
+              onSearch={(value) => search(value)}
+              className="table-search-input"
+              size="large"
+              enterButton
             />
-          </Col>
-        </Row>
+          </div>
+        </div>
+        <Table
+          columns={columns}
+          dataSource={documents}
+          pagination={{ pageSize: 20 }}
+          scroll={{ y: 300 }}
+        />
+        
       </DocumentList>
     </Spin>
   );
