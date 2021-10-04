@@ -5,7 +5,7 @@ import { InboxOutlined } from '@ant-design/icons';
 import { LAT, LONG, DATASET } from '../../../static/constant'
 import { gapi } from 'gapi-script';
 import ListDocuments from './ListDocuments';
-import { fileSizeReadable } from 'lib/general-functions';
+import { fileSizeReadable, formatDate } from 'lib/general-functions';
 import { ArrowLeftOutlined } from '@ant-design/icons';
 import csv from 'csv';
 import GeoJSON from 'geojson';
@@ -361,7 +361,6 @@ const FileUpload = ({ onChangeEvent, googleDriveFile, user, onModalClose }) => {
     const storeData = async (datasetContent, metaData) => {
         if (hasCoordinate) {
             //     if (invalidFileSize === false) {
-            console.log(datasetContent, 'datasetcontent')
             if (datasetContent && metaData) {
                 setIsLoadingGoogleDriveApi(true);
                 try {
@@ -371,9 +370,10 @@ const FileUpload = ({ onChangeEvent, googleDriveFile, user, onModalClose }) => {
                         res.updated_at = formatDate(res.updated_at);
                         res.maps = res.maps.length;
                         res.size = fileSizeReadable(res.size);
+                        console.log(res, 'res');
                         if (res) {
-
                             const resdataset = await postMethod('datasetcontents', { dataset: datasetContent.features, id: res.id });
+                            console.log(resdataset);
                             // setDataset([...dataset, res]);
                             onModalClose(res);
                         }
