@@ -33,35 +33,8 @@ const ListDocuments = ({ documents = [], onSearch, signedInUser, onSignOut, onDa
       key: 'modifiedTime',
       render: (text) => <span>{moment(text).format('Do MMM YYYY HH:mm A')}</span>,
     },
-    {
-      title: 'Action',
-      key: 'action',
-      render: (record) => (
-        <span>
-          <Tooltip title="View Document">
-            <Button type="primary" ghost onClick={(e) => getSelectedData(record)}>
-              Select
-            </Button>
-          </Tooltip>
-        </span>
-      ),
-    },
+
   ];
-  const getSelectedData = (record) => {
-    setLoading(true);
-    gapi.client.drive.files.get({
-      fileId: record.id,
-      alt: 'media'
-    }).then(function (response) {
-      const res = response;
-      if (res) {
-        setLoading(false);
-        onDataSeletected(res, record);
-      }
-    })
-
-  }
-
 
   const search = (value) => {
     delayedQuery(`name contains '${value}'`);
@@ -73,7 +46,22 @@ const ListDocuments = ({ documents = [], onSearch, signedInUser, onSignOut, onDa
     debounce((q) => onSearch(q), 500),
     []
   );
-
+  const rowSelection = {
+    onChange: (selectedRowKeys, selectedRows) => {
+      setLoading(true);
+      gapi.client.drive.files.get({
+        fileId: selectedRows[0].id,
+        alt: 'media'
+      }).then(function (response) {
+        const res = response;
+        if (res) {
+          setLoading(false);
+          console.log(res);
+          onDataSeletected(res, selectedRows[0]);
+        }
+      })
+    },
+  };
   return (
     <Spin spinning={loading}>
       <DocumentList style={{ paddingBottom: '10px' }}>
@@ -97,12 +85,16 @@ const ListDocuments = ({ documents = [], onSearch, signedInUser, onSignOut, onDa
           </div>
         </div>
         <Table
+          rowSelection={{
+            type: 'radio',
+            ...rowSelection
+          }}
           columns={columns}
           dataSource={documents}
           pagination={{ pageSize: 20 }}
           scroll={{ y: 300 }}
         />
-        
+
       </DocumentList>
     </Spin>
   );

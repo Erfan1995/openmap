@@ -182,7 +182,6 @@ const FileUpload = ({ onChangeEvent, googleDriveFile, user, onModalClose }) => {
             },
                 function (err) {
                     setIsLoadingGoogleDriveApi(false);
-                    console.log("error initiating client", err);
                 }
             )
 
@@ -263,9 +262,8 @@ const FileUpload = ({ onChangeEvent, googleDriveFile, user, onModalClose }) => {
             fileReader.readAsText(file.originFileObj);
 
         } else {
-            console.log(file.originFileObj);
             fileReader.onloadend = () => {
-                handleFileRead(fileReader.result);
+                handleFileRead(JSON.parse(fileReader.result));
             }
             fileReader.readAsText(file.originFileObj, "UTF-8");
 
@@ -276,19 +274,26 @@ const FileUpload = ({ onChangeEvent, googleDriveFile, user, onModalClose }) => {
         // }
 
     }
-    const googleDriveData = (metaData, data) => {
+    const googleDriveData = (mData, data) => {
+        let fileSize = 0;
+        if (mData.size.split(' ')[1] === 'MB') {
+            fileSize = (Number(mData.size.split(' ')[0])) * 2048;
+
+        } else if (mData.size.split(' ')[1] === 'KB') {
+            fileSize = (Number(mData.size.split(' ')[0])) * 1024;
+        }
         setMetaData(
             {
-                title: metaData.name,
+                title: mData.name,
                 is_locked: false,
                 user: user.id,
-                size: metaData.size
+                size: fileSize.toFixed(0)
             }
         )
         if (["application/vnd.ms-excel", 'text/csv',
-            'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet'].find((item) => item === metaData.mimeType)) {
+            'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet'].find((item) => item === mData.mimeType)) {
             csvToGeojson(data.body)
-        } else if (metaData.mimeType === 'application/json') {
+        } else if (mData.mimeType === 'application/json') {
             handleFileRead(data.result);
         }
 
@@ -332,28 +337,25 @@ const FileUpload = ({ onChangeEvent, googleDriveFile, user, onModalClose }) => {
                     openNotificationWithIcon('error', DATASET.INVALID_FILE_CONTENT, DATASET.INVALID_FILE_CONTENT_DESC);
                     setHasCoordinate(false);
                 }
+            } else {
+                message.error('unreadable file')
             }
         })
     }
-    const handleFileRead = (data) => {
-        let jsData;
+    const handleFileRead = (jsData) => {
         try {
-            jsData = JSON.parse(data);
             if (jsData.features) {
                 if (jsData.features[0].geometry || jsData.features[0].properties || jsData.features[0].type) {
                     setHasCoordinate(true)
                 } else {
-                    openNotificationWithIcon('error', DATASET.INVALID_FILE_CONTENT, DATASET.INVALID_FILE_CONTENT_DESC);
                     setHasCoordinate(false);
                 }
             }
             else {
-                openNotificationWithIcon('error', DATASET.INVALID_FILE_CONTENT, DATASET.INVALID_FILE_CONTENT_DESC);
                 setHasCoordinate(false);
             }
             setDatasetContent(jsData)
         } catch (e) {
-            openNotificationWithIcon('error', DATASET.INVALID_FILE_CONTENT, DATASET.INVALID_FILE_CONTENT_DESC);
             setHasCoordinate(false);
         }
 
@@ -370,11 +372,8 @@ const FileUpload = ({ onChangeEvent, googleDriveFile, user, onModalClose }) => {
                         res.updated_at = formatDate(res.updated_at);
                         res.maps = res.maps.length;
                         res.size = fileSizeReadable(res.size);
-                        console.log(res, 'res');
                         if (res) {
                             const resdataset = await postMethod('datasetcontents', { dataset: datasetContent.features, id: res.id });
-                            console.log(resdataset);
-                            // setDataset([...dataset, res]);
                             onModalClose(res);
                         }
                     }

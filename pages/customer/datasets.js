@@ -72,9 +72,7 @@ const Dataset = ({ authenticatedUser, collapsed, locked_data, unlocked_data, tag
                             width='100%'
                             visible={visible}
                             destroyOnClose={true}
-                            footer={[
-                                <Button key="close" onClick={() => { setVisible(false) }}> close</Button>
-                            ]}
+                            footer={[]}
                             onCancel={() => setVisible(false)}>
                             <Spin spinning={loading}>
                                 <FileUpload user={authenticatedUser} onModalClose={onModalClose} />
