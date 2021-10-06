@@ -7,8 +7,7 @@ import { getDatasetsByMap, getClientMapData } from "lib/api";
 import { extractMapData, getCustomerMapData, getPublicAuthenticatedMapData, getPublicMapData } from "lib/general-functions";
 import { UserContext } from "lib/UserContext";
 import { ThemeProvider } from "@magiclabs/ui";
-import { magic } from '../../../lib/magic';
-import { UserContext } from "lib/UserContext";
+import { magic } from "lib/magic";
 const Map = ({ manualMapData, mapData, datasets, injectedcodes }) => {
 
   const [intiLoading, setInitLoading] = useState(true);
