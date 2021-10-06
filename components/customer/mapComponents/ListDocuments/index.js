@@ -2,7 +2,7 @@ import React, { useCallback, useState } from 'react';
 import moment from 'moment';
 import { debounce } from 'lodash';
 import { gapi } from 'gapi-script';
-import { Col, Drawer, Row, Button, Input, Table, Tooltip, Spin, Card } from 'antd';
+import { Col, Drawer, Row, Button, Input, Table, Tooltip, Spin, Card, message } from 'antd';
 import styled from 'styled-components';
 const { Search } = Input;
 const DocumentList = styled.div`
@@ -49,17 +49,25 @@ const ListDocuments = ({ documents = [], onSearch, signedInUser, onSignOut, onDa
   const rowSelection = {
     onChange: (selectedRowKeys, selectedRows) => {
       setLoading(true);
-      gapi.client.drive.files.get({
-        fileId: selectedRows[0].id,
-        alt: 'media'
-      }).then(function (response) {
-        const res = response;
-        if (res) {
-          setLoading(false);
-          console.log(res);
-          onDataSeletected(res, selectedRows[0]);
-        }
-      })
+      console.log(selectedRows, 'seeeeeeeeee');
+      if (["application/vnd.ms-excel", 'text/csv', 'application/json',
+        'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet'].find((item) => item === selectedRows[0].mimeType)) {
+        gapi.client.drive.files.get({
+          fileId: selectedRows[0].id,
+          alt: 'media'
+        }).then(function (response) {
+          const res = response;
+          if (res) {
+            setLoading(false);
+            console.log(res);
+            onDataSeletected(res, selectedRows[0]);
+          }
+        })
+      } else {
+        message.error('Invalid File!')
+        setLoading(false);
+      }
+
     },
   };
   return (

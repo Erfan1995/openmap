@@ -232,7 +232,6 @@ const MapConf = ({ authenticatedUser, styledMaps, tags, mapData, serverSideDatas
                 if (selectedIcons[0].icon !== null) {
                     let arr = [];
                     arr[0] = selectedIcons[0].icon;
-                    console.log(selectedIcons[0].icon);
                     setSelectedDIcons(arr);
                 } else {
                     setSelectedDIcons([]);
@@ -310,7 +309,6 @@ const MapConf = ({ authenticatedUser, styledMaps, tags, mapData, serverSideDatas
         })
     }
     const addSelectedSurvey = async (selectedRow) => {
-        console.log(selectedRow, 'selected row');
         let alreadyExist = false;
         selectedSurveys.map((dd) => {
             if (dd.id === selectedRow.id) {
@@ -324,7 +322,6 @@ const MapConf = ({ authenticatedUser, styledMaps, tags, mapData, serverSideDatas
                 if (res) {
                     const dd = await postMethod('mapsurveyconfs', { map: mapData.id, survey: selectedRow.id });
                     if (dd) {
-                        console.log(dd, 'res')
                         setSelectedSurveys(res.surveys);
                         message.success(DATASET.SUCCESS);
                         setSurveyModalVisible(false);
@@ -406,9 +403,6 @@ const MapConf = ({ authenticatedUser, styledMaps, tags, mapData, serverSideDatas
                         </TabPane>
 
                         <TabPane tab={DATASET.LAYERS} key="4" >
-                            {/* <Button type="dashed" size='large' block onClick={() => mdc(mapData.id, false, "main")}>
-                                {DATASET.ADD_MAIN_POPUPS_AND_MARKER}
-                            </Button> */}
                             <Button type="dashed" size='large' block onClick={() => chooseDataset()}>
                                 {DATASET.ADD_NEW_LAYER}
                             </Button>

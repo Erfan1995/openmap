@@ -119,7 +119,7 @@ export const DATASET = {
     DATASET_FILE_UPLOAD_DESC: 'Your CSV or Json file should contain column names in the first line and should be encoded using UTF-8.If your file contains location coordinates, they must be provided as latitude-longitude coordinates inWGS84 (decimal degrees) and the corresponding columns must be named "longitude" and "latitude".',
     ADD_NEW_DATASET: 'Add New Dataset',
     BACK: 'Back',
-    SELECTED_FILE_ERROR: 'you have not selected or uploaded any file ',
+    SELECTED_FILE_ERROR: 'you have not selected or uploaded any file or your file may not be readable ',
     CONNECT_DATASET: 'Connect dataset',
     EMAIL_LOGIN:'Email Login',
     SOCIAL_LOGIN:'Social Login',

@@ -8,7 +8,6 @@ import styled from 'styled-components';
 import { formatDate } from "../../lib/general-functions";
 import { DATASET } from '../../static/constant'
 import { useEffect, useState } from 'react';
-import ManualMapDataDialog from 'components/customer/mapComponents/ManualMapDataDialog';
 import { DownOutlined, ExclamationCircleOutlined, ArrowLeftOutlined } from '@ant-design/icons';
 import CustomerManualMapData from 'components/customer/mapComponents/CustomerManualMapData';
 import PublicUserManualMapData from 'components/customer/mapComponents/PublicUserManualMapData';

@@ -422,7 +422,7 @@ const FileUpload = ({ onChangeEvent, googleDriveFile, user, onModalClose }) => {
                                     />
                                     <Divider />
                                     <p>{metaData?.name}</p>
-                                    <Button type="primary" style={{ float: 'right' }} onClick={() => checkAndStoreData()}>{DATASET.CONNECT_DATASET}</Button>
+                                    <Button type="primary" style={{ float: 'right', marginBottom: '20px' }} onClick={() => checkAndStoreData()}>{DATASET.CONNECT_DATASET}</Button>
                                 </div> : <div></div>
 
                             }</div> : <div></div>
@@ -453,7 +453,7 @@ const FileUpload = ({ onChangeEvent, googleDriveFile, user, onModalClose }) => {
                                             <p className="ant-upload-text">{compareFileType('application/vnd.ms-excel') ? DATASET.CLICK_OR_DRAG_CSV : DATASET.CLICK_OR_DRAG_JSON}</p>
                                         </Dragger>
                                         <Divider />
-                                        <Button type="primary" style={{ float: 'right' }} onClick={() => checkAndStoreData()}>{DATASET.CONNECT_DATASET}</Button>
+                                        <Button type="primary" style={{ float: 'right',marginBottom:'20px' }} onClick={() => checkAndStoreData()}>{DATASET.CONNECT_DATASET}</Button>
                                     </div>
                                 ) : (
                                     <div> </div>
