@@ -2,12 +2,12 @@ import { getMethod, getOneMap } from "lib/api";
 import { extractMapData } from "lib/general-functions";
 
 import dynamic from "next/dynamic";
-export default function Home({ mapData, manualMapData, datasets }) {
+export default function Home({ mapData, manualMapData, datasets ,mapToken}) {
   const Dashboard = dynamic(() => import("../components/dashboard"), {
     ssr: false
   });
   return (
-    <Dashboard mapData={mapData} manualMapData={manualMapData} datasets={datasets} />
+    <Dashboard mapData={mapData} manualMapData={manualMapData} datasets={datasets} mapToken={mapToken} />
   );
 }
 
@@ -29,7 +29,7 @@ export async function getServerSideProps(ctx) {
       } else {
         const datasetData = await getMethod(`datasets?_where[0][maps.id]=${id}`, null, false);
         return {
-          props: { mapData: res[0], manualMapData: await extractMapData(res[0]), datasets: datasetData },
+          props: { mapData: res[0], manualMapData: await extractMapData(res[0]), datasets: datasetData,mapToken:mapToken },
         };
       }
     } else {

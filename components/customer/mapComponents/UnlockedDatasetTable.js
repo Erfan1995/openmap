@@ -32,21 +32,18 @@ const UnlockedDataset = ({ data, updateLockedData, user, tags, updatedData }) =>
     const deleteDataset = async () => {
         try {
             setLoading(true);
-            const dConf = await deleteMethod('mapdatasetconfs/dataset:' + datasetId);
-            if (dConf) {
-                const deletedDataset = await deleteMethod('datasetcontents/' + datasetId)
-                if (deletedDataset) {
-                    const res = await deleteMethod('datasets/' + datasetId)
-                    if (res) {
-                        const dd = dataset.filter(dData => dData.id !== res.id);
-                        setDataset(dd);
-                        updatedData(dd);
-                    }
-                    setLoading(false)
-                }
+            const res = await deleteMethod('datasetcontents/' + datasetId)
+            if (res !== 'Faild') {
+                const datasets = dataset.filter(dData => dData.id !== res);
+                setDataset(datasets);
+                updatedData(datasets);
+                setLoading(false)
+            } else {
+                message.error('Faild to delete please try again.');
             }
         } catch (e) {
             message.error(e.message);
+            setLoading(false)
         }
     }
     const lockDataset = async () => {

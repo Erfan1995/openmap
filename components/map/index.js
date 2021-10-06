@@ -135,6 +135,8 @@ const Map = ({ styleId, center, setCenter, style, mapData, manualMapData, datase
                   })
                 }} key={item.title + item.id} data={item.datasetcontents} onEachFeature={(feature, layer) => {
                   const { properties } = feature;
+                 
+
                   if (!properties) return;
 
                   if (!(item.config?.selected_dataset_properties)) {
@@ -146,7 +148,7 @@ const Map = ({ styleId, center, setCenter, style, mapData, manualMapData, datase
                   }
 
 
-                  layer.bindPopup(`<div>${getSpecifictPopup(properties, item.config?.default_popup_style_slug || '', item.config?.selected_dataset_properties || [])}</div>`)
+                  layer.bindPopup(`<div>${getSpecifictPopup(properties, item.config?.default_popup_style_slug || '', item.config?.selected_dataset_properties || [],item?.config?.edited_dataset_properties)}</div>`)
 
                 }} />
               </MarkerClusterGroup>

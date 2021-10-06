@@ -1,29 +1,96 @@
-import { Slider, Row, Col, Input, Checkbox, Card, List, Spin, Modal, Divider, Form, Button } from "antd";
-import styled from 'styled-components'
-import "rc-color-picker/assets/index.css";
+import { Row, Col, Input, Checkbox, Card, Spin, Form, Button, message } from "antd";
+import styled, { createGlobalStyle } from 'styled-components'
 import { PopUp } from "lib/constants";
-import { Scrollbars } from 'react-custom-scrollbars';
 import SubTitle from "components/customer/generalComponents/SubTitle";
 import { putMethod } from "../../../../lib/api";
-import { useState, useEffect } from 'react';
+import { useState } from 'react';
 const CheckboxGroup = Checkbox.Group;
 
-const Div = styled.div`
-  width:500px;
-  padding-left:15px
+
+
+const GeneralCSS = createGlobalStyle`
+.ant-checkbox-wrapper{
+    padding:14px  !important;
+    width:100%;
+}
+.properties-input{
+    padding-top:17px;
+    margin:0;
+}
+
+.divider{
+    height:1px;
+    background-color:#eee;
+}
+
+  .slider {
+    width: 100%;
+    text-align: center;
+    margin-left:30px;
+    overflow: hidden;
+  }
+  
+  .slides {
+    display: flex;
+    overflow-x: auto;
+    padding-bottom:20px;
+    scroll-snap-type: x mandatory;
+    scroll-behavior: smooth;
+    -webkit-overflow-scrolling: touch;
+    /*
+    scroll-snap-points-x: repeat(300px);
+    scroll-snap-type: mandatory;
+    */
+  }
+  .slides > div {
+    scroll-snap-align: start;
+    flex-shrink: 0;
+    border-radius: 10px;
+    transform-origin: center center;
+    transform: scale(1);
+    transition: transform 0.5s;
+    position: relative;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+  }
+  .slides > div:target {
+  /*   transform: scale(0.8); */
+  }
+
+  .slides > div:last-child {
+    margin-right:50px;
+  }
+
+  /* Don't need button navigation */
+  @supports (scroll-snap-type) {
+    .slider > a {
+      display: none;
+    }
+  }
+  
+  .prop-scroll {
+    overflow-x: auto;
+    padding-bottom:20px;
+    scroll-snap-type: x mandatory;
+    scroll-behavior: smooth;
+    -webkit-overflow-scrolling: touch;
+    /*
+    scroll-snap-points-x: repeat(300px);
+    scroll-snap-type: mandatory;
+    */
+  }
+
+  .prop-part-wrapper{
+      width:270px;
+  }
+
 `
 
-const PopUpContainer = styled.div`
-margin-left:35px;
-
-`
-const ListWrapper = styled(Row)`
-  width: 400px ;
-  padding-left:20px;
-`
 const PopUpCart = styled(Card)`
 height: 75px; 
 width: 100px; 
+float:left;
 padding: 10px;
  margin-left: 10px;
  border-radius:5px;
@@ -34,16 +101,8 @@ padding: 10px;
 
  }
 `
-const PopuSelectedCard = styled(Card)`
-height: 75px; 
-width: 100px; 
-padding: 10px;
- margin-left: 10px;
- border-radius:5px;
- border:1px solid #aaa;
- border:2px solid #228;
- cursor:pointer;
-`
+
+
 
 
 const Popup = ({ mdcId, properties, selectedDatasetProperties, layerType, setDataset, onMapDataChange, token, editedProperties }) => {
@@ -51,16 +110,18 @@ const Popup = ({ mdcId, properties, selectedDatasetProperties, layerType, setDat
     const [checkedList, setCheckedList] = useState(selectedDatasetProperties);
     const [indeterminate, setIndeterminate] = useState(true);
     const [checkAll, setCheckAll] = useState(false);
+    const [form] = Form.useForm();
     let options = [];
-    const dynamicFormContent = [];
+    let dynamicFormContent = [];
     let initialValues = {};
     let initialFormValues = {};
+
     if (layerType === "dataset") {
         let i = 0;
         for (const [key, value] of Object.entries(properties)) {
             options[i] = key;
             let input = {
-                component: "input",
+                component: Input,
                 name: key,
                 required: false,
                 key: i
@@ -81,7 +142,7 @@ const Popup = ({ mdcId, properties, selectedDatasetProperties, layerType, setDat
         properties.map((data) => {
             options[i] = data.title;
             let input = {
-                component: "input",
+                component: Input,
                 name: data.title,
                 required: false,
                 key: data.key
@@ -148,76 +209,104 @@ const Popup = ({ mdcId, properties, selectedDatasetProperties, layerType, setDat
         setLoading(false);
     }
     const handleInputField = async (e) => {
-        if (e.key === 'Enter') {
-            setLoading(true);
-            initialFormValues[e.target.id] = e.target.value;
-            if (layerType === "dataset") {
-                const res = await putMethod('mapdatasetconfs/' + mdcId, { edited_dataset_properties: initialFormValues });
-                if (res) {
-                    initialFormValues = res.edited_dataset_properties;
+        setLoading(true);
+
+        form
+            .validateFields()
+            .then(async (values) => {
+                // initialFormValues[e.target.id] = e.target.value;
+                if (layerType === "dataset") {
+                    const res = await putMethod('mapdatasetconfs/' + mdcId, { edited_dataset_properties: values });
+                    if (res) {
+                        initialFormValues = res.edited_dataset_properties;
+                        setDataset();
+                        setLoading(false);
+
+
+                    }
+                } else if (layerType === "main") {
+                    const res = await putMethod('mapsurveyconfs/' + mdcId, { edited_survey_properties: values });
+                    if (res) {
+                        initialFormValues = res.edited_survey_properties;
+                        onMapDataChange();
+                        setLoading(false);
+                    }
                 }
-            } else if (layerType === "main") {
-                const res = await putMethod('mapsurveyconfs/' + mdcId, { edited_survey_properties: initialFormValues });
-                if (res) {
-                    initialFormValues = res.edited_survey_properties;
-                }
-            }
-            setLoading(false);
-        }
+            }).catch(e => {
+                setLoading(false);
+                message.error(e?.message);
+            })
+
+
     }
     return (
         <Spin spinning={loading}>
-            <Row>
+
+            <GeneralCSS />
+
+            <div>
                 <SubTitle number={1} title={'style'} />
-                <PopUpContainer>
-                    <Scrollbars style={{ width: 300, height: 100 }} className='track-horizontal'>
-                        <ListWrapper>
-                            <List
-                                dataSource={PopUp}
-                                grid={{ gutter: 16, column: 3 }}
-                                itemLayout='horizontal'
-                                renderItem={item => (
-                                    <PopUpCart onClick={() => selectPopupStyle(item.name)}
+
+                <div className="slider">
+                    <div className="slides">
+                        {
+                            PopUp?.map((item, index) => (
+                                <div  key={'div'+item.name + index}>
+                                    <PopUpCart  key={item.name + index} onClick={() => selectPopupStyle(item.name)}
                                         cover={<img alt="example" src={item.cover}
                                         />}
                                     />
-                                )}
-                            />
-                        </ListWrapper>
-                    </Scrollbars>
-                </PopUpContainer>
-                {options.length > 0 && <div>
+                                </div>
+                            ))
+
+                        }
+                    </div>
+                </div>
+            </div>
+            <div>
+                {options.length > 0 && <div className='margin-top-20'>
                     <SubTitle number={2} title={'Show Items'} />
-                    <Div>
-                        <Checkbox indeterminate={indeterminate} onChange={onCheckAllChange} checked={checkAll}>
-                            Check all
-                        </Checkbox>
-                        <Divider />
-                        <Scrollbars style={{ width: 300, height: 300 }} className='track-horizontal'>
-                            <Row gutter={8}>
-                                <Col span={8}>
-                                    <CheckboxGroup options={options} value={checkedList} onChange={onChange} />
-                                </Col>
-                                <Col span={12}>
-                                    <Form initialValues={initialFormValues}>
-                                        {dynamicFormContent.map((component) => (
-                                            <Form.Item
-                                                label={component.label}
-                                                name={component.name}
-                                                onKeyDown={handleInputField}
-                                            >
-                                                <component.component />
-                                            </Form.Item>
-                                        ))}
-                                    </Form>
-                                </Col>
-                            </Row>
-                        </Scrollbars>
-                    </Div>
+                    <Row >
+                        <Col span={18}>
+                            <Checkbox indeterminate={indeterminate} onChange={onCheckAllChange} checked={checkAll}>
+                                Check all
+                            </Checkbox>
+
+                        </Col>
+                        <Col span={6} className='text-right'>
+                            <Button type='primary' className='margin-top-15 ' size='small' onClick={handleInputField} >save</Button>
+
+                        </Col>
+
+                    </Row>
+                    <div className='divider'></div>
+                    <div className='prop-scroll' >
+                        <Row className='prop-part-wrapper'>
+                            <Col span={12}>
+                                <CheckboxGroup options={options} value={checkedList} onChange={onChange} />
+
+                            </Col>
+                            <Col span={12}>
+
+                                <Form form={form} initialValues={initialFormValues}>
+                                    {dynamicFormContent.map((component) => (
+                                        <Form.Item
+                                            label={component.label}
+                                            name={component.name}
+                                            key={component.label}
+                                            className='properties-input'
+                                        >
+                                            <component.component />
+                                        </Form.Item>
+                                    ))}
+                                </Form>
+                            </Col>
+                        </Row>
+                    </div>
                 </div>
 
                 }
-            </Row>
+            </div>
         </Spin >
     )
 
