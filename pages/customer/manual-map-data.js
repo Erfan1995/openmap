@@ -8,7 +8,6 @@ import styled from 'styled-components';
 import { formatDate } from "../../lib/general-functions";
 import { DATASET } from '../../static/constant'
 import { useEffect, useState } from 'react';
-import ManualMapDataDialog from 'components/customer/mapComponents/ManualMapDataDialog';
 import { DownOutlined, ExclamationCircleOutlined, ArrowLeftOutlined } from '@ant-design/icons';
 import CustomerManualMapData from 'components/customer/mapComponents/CustomerManualMapData';
 import PublicUserManualMapData from 'components/customer/mapComponents/PublicUserManualMapData';
@@ -36,8 +35,8 @@ const ManualMapData = ({ authenticatedUser, collapsed, token, surveyForms }) => 
     const [printData,setPrintData]=useState([]);
 
     surveyForms.map(data => {
-        data.title = (JSON.parse(data.forms)).title;
-        data.description = (JSON.parse(data.forms)).description;
+        data.title = data.forms.title;
+        data.description = data.forms.description;
         data.id = Number(data.id);
 
     })
@@ -56,7 +55,7 @@ const ManualMapData = ({ authenticatedUser, collapsed, token, surveyForms }) => 
     }
     const showManualMapDataDetails = () => {
         let arr = [];
-        let surveyFormElements = JSON.parse(row.forms);
+        let surveyFormElements = row.forms;
         surveyFormElements.pages.map((data) => {
             data.elements.map((element) => {
                 arr.push({ 'title': element.name, 'dataIndex': element.name, 'key': element.name })

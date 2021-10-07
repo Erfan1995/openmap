@@ -1,4 +1,4 @@
-import React, { useState, useRef, useContext } from "react";
+import React, { useState, useEffect } from "react";
 import { Layout, Button, Radio, Modal } from "antd";
 import { MenuOutlined } from "@ant-design/icons";
 import { useRouter } from 'next/router';
@@ -49,8 +49,6 @@ const NavBar = ({ isMobileSize, toggle, walletAddress, publicUser, mapData, inje
     const { login, logout } = UseAuth();
     const [publicuserImage, setPublicUserImage] = useState(publicUser.picture);
 
-    // const [user,setUser] = useContext(UserContext);
-    console.log(publicuserImage);
     const onModalClose = (res) => {
         setServerPublicUser(res);
         setPublicUserImage(res.picture);
@@ -100,7 +98,7 @@ const NavBar = ({ isMobileSize, toggle, walletAddress, publicUser, mapData, inje
                 footer={null}
                 onCancel={() => setModalVisible(false)} >
                 <PublicUserProfile userId={publicUser.id} onModalClose={onModalClose} serverPublicUser={serverPublicUser}
-                    customWalletAddress={customWalletAddress} />
+                    customWalletAddress={customWalletAddress} mapData={mapData}  />
             </Modal>
 
         </Header>

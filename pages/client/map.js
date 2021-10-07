@@ -8,6 +8,8 @@ import { extractMapData, getCustomerMapData, getPublicAuthenticatedMapData, getP
 
 const Map = ({ manualMapData, mapData, datasets, injectedcodes,publicUser }) => {
 
+  const [intiLoading, setInitLoading] = useState(true);
+  const [publicUser, setPublicUser] = useState(true);
   const [datasetData, setDatasetData] = useState(datasets);
   const [zoomLevel, setZoomLevel] = useState(mapData.zoomLevel);
   const [customMapData, setCustomMapData] = useState(manualMapData);
