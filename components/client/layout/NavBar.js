@@ -1,4 +1,4 @@
-import React, { useState, useRef } from "react";
+import React, { useState, useRef, useContext } from "react";
 import { Layout, Button, Radio, Modal } from "antd";
 import { MenuOutlined } from "@ant-design/icons";
 import { useRouter } from 'next/router';
@@ -6,6 +6,8 @@ import styled from 'styled-components';
 import PublicUserProfile from "./PublicUserProfile";
 import { getStrapiMedia } from "lib/media";
 import UseAuth from "hooks/useAuth";
+import { UserContext } from "lib/UserContext";
+import { magic } from "lib/magic";
 
 const WalletAddressButton = styled(Button)`
 position:fexid; 
@@ -41,10 +43,13 @@ const NavBar = ({ isMobileSize, toggle, walletAddress, publicUser, mapData, inje
 
     // + '...' + walletAddress.substr(walletAddress.length - 5);
 
+
     const [modalVisible, setModalVisible] = useState(false);
     const [serverPublicUser, setServerPublicUser] = useState(publicUser);
     const { login, logout } = UseAuth();
     const [publicuserImage, setPublicUserImage] = useState(publicUser.picture);
+
+    // const [user,setUser] = useContext(UserContext);
     console.log(publicuserImage);
     const onModalClose = (res) => {
         setServerPublicUser(res);
@@ -54,11 +59,21 @@ const NavBar = ({ isMobileSize, toggle, walletAddress, publicUser, mapData, inje
 
 
     const openFormModal = async () => {
-        setModalVisible(true);
-        const res = await login(mapData);
-        if (res) {
-            setServerPublicUser(res[0]);
-        }
+        // const logout = () => {
+            magic.user.logout().then(() => {
+            //   setUser({ user: null });
+              router.push('/');
+            });
+        //   };
+        // setModalVisible(true);
+        // if (!user?.issuer) {
+            // const res = await login(mapData);
+            // if (res) {
+            //     setServerPublicUser(res[0]);
+            // }
+        // }else{
+        //     setServerPublicUser(publicUser)
+        // }
 
     }
     return (
@@ -69,7 +84,7 @@ const NavBar = ({ isMobileSize, toggle, walletAddress, publicUser, mapData, inje
             }
             <div className='profile'>
                 {/* {publicUser.picture ?  : */}
-                <WalletAddressButton type='default'  shape='round' size='middle' onClick={() => openFormModal()}>
+                <WalletAddressButton type='default' shape='round' size='middle' onClick={() => openFormModal()}>
                     {customWalletAddress}
 
                     {publicuserImage ? <ImageWrapper src={getStrapiMedia(publicuserImage)} /> : <ImageWrapper src={'/user.png'} />}

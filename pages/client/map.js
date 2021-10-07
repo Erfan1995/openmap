@@ -1,44 +1,20 @@
 import dynamic from "next/dynamic";
 import LayoutPage from "components/client/layout";
-import { useEffect, useState } from "react";
-import UseAuth from "hooks/useAuth";
+import {  useState } from "react";
+// import UseAuth from "hooks/useAuth";
 import { Spin } from 'antd';
 import { getDatasetsByMap, getClientMapData } from "lib/api";
 import { extractMapData, getCustomerMapData, getPublicAuthenticatedMapData, getPublicMapData } from "lib/general-functions";
-import { UserContext } from "lib/UserContext";
-import { ThemeProvider } from "@magiclabs/ui";
-import { magic } from '../../../lib/magic';
-import { UserContext } from "lib/UserContext";
-const Map = ({ manualMapData, mapData, datasets, injectedcodes }) => {
 
-  const [intiLoading, setInitLoading] = useState(true);
-  const [publicUser, setPublicUser] = useState(true);
+const Map = ({ manualMapData, mapData, datasets, injectedcodes,publicUser }) => {
+
   const [datasetData, setDatasetData] = useState(datasets);
   const [zoomLevel, setZoomLevel] = useState(mapData.zoomLevel);
   const [customMapData, setCustomMapData] = useState(manualMapData);
   const [loading, setLoading] = useState(false);
-  const [user, setUser] = useState();
 
-  const { login, logout } = UseAuth();
-
-
-  useEffect(() => {
-    setUser({ loading: true });
-    magic.user.isLoggedIn().then((isLoggedIn) => {
-      console.log(isLoggedIn)
-      if (isLoggedIn) {
-        magic.user.getMetadata().then((userData) => setUser(userData));
-      } else {
-        //   Router.push({
-        //     pathname: '/',
-        //     query: { mapToken: mapToken, id: mapData.id }
-        // });
-        setUser({ user: null });
-      }
-    });
-  }, []);
-
-
+  // const { login, logout } = UseAuth();
+  
   // useEffect(async () => {
   //   const res = await login(mapData);
   //   if (res) {
@@ -94,12 +70,11 @@ const Map = ({ manualMapData, mapData, datasets, injectedcodes }) => {
 
 
   return (
-    <ThemeProvider root>
-      <UserContext.Provider value={[user, setUser]}>
+
         <div>
           <div dangerouslySetInnerHTML={injectCode(false)}>
           </div>
-          {!intiLoading &&
+          {/* {!intiLoading && */}
 
             <LayoutPage injectedcodes={injectedcodes} walletAddress={publicUser.publicAddress} datasets={datasets} onDataSetChange={onDataSetChange}
               mapInfo={mapData} userId={publicUser.id} publicUser={publicUser} mapData={mapData}  >
@@ -128,12 +103,10 @@ const Map = ({ manualMapData, mapData, datasets, injectedcodes }) => {
                 userId={publicUser.id}
                 style={{ height: "100vh" }} />
             </LayoutPage>
-          }
+          {/* } */}
           <div dangerouslySetInnerHTML={injectCode(true)}>
           </div>
         </div>
-      </UserContext.Provider>
-    </ThemeProvider>
   );
 }
 export default Map;
@@ -141,7 +114,7 @@ export default Map;
 export async function getServerSideProps(ctx) {
   let mapData = null;
   let injectedcodes = null;
-  const { mapToken, id, publicUser } = ctx.query;
+  const { mapToken, id, publicUserId,publicUserAddress } = ctx.query;
   try {
     let datasets = [];
     if (id) {
@@ -159,10 +132,11 @@ export async function getServerSideProps(ctx) {
 
     return {
       props: {
-        manualMapData: [...await extractMapData(mapData), ...await getPublicAuthenticatedMapData(publicUser, mapData.id)]
+        manualMapData: [...await extractMapData(mapData), ...await getPublicAuthenticatedMapData(publicUserId, mapData.id)]
         , mapData: mapData,
         datasets: datasets,
-        injectedcodes: injectedcodes
+        injectedcodes: injectedcodes,
+        publicUser:{id:publicUserId,publicAddress:publicUserAddress}
       },
     };
   } catch (e) {

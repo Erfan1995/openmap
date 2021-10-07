@@ -2,18 +2,16 @@ import { message, Button } from "antd";
 import Web3 from "web3";
 import styled from "styled-components";
 import { Router, useRouter } from "next/router";
-import UseAuth from "hooks/useAuth";
+// import UseAuth from "hooks/useAuth";
 import { useContext, useEffect, useState } from "react";
 import { MAP, Map } from 'static/constant';
 import { magic } from '../../lib/magic';
 import { UserContext } from '../../lib/UserContext';
-import {
-    getMapVisits, putMethodPublicUser, checkPublicUsersMapBased, getPublicUsers,
-    postMethodPublicUser
-} from '../../lib/api'
+
 import EmailForm from "components/client/magic/email-form";
 import SocialLogins from "components/client/magic/social-logins";
 import BlockChain from "components/client/magic/blockchani";
+import { publicUserOperation } from "lib/general-functions";
 export const NextButton = styled(Button)`
   margin-top: 20px;
   padding: 30px;
@@ -42,31 +40,24 @@ export const NextButton = styled(Button)`
 `;
 let web3 = undefined;
 const Metamask = ({ mapDetails }) => {
-    const router = useRouter();
-    const [mapIds, setMapIds] = useState([]);
-
-
     const [disabled, setDisabled] = useState(false);
-    const [user, setUser] = useState('');
-    // const [user, setUser] = useContext(UserContext);
-
+    const [user, setUser] = useContext(UserContext);
 
 
     // Redirec to /profile if the user is logged in
     useEffect(() => {
-        user?.issuer && router.push('/dddd');
+        console.log(user, 'metamask');
+        user?.issuer && publicUserOperation(user.publicAddress,mapDetails);
     }, [user]);
 
     const handleLoginWithEmail = async (email) => {
         try {
             setDisabled(true); // disable login button to prevent multiple emails from being triggered
-
             // Trigger Magic link to be sent to user
             let didToken = await magic.auth.loginWithMagicLink({
                 email,
                 redirectURI: new URL('/callback', window.location.origin).href, // optional redirect back to your app after magic link is clicked
             });
-
             // Validate didToken with server
             const res = await fetch('/api/login', {
                 method: 'POST',
@@ -79,8 +70,9 @@ const Metamask = ({ mapDetails }) => {
             if (res.status === 200) {
                 // Set the UserContext to the now logged in user
                 let userMetadata = await magic.user.getMetadata();
+                console.log(userMetadata, '>>>>>>>>>>>');
                 await setUser(userMetadata);
-                router.push('/map');
+                publicUserOperation(userMetadata.publicAddress,mapDetails);
             }
         } catch (error) {
             setDisabled(false); // re-enable login button - user may have requested to edit their email
@@ -91,7 +83,7 @@ const Metamask = ({ mapDetails }) => {
     async function handleLoginWithSocial(provider) {
         await magic.oauth.loginWithRedirect({
             provider, // google, apple, etc
-            redirectURI: new URL('/callback', window.location.origin).href, // required redirect to finish social login
+            redirectURI: new URL('/client/callback', window.location.origin).href, // required redirect to finish social login
         });
     }
 
@@ -106,19 +98,9 @@ const Metamask = ({ mapDetails }) => {
             method: 'POST',
         }).then((response) => response.json());
     }
-    const handleVisits = async () => {
-        const res = await getMapVisits({ id: mapDetails.id })
-        if (res) {
-            const updated = await putMethodPublicUser(`maps/${mapDetails.id}`, { visits: (res.visits + 1) })
-        }
-    }
-
-
+  
     const handleClick = async () => {
-        handleVisits();
-
         try {
-
             if (ethereum) {
                 await ethereum.enable();
                 if (!web3) {
@@ -130,39 +112,7 @@ const Metamask = ({ mapDetails }) => {
                     return;
                 }
                 const publicAddress = coinbase.toLowerCase();
-                const res = await getPublicUsers({ publicAddress: publicAddress })
-                if (res.length !== 0) {
-                    console.log(res, 'res');
-                    setMapIds([]);
-                    res[0]?.maps.map((data) => {
-                        mapIds.push(Number(data.id));
-                    })
-                    const checkUser = await checkPublicUsersMapBased({ publicAddress: publicAddress, maps: mapDetails.id });
-                    if (checkUser.publicUsers.length === 0) {
-                        console.log("fals check")
-                        mapIds.push(mapDetails.id);
-                        const update = await putMethodPublicUser(`public-users/${res[0].id}`, { maps: mapIds.map(dd => dd) });
-                        if (update) {
-                            router.push({
-                                pathname: 'client/map',
-                                query: { mapToken: mapDetails.mapId, id: mapDetails.id, publicUser: res.id }
-                            });
-                        }
-                    } else {
-                        router.push({
-                            pathname: 'client/map',
-                            query: { mapToken: mapDetails.mapId, id: mapDetails.id, publicUser: res.id }
-                        });
-                    }
-                } else {
-                    const response = await postMethodPublicUser('public-users', { publicAddress: publicAddress, maps: mapDetails.id });
-                    if (response) {
-                        router.push({
-                            pathname: 'client/map',
-                            query: { mapToken: mapDetails.mapId, id: mapDetails.id, publicUser: res.id }
-                        });
-                    }
-                }
+                publicUserOperation(publicAddress,mapDetails);
             }
 
         } catch (e) {
@@ -172,6 +122,10 @@ const Metamask = ({ mapDetails }) => {
 
 
     };
+
+
+
+   
 
     return (
         <div>
