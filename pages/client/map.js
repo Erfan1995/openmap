@@ -1,14 +1,17 @@
 import dynamic from "next/dynamic";
 import LayoutPage from "components/client/layout";
-import { useEffect, useState } from "react";
-import UseAuth from "hooks/useAuth";
+import { useContext, useEffect, useState } from "react";
+// import UseAuth from "hooks/useAuth";
 import { Spin } from 'antd';
 import { getDatasetsByMap, getClientMapData } from "lib/api";
 import { extractMapData, getCustomerMapData, getPublicAuthenticatedMapData, getPublicMapData } from "lib/general-functions";
-const Map = ({ manualMapData, mapData, datasets, injectedcodes }) => {
+import { UserContext } from "lib/UserContext";
+import UseAuth from "hooks/useAuth";
+
+const Map = ({ manualMapData, mapData, datasets, injectedcodes, publicUser }) => {
 
   const [intiLoading, setInitLoading] = useState(true);
-  const [publicUser, setPublicUser] = useState(true);
+  const [publicUserObject, setPublicUserObject] = useState(publicUser);
   const [datasetData, setDatasetData] = useState(datasets);
   const [zoomLevel, setZoomLevel] = useState(mapData.zoomLevel);
   const [customMapData, setCustomMapData] = useState(manualMapData);
@@ -17,10 +20,13 @@ const Map = ({ manualMapData, mapData, datasets, injectedcodes }) => {
   const { login, logout } = UseAuth();
 
   useEffect(async () => {
-    const res = await login(mapData);
-    if (res) {
-      setPublicUser(res[0]);
-      setInitLoading(false);
+    const user = JSON.parse(localStorage.getItem('magicUser'));
+    if (!user?.issuer) {
+      const res = await login(mapData);
+      if (res) {
+        setPublicUserObject(res[0]);
+        // setInitLoading(false);
+      }
     }
   }, [])
 
@@ -71,39 +77,40 @@ const Map = ({ manualMapData, mapData, datasets, injectedcodes }) => {
 
 
   return (
+
     <div>
       <div dangerouslySetInnerHTML={injectCode(false)}>
       </div>
-      {!intiLoading &&
+      {/* {!intiLoading && */}
 
-        <LayoutPage injectedcodes={injectedcodes} walletAddress={publicUser.publicAddress} datasets={datasets} onDataSetChange={onDataSetChange}
-          mapInfo={mapData} userId={publicUser.id} publicUser={publicUser} mapData={mapData}  >
-          <Spin spinning={loading}>
+      <LayoutPage injectedcodes={injectedcodes} walletAddress={publicUserObject.publicAddress} datasets={datasets} onDataSetChange={onDataSetChange}
+        mapInfo={mapData} userId={publicUserObject.id} publicUser={publicUserObject} mapData={mapData}  >
+        <Spin spinning={loading}>
 
-          </Spin>
-          <MapWithNoSSR
-            mapZoom={zoomLevel}
-            styleId={mapData.mapstyle?.link || process.env.NEXT_PUBLIC_MAPBOX_DEFAULT_MAP}
-            edit={{
-              edit: false,
-              remove: false,
-            }}
-            draw={{
-              rectangle: false,
-              polygon: false,
-              circle: false,
-              circlemarker: false,
-              polyline: false
-            }}
-            userType='public'
-            manualMapData={customMapData}
-            datasets={datasetData}
-            onCustomeDataChange={onCustomeDataChange}
-            mapData={mapData}
-            userId={publicUser.id}
-            style={{ height: "100vh" }} />
-        </LayoutPage>
-      }
+        </Spin>
+        <MapWithNoSSR
+          mapZoom={zoomLevel}
+          styleId={mapData.mapstyle?.link || process.env.NEXT_PUBLIC_MAPBOX_DEFAULT_MAP}
+          edit={{
+            edit: false,
+            remove: false,
+          }}
+          draw={{
+            rectangle: false,
+            polygon: false,
+            circle: false,
+            circlemarker: false,
+            polyline: false
+          }}
+          userType='public'
+          manualMapData={customMapData}
+          datasets={datasetData}
+          onCustomeDataChange={onCustomeDataChange}
+          mapData={mapData}
+          userId={publicUser.id}
+          style={{ height: "100vh" }} />
+      </LayoutPage>
+      {/* } */}
       <div dangerouslySetInnerHTML={injectCode(true)}>
       </div>
     </div>
@@ -114,28 +121,38 @@ export default Map;
 export async function getServerSideProps(ctx) {
   let mapData = null;
   let injectedcodes = null;
-  const { mapToken, id, publicUser } = ctx.query;
+  const { mapToken, id, publicUserId, publicUserAddress } = ctx.query;
   try {
     let datasets = [];
     if (id) {
-      const data = await getClientMapData(id);
-      mapData = data?.maps[0];
-      if (mapData) {
-        datasets = await getDatasetsByMap({ maps: id }, null, false);
-        datasets = datasets.map((item) => {
-          let temp = mapData.mapdatasetconfs.find((obj) => obj.dataset.id === item.id);
-          return { ...item, config: temp ? temp : null }
-        })
+      const data = await getClientMapData(id, mapToken);
+      if (!(data?.maps.length > 0)) {
+        return {
+          redirect: {
+            destination: '/errors/404',
+            permanent: false,
+          }
+        }
+      } else {
+        mapData = data?.maps[0];
+        if (mapData) {
+          datasets = await getDatasetsByMap({ maps: id }, null, false);
+          datasets = datasets.map((item) => {
+            let temp = mapData.mapdatasetconfs.find((obj) => obj.dataset.id === item.id);
+            return { ...item, config: temp ? temp : null }
+          })
+        }
+        injectedcodes = data?.injectedcodes;
       }
-      injectedcodes = data?.injectedcodes;
     }
 
     return {
       props: {
-        manualMapData: [...await extractMapData(mapData), ...await getPublicAuthenticatedMapData(publicUser, mapData.id)]
+        manualMapData: [...await extractMapData(mapData), ...await getPublicAuthenticatedMapData(publicUserId, mapData.id)]
         , mapData: mapData,
         datasets: datasets,
-        injectedcodes: injectedcodes
+        injectedcodes: injectedcodes,
+        publicUser: { id: publicUserId, publicAddress: publicUserAddress }
       },
     };
   } catch (e) {

@@ -103,8 +103,8 @@ export const getServerSideProps = withPrivateServerSideProps(
       const tags = await getTags(token);
       return { props: { authenticatedUser: verifyUser, maps: res, tags: tags || [] } }
     } catch (error) {
+      console.log(error.message);
       return {
-
         redirect: {
           destination: '/errors/500',
           permanent: false,

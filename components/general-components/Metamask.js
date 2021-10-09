@@ -2,13 +2,16 @@ import { message, Button } from "antd";
 import Web3 from "web3";
 import styled from "styled-components";
 import { Router, useRouter } from "next/router";
-import UseAuth from "hooks/useAuth";
-import { useEffect, useState } from "react";
+// import UseAuth from "hooks/useAuth";
+import { useContext, useEffect, useState } from "react";
 import { MAP, Map } from 'static/constant';
-import {
-    getMapVisits, putMethodPublicUser, checkPublicUsersMapBased, getPublicUsers,
-    postMethodPublicUser
-} from '../../lib/api'
+import { magic } from '../../lib/magic';
+import { UserContext } from '../../lib/UserContext';
+
+import EmailForm from "components/client/magic/email-form";
+import SocialLogins from "components/client/magic/social-logins";
+import BlockChain from "components/client/magic/blockchani";
+import { publicUserOperation } from "lib/general-functions";
 export const NextButton = styled(Button)`
   margin-top: 20px;
   padding: 30px;
@@ -37,8 +40,56 @@ export const NextButton = styled(Button)`
 `;
 let web3 = undefined;
 const Metamask = ({ mapDetails }) => {
-    const router = useRouter();
-    const [mapIds, setMapIds] = useState([]);
+    const [disabled, setDisabled] = useState(false);
+    const [user, setUser] = useContext(UserContext);
+
+    console.log(mapDetails);
+
+    // Redirec to /map if the user is logged in
+    useEffect(() => {
+        if (user?.issuer) {
+            publicUserOperation(user.publicAddress, mapDetails);
+            localStorage.setItem('magicUser', JSON.stringify(user));
+        }
+    }, [user]);
+
+    const handleLoginWithEmail = async (email) => {
+        try {
+            setDisabled(true); // disable login button to prevent multiple emails from being triggered
+            // Trigger Magic link to be sent to user
+            let didToken = await magic.auth.loginWithMagicLink({
+                email,
+                redirectURI: new URL('/client/callback', window.location.origin).href, // optional redirect back to your app after magic link is clicked
+            });
+            // Validate didToken with server
+            const res = await fetch('/api/login', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                    Authorization: 'Bearer ' + didToken,
+                },
+            });
+
+            if (res.status === 200) {
+                // Set the UserContext to the now logged in user
+                let userMetadata = await magic.user.getMetadata();
+                await setUser(userMetadata);
+                publicUserOperation(userMetadata.publicAddress, mapDetails);
+            }
+        } catch (error) {
+            setDisabled(false); // re-enable login button - user may have requested to edit their email
+            console.log(error);
+        }
+    }
+
+    async function handleLoginWithSocial(provider) {
+        await magic.oauth.loginWithRedirect({
+            provider, // google, apple, etc
+            redirectURI: new URL('/client/callback', window.location.origin).href, // required redirect to finish social login
+        });
+    }
+
+
     const handleSignup = async (publicAddress) => {
         const data = { publicAddress: publicAddress, maps: mapDetails.id };
         const res = await fetch(`${process.env.NEXT_PUBLIC_STRAPI_API_URL}/public-users`, {
@@ -49,16 +100,8 @@ const Metamask = ({ mapDetails }) => {
             method: 'POST',
         }).then((response) => response.json());
     }
-    const handleVisits = async () => {
-        const res = await getMapVisits({ id: mapDetails.id })
-        if (res) {
-            const updated = await putMethodPublicUser(`maps/${mapDetails.id}`, { visits: (res.visits + 1) })
-        }
-    }
-
 
     const handleClick = async () => {
-        handleVisits();
         try {
             if (ethereum) {
                 await ethereum.enable();
@@ -71,43 +114,11 @@ const Metamask = ({ mapDetails }) => {
                     return;
                 }
                 const publicAddress = coinbase.toLowerCase();
-                const res = await getPublicUsers({ publicAddress: publicAddress })
-                if (res.length !== 0) {
-                    console.log(res, 'res');
-                    setMapIds([]);
-                    res[0]?.maps.map((data) => {
-                        mapIds.push(Number(data.id));
-                    })
-                    const checkUser = await checkPublicUsersMapBased({ publicAddress: publicAddress, maps: mapDetails.id });
-                    if (checkUser.publicUsers.length === 0) {
-                        console.log("fals check")
-                        mapIds.push(mapDetails.id);
-                        const update = await putMethodPublicUser(`public-users/${res[0].id}`, { maps: mapIds.map(dd => dd) });
-                        if (update) {
-                            router.push({
-                                pathname: 'client/map',
-                                query: { mapToken: mapDetails.mapId, id: mapDetails.id, publicUser: res.id }
-                            });
-                        }
-                    } else {
-                        router.push({
-                            pathname: 'client/map',
-                            query: { mapToken: mapDetails.mapId, id: mapDetails.id, publicUser: res.id }
-                        });
-                    }
-                } else {
-                    const response = await postMethodPublicUser('public-users', { publicAddress: publicAddress, maps: mapDetails.id });
-                    if (response) {
-                        router.push({
-                            pathname: 'client/map',
-                            query: { mapToken: mapDetails.mapId, id: mapDetails.id, publicUser: res.id }
-                        });
-                    }
-                }
+                publicUserOperation(publicAddress, mapDetails);
             }
 
         } catch (e) {
-            message.info(e.message);
+            message.error(e.message);
             return;
         }
 
@@ -116,12 +127,31 @@ const Metamask = ({ mapDetails }) => {
 
 
 
+
+    const renderAuthTypes = (type) => {
+        switch (type) {
+            case 'Email Login': return <EmailForm key={type} disabled={disabled} onEmailSubmit={handleLoginWithEmail} />;
+            case 'Social Login': return <SocialLogins key={type} onSubmit={handleLoginWithSocial} />;
+            case 'Blockchain Login': return <NextButton  key={type} onClick={handleClick} icon={<img src='metamask.png' className='margin-right-10' />}>
+                Connect To Metamask
+            </NextButton>;
+
+
+        }
+    }
+
+
+
+
     return (
         <div>
-            <NextButton onClick={handleClick} icon={<img src='metamask.png' className='margin-right-10' />}>
-                Connect To Metamask
-            </NextButton>
-
+            {
+                mapDetails?.auth_types?.map((item) => {
+                    if (item.state) {
+                        return renderAuthTypes(item.label);
+                    }
+                })
+            }
         </div>
     )
 

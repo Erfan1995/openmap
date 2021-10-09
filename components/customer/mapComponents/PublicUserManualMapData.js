@@ -1,4 +1,4 @@
-import { Table, Dropdown, Menu, Modal, Spin, Select, message, Typography } from 'antd';
+import { Table, Dropdown, Menu, Modal, Spin, Button, message, Typography } from 'antd';
 import React, { useEffect, useState } from 'react';
 import { DownOutlined, ExclamationCircleOutlined } from '@ant-design/icons';
 import { deleteMethod, putMethod } from "../../../lib/api";
@@ -16,7 +16,7 @@ const CardTitle = styled(Title)`
   float: left !important;
 `;
 
-const PublicUserManualMapData = ({ data, mapFilterData, formElementsName }, ref) => {
+const PublicUserManualMapData = ({ data, mapFilterData, formElementsName,setMapsDataToFilter }, ref) => {
     const [loading, setLoading] = useState(false);
     const [dataset, setDataset] = useState();
     let selectedRow;
@@ -29,6 +29,11 @@ const PublicUserManualMapData = ({ data, mapFilterData, formElementsName }, ref)
         </Menu>
     );
     let columns = [
+        {
+            title: DATASET.PUBLIC_USERS,
+            dataIndex: 'publicAddress',
+            key: 'publicAddress',
+        },
         {
             title: DATASET.APPROVED,
             dataIndex: 'is_approved',
@@ -54,7 +59,6 @@ const PublicUserManualMapData = ({ data, mapFilterData, formElementsName }, ref)
                     <a className="ant-dropdown-link"
                         onClick={(e) => {
                             selectedRow = record;
-                            console.log(record);
                         }} >
                         {DATASET.MORE_ACTIONs} <DownOutlined />
                     </a>
@@ -131,11 +135,15 @@ const PublicUserManualMapData = ({ data, mapFilterData, formElementsName }, ref)
         });
     }
 
+    function onChange(pagination, filters, sorter, extra) {
+        setMapsDataToFilter(extra)
+      }
+
     return (
         <MapsWrapper>
             <CardTitle level={4}>{DATASET.MANUAL_MAP_DATA}</CardTitle>
             <Spin spinning={loading}>
-                <Table dataSource={dataset} columns={mmData} scroll={{ x: 1300 }} />
+                <Table dataSource={dataset} onChange={onChange} columns={mmData} scroll={{ x: 1300 }} />
             </Spin>
         </MapsWrapper>
     )

@@ -83,8 +83,9 @@ const CreateMap = ({ serverSideTags, user, mapData, onModalClose, addImageFile }
                     }
                 })
                 .catch((info) => {
-                    message.error(info.message)
+                    message.error(info)
                 });
+                return true;
         },
         createMap(datasetId = null, image) {
             form
@@ -113,7 +114,7 @@ const CreateMap = ({ serverSideTags, user, mapData, onModalClose, addImageFile }
                     }
                 })
                 .catch((info) => {
-                    message.error(info.message)
+                    message.error(info)
                     setLoading(false);
                 })
         }
@@ -133,6 +134,15 @@ const CreateMap = ({ serverSideTags, user, mapData, onModalClose, addImageFile }
         <Spin spinning={loading}>
             <Form form={form} layout="vertical" initialValues={mapData} hideRequiredMark>
                 <Row gutter={16}>
+                <Col span={24}>
+                        <Form.Item
+                            name="dialog_title"
+                            label={DATASET.DIALOG_TITLE}
+                            rules={[{ required: true }]}
+                        >
+                            <Input placeholder={DATASET.PLACE_HOLDER_DIALOG} />
+                        </Form.Item>
+                    </Col>
                     <Col span={12}>
                         <Form.Item
                             name="title"

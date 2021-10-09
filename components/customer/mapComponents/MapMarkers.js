@@ -87,7 +87,7 @@ const MapMarkers = ({ icons, mdcId, selectedDIcons, layerType, setDataset, onMap
                 setUploadIconsLoading(true);
                 setSelectedIcons([...selectedIcons, item]);
                 selectedIconsToUpload.push(item);
-                const res = await putMethod('maps/' + mdcId, { icons: selectedIconsToUpload.map(item => item.id) });
+                const res = await putMethod('mapsurveyconfs/' + mdcId, { icons: selectedIconsToUpload.map(item => item.id) });
                 if (res) {
                     onMapDataChange();
                     setUploadIconsLoading(false);
@@ -189,7 +189,7 @@ const MapMarkers = ({ icons, mdcId, selectedDIcons, layerType, setDataset, onMap
                         renderItem={(item) => (
                             <List.Item key={`listItem` + item.id}>
                                 <div >
-                                    {/* <DeleteButton onClick={() => showDeleteConfirm(item.id, 'allIcons')}>x</DeleteButton> */}
+                                    <DeleteButton onClick={() => showDeleteConfirm(item.id, 'allIcons')}>x</DeleteButton>
                                     <Photo src={getStrapiMedia(item.icon[0])} onClick={() => selectIcon(item)} />
                                 </div>
                             </List.Item>

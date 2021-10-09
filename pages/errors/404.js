@@ -15,7 +15,7 @@ function NotFoundPage() {
   return <div className={ServerErrorStyle.container}>
     <Row >
       <Col className="gutter-row" sm={24} md={12} >
-        <img src="./404.png" className={ServerErrorStyle.responsive}></img>
+        <img src="/404.png" className={ServerErrorStyle.responsive}></img>
       </Col>
       <Col className="gutter-row" sm={24} md={12} >
         <Row className={ServerErrorStyle.title} align="center">404</Row>

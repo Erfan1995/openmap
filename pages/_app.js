@@ -3,6 +3,7 @@ import "antd/dist/antd.css";
 import "../styles/vars.css";
 import "../styles/globals.css";
 import 'prismjs/themes/prism-dark.css';
+
 // import 'bootstrap/dist/css/bootstrap.css';
 import Head from "next/head"
 import NProgress from "nprogress"
