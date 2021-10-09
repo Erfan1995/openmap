@@ -39,7 +39,8 @@ const CallbackComponent = () => {
     if (res.status === 200) {
       let userMetadata = await magic.user.getMetadata();
       await setUser(userMetadata);
-      publicUserOperation(userMetadata.publicAddress,JSON.parse(localStorage.getItem('mapData')))
+      localStorage.setItem('magicUser', JSON.stringify(userMetadata));
+      publicUserOperation(userMetadata.publicAddress, JSON.parse(localStorage.getItem('mapData')))
     }
   };
 

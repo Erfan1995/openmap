@@ -43,11 +43,14 @@ const Metamask = ({ mapDetails }) => {
     const [disabled, setDisabled] = useState(false);
     const [user, setUser] = useContext(UserContext);
 
+    console.log(mapDetails);
 
-    // Redirec to /profile if the user is logged in
+    // Redirec to /map if the user is logged in
     useEffect(() => {
-        console.log(user, 'metamask');
-        user?.issuer && publicUserOperation(user.publicAddress,mapDetails);
+        if (user?.issuer) {
+            publicUserOperation(user.publicAddress, mapDetails);
+            localStorage.setItem('magicUser', JSON.stringify(user));
+        }
     }, [user]);
 
     const handleLoginWithEmail = async (email) => {
@@ -56,7 +59,7 @@ const Metamask = ({ mapDetails }) => {
             // Trigger Magic link to be sent to user
             let didToken = await magic.auth.loginWithMagicLink({
                 email,
-                redirectURI: new URL('/callback', window.location.origin).href, // optional redirect back to your app after magic link is clicked
+                redirectURI: new URL('/client/callback', window.location.origin).href, // optional redirect back to your app after magic link is clicked
             });
             // Validate didToken with server
             const res = await fetch('/api/login', {
@@ -70,9 +73,8 @@ const Metamask = ({ mapDetails }) => {
             if (res.status === 200) {
                 // Set the UserContext to the now logged in user
                 let userMetadata = await magic.user.getMetadata();
-                console.log(userMetadata, '>>>>>>>>>>>');
                 await setUser(userMetadata);
-                publicUserOperation(userMetadata.publicAddress,mapDetails);
+                publicUserOperation(userMetadata.publicAddress, mapDetails);
             }
         } catch (error) {
             setDisabled(false); // re-enable login button - user may have requested to edit their email
@@ -98,7 +100,7 @@ const Metamask = ({ mapDetails }) => {
             method: 'POST',
         }).then((response) => response.json());
     }
-  
+
     const handleClick = async () => {
         try {
             if (ethereum) {
@@ -112,7 +114,7 @@ const Metamask = ({ mapDetails }) => {
                     return;
                 }
                 const publicAddress = coinbase.toLowerCase();
-                publicUserOperation(publicAddress,mapDetails);
+                publicUserOperation(publicAddress, mapDetails);
             }
 
         } catch (e) {
@@ -125,21 +127,31 @@ const Metamask = ({ mapDetails }) => {
 
 
 
-   
+
+    const renderAuthTypes = (type) => {
+        switch (type) {
+            case 'Email Login': return <EmailForm key={type} disabled={disabled} onEmailSubmit={handleLoginWithEmail} />;
+            case 'Social Login': return <SocialLogins key={type} onSubmit={handleLoginWithSocial} />;
+            case 'Blockchain Login': return <NextButton  key={type} onClick={handleClick} icon={<img src='metamask.png' className='margin-right-10' />}>
+                Connect To Metamask
+            </NextButton>;
+
+
+        }
+    }
+
+
+
 
     return (
         <div>
-
-            <div className='login'>
-                {/* <BlockChain/> */}
-                <EmailForm disabled={disabled} onEmailSubmit={handleLoginWithEmail} />
-                <SocialLogins onSubmit={handleLoginWithSocial} />
-
-            </div>
-            <NextButton onClick={handleClick} icon={<img src='metamask.png' className='margin-right-10' />}>
-                Connect To Metamask
-            </NextButton>
-
+            {
+                mapDetails?.auth_types?.map((item) => {
+                    if (item.state) {
+                        return renderAuthTypes(item.label);
+                    }
+                })
+            }
         </div>
     )
 

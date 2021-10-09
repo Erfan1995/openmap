@@ -12,6 +12,7 @@ import { getMapData, extractMapData } from "../../lib/general-functions";
 import { useRouter } from 'next/router';
 import { DATASET } from '../../static/constant'
 import MapConf from 'components/customer/generalComponents/MapConf';
+import Publish from 'components/customer/mapComponents/Publish';
 
 const { Title } = Typography;
 const MapsWrapper = styled.div`
@@ -36,6 +37,7 @@ const CreateMapContainer = ({ authenticatedUser, collapsed, styledMaps, tags, se
   const [center, setCenter] = useState(serverSideMapData?.center);
   const [customMapData, setCustomMapData] = useState(manualMapData);
   const [loading, setLoading] = useState(false);
+  const [publishModelVisible, setPublishModelVisible] = useState(false);
 
   const [layerClicked, setLayerClicked] = useState(true);
 
@@ -170,7 +172,7 @@ const CreateMapContainer = ({ authenticatedUser, collapsed, styledMaps, tags, se
                 serverSideMapSurveys={serverSideMapSurveys}
               />
 
-              <Button type={'primary'} onClick={showGeneratedLink} className='margin-top-10' size='large'>Publish</Button>
+                  <Publish mapData={mapData}  />
             </Col>
 
             <Col xs={24} sm={24} md={24} lg={17} xl={17}>

@@ -7,7 +7,6 @@ import { ThemeProvider } from "@magiclabs/ui";
 import { magic } from 'lib/magic';
 import { UserContext } from "lib/UserContext";
 import { useEffect, useState } from "react";
-
 import { publicUserOperation } from "lib/general-functions";
 export const CardFooter = styled.div`
 position: relative;
@@ -44,16 +43,16 @@ const Dashboard = ({ mapData, manualMapData, datasets, mapToken }) => {
 
   useEffect(() => {
     setUser({ loading: true });
+    localStorage.removeItem('magicUser');
     localStorage.setItem('mapData',JSON.stringify(mapData));
     magic.user.isLoggedIn().then((isLoggedIn) => {
       if (isLoggedIn) {
-        console.log(isLoggedIn,'isloggedin');
         magic.user.getMetadata().then((userData) => {
           setUser(userData);
+           localStorage.setItem('magicUser',JSON.stringify(userData));
           publicUserOperation(userData.publicAddress,mapData)
         });
       } else {
-        console.log(isLoggedIn,'isloggedin');
         setUser({ user: null });
       }
     });
@@ -86,10 +85,10 @@ const Dashboard = ({ mapData, manualMapData, datasets, mapToken }) => {
               <Title level={3}>
                 {MAP.WELCOME_TO_OPENMAP}
               </Title>
-              <Metamask mapDetails={mapData} publicUserOperation={publicUserOperation} />
-              <CardMiddle>
+              <Metamask mapDetails={mapData} />
+              {/* <CardMiddle>
                 <img src='metamask-big.png' />
-              </CardMiddle>
+              </CardMiddle> */}
               <CardFooter>
                 <span level={6}>{MAP.AS_CUSTOMER} <Link href='sign-in'>
                   {MAP.SING_IN}
