@@ -226,6 +226,8 @@ export const getServerSideProps = withPrivateServerSideProps(
       let surveys = [];
       if (id) {
         mapData = await getOneMap({ id: id }, token);
+        console.log(mapData, 'res');
+
         if (mapData) {
           mapData.tags = mapData.tags.map(item => Number(item.id));
           manualArray = await extractMapData(mapData);
