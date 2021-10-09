@@ -1,11 +1,13 @@
-import { Typography, Form, Input, Spin, Row, Col, Upload, message, Button, Image } from "antd";
-import { InboxOutlined, EditFilled, CheckCircleFilled, FastBackwardFilled } from '@ant-design/icons';
-import { useImperativeHandle, useState, useEffect, forwardRef } from "react";
+import { Form, Input, Spin, Row, Col, Upload, message, Button, Image } from "antd";
+import { InboxOutlined, EditFilled, CheckCircleFilled } from '@ant-design/icons';
+import { useState, useEffect } from "react";
 import styled from 'styled-components';
 import { DATASET } from '../../../static/constant';
 import { putPublicUserFileMethod } from "lib/api";
 import { getStrapiMedia } from "lib/media";
 import { putMethod, postMethod } from "lib/api";
+import { magic } from "lib/magic";
+import Router from "next/router";
 const { Dragger } = Upload;
 
 const FormWrapper = styled.div`
@@ -66,6 +68,18 @@ const SaveButton = styled(Button)`
     padding:2px 20px 4px 20px;
     margin-left:20px;
 `;
+
+const LogoutButton = styled(Button)`
+   float:left;
+   margin-top:-20px;
+    margin-left:15px;
+    font-size:12px;
+
+`;
+
+
+
+
 const PublicUserProfile = ({ userId, onModalClose, serverPublicUser, customWalletAddress, mapData }) => {
     const [loading, setLoading] = useState(false);
     const [form] = Form.useForm();
@@ -76,20 +90,35 @@ const PublicUserProfile = ({ userId, onModalClose, serverPublicUser, customWalle
     const [imageSelected, setImageSelected] = useState(false);
     const [attributeList, setAttribulteList] = useState([]);
     const [attributeId, setAttributeId] = useState(0);
+    const [states, setStates] = useState([]);
+    const [isMagic, setIsMagic] = useState(JSON.parse(localStorage.getItem('magicUser')) || false);
 
-    const [states,setStates]=useState([]);
+    const logout = () => {
 
-    useEffect(() => {
-        var tempStates=[];
-        if (mapData.map_attributes != null) {
-            setAttribulteList(mapData.map_attributes[0].attribute);
-            setAttributeId(mapData.map_attributes[0].id);
-
-            mapData.map_attributes[0].attribute.map((att)=>{
-                tempStates.push(att.value==null ? true :false);
+        if (isMagic) {
+            magic.user.logout().then(() => {
+                localStorage.removeItem('magicUser')
+                Router.push({
+                    pathname: '/',
+                    query: { mapToken: mapData.mapId, id: mapData.id }
+                });
             });
         }
-        else if(mapData.auth_attributes!=null) {
+    };
+
+
+
+    useEffect(() => {
+        var tempStates = [];
+        if (mapData.map_attributes != null) {
+            setAttribulteList(mapData.map_attributes[0]?.attribute);
+            setAttributeId(mapData.map_attributes[0]?.id);
+
+            mapData.map_attributes[0]?.attribute.map((att) => {
+                tempStates.push(att.value == null ? true : false);
+            });
+        }
+        else if (mapData?.auth_attributes != null) {
             (mapData.auth_attributes).map((auth) => {
                 attributeList.push({ 'attribute': auth.attribute, 'type': auth.type, 'value': null, 'isVarified': false });
                 tempStates.push(true);
@@ -165,7 +194,7 @@ const PublicUserProfile = ({ userId, onModalClose, serverPublicUser, customWalle
 
     const OnClick = async (id) => {
         setLoading(true);
-        states[id]=false;
+        states[id] = false;
         setStates(states);
         attributeList[id].value = document.getElementById(id).value;
         try {
@@ -189,7 +218,7 @@ const PublicUserProfile = ({ userId, onModalClose, serverPublicUser, customWalle
     }
 
     const ChangeState = async (index) => {
-        states[index]=true;
+        states[index] = true;
         setStates(states);
     }
 
@@ -264,7 +293,11 @@ const PublicUserProfile = ({ userId, onModalClose, serverPublicUser, customWalle
                         <AccountName>{serverPublicUser.name}</AccountName>
                         <WalletAdd>{customWalletAddress}</WalletAdd>
                         <UpdateButton onClick={() => setUpdateActive(true)}>Edit Profile</UpdateButton>
-                        <AccountInfo>
+
+                        {isMagic &&
+                            <LogoutButton type='link' onClick={logout} > logout </LogoutButton>
+                        }
+                        <AccountInfo className='clear'>
                             <AccountInfoRow>
                                 <Col span={8}>
                                     <Title>Balance</Title>
@@ -290,7 +323,7 @@ const PublicUserProfile = ({ userId, onModalClose, serverPublicUser, customWalle
 
             <FormWrapper>
                 <Form>
-                    {attributeList.map((value, i) => (
+                    {attributeList?.map((value, i) => (
                         <Row key={i}>
                             <Col span={6}>
                                 <div>

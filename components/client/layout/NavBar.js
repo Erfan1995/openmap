@@ -1,11 +1,11 @@
-import React, { useState, useEffect } from "react";
-import { Layout, Button, Radio, Modal } from "antd";
+import React, { useState } from "react";
+import { Layout, Button, Modal } from "antd";
 import { MenuOutlined } from "@ant-design/icons";
-import { useRouter } from 'next/router';
 import styled from 'styled-components';
 import PublicUserProfile from "./PublicUserProfile";
 import { getStrapiMedia } from "lib/media";
-import UseAuth from "hooks/useAuth";
+
+import { getMethod } from "lib/api";
 
 const WalletAddressButton = styled(Button)`
 position:fexid; 
@@ -35,26 +35,22 @@ const ImageWrapper = styled.img`
 `;
 
 const { Header } = Layout;
-const NavBar = ({ isMobileSize, toggle, walletAddress, publicUser, mapData, injectedcodes }) => {
-    const router = useRouter();
+const NavBar = ({ isMobileSize, toggle, walletAddress, publicUser, mapData }) => {
     const customWalletAddress = walletAddress.substring(0, 10);
-
-    // + '...' + walletAddress.substr(walletAddress.length - 5);
-
     const [modalVisible, setModalVisible] = useState(false);
     const [serverPublicUser, setServerPublicUser] = useState(publicUser);
-    const { login, logout } = UseAuth();
     const [publicuserImage, setPublicUserImage] = useState(publicUser.picture);
+
     const onModalClose = (res) => {
         setServerPublicUser(res);
         setPublicUserImage(res.picture);
-        // setModalVisible(false);
+        setModalVisible(false);
     }
 
 
     const openFormModal = async () => {
         setModalVisible(true);
-        const res = await login(mapData);
+        const res = await getMethod(`public-users?publicAddress=${publicUser.publicAddress}`, null, false);
         if (res) {
             setServerPublicUser(res[0]);
         }
@@ -67,13 +63,10 @@ const NavBar = ({ isMobileSize, toggle, walletAddress, publicUser, mapData, inje
                 /></Button>
             }
             <div className='profile'>
-                {/* {publicUser.picture ?  : */}
-                <WalletAddressButton type='default'  shape='round' size='middle' onClick={() => openFormModal()}>
+                <WalletAddressButton type='default' shape='round' size='middle' onClick={() => openFormModal()}>
                     {customWalletAddress}
-
                     {publicuserImage ? <ImageWrapper src={getStrapiMedia(publicuserImage)} /> : <ImageWrapper src={'/user.png'} />}
                 </WalletAddressButton>
-                {/* } */}
             </div>
 
             <Modal
@@ -84,7 +77,7 @@ const NavBar = ({ isMobileSize, toggle, walletAddress, publicUser, mapData, inje
                 footer={null}
                 onCancel={() => setModalVisible(false)} >
                 <PublicUserProfile userId={publicUser.id} onModalClose={onModalClose} serverPublicUser={serverPublicUser}
-                    customWalletAddress={customWalletAddress} mapData={mapData}  />
+                    customWalletAddress={customWalletAddress} mapData={mapData} />
             </Modal>
 
         </Header>

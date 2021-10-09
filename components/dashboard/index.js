@@ -1,9 +1,13 @@
-import { Card, Typography } from "antd";
+import { Card, message, Typography } from "antd";
 import dynamic from "next/dynamic";
 import Link from "next/link";
 import styled from 'styled-components';
 import { MAP } from 'static/constant';
-
+import { ThemeProvider } from "@magiclabs/ui";
+import { magic } from 'lib/magic';
+import { UserContext } from "lib/UserContext";
+import { useEffect, useState } from "react";
+import { publicUserOperation } from "lib/general-functions";
 export const CardFooter = styled.div`
 position: relative;
 bottom:-10px;
@@ -33,7 +37,27 @@ export const StyledCard = styled(Card)`
 
 
 const { Title } = Typography;
-const Dashboard = ({ mapData, manualMapData, datasets ,mapToken}) => {
+const Dashboard = ({ mapData, manualMapData, datasets, mapToken }) => {
+
+  const [user, setUser] = useState();
+
+  useEffect(() => {
+    setUser({ loading: true });
+    localStorage.removeItem('magicUser');
+    localStorage.setItem('mapData',JSON.stringify(mapData));
+    magic.user.isLoggedIn().then((isLoggedIn) => {
+      if (isLoggedIn) {
+        magic.user.getMetadata().then((userData) => {
+          setUser(userData);
+           localStorage.setItem('magicUser',JSON.stringify(userData));
+          publicUserOperation(userData.publicAddress,mapData)
+        });
+      } else {
+        setUser({ user: null });
+      }
+    });
+  }, []);
+
 
   const MapWithNoSSR = dynamic(() => import("../../components/map/mapImage"), {
     ssr: false
@@ -43,7 +67,12 @@ const Dashboard = ({ mapData, manualMapData, datasets ,mapToken}) => {
     ssr: false
   });
 
+  
+
   return (
+
+    <ThemeProvider root>
+      <UserContext.Provider value={[user, setUser]}>
         <div>
 
           <MapWithNoSSR mapData={mapData} manualMapData={manualMapData} datasets={datasets} />
@@ -57,9 +86,9 @@ const Dashboard = ({ mapData, manualMapData, datasets ,mapToken}) => {
                 {MAP.WELCOME_TO_OPENMAP}
               </Title>
               <Metamask mapDetails={mapData} />
-              <CardMiddle>
+              {/* <CardMiddle>
                 <img src='metamask-big.png' />
-              </CardMiddle>
+              </CardMiddle> */}
               <CardFooter>
                 <span level={6}>{MAP.AS_CUSTOMER} <Link href='sign-in'>
                   {MAP.SING_IN}
@@ -71,7 +100,8 @@ const Dashboard = ({ mapData, manualMapData, datasets ,mapToken}) => {
 
           </div>
         </div>
-
+      </UserContext.Provider>
+    </ThemeProvider>
   );
 };
 
