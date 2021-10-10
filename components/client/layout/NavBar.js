@@ -39,18 +39,18 @@ const NavBar = ({ isMobileSize, toggle, walletAddress, publicUser, mapData }) =>
     const customWalletAddress = walletAddress.substring(0, 10);
     const [modalVisible, setModalVisible] = useState(false);
     const [serverPublicUser, setServerPublicUser] = useState(publicUser);
-    const [publicuserImage, setPublicUserImage] = useState(publicUser.picture);
+    const [publicuserImage, setPublicUserImage] = useState(publicUser?.picture);
 
     const onModalClose = (res) => {
         setServerPublicUser(res);
-        setPublicUserImage(res.picture);
+        setPublicUserImage(res?.picture);
         setModalVisible(false);
     }
 
 
     const openFormModal = async () => {
         setModalVisible(true);
-        const res = await getMethod(`public-users?publicAddress=${publicUser.publicAddress}`, null, false);
+        const res = await getMethod(`public-users?publicAddress=${publicUser?.publicAddress}`, null, false);
         if (res) {
             setServerPublicUser(res[0]);
         }
