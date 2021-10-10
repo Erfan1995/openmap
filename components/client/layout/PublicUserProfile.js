@@ -80,7 +80,7 @@ const LogoutButton = styled(Button)`
 
 
 
-const PublicUserProfile = ({ userId, onModalClose, serverPublicUser, customWalletAddress, mapData }) => {
+const PublicUserProfile = ({ userId, onModalClose, serverPublicUser, customWalletAddress, mapData, mapAttributes }) => {
     const [loading, setLoading] = useState(false);
     const [form] = Form.useForm();
     const [imageUrl, setImageUrl] = useState(serverPublicUser?.picture?.url);
@@ -104,17 +104,13 @@ const PublicUserProfile = ({ userId, onModalClose, serverPublicUser, customWalle
             });
         }
     };
-
-
-
     useEffect(() => {
         var tempStates = [];
-        if (mapData?.map_attributes.length !== 0) {
-            setAttribulteList(mapData.map_attributes[0]?.attribute);
-            setAttributeId(mapData.map_attributes[0]?.id);
+        if (mapAttributes) {
+            setAttribulteList(mapAttributes?.attribute);
+            setAttributeId(mapAttributes?.id);
             let i = 0;
-            let obj = {};
-            mapData.map_attributes[0]?.attribute.map((att) => {
+            mapAttributes?.attribute.map((att) => {
                 if (att.value === null) tempStates[i] = { state: true, index: i }
                 else tempStates[i] = { state: false, index: i };
                 i++;
@@ -200,7 +196,6 @@ const PublicUserProfile = ({ userId, onModalClose, serverPublicUser, customWalle
                 return { ...obj, state: obj.state };
             }
         }));
-        console.log(document.getElementById(index).value);
         attributeList[index].value = document.getElementById(index).value;
         try {
             if (attributeId != 0) {

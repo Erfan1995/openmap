@@ -40,7 +40,7 @@ const NavBar = ({ isMobileSize, toggle, walletAddress, publicUser, mapData }) =>
     const [modalVisible, setModalVisible] = useState(false);
     const [serverPublicUser, setServerPublicUser] = useState(publicUser);
     const [publicuserImage, setPublicUserImage] = useState(publicUser.picture);
-
+    const [mapAttributes, setMapAttributes] = useState();
     const onModalClose = (res) => {
         setServerPublicUser(res);
         setPublicUserImage(res.picture);
@@ -49,10 +49,13 @@ const NavBar = ({ isMobileSize, toggle, walletAddress, publicUser, mapData }) =>
 
 
     const openFormModal = async () => {
-        setModalVisible(true);
         const res = await getMethod(`public-users?publicAddress=${publicUser.publicAddress}`, null, false);
-        if (res) {
+        const mapAtt = await getMethod(`map-attributes?map=${mapData.id}&public_user=${publicUser.id}`, null, false);
+        if (res && mapAtt) {
             setServerPublicUser(res[0]);
+            setMapAttributes(mapAtt[0]);
+            setModalVisible(true);
+
         }
 
     }
@@ -77,7 +80,7 @@ const NavBar = ({ isMobileSize, toggle, walletAddress, publicUser, mapData }) =>
                 footer={null}
                 onCancel={() => setModalVisible(false)} >
                 <PublicUserProfile userId={publicUser.id} onModalClose={onModalClose} serverPublicUser={serverPublicUser}
-                    customWalletAddress={customWalletAddress} mapData={mapData} />
+                    mapAttributes={mapAttributes} customWalletAddress={customWalletAddress} mapData={mapData} />
             </Modal>
 
         </Header>
