@@ -92,8 +92,6 @@ const MapConf = ({ authenticatedUser, styledMaps, tags, mapData, serverSideDatas
     const [editableSurvey, setEditableSurvey] = useState();
     const router = useRouter();
     const [surveyModalVisible, setSurveyModalVisible] = useState();
-    console.log(mapData, 'mapdata')
-
     const menu = (
         <Menu >
             <Menu.Item key="1" style={{ padding: "3px 20px" }}><a onClick={() => showConfirm()} >{DATASET.DELETE}</a></Menu.Item>
