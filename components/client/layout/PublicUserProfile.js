@@ -109,9 +109,9 @@ const PublicUserProfile = ({ userId, onModalClose, serverPublicUser, customWalle
 
     useEffect(() => {
         var tempStates = [];
-        if (mapData?.map_attributes.length !== 0) {
-            setAttribulteList(mapData.map_attributes[0]?.attribute);
-            setAttributeId(mapData.map_attributes[0]?.id);
+        if (mapData?.map_attributes?.length !== 0) {
+            setAttribulteList(mapData?.map_attributes[0]?.attribute);
+            setAttributeId(mapData?.map_attributes[0]?.id);
             let i = 0;
             let obj = {};
             mapData.map_attributes[0]?.attribute.map((att) => {
@@ -120,10 +120,10 @@ const PublicUserProfile = ({ userId, onModalClose, serverPublicUser, customWalle
                 i++;
             });
         }
-        else if (mapData?.auth_attributes.length !== 0) {
+        else if (mapData?.auth_attributes?.length !== 0) {
             let i = 0;
-            (mapData.auth_attributes).map((auth) => {
-                attributeList.push({ 'attribute': auth.attribute, 'type': auth.type, 'value': null, 'isVarified': false });
+            (mapData?.auth_attributes).map((auth) => {
+                attributeList.push({ 'attribute': auth?.attribute, 'type': auth?.type, 'value': null, 'isVarified': false });
                 tempStates[i] = { state: true, index: i };
                 i++;
             });
@@ -223,7 +223,7 @@ const PublicUserProfile = ({ userId, onModalClose, serverPublicUser, customWalle
     }
 
     const ChangeState = async (index) => {
-        setStates(states.map((obj) => {
+        setStates(states?.map((obj) => {
             if (obj.index === index) {
                 return { ...obj, state: true };
             } else {
@@ -297,7 +297,7 @@ const PublicUserProfile = ({ userId, onModalClose, serverPublicUser, customWalle
                         <SaveButton onClick={() => createProfile()} type="primary" shape="round">Save Profile</SaveButton>
                     </Row> :
                     <div style={{ textAlign: "center" }}>
-                        {serverPublicUser.picture ? <StyledImage src={getStrapiMedia(serverPublicUser.picture)} />
+                        {serverPublicUser?.picture ? <StyledImage src={getStrapiMedia(serverPublicUser?.picture)} />
                             : <StyledImage src={'/user.png'} />}
 
                         <AccountName>{serverPublicUser.name}</AccountName>
@@ -325,7 +325,7 @@ const PublicUserProfile = ({ userId, onModalClose, serverPublicUser, customWalle
 
                             </AccountInfoRow>
                         </AccountInfo>
-                        <p style={{ paddingTop: "10px" }}>Email: {serverPublicUser.email}</p>
+                        <p style={{ paddingTop: "10px" }}>Email: {serverPublicUser?.email}</p>
                     </div>
                 }
 
