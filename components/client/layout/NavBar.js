@@ -41,7 +41,6 @@ const NavBar = ({ isMobileSize, toggle, walletAddress, publicUser, mapData }) =>
     const [serverPublicUser, setServerPublicUser] = useState(publicUser);
     const [publicuserImage, setPublicUserImage] = useState(publicUser.picture);
     const [mapAttributes, setMapAttributes] = useState();
-    const [publicuserImage, setPublicUserImage] = useState(publicUser?.picture);
 
     const onModalClose = (res) => {
         setServerPublicUser(res);
