@@ -29,7 +29,7 @@ const SignIn = () => {
                 message.success({ content: DATASET.SUCCESS, key });
                 if (res.user.role.name === "Customer") {
                     router.push('/customer/maps');
-                }else if(res.user.role.name === "Admin"){
+                } else if (res.user.role.name === "Admin") {
                     router.push('/admin/customers')
                 }
             })

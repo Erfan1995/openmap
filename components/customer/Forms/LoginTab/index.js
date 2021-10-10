@@ -45,11 +45,11 @@ function LoginTab({ mapData }) {
             width:100%;
     `;
 
-    const ListTitle=styled.div`
+    const ListTitle = styled.div`
 
     `;
 
-    const ListIcon=styled.div`
+    const ListIcon = styled.div`
     
     `;
 
@@ -92,7 +92,7 @@ function LoginTab({ mapData }) {
 
     useEffect(() => {
         mapData.auth_types != null ? setRows(mapData.auth_types) : setRows(firstData);
-        setAttributes(mapData.auth_attributes!=null ? mapData.auth_attributes : []);
+        setAttributes(mapData.auth_attributes != null ? mapData.auth_attributes : []);
     }, []);
 
 
@@ -118,7 +118,7 @@ function LoginTab({ mapData }) {
         try {
             const res = await putMethod('maps/' + mapData.id, { auth_types: data });
             if (res) {
-                console.log('resource ' + JSON.stringify(res));
+                console.log('resource ' + res);
             }
         } catch (e) {
             message.error(e);
@@ -177,7 +177,7 @@ function LoginTab({ mapData }) {
 
 
     const editAttribute = (values) => {
-        console.log('values '+JSON.stringify(values));
+        console.log('values ' + JSON.stringify(values));
         const att = [];
         attributes.forEach((element) => {
             if (element.attribute == selectedAttribute.attribute) {
@@ -220,7 +220,7 @@ function LoginTab({ mapData }) {
                 centered
                 width={700}
                 visible={attributeModelVisibility}
-                onCancel={()=>setAttributeModelVisibility(false)}
+                onCancel={() => setAttributeModelVisibility(false)}
                 footer={[
                     <Button form="myForm" key="submit" htmlType="submit">
                         {DATASET.SAVE}
@@ -262,7 +262,7 @@ function LoginTab({ mapData }) {
                 width={700}
                 visible={editModalVisibility}
                 destroyOnClose={true}
-                onCancel={()=>setEditModalVisiblity(false)}
+                onCancel={() => setEditModalVisiblity(false)}
                 footer={[
                     <Button form='editForm' key='submit' htmlType='submit'> {DATASET.SAVE}</Button>,
                     <Button key='close' onClick={() => setEditModalVisiblity(false)}>{DATASET.CLOSE}</Button>,
@@ -275,7 +275,7 @@ function LoginTab({ mapData }) {
                         <Form.Item name="type" label="Type" initialValue={selectedAttribute != null ? selectedAttribute.type : null} rules={[{ required: true }]}>
                             <Select
                                 placeholder={DATASET.SELECT_TYPE_PLACEHOLDER}
-                                allowClear 
+                                allowClear
                             >
                                 <Option value="string">{DATASET.STRING}</Option>
                                 <Option value="number">{DATASET.NUMBER}</Option>
@@ -297,7 +297,7 @@ function LoginTab({ mapData }) {
                         <AttributeWrapper >
                             <Row>
                                 <Col span={21}>
-                                    <div style={{ marginTop: '20px', marginLeft: '5px',textAlign:'center' }}>
+                                    <div style={{ marginTop: '20px', marginLeft: '5px', textAlign: 'center' }}>
                                         {item.attribute}
                                     </div>
                                 </Col>
