@@ -172,7 +172,7 @@ const CreateMapContainer = ({ authenticatedUser, collapsed, styledMaps, tags, se
                 serverSideMapSurveys={serverSideMapSurveys}
               />
 
-                  <Publish mapData={mapData}  />
+              <Publish mapData={mapData} />
             </Col>
 
             <Col xs={24} sm={24} md={24} lg={17} xl={17}>

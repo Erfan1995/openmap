@@ -92,7 +92,7 @@ const MapConf = ({ authenticatedUser, styledMaps, tags, mapData, serverSideDatas
     const [editableSurvey, setEditableSurvey] = useState();
     const router = useRouter();
     const [surveyModalVisible, setSurveyModalVisible] = useState();
-
+    console.log(mapData, 'mapdata')
 
     const menu = (
         <Menu >
@@ -459,7 +459,7 @@ const MapConf = ({ authenticatedUser, styledMaps, tags, mapData, serverSideDatas
                                 width={700}
                                 visible={surveyModalVisible}
                                 destroyOnClose={true}
-                                onCancel={()=>setSurveyModalVisible(false)}
+                                onCancel={() => setSurveyModalVisible(false)}
                                 footer={[
                                     <Button key="close" onClick={() => { setSurveyModalVisible(false) }}> {DATASET.CLOSE}</Button>
                                 ]}
@@ -510,7 +510,7 @@ const MapConf = ({ authenticatedUser, styledMaps, tags, mapData, serverSideDatas
                             />
                         </TabPane>
                         <TabPane tab={DATASET.LOGIN} key='6'>
-                                <LoginTab mapData={mapData}/>
+                            <LoginTab mapData={mapData} />
                         </TabPane>
                     </Tabs>
                     :
