@@ -75,12 +75,12 @@ const SideBar = ({ siderCollapsed, toggle, datasets, onDataSetChange, mapInfo })
 
       <ParentWrapper>
         <ChildWrapper>
-          <Photo src={getStrapiMedia(mapInfo.logo)} />
+          <Photo src={getStrapiMedia(mapInfo?.logo)} />
           <Title>
-            {mapInfo.title}
+            {mapInfo?.title}
           </Title>
           <Title level={2}>
-            {mapInfo.subtitle}
+            {mapInfo?.subtitle}
           </Title>
         </ChildWrapper>
         <Divider />
