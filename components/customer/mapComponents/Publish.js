@@ -8,7 +8,7 @@ import copy from 'copy-to-clipboard';
 
 const Boxs = styled.div`
   background-color: #fff;
-  height: 200px;
+  min-height: 200px;
   text-align: center;
   padding:40px 20px;
 
@@ -21,7 +21,7 @@ border:1px solid #efefef;
 `;
 
 const MainWrapper = styled.div`
-height: 330px;
+min-height: 330px;
 width: 100 %;
 background-color: #f9f9f9;
 padding: 50px;
@@ -36,17 +36,14 @@ const Publish = ({ mapData }) => {
 
 
     useEffect(() => {
-
         if (mapData) {
-            console.log(mapData);
-
             setLink(`${basePath}/?mapToken=${mapData.mapId}&id=${mapData.id}`)
             setEmbed(`<iframe width="100%" height="520" frameborder="0" src="${basePath}/embed?mapToken=${mapData.mapId}&id=${mapData.id}" allowfullscreen webkitallowfullscreen mozallowfullscreen oallowfullscreen msallowfullscreen></iframe>`)
-            console.log(`${basePath}/embed??mapToken=${mapData.mapId}&id=${mapData.id}`);
-
         }
-
-
+        else {
+            message.error('someting is wrong please try again');
+            setModalVisible(false);
+        }
     }, [])
 
     const onModalClose = () => {
@@ -61,11 +58,16 @@ const Publish = ({ mapData }) => {
                 visible={modalVisible}
                 destroyOnClose={true}
 
-                onCancel={onModalClose}>
+                onCancel={onModalClose}
+                footer={[]}
+                style={{ padding: 0 }}
+            >
+
+
 
                 <MainWrapper>
                     <Row>
-                        <Col xs={24} sm={24} md={12} lg={12} xl={12}  className='padding-10'>
+                        <Col xs={24} sm={24} md={12} lg={12} xl={12} className='padding-10'>
 
                             <Boxs >
                                 <IconWrapper>
