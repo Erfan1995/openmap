@@ -64,19 +64,18 @@ const EditSurveyMeta = ({ editableSurvey, onModalClose, addImageFile }, ref) => 
                 .then(async (values) => {
                     const fData = new FormData();
                     let res = null;
+                    let surveyForm = editableSurvey.forms;
+                    surveyForm.title = values.title;
+                    surveyForm.description = values.description;
                     if (image) {
-                        let surveyForm = JSON.parse(editableSurvey.forms);
-                        surveyForm.title = values.title;
-                        surveyForm.description = values.description;
                         surveyForm.logo = image;
-                        setLoading(true);
-                        res = await putMethod('surveys/' + editableSurvey.id, { forms: JSON.stringify(surveyForm) })
-                        setLoading(false);
-                        if (res) {
-                            message.success(DATASET.CREATE_MAP_SUCCESS_MSG);
-                            console.log(res, 'response');
-                            onModalClose(res);
-                        }
+                    }
+                    setLoading(true);
+                    res = await putMethod('surveys/' + editableSurvey.id, { forms: JSON.stringify(surveyForm) })
+                    setLoading(false);
+                    if (res) {
+                        message.success(DATASET.CREATE_MAP_SUCCESS_MSG);
+                        onModalClose(res);
                     }
                 })
                 .catch((info) => {
