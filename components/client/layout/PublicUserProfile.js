@@ -1,4 +1,4 @@
-import { Form, Input, Spin, Row, Col, Upload, message, Button, Image } from "antd";
+import { Form, Input, Spin, Row, Col, Upload, message, Button, Image, List } from "antd";
 import { InboxOutlined, EditFilled, CheckCircleFilled } from '@ant-design/icons';
 import { useState, useEffect } from "react";
 import styled from 'styled-components';
@@ -92,7 +92,6 @@ const PublicUserProfile = ({ userId, onModalClose, serverPublicUser, customWalle
     const [attributeId, setAttributeId] = useState(0);
     const [states, setStates] = useState([]);
     const [isMagic, setIsMagic] = useState(JSON.parse(localStorage.getItem('magicUser')) || false);
-
     const logout = () => {
 
         if (isMagic) {
@@ -110,23 +109,27 @@ const PublicUserProfile = ({ userId, onModalClose, serverPublicUser, customWalle
 
     useEffect(() => {
         var tempStates = [];
-        if (mapData.map_attributes != null) {
+        if (mapData?.map_attributes.length !== 0) {
             setAttribulteList(mapData.map_attributes[0]?.attribute);
             setAttributeId(mapData.map_attributes[0]?.id);
-
+            let i = 0;
+            let obj = {};
             mapData.map_attributes[0]?.attribute.map((att) => {
-                tempStates.push(att.value == null ? true : false);
+                if (att.value === null) tempStates[i] = { state: true, index: i }
+                else tempStates[i] = { state: false, index: i };
+                i++;
             });
         }
-        else if (mapData?.auth_attributes != null) {
+        else if (mapData?.auth_attributes.length !== 0) {
+            let i = 0;
             (mapData.auth_attributes).map((auth) => {
                 attributeList.push({ 'attribute': auth.attribute, 'type': auth.type, 'value': null, 'isVarified': false });
-                tempStates.push(true);
+                tempStates[i] = { state: true, index: i };
+                i++;
             });
             setAttribulteList(attributeList);
         }
         setStates(tempStates);
-        console.log('load call');
     }, []);
 
 
@@ -166,13 +169,10 @@ const PublicUserProfile = ({ userId, onModalClose, serverPublicUser, customWalle
             .then(async (values) => {
                 const fData = new FormData();
                 fData.append('data', JSON.stringify(values));
-                console.log('fdata  : ' + JSON.stringify(fData));
                 setLoading(true);
                 if (imageSelected) {
-                    console.log(imageFile.originFileObj)
                     fData.append('files.picture', imageFile.originFileObj, imageFile.originFileObj.name);
                 }
-                console.log('fdata ' + JSON.stringify(fData));
                 let res = await putPublicUserFileMethod(`public-users/${userId}`, fData)
                 setLoading(false);
                 if (res) {
@@ -192,11 +192,16 @@ const PublicUserProfile = ({ userId, onModalClose, serverPublicUser, customWalle
 
     // attribute form
 
-    const OnClick = async (id) => {
-        setLoading(true);
-        states[id] = false;
-        setStates(states);
-        attributeList[id].value = document.getElementById(id).value;
+    const OnClick = async (index) => {
+        setStates(states.map((obj) => {
+            if (obj.index === index) {
+                return { ...obj, state: false };
+            } else {
+                return { ...obj, state: obj.state };
+            }
+        }));
+        console.log(document.getElementById(index).value);
+        attributeList[index].value = document.getElementById(index).value;
         try {
             if (attributeId != 0) {
                 const res = await putMethod('map-attributes/' + attributeId, { attribute: JSON.stringify(attributeList) });
@@ -218,8 +223,13 @@ const PublicUserProfile = ({ userId, onModalClose, serverPublicUser, customWalle
     }
 
     const ChangeState = async (index) => {
-        states[index] = true;
-        setStates(states);
+        setStates(states.map((obj) => {
+            if (obj.index === index) {
+                return { ...obj, state: true };
+            } else {
+                return { ...obj, state: obj.state };
+            }
+        }));
     }
 
 
@@ -333,14 +343,14 @@ const PublicUserProfile = ({ userId, onModalClose, serverPublicUser, customWalle
 
                             <Col span={10}>
                                 <Form.Item >
-                                    {states[i] ? <Input defaultValue={value.value} type={value.type} name={value.attribute} id={i}></Input> : <div>{value.value}</div>}
+                                    {states[i].state ? <Input defaultValue={value.value} type={value.type} name={value.attribute} id={i}></Input> : <div>{value.value}</div>}
                                 </Form.Item>
                             </Col>
                             <Col span={1} />
 
                             <Col span={4}>
                                 {
-                                    states[i] ? <Button shape='round' onClick={() => OnClick(i)}>
+                                    states[i].state ? <Button shape='round' onClick={() => OnClick(i)}>
                                         Submit
                                     </Button> : <Button icon={<EditFilled />} onClick={() => ChangeState(i)} />
                                 }
@@ -351,7 +361,6 @@ const PublicUserProfile = ({ userId, onModalClose, serverPublicUser, customWalle
                             </Col>
                         </Row>
                     ))}
-
                 </Form>
             </FormWrapper>
         </Spin>

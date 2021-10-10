@@ -10,6 +10,8 @@ import nookies from 'nookies';
 import PublicUsers from 'components/customer/mapComponents/PublicUsers';
 import PrivateUsers from 'components/customer/mapComponents/PrivateUsers';
 import { DATASET } from 'static/constant';
+import { getMethod, getMapAnalytics, getPublicUsers } from 'lib/api';
+
 const { Title } = Typography;
 const { TabPane } = Tabs;
 const MapsWrapper = styled.div`
@@ -88,9 +90,11 @@ const Users = ({ authenticatedUser, collapsed }) => {
 export const getServerSideProps = withPrivateServerSideProps(
     async (ctx, verifyUser) => {
         try {
-            const { token } = nookies.get(ctx);
 
-            return { props: { authenticatedUser: verifyUser, } }
+            const { token } = nookies.get(ctx);
+            let mapData = await getMapAnalytics({ user: verifyUser.id }, token);
+            const publicUsers = await getPublicUsers(null, token);
+            return { props: { authenticatedUser: verifyUser, publicUsers: publicUsers, maps: mapData } }
         } catch (error) {
             return {
                 redirect: {

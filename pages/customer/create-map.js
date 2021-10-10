@@ -172,7 +172,7 @@ const CreateMapContainer = ({ authenticatedUser, collapsed, styledMaps, tags, se
                 serverSideMapSurveys={serverSideMapSurveys}
               />
 
-                  <Publish mapData={mapData}  />
+              <Publish mapData={mapData} />
             </Col>
 
             <Col xs={24} sm={24} md={24} lg={17} xl={17}>
@@ -228,8 +228,6 @@ export const getServerSideProps = withPrivateServerSideProps(
       let surveys = [];
       if (id) {
         mapData = await getOneMap({ id: id }, token);
-        console.log(mapData, 'res');
-
         if (mapData) {
           mapData.tags = mapData.tags.map(item => Number(item.id));
           manualArray = await extractMapData(mapData);

@@ -52,7 +52,6 @@ const MapAnalytics = ({ collapsed, authenticatedUser, mapData, allMaps }) => {
     // here we assign all maps received from singups in one array as an object no matter if they are duplicate; maybe they are from different users;
     allMaps.map((data) => {
         data.maps.map((m) => {
-            console.log(m);
             if (Number(m.user.id) === authenticatedUser.id) {
                 let obj = {};
                 obj.created_at = data.created_at;
@@ -210,7 +209,6 @@ const MapAnalytics = ({ collapsed, authenticatedUser, mapData, allMaps }) => {
                 min: 100,
                 max: 0,
                 ticks: {
-                    // forces step size to be 50 units
                     stepSize: 50
                 }
             }
@@ -227,7 +225,6 @@ const MapAnalytics = ({ collapsed, authenticatedUser, mapData, allMaps }) => {
                                 <Title >SIGNUPS</Title>
                                 <Week>from : {fromDate}</Week>
                                 <Content >{totalSigups}</Content>
-                                {/* <State >State</State> */}
                             </Cards>
 
 

@@ -141,7 +141,10 @@ export const DATASET = {
     EDIT_ATTRIBUTE: 'Edit Attribute',
     PRIVATE_USERS: 'Private Users',
     ADD_USER: 'Add User',
-    USERS: 'Users'
+    USERS: 'Users',
+    TRUST_SCORE: 'Trust Score',
+    ATTRIBUTES: 'Attributes',
+    VERIFY_ATTRIBUTES: 'Verify Attributes'
 
 
 }
