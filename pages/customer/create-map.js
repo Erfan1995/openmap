@@ -46,7 +46,6 @@ const CreateMapContainer = ({ authenticatedUser, collapsed, styledMaps, tags, se
   });
 
 
-
   const key = 'updatable';
 
   const router = useRouter();
@@ -228,8 +227,10 @@ export const getServerSideProps = withPrivateServerSideProps(
       let surveys = [];
       if (id) {
         mapData = await getOneMap({ id: id }, token);
+        console.log(mapData);
         if (mapData) {
           mapData.tags = mapData.tags.map(item => Number(item.id));
+          
           manualArray = await extractMapData(mapData);
           let res = await getSurveysAndDatasetByMap(id, token);
           datasets = res.datasets;
@@ -267,8 +268,6 @@ export const getServerSideProps = withPrivateServerSideProps(
         }
       }
     } catch (error) {
-
-      console.log(error.message, '::::::::::')
 
       return {
         redirect: {

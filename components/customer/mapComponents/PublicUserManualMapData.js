@@ -123,7 +123,6 @@ const PublicUserManualMapData = ({ data, mapFilterData, formElementsName,setMaps
         });
     }
     const showChangeStateConfirm = (record) => {
-        console.log(data);
         confirm({
             icon: <ExclamationCircleOutlined />,
             content: <p>{DATASET.CHANGE_CONFIRM}</p>,

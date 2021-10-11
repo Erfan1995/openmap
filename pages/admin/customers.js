@@ -36,7 +36,6 @@ const Customers = ({ authenticatedUser, collapsed, serverSideCustomers }) => {
         setCutomers([...customers, res.user]);
     }
     const updatedData = (data) => {
-        console.log(data);
         setCutomers(data);
     }
     return (

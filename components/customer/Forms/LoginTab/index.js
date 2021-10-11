@@ -116,10 +116,8 @@ function LoginTab({ mapData }) {
     const updateAuth = async (data) => {
         setLoading(true);
         try {
-            const res = await putMethod('maps/' + mapData.id, { auth_types: data });
-            if (res) {
-                console.log('resource ' + res);
-            }
+           await putMethod('maps/' + mapData.id, { auth_types: data });
+          
         } catch (e) {
             message.error(e);
         }
@@ -177,7 +175,6 @@ function LoginTab({ mapData }) {
 
 
     const editAttribute = (values) => {
-        console.log('values ' + JSON.stringify(values));
         const att = [];
         attributes.forEach((element) => {
             if (element.attribute == selectedAttribute.attribute) {

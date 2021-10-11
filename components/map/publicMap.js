@@ -39,16 +39,7 @@ const PublicMap = ({ styleId, mapZoom, style, mapData, manualMapData,onCustomeDa
     }
 
     const onChange = () => {
-        // setCustomMapData([])
-        // try {
-        //     setTimeout(async () => {
-        //         setCustomMapData([...await getCustomerMapData(mapData.id), ...await getPublicMapData(userId, mapData.id)]);
-        //         console.log('yes');
-
-        //     }, 3000)
-        // } catch (e) {
-        //     message.error(e.message);
-        // }
+       
         onCustomeDataChange();
     }
 
@@ -103,12 +94,12 @@ const PublicMap = ({ styleId, mapZoom, style, mapData, manualMapData,onCustomeDa
                 <MarkerClusterGroup key={`manaualGroup`}> 
                 
                 <GeoJSON  data={customMapData} pointToLayer={(feature, latlng) => {
-                    const iconUrl = getStrapiMedia(mapData?.icons.length > 0 ? mapData?.icons[0]?.icon[0] : null);
+                    const iconUrl = getStrapiMedia(feature?.icon?.icon?.length > 0 ? feature?.icon?.icon[0] : null);
 
                     if (!iconUrl) return L.marker(latlng);
 
                     return L.marker(latlng, {
-                        icon: new L.icon({ iconUrl: feature?.icon?.icon[0] ? getStrapiMedia(feature?.icon?.icon[0]) : iconUrl, iconSize: MapIconSize })
+                        icon: new L.icon({ iconUrl:  iconUrl, iconSize: MapIconSize })
                     })
                 }} key={'manual'}  onEachFeature={(feature, layer) => {
                     const { properties } = feature;
