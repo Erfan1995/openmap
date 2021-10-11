@@ -55,7 +55,6 @@ function EditableGroup(props) {
 
   props.dataLayer.eachLayer((layer) => {
     layer.feature.properties.editLayerId = i;
-     console.log(layer)
     layers.push(layer);
     i++;
   });

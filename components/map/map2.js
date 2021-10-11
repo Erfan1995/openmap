@@ -9,11 +9,12 @@ import styled from 'styled-components';
 import { Card } from "antd";
 import { getSpecifictPopup } from 'lib/general-functions';
 import { getStrapiMedia } from 'lib/media';
-import { MapIconSize } from 'lib/constants';
+import { MapDefaultIconSize, MapIconSize } from 'lib/constants';
 
 import "leaflet.markercluster/dist/leaflet.markercluster";
 import "leaflet.markercluster/dist/MarkerCluster.css";
 import "leaflet.markercluster/dist/MarkerCluster.Default.css";
+
 const PupopDiv = styled.div`
 height:200px;
 background-color:#000;
@@ -99,21 +100,19 @@ export default class EditControlExample extends Component {
     if (this.props.manualMapData.length > 0) {
       let leafletGeoJSON = new L.GeoJSON(this.props.manualMapData, {
         pointToLayer: (feature, latlng) => {
-          const iconUrl = getStrapiMedia(this.props.mapData?.icons.length > 0 ? this.props.mapData?.icons[0]?.icon[0] : null);
+          const iconUrl = getStrapiMedia(feature?.icon?.icon?.length > 0 ? feature?.icon?.icon[0] : null);
 
-            if (!iconUrl) return L.marker(latlng);
+          if (!iconUrl) return L.marker(latlng,{
+            icon: new L.icon({ iconUrl: '/marker-icon.png', iconSize: MapDefaultIconSize })
+          });
 
           return L.marker(latlng, {
-            icon: new L.icon({ iconUrl: feature?.icon?.icon[0] ? getStrapiMedia(feature?.icon?.icon[0]) : iconUrl, iconSize: MapIconSize })
+            icon: new L.icon({ iconUrl: iconUrl, iconSize: MapIconSize })
           })
         },
         onEachFeature: (feature = {}, layer) => {
           const { properties } = feature;
           if (!properties) return;
-
-          // if (!(this.props.mapData?.mmd_properties)) return;
-
-          // if (!(this.props.mapData?.mmd_properties?.length > 0)) return;
 
           layer.bindPopup(`<div>${getSpecifictPopup(properties, this.props.mapData?.default_popup_style_slug || '', [])}</div>`)
         }

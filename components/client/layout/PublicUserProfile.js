@@ -328,7 +328,7 @@ const PublicUserProfile = ({ userId, onModalClose, serverPublicUser, customWalle
 
             <FormWrapper>
                 <Form>
-                    {attributeList?.map((value, i) => (
+                    {attributeList?.length > 0 && attributeList?.map((value, i) => (
                         <Row key={i}>
                             <Col span={6}>
                                 <div>

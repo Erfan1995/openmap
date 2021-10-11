@@ -122,7 +122,6 @@ const MapSurveys = ({ mapData, token, user, surveyForms, updateSurveyForms, onCo
             const res = await putMethod(`maps/${mapData.id}`, { surveys: dd.map(item => item.id) });
             if (res) {
                 const mapSurveyConf = await getMapSurveyConf({ survey: id }, token);
-                console.log(mapSurveyConf);
                 if (mapSurveyConf) {
                     const deleteMDC = await deleteMethod('mapsurveyconfs/' + mapSurveyConf[0].id);
                 }
@@ -156,7 +155,6 @@ const MapSurveys = ({ mapData, token, user, surveyForms, updateSurveyForms, onCo
         surveyForms.map(data => {
             if (data.id === id) {
                 setEditableSurvey(data);
-                console.log('data', data);
                 let arr = [];
                 let surveyFormElements = data.forms;
                 surveyFormElements.pages.map((data) => {

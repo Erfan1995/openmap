@@ -116,7 +116,6 @@ const CustomerManualMapData = ({ data, mapFilterData, formElementsName, token ,s
         });
     }
     const showChangeStateConfirm = (record) => {
-        console.log(data);
         confirm({
             icon: <ExclamationCircleOutlined />,
             content: <p>{DATASET.CHANGE_CONFIRM}</p>,

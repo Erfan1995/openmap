@@ -32,20 +32,23 @@ const MarkerCard = styled(Card)`
 const Preview = ({ isVisible, place, closePlaceDetails, mapData, onDataSaved }) => {
 
     const [visible, setVisible] = useState(false);
-    const [icons, setIcons] = useState(mapData?.icons.map(item => ({ ...item, isSelected: false })));
+    const [icons, setIcons] = useState(mapData?.mapsurveyconfs?.length > 0 ? mapData?.mapsurveyconfs[0]?.icons.map(item => ({ ...item, isSelected: false })) : []);
     const [loading, setLoading] = useState(false);
+
 
     const selectMarker = async (item) => {
 
 
         setLoading(true);
-        setIcons(mapData?.icons.map((obj) => {
-            if (item.id === obj.id) {
-                return { ...obj, isSelected: true }
-            } else {
-                return { ...obj, isSelected: false }
-            }
-        }));
+        if (mapData?.mapsurveyconfs?.length > 0) {
+            setIcons(mapData?.mapsurveyconfs[0]?.icons.map((obj) => {
+                if (item.id === obj.id) {
+                    return { ...obj, isSelected: true }
+                } else {
+                    return { ...obj, isSelected: false }
+                }
+            }));
+        }
 
         let url = place.properties.type === 'public' ? 'mmdpublicusers' : 'mmdcustomers';
 

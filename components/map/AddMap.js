@@ -39,7 +39,7 @@ const AddMap = ({ onDataSaved, myVisible, geoData, mapData, modalClose, userType
     const [visible, setVisible] = useState(false);
     const [mainMapData, setMainMapData] = useState(null);
     const [mapManualData, setMapManualData] = useState(null);
-    const [icons, setIcons] = useState(mapData?.icons.map(item => ({ ...item, isSelected: false })));
+    const [icons, setIcons] = useState(mapData?.mapsurveyconfs?.length > 0 ? mapData?.mapsurveyconfs[0]?.icons.map(item => ({ ...item, isSelected: false })) : []);
     const [selectedIcons, setSelectedIcons] = useState();
     const [loading, setLoading] = useState(false);
     const [surveys, setSurveys] = useState([]);
@@ -58,7 +58,6 @@ const AddMap = ({ onDataSaved, myVisible, geoData, mapData, modalClose, userType
             if (geoData.type === 'Point') {
                 values.icon = selectedIcons ? selectedIcons.id : null;
             }
-            console.log(values, 'values');
             let res = null;
             if (userType === 'public') {
                 values.is_approved = false;
@@ -91,13 +90,15 @@ const AddMap = ({ onDataSaved, myVisible, geoData, mapData, modalClose, userType
 
     const selectMarker = (item) => {
         setSelectedIcons(item);
-        setIcons(mapData?.icons.map((obj) => {
-            if (item.id === obj.id) {
-                return { ...obj, isSelected: true }
-            } else {
-                return { ...obj, isSelected: false }
-            }
-        }));
+        if (mapData?.mapsurveyconfs?.length > 0) {
+            setIcons(mapData?.mapsurveyconfs[0]?.icons.map((obj) => {
+                if (item.id === obj.id) {
+                    return { ...obj, isSelected: true }
+                } else {
+                    return { ...obj, isSelected: false }
+                }
+            }));
+        }
     }
 
 
