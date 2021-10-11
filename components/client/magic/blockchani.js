@@ -18,7 +18,6 @@ const BlockChain = () => {
         const userBalance = web3.utils.fromWei(
             await web3.eth.getBalance(userAddress) // Balance is in wei
         );
-        console.log(userMetadata, network, userAddress, userBalance)
     };
 
     return (

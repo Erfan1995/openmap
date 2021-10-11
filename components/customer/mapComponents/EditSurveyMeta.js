@@ -44,7 +44,6 @@ const EditSurveyMeta = ({ editableSurvey, onModalClose, addImageFile }, ref) => 
             const reader = new FileReader();
             reader.readAsDataURL(file.originFileObj);
             reader.onload = () => {
-                console.log(reader.result, 'result')
                 addImageFile(reader.result);
                 resolve(reader.result);
             }

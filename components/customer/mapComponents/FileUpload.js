@@ -301,7 +301,6 @@ const FileUpload = ({ onChangeEvent, googleDriveFile, user, onModalClose }) => {
     const csvToGeojson = (file) => {
         csv.parse(file, (err, data) => {
             if (data) {
-                console.log(data, 'data');
                 let latitude;
                 let longitude;
                 const columns = data[0];
