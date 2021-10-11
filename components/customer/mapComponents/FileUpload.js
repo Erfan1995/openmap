@@ -301,6 +301,7 @@ const FileUpload = ({ onChangeEvent, googleDriveFile, user, onModalClose }) => {
     const csvToGeojson = (file) => {
         csv.parse(file, (err, data) => {
             if (data) {
+                console.log(data, 'data');
                 let latitude;
                 let longitude;
                 const columns = data[0];
@@ -337,9 +338,7 @@ const FileUpload = ({ onChangeEvent, googleDriveFile, user, onModalClose }) => {
                     openNotificationWithIcon('error', DATASET.INVALID_FILE_CONTENT, DATASET.INVALID_FILE_CONTENT_DESC);
                     setHasCoordinate(false);
                 }
-            } else {
-                message.error('unreadable file')
-            }
+            } 
         })
     }
     const handleFileRead = (jsData) => {
@@ -453,7 +452,7 @@ const FileUpload = ({ onChangeEvent, googleDriveFile, user, onModalClose }) => {
                                             <p className="ant-upload-text">{compareFileType('application/vnd.ms-excel') ? DATASET.CLICK_OR_DRAG_CSV : DATASET.CLICK_OR_DRAG_JSON}</p>
                                         </Dragger>
                                         <Divider />
-                                        <Button type="primary" style={{ float: 'right',marginBottom:'20px' }} onClick={() => checkAndStoreData()}>{DATASET.CONNECT_DATASET}</Button>
+                                        <Button type="primary" style={{ float: 'right', marginBottom: '20px' }} onClick={() => checkAndStoreData()}>{DATASET.CONNECT_DATASET}</Button>
                                     </div>
                                 ) : (
                                     <div> </div>

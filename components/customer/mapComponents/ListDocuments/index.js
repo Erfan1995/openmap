@@ -49,7 +49,6 @@ const ListDocuments = ({ documents = [], onSearch, signedInUser, onSignOut, onDa
   const rowSelection = {
     onChange: (selectedRowKeys, selectedRows) => {
       setLoading(true);
-      console.log(selectedRows, 'seeeeeeeeee');
       if (["application/vnd.ms-excel", 'text/csv', 'application/json',
         'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet'].find((item) => item === selectedRows[0].mimeType)) {
         gapi.client.drive.files.get({
@@ -59,7 +58,6 @@ const ListDocuments = ({ documents = [], onSearch, signedInUser, onSignOut, onDa
           const res = response;
           if (res) {
             setLoading(false);
-            console.log(res);
             onDataSeletected(res, selectedRows[0]);
           }
         })

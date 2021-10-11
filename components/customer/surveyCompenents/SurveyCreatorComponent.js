@@ -42,11 +42,16 @@ const SurveyCreatorComponent = ({ authenticatedUser, token, surveyForms }) => {
                     "visible": false
                 })
                 setLoading(true);
-                const postSurvey = await postMethod('surveys', { user: authenticatedUser.id, forms: JSON.stringify(dd), title: dd.title })
-                if (postSurvey) {
+                try {
+                    const postSurvey = await postMethod('surveys', { user: authenticatedUser.id, forms: JSON.stringify(dd), title: dd.title })
+                    if (postSurvey) {
+                        setLoading(false);
+                        message.success("survey added successfully!");
+                        tabChangeEvent('2');
+                    }
+                } catch (e) {
+                    message.error(DATASET.SERVER_SIDE_PROB);
                     setLoading(false);
-                    message.success("survey added successfully!");
-                    tabChangeEvent('2');
                 }
             } else {
                 message.error("please add title and description")
