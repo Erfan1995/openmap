@@ -43,7 +43,6 @@ const Metamask = ({ mapDetails }) => {
     const [disabled, setDisabled] = useState(false);
     const [user, setUser] = useContext(UserContext);
 
-    console.log(mapDetails);
 
     // Redirec to /map if the user is logged in
     useEffect(() => {
@@ -78,7 +77,6 @@ const Metamask = ({ mapDetails }) => {
             }
         } catch (error) {
             setDisabled(false); // re-enable login button - user may have requested to edit their email
-            console.log(error);
         }
     }
 
