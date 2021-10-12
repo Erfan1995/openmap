@@ -4,13 +4,12 @@ import { useEffect, useState } from 'react';
 import { Button, Divider, Typography, Tabs, Modal, Spin, message, notification, Menu, Dropdown, Space, Tooltip } from 'antd';
 import { DownOutlined, UserOutlined } from '@ant-design/icons';
 import styled from 'styled-components';
-import { postMethod, getDatasets, getTags, deleteMethod } from "../../lib/api";
 import { formatDate, fileSizeReadable } from "../../lib/general-functions";
 import nookies from 'nookies';
 import PublicUsers from 'components/customer/mapComponents/PublicUsers';
 import PrivateUsers from 'components/customer/mapComponents/PrivateUsers';
 import { DATASET } from 'static/constant';
-import { getMethod, getMapAnalytics, getPublicUsers } from 'lib/api';
+import { getMethod, getMapAnalytics, getPublicUsers, getUsersByMap } from 'lib/api';
 
 const { Title } = Typography;
 const { TabPane } = Tabs;
@@ -30,9 +29,9 @@ const CardTitle = styled(Title)`
 const DropWapper = styled(Dropdown)`
 margin-left:30px;
 `
-const Users = ({ authenticatedUser, collapsed }) => {
+const Users = ({ authenticatedUser, collapsed, users }) => {
     const [dropDownName, setDropDownName] = useState("All");
-
+    console.log(users, 'users');
     function handleMenuClick(e) {
         setDropDownName(e.item.props.children[1]);
     }
@@ -93,8 +92,9 @@ export const getServerSideProps = withPrivateServerSideProps(
 
             const { token } = nookies.get(ctx);
             let mapData = await getMapAnalytics({ user: verifyUser.id }, token);
+            let users = await getUsersByMap({ user: verifyUser.id }, token);
             const publicUsers = await getPublicUsers(null, token);
-            return { props: { authenticatedUser: verifyUser, publicUsers: publicUsers, maps: mapData } }
+            return { props: { authenticatedUser: verifyUser, publicUsers: publicUsers, maps: mapData, users: users } }
         } catch (error) {
             return {
                 redirect: {
