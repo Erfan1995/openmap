@@ -12,7 +12,7 @@ import { getStrapiMedia } from "lib/media";
 import { MapDefaultIconSize, MapIconSize } from "lib/constants";
 import MarkerClusterGroup from 'react-leaflet-markercluster';
 import EditControlExample from './publicEditControl'
-const PublicMap = ({ styleId, mapZoom, style, mapData, manualMapData,onCustomeDataChange, datasets, edit, draw, userType, userId }) => {
+const PublicMap = ({ styleId, mapZoom, style, mapData, manualMapData, onCustomeDataChange, datasets, edit, draw, userType, userId }) => {
 
     const [openModal, setOpenModal] = useState(null);
     const [place, setPlace] = useState(null);
@@ -39,7 +39,7 @@ const PublicMap = ({ styleId, mapZoom, style, mapData, manualMapData,onCustomeDa
     }
 
     const onChange = () => {
-       
+
         onCustomeDataChange();
     }
 
@@ -70,9 +70,9 @@ const PublicMap = ({ styleId, mapZoom, style, mapData, manualMapData,onCustomeDa
                     return <MarkerClusterGroup key={`dataset${index}`}> <GeoJSON pointToLayer={(feature, latlng) => {
                         const iconUrl = getStrapiMedia(item.config?.icon?.icon[0]);
 
-                        if (!iconUrl) return L.marker(latlng,{
+                        if (!iconUrl) return L.marker(latlng, {
                             icon: new L.icon({ iconUrl: '/marker-icon.png', iconSize: MapDefaultIconSize })
-                          });
+                        });
 
                         return L.marker(latlng, {
                             icon: new L.icon({ iconUrl: iconUrl, iconSize: MapIconSize })
@@ -83,8 +83,10 @@ const PublicMap = ({ styleId, mapZoom, style, mapData, manualMapData,onCustomeDa
 
                         if (!(item.config?.selected_dataset_properties)) return;
 
+                        if (!(item.config?.selected_dataset_properties?.length > 0)) return;
+
                         // layer.bindPopup(`<div>${getSpecifictPopup(properties, item.config?.default_popup_style_slug || '', item.config?.selected_dataset_properties || [])}</div>`)
-                        layer.bindPopup(`<div>${getSpecifictPopup(properties, item.config?.default_popup_style_slug || '', item.config?.selected_dataset_properties || [],item?.config?.edited_dataset_properties)}</div>`)
+                        layer.bindPopup(`<div>${getSpecifictPopup(properties, item.config?.default_popup_style_slug || '', item.config?.selected_dataset_properties || [], item?.config?.edited_dataset_properties)}</div>`)
 
                     }} />
                     </MarkerClusterGroup>
@@ -94,26 +96,32 @@ const PublicMap = ({ styleId, mapZoom, style, mapData, manualMapData,onCustomeDa
 
             {
 
-                <MarkerClusterGroup key={`manaualGroup`}> 
-                
-                <GeoJSON  data={customMapData} pointToLayer={(feature, latlng) => {
-                     const iconUrl = getStrapiMedia(feature?.icon?.icon?.length > 0 ? feature?.icon?.icon[0] : null);
+                <MarkerClusterGroup key={`manaualGroup`}>
 
-                     if (!iconUrl) return L.marker(latlng,{
-                       icon: new L.icon({ iconUrl: '/marker-icon.png', iconSize: MapDefaultIconSize })
-                     });
-           
-                     return L.marker(latlng, {
-                       icon: new L.icon({ iconUrl: iconUrl, iconSize: MapIconSize })
-                     })
-                }} key={'manual'}  onEachFeature={(feature, layer) => {
-                    const { properties,mapSurveyConf } = feature;
-        
-                    if (!properties) return;
+                    <GeoJSON data={customMapData} pointToLayer={(feature, latlng) => {
+                        const iconUrl = getStrapiMedia(feature?.icon?.icon?.length > 0 ? feature?.icon?.icon[0] : null);
 
-                    // layer.bindPopup(`<div>${getSpecifictPopup(properties, mapData?.default_popup_style_slug || '',  [])}</div>`)
-                    layer.bindPopup(`<div>${getSpecifictPopup(properties, mapSurveyConf?.default_popup_style_slug || '', mapSurveyConf?.selected_survey_properties || [],mapSurveyConf?.edited_survey_properties)}</div>`)
-                }} />
+                        if (!iconUrl) return L.marker(latlng, {
+                            icon: new L.icon({ iconUrl: '/marker-icon.png', iconSize: MapDefaultIconSize })
+                        });
+
+                        return L.marker(latlng, {
+                            icon: new L.icon({ iconUrl: iconUrl, iconSize: MapIconSize })
+                        })
+                    }} key={'manual'} onEachFeature={(feature, layer) => {
+                        const { properties, mapSurveyConf } = feature;
+
+                        if (!properties) return;
+
+                        if (!(mapSurveyConf?.selected_survey_properties)) {
+                            return;
+                        }
+
+                        if (!(mapSurveyConf?.selected_survey_properties?.length > 0)) {
+                            return;
+                        }
+                        layer.bindPopup(`<div>${getSpecifictPopup(properties, mapSurveyConf?.default_popup_style_slug || '', mapSurveyConf?.selected_survey_properties || [], mapSurveyConf?.edited_survey_properties)}</div>`)
+                    }} />
                 </MarkerClusterGroup>
 
             }
