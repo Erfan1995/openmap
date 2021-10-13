@@ -144,7 +144,11 @@ export const DATASET = {
     USERS: 'Users',
     TRUST_SCORE: 'Trust Score',
     ATTRIBUTES: 'Attributes',
-    VERIFY_ATTRIBUTES: 'Verify Attributes'
+    VERIFY_ATTRIBUTES: 'Verify Attributes',
+    ADD_TRUST_SCORE: 'Add Trust Score',
+    VARIFY: 'Varify',
+    UNVARIFY: 'Unvarify',
+    SURVEY_EDITED_MESSAGE: 'Survey Edited Successfully!'
 
 
 }

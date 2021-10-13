@@ -73,7 +73,7 @@ const EditSurveyMeta = ({ editableSurvey, onModalClose, addImageFile }, ref) => 
                     res = await putMethod('surveys/' + editableSurvey.id, { forms: JSON.stringify(surveyForm) })
                     setLoading(false);
                     if (res) {
-                        message.success(DATASET.CREATE_MAP_SUCCESS_MSG);
+                        message.success(DATASET.SURVEY_EDITED_MESSAGE);
                         onModalClose(res);
                     }
                 })

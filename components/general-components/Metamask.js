@@ -1,16 +1,13 @@
 import { message, Button } from "antd";
 import Web3 from "web3";
 import styled from "styled-components";
-import { Router, useRouter } from "next/router";
-// import UseAuth from "hooks/useAuth";
 import { useContext, useEffect, useState } from "react";
-import { MAP, Map } from 'static/constant';
+import { MAP } from 'static/constant';
 import { magic } from '../../lib/magic';
 import { UserContext } from '../../lib/UserContext';
 
 import EmailForm from "components/client/magic/email-form";
 import SocialLogins from "components/client/magic/social-logins";
-import BlockChain from "components/client/magic/blockchani";
 import { publicUserOperation } from "lib/general-functions";
 export const NextButton = styled(Button)`
   margin-top: 20px;
@@ -76,7 +73,6 @@ const Metamask = ({ mapDetails }) => {
             }
         } catch (error) {
             setDisabled(false); // re-enable login button - user may have requested to edit their email
-            console.log(error);
         }
     }
 
