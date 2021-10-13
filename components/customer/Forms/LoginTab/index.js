@@ -133,7 +133,7 @@ function LoginTab({ mapData }) {
             const res = await putMethod('maps/' + mapData.id, { auth_attributes: data });
             if (res) {
                 setAttributes(data);
-                console.log('resource ' + JSON.stringify(res.auth_attributes));
+               
             }
         } catch (e) {
             message.error(e);

@@ -43,8 +43,6 @@ const Metamask = ({ mapDetails }) => {
     const [disabled, setDisabled] = useState(false);
     const [user, setUser] = useContext(UserContext);
 
-    console.log(mapDetails);
-
     // Redirec to /map if the user is logged in
     useEffect(() => {
         if (user?.issuer) {

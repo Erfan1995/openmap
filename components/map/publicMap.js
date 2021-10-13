@@ -9,7 +9,7 @@ import { message } from "antd";
 import { getCustomerMapData, getPublicMapData, getSpecifictPopup } from "lib/general-functions";
 import LeafletgeoSearch from "./MapSearch";
 import { getStrapiMedia } from "lib/media";
-import { MapIconSize } from "lib/constants";
+import { MapDefaultIconSize, MapIconSize } from "lib/constants";
 import MarkerClusterGroup from 'react-leaflet-markercluster';
 import EditControlExample from './publicEditControl'
 const PublicMap = ({ styleId, mapZoom, style, mapData, manualMapData,onCustomeDataChange, datasets, edit, draw, userType, userId }) => {
@@ -70,7 +70,9 @@ const PublicMap = ({ styleId, mapZoom, style, mapData, manualMapData,onCustomeDa
                     return <MarkerClusterGroup key={`dataset${index}`}> <GeoJSON pointToLayer={(feature, latlng) => {
                         const iconUrl = getStrapiMedia(item.config?.icon?.icon[0]);
 
-                        if (!iconUrl) return L.marker(latlng);
+                        if (!iconUrl) return L.marker(latlng,{
+                            icon: new L.icon({ iconUrl: '/marker-icon.png', iconSize: MapDefaultIconSize })
+                          });
 
                         return L.marker(latlng, {
                             icon: new L.icon({ iconUrl: iconUrl, iconSize: MapIconSize })
@@ -81,7 +83,8 @@ const PublicMap = ({ styleId, mapZoom, style, mapData, manualMapData,onCustomeDa
 
                         if (!(item.config?.selected_dataset_properties)) return;
 
-                        layer.bindPopup(`<div>${getSpecifictPopup(properties, item.config?.default_popup_style_slug || '', item.config?.selected_dataset_properties || [])}</div>`)
+                        // layer.bindPopup(`<div>${getSpecifictPopup(properties, item.config?.default_popup_style_slug || '', item.config?.selected_dataset_properties || [])}</div>`)
+                        layer.bindPopup(`<div>${getSpecifictPopup(properties, item.config?.default_popup_style_slug || '', item.config?.selected_dataset_properties || [],item?.config?.edited_dataset_properties)}</div>`)
 
                     }} />
                     </MarkerClusterGroup>
@@ -94,26 +97,22 @@ const PublicMap = ({ styleId, mapZoom, style, mapData, manualMapData,onCustomeDa
                 <MarkerClusterGroup key={`manaualGroup`}> 
                 
                 <GeoJSON  data={customMapData} pointToLayer={(feature, latlng) => {
-                    const iconUrl = getStrapiMedia(feature?.icon?.icon?.length > 0 ? feature?.icon?.icon[0] : null);
+                     const iconUrl = getStrapiMedia(feature?.icon?.icon?.length > 0 ? feature?.icon?.icon[0] : null);
 
-                    if (!iconUrl) return L.marker(latlng);
-
-                    return L.marker(latlng, {
-                        icon: new L.icon({ iconUrl:  iconUrl, iconSize: MapIconSize })
-                    })
+                     if (!iconUrl) return L.marker(latlng,{
+                       icon: new L.icon({ iconUrl: '/marker-icon.png', iconSize: MapDefaultIconSize })
+                     });
+           
+                     return L.marker(latlng, {
+                       icon: new L.icon({ iconUrl: iconUrl, iconSize: MapIconSize })
+                     })
                 }} key={'manual'}  onEachFeature={(feature, layer) => {
-                    const { properties } = feature;
-
-                    // mapData?.mmd_properties  
-
+                    const { properties,mapSurveyConf } = feature;
+        
                     if (!properties) return;
 
-                    // if (!(mapData?.mmd_properties)) return;
-
-                    // if (!(mapData?.mmd_properties?.length > 0)) return;
-
-                    layer.bindPopup(`<div>${getSpecifictPopup(properties, mapData?.default_popup_style_slug || '',  [])}</div>`)
-
+                    // layer.bindPopup(`<div>${getSpecifictPopup(properties, mapData?.default_popup_style_slug || '',  [])}</div>`)
+                    layer.bindPopup(`<div>${getSpecifictPopup(properties, mapSurveyConf?.default_popup_style_slug || '', mapSurveyConf?.selected_survey_properties || [],mapSurveyConf?.edited_survey_properties)}</div>`)
                 }} />
                 </MarkerClusterGroup>
 

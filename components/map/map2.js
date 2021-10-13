@@ -14,6 +14,7 @@ import { MapDefaultIconSize, MapIconSize } from 'lib/constants';
 import "leaflet.markercluster/dist/leaflet.markercluster";
 import "leaflet.markercluster/dist/MarkerCluster.css";
 import "leaflet.markercluster/dist/MarkerCluster.Default.css";
+import { map } from 'rxjs';
 
 const PupopDiv = styled.div`
 height:200px;
@@ -111,10 +112,10 @@ export default class EditControlExample extends Component {
           })
         },
         onEachFeature: (feature = {}, layer) => {
-          const { properties } = feature;
+          const { properties,mapSurveyConf } = feature;
           if (!properties) return;
 
-          layer.bindPopup(`<div>${getSpecifictPopup(properties, this.props.mapData?.default_popup_style_slug || '', [])}</div>`)
+          layer.bindPopup(`<div>${getSpecifictPopup(properties, mapSurveyConf?.default_popup_style_slug || '', mapSurveyConf?.selected_survey_properties || [],mapSurveyConf?.edited_survey_properties)}</div>`)
         }
       })
       let leafletFG = reactFGref;
@@ -155,12 +156,9 @@ export default class EditControlExample extends Component {
               modalClose={this.drawerClose}
               userType={this.props.userType}
               userId={this.props.userId}
-
-
             />
           )
         }
-
         {
           this.state.modalVisible && (
             <Preview
@@ -173,7 +171,6 @@ export default class EditControlExample extends Component {
               closePlaceDetails={this.modalClose}
             />
           )}
-
         <FeatureGroup
           ref={(reactFGref) => {
             this._onFeatureGroupReady(reactFGref);
