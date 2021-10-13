@@ -14,7 +14,6 @@ module.exports = {
         NEXT_PUBLIC_GOOGLE_DRIVE_CLIENT_ID: '607167356748-sdjmef39r0691gitear1td49g7r427be.apps.googleusercontent.com',
         NEXT_PUBLIC_MAGIC_PUBLISHABLE_KEY: 'pk_live_DF5FB90D1FB9EBB8',
         MAGIC_SECRET_KEY: 'sk_live_FAE1E93394E6DD2C',
-        NEXT_PUBLIC_BASEPATH_URL: 'http://localhost:3000'
     },
     webpack: (config, { isServer }) => {
         // Fixes npm packages that depend on `fs` module
