@@ -115,6 +115,15 @@ export default class EditControlExample extends Component {
           const { properties,mapSurveyConf } = feature;
           if (!properties) return;
 
+          if (!(mapSurveyConf?.selected_survey_properties)) {
+            return;
+          }
+
+          if (!(mapSurveyConf?.selected_survey_properties?.length > 0)) {
+            return;
+          }
+
+
           layer.bindPopup(`<div>${getSpecifictPopup(properties, mapSurveyConf?.default_popup_style_slug || '', mapSurveyConf?.selected_survey_properties || [],mapSurveyConf?.edited_survey_properties)}</div>`)
         }
       })
