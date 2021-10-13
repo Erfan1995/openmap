@@ -142,7 +142,7 @@ const MapConf = ({ authenticatedUser, styledMaps, tags, mapData, serverSideDatas
 
         if (alreadyExist === false) {
             setLoading(true);
-
+            setModalVisible(false);
             try {
                 const res = await putMethod(`maps/${mapData.id}`, { datasets: [...selectedDataset.map(item => item.id), selectedRow.id] });
                 if (res) {
@@ -152,7 +152,6 @@ const MapConf = ({ authenticatedUser, styledMaps, tags, mapData, serverSideDatas
                         setDataset();
                         message.success(DATASET.SUCCESS);
                     }
-                    setModalVisible(false);
                 }
             } catch (e) {
                 setLoading(false);

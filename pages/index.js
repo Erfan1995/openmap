@@ -1,5 +1,6 @@
-import { getMethod, getOneMap } from "lib/api";
-import { extractMapData } from "lib/general-functions";
+import { getMethod } from "lib/api";
+import { extractMapDataPublic } from "lib/general-functions";
+
 
 import dynamic from "next/dynamic";
 export default function Home({ mapData, manualMapData, datasets ,mapToken}) {
@@ -29,7 +30,7 @@ export async function getServerSideProps(ctx) {
       } else {
         const datasetData = await getMethod(`datasets?_where[0][maps.id]=${id}`, null, false);
         return {
-          props: { mapData: res[0], manualMapData: await extractMapData(res[0]), datasets: datasetData,mapToken:mapToken },
+          props: { mapData: res[0], manualMapData: await extractMapDataPublic(res[0]), datasets: datasetData,mapToken:mapToken },
         };
       }
     } else {

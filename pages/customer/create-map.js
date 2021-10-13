@@ -6,7 +6,7 @@ import styled from 'styled-components';
 import nookies from 'nookies';
 import dynamic from "next/dynamic";
 import {
-  putMethod, getOneMap, getDatasetsByMap, getCreateMapData, getSurveysAndDatasetByMap
+  putMethod, getOneMap, getDatasetsByMap, getMapGeneralData
 } from 'lib/api';
 import { getMapData, extractMapData } from "../../lib/general-functions";
 import { useRouter } from 'next/router';
@@ -37,7 +37,7 @@ const CreateMapContainer = ({ authenticatedUser, collapsed, styledMaps, tags, se
   const [center, setCenter] = useState(serverSideMapData?.center);
   const [customMapData, setCustomMapData] = useState(manualMapData);
   const [loading, setLoading] = useState(false);
-  const [publishModelVisible, setPublishModelVisible] = useState(false);
+
 
   const [layerClicked, setLayerClicked] = useState(true);
 
@@ -220,55 +220,74 @@ export const getServerSideProps = withPrivateServerSideProps(
   async (ctx, verifyUser) => {
     try {
       const { token } = nookies.get(ctx);
-      const { id } = ctx.query;
-      let mapData = null;
-      let manualArray = [];
-      let datasets = [];
-      let surveys = [];
-      if (id) {
-        mapData = await getOneMap({ id: id }, token);
-        console.log(mapData);
-        if (mapData) {
-          mapData.tags = mapData.tags.map(item => Number(item.id));
+      const { id,mapToken } = ctx.query;
+
+      if (id && mapToken) {
+        let mapData = null;
+
+        mapData = await getMapGeneralData(id,mapToken, token);
+
+        if (mapData?.maps?.length > 0) {
+          let map = mapData?.maps[0];
           
-          manualArray = await extractMapData(mapData);
-          let res = await getSurveysAndDatasetByMap(id, token);
-          datasets = res.datasets;
+          map.tags = map?.tags.map(item => Number(item.id));
+
+          const manualArray = await extractMapData(map);
+       
+          let datasets = map?.datasets;
           datasets = datasets.map((item) => {
-            let temp = mapData.mapdatasetconfs.find((obj) => obj.dataset.id === item.id);
+            let temp = map.mapdatasetconfs.find((obj) => obj.dataset.id === item.id);
             return { ...item, config: temp ? temp : null }
           })
-          surveys = res.surveys;
+          let surveys = map?.surveys;
           surveys.map((item) => {
             item.id = Number(item.id);
             item.key = item.id;
           })
-        }
-      }
-      const data = await getCreateMapData(id, token);
-      const mapStyles = data?.mapstyles;
-      const tags = data?.tags;
-      const injectedcodes = data?.injectedcodes;
-      const icons = data?.icons;
-      injectedcodes?.map((item) => {
-        item.id = Number(item.id);
-      })
-      icons?.map((icon) => {
-        icon.id = Number(icon.id);
-      })
-      tags?.map((item) => {
-        item.id = Number(item.id);
-      })
-      return {
-        props: {
-          authenticatedUser: verifyUser, styledMaps: mapStyles, tags: tags, injectedcodes: injectedcodes,
-          serverSideMapData: mapData, manualMapData: manualArray, serverSideDatasets: datasets, token: token, icons: icons,
-          serverSideMapSurveys: surveys
 
+          // const data = await getCreateMapData(id, token);
+          const mapStyles = mapData?.mapstyles;
+          const tags = mapData?.tags;
+          const injectedcodes = mapData?.injectedcodes;
+          const icons = mapData?.icons;
+          injectedcodes?.map((item) => {
+            item.id = Number(item.id);
+          })
+          icons?.map((icon) => {
+            icon.id = Number(icon.id);
+          })
+          tags?.map((item) => {
+            item.id = Number(item.id);
+          })
+          return {
+            props: {
+              authenticatedUser: verifyUser, styledMaps: mapStyles, tags: tags, injectedcodes: injectedcodes,
+              serverSideMapData: map, manualMapData: manualArray, serverSideDatasets: datasets, token: token, icons: icons,
+              serverSideMapSurveys: surveys
+
+            }
+          }
+        } else {
+          return {
+            redirect: {
+              destination: '/errors/404',
+              permanent: false,
+            },
+          }
         }
       }
+      else {
+        return {
+          redirect: {
+            destination: '/errors/404',
+            permanent: false,
+          },
+        }
+      }
+
     } catch (error) {
 
+      console.log(error);
       return {
         redirect: {
           destination: '/errors/500',

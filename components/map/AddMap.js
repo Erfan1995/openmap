@@ -1,6 +1,6 @@
-import { Modal, Form, Button, Col, Row, Input, message, List, Card, Spin, Typography, Drawer } from 'antd';
+import { Modal,  Col, Row,  List, Card, Spin, Typography } from 'antd';
 import { useEffect, useState } from 'react';
-import { getSurveyForms, postMethod, putMethod } from 'lib/api';
+import { getSurveyForms, postMethod } from 'lib/api';
 import { API, MAP } from '../../static/constant';
 import { getStrapiMedia } from 'lib/media';
 import * as Survey from "survey-react"

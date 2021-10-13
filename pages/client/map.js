@@ -3,8 +3,8 @@ import LayoutPage from "components/client/layout";
 import { useContext, useEffect, useState } from "react";
 // import UseAuth from "hooks/useAuth";
 import { Spin } from 'antd';
-import { getDatasetsByMap, getClientMapData } from "lib/api";
-import { extractMapData, getCustomerMapData, getPublicAuthenticatedMapData, getPublicMapData } from "lib/general-functions";
+import { getDatasetsByMap, getClientMapData, getPublicMap } from "lib/api";
+import { extractMapData, extractMapDataPublicUser, getCustomerMapData, getPublicAuthenticatedMapData, getPublicMapData } from "lib/general-functions";
 import { UserContext } from "lib/UserContext";
 import UseAuth from "hooks/useAuth";
 
@@ -49,8 +49,9 @@ const Map = ({ manualMapData, mapData, datasets, injectedcodes, publicUser }) =>
   const onCustomeDataChange = async () => {
     setLoading(true);
     try {
-      const customerData = await getCustomerMapData(mapData.id);
-      const publicData = await getPublicMapData(publicUser.id, mapData.id)
+      const data = await getPublicMap(mapData.id);
+      const customerData = await extractMapData(data);
+      const publicData = await extractMapDataPublicUser(data, publicUser.publicAddress);
       if (customerData && publicData) {
         setCustomMapData([...customerData, ...publicData]);
         setLoading(false)
@@ -87,29 +88,31 @@ const Map = ({ manualMapData, mapData, datasets, injectedcodes, publicUser }) =>
         mapInfo={mapData} userId={publicUserObject.id} publicUser={publicUserObject} mapData={mapData}  >
         <Spin spinning={loading}>
 
+
+          <MapWithNoSSR
+            mapZoom={zoomLevel}
+            styleId={mapData.mapstyle?.link || process.env.NEXT_PUBLIC_MAPBOX_DEFAULT_MAP}
+            edit={{
+              edit: false,
+              remove: false,
+            }}
+            draw={{
+              rectangle: false,
+              polygon: false,
+              circle: false,
+              circlemarker: false,
+              polyline: false
+            }}
+            userType='public'
+            manualMapData={customMapData}
+            datasets={datasetData}
+            onCustomeDataChange={onCustomeDataChange}
+            mapData={mapData}
+            userId={publicUser.id}
+            style={{ height: "100vh" }} />
         </Spin>
-        <MapWithNoSSR
-          mapZoom={zoomLevel}
-          styleId={mapData.mapstyle?.link || process.env.NEXT_PUBLIC_MAPBOX_DEFAULT_MAP}
-          edit={{
-            edit: false,
-            remove: false,
-          }}
-          draw={{
-            rectangle: false,
-            polygon: false,
-            circle: false,
-            circlemarker: false,
-            polyline: false
-          }}
-          userType='public'
-          manualMapData={customMapData}
-          datasets={datasetData}
-          onCustomeDataChange={onCustomeDataChange}
-          mapData={mapData}
-          userId={publicUser.id}
-          style={{ height: "100vh" }} />
       </LayoutPage>
+
       {/* } */}
       <div dangerouslySetInnerHTML={injectCode(true)}>
       </div>
@@ -136,8 +139,7 @@ export async function getServerSideProps(ctx) {
       } else {
         mapData = data?.maps[0];
         if (mapData) {
-          datasets = await getDatasetsByMap({ maps: id }, null, false);
-          datasets = datasets.map((item) => {
+          datasets = mapData?.datasets.map((item) => {
             let temp = mapData.mapdatasetconfs.find((obj) => obj.dataset.id === item.id);
             return { ...item, config: temp ? temp : null }
           })
@@ -148,7 +150,7 @@ export async function getServerSideProps(ctx) {
 
     return {
       props: {
-        manualMapData: [...await extractMapData(mapData), ...await getPublicAuthenticatedMapData(publicUserId, mapData.id)]
+        manualMapData: [...await extractMapData(mapData), ...await extractMapDataPublicUser(mapData, publicUserAddress)]
         , mapData: mapData,
         datasets: datasets,
         injectedcodes: injectedcodes,
@@ -156,6 +158,8 @@ export async function getServerSideProps(ctx) {
       },
     };
   } catch (e) {
+    console.log(e);
+
     return {
       redirect: {
         destination: '/errors/500',

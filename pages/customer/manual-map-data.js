@@ -84,16 +84,16 @@ const ManualMapData = ({ authenticatedUser, collapsed, token, surveyForms }) => 
         setLoading(false);
         if (res) {
             res.forEach(element => {
-                element.properties.key = element.id;
-                element.properties.id = Number(element.id);
-                element.properties.updated_at = formatDate(element.updated_at);
+                element.properties.key = element?.id;
+                element.properties.id = Number(element?.id);
+                element.properties.updated_at = formatDate(element?.updated_at);
                 if (element.is_approved === true) {
                     element.properties.is_approved = "yes"
                 } else {
                     element.properties.is_approved = "no"
                 }
-                element.properties.maps = element.map.title
-                element.properties.publicAddress = element.publicAddress;
+                element.properties.maps = element?.map?.title
+                element.properties.publicAddress = element?.publicAddress;
 
             });
             let arr = [];
