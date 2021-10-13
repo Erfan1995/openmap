@@ -67,7 +67,7 @@ const PrivateUsers = () => {
                 <Dropdown size="big" overlay={menu} trigger={['click']} >
                     <a className="ant-dropdown-link"
                         onClick={(e) => {
-                            setDatasetId(record.id)
+                            console.log(record);
                         }} >
                         {DATASET.MORE_ACTIONs} <DownOutlined />
                     </a>
