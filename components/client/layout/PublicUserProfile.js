@@ -118,7 +118,7 @@ const PublicUserProfile = ({ userId, onModalClose, serverPublicUser, customWalle
         }
         else if (mapData?.auth_attributes?.length !== 0) {
             let i = 0;
-            (mapData?.auth_attributes).map((auth) => {
+            (mapData?.auth_attributes)?.map((auth) => {
                 attributeList.push({ 'attribute': auth?.attribute, 'type': auth?.type, 'value': null, 'isVarified': false });
                 tempStates[i] = { state: true, index: i };
                 i++;
