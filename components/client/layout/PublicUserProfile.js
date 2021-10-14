@@ -315,7 +315,7 @@ const PublicUserProfile = ({ userId, onModalClose, serverPublicUser, customWalle
                                 </Col>
                                 <Col span={8}>
                                     <Title >Trust Score</Title>
-                                    <Content >50</Content>
+                                    <Content >{serverPublicUser?.trust_score}</Content>
                                 </Col>
 
                             </AccountInfoRow>

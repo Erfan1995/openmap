@@ -1,16 +1,13 @@
 import { message, Button } from "antd";
 import Web3 from "web3";
 import styled from "styled-components";
-import { Router, useRouter } from "next/router";
-// import UseAuth from "hooks/useAuth";
 import { useContext, useEffect, useState } from "react";
-import { MAP, Map } from 'static/constant';
+import { MAP } from 'static/constant';
 import { magic } from '../../lib/magic';
 import { UserContext } from '../../lib/UserContext';
 
 import EmailForm from "components/client/magic/email-form";
 import SocialLogins from "components/client/magic/social-logins";
-import BlockChain from "components/client/magic/blockchani";
 import { publicUserOperation } from "lib/general-functions";
 export const NextButton = styled(Button)`
   margin-top: 20px;
@@ -42,7 +39,6 @@ let web3 = undefined;
 const Metamask = ({ mapDetails }) => {
     const [disabled, setDisabled] = useState(false);
     const [user, setUser] = useContext(UserContext);
-
 
     // Redirec to /map if the user is logged in
     useEffect(() => {

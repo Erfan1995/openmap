@@ -12,7 +12,7 @@ import { getSpecifictPopup } from "lib/general-functions";
 import L from 'leaflet';
 import LeafletgeoSearch from "./MapSearch";
 import { getStrapiMedia } from "lib/media";
-import { MapIconSize } from "lib/constants";
+import { MapDefaultIconSize, MapIconSize } from "lib/constants";
 import MarkerClusterGroup from 'react-leaflet-markercluster';
 
 
@@ -64,8 +64,6 @@ const Map = ({ styleId, center, setCenter, style, mapData, manualMapData, datase
   const [openModal, setOpenModal] = useState(null);
   const [place, setPlace] = useState(null);
   const [zoomLevel, setZoomLevel] = useState(mapData.zoomLevel);
-
-
 
   const closePlaceDetails = () => {
     setOpenModal(false)
@@ -127,8 +125,9 @@ const Map = ({ styleId, center, setCenter, style, mapData, manualMapData, datase
                 <GeoJSON pointToLayer={(feature, latlng) => {
                   const iconUrl = getStrapiMedia(item.config?.icon?.icon[0]);
 
-                  if (!iconUrl) return L.marker(latlng);
-
+                  if (!iconUrl) return  L.marker(latlng,{
+                    icon: new L.icon({ iconUrl: '/marker-icon.png', iconSize: MapDefaultIconSize })
+                  });
 
                   return L.marker(latlng, {
                     icon: new L.icon({ iconUrl: iconUrl, iconSize: MapIconSize })
@@ -155,29 +154,7 @@ const Map = ({ styleId, center, setCenter, style, mapData, manualMapData, datase
             })
           }
 
-          {/* {
-            manualMapData &&
-            <MarkerClusterGroup key={`man`}>
-              <GeoJSON pointToLayer={(feature, latlng) => {
-
-                const iconUrl = getStrapiMedia(mapData?.icons.length > 0 ? mapData?.icons[0]?.icon[0] : null);
-                // alert(iconUrl);
-                if (!iconUrl) return L.marker(latlng);
-
-
-                return L.marker(latlng, {
-                  icon: new L.icon({ iconUrl: feature?.icon?.icon[0] ? getStrapiMedia(feature?.icon?.icon[0]) : iconUrl, iconSize: MapIconSize })
-                })
-              }}  data={manualMapData} onEachFeature={(feature, layer) => {
-                const { properties } = feature;
-                if (!properties) return;
-                layer.bindPopup(`<div>${getSpecifictPopup(properties, mapData?.default_popup_style_slug || '', mapData?.mmd_properties || [])}</div>`)
-
-              }} />
-            </MarkerClusterGroup>
-
-          } */}
-
+        
           {openModal &&
             <Preview
               isVisible={openModal}

@@ -105,7 +105,7 @@ const MapItem = ({ item, filterDeletedMap }) => {
             localStorage.clear('zoom');
             router.push({
                 pathname: 'create-map',
-                query: { id: item.id }
+                query: { id: item.id,mapToken:item?.mapId }
             });
         } else if (e.key === "delete") {
             showConfirm(item.id)
