@@ -137,19 +137,19 @@ const UnlockedDataset = ({ data, updateLockedData, user, tags, updatedData }) =>
     const addImageFile = (file) => {
         setFile(file);
     }
-    const createMapDatasetConf = async (mapId) => {
-        const dd = await postMethod('mapdatasetconfs', { map: mapId, dataset: datasetId });
+    const createMapDatasetConf = async (data) => {
+        const dd = await postMethod('mapdatasetconfs', { map: data.id, dataset: datasetId });
         if (dd) {
             setCreateMapModalVisible(false);
             router.push({
                 pathname: 'create-map',
-                query: { id: mapId }
+                query: { id: data?.id,mapToken:data?.mapId }
             })
         }
 
     }
     const onModalClose = (res) => {
-        createMapDatasetConf(res.id)
+        createMapDatasetConf(res)
     }
     return (
         <>
