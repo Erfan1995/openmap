@@ -122,7 +122,7 @@ const MapMarkers = ({ icons, mdcId, selectedDIcons, layerType, setDataset, onMap
         if (layerType === "main") {
             setUploadIconsLoading(true)
             const dd = selectedIcons.filter(data => data.id !== id);
-            const res = await putMethod('maps/' + mdcId, { icons: dd.map(item => item.id) });
+            const res = await putMethod('mapsurveyconfs/' + mdcId, { icons: dd.map(item => item.id) });
             if (res) {
                 setSelectedIcons(dd);
                 onMapDataChange();

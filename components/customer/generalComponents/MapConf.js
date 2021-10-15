@@ -6,7 +6,7 @@ import LoginTab from 'components/customer/Forms/LoginTab';
 import StyledMaps from 'components/customer/generalComponents/ListMapboxStyle';
 import {
     putMethod, getDatasets, getMapSurveyConf, getSurveyForms, getSurveyConfContent,
-    postMethod, deleteMethod, getMapDatasetConf, getDatasetConfContent, getMapPopupProperties, getDatasetDetails, getIcons
+    postMethod, deleteMethod, getMapDatasetConf, getDatasetConfContent, getDatasetDetails, getIcons
 } from '../../../lib/api';
 import SelectNewMapDataset from 'components/customer/mapComponents/SelectNewMapDataset';
 import { formatDate, fileSizeReadable } from "../../../lib/general-functions";
@@ -16,7 +16,6 @@ import { DATASET } from '../../../static/constant'
 import { ExclamationCircleOutlined, DownOutlined, } from '@ant-design/icons';
 import DatasetConf from './DetasetConf';
 import InjectCode from '../Forms/CodeInjection/index.js';
-import MapSurveys from './MapSurveys';
 import EditSurveyMeta from '../mapComponents/EditSurveyMeta';
 import SelectNewMapSurvey from '../mapComponents/SelectNewMapSurvey';
 

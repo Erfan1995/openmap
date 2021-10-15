@@ -45,7 +45,7 @@ const Users = ({ authenticatedUser, collapsed, users, token }) => {
             })
         }
     })
-    const unifiedUsers = Array.from(new Set(allUsers.map(s => s.id))).map(id => {
+    const unifiedUsers = Array.from(new Set(allUsers?.map(s => s.id)))?.map(id => {
         return {
             id: allUsers.find(s => s.id === id).publicAddress,
             name: allUsers.find(s => s.id === id).name,
@@ -60,7 +60,7 @@ const Users = ({ authenticatedUser, collapsed, users, token }) => {
     unifiedUsers.map((data) => {
         if (selectedMapId === '0') {
             let attLength = 0;
-            data.attributes.map((att) => {
+            data?.attributes?.map((att) => {
                 attLength += att.attribute.length;
             })
             data.attributes = attLength;
@@ -148,10 +148,9 @@ export const getServerSideProps = withPrivateServerSideProps(
         try {
 
             const { token } = nookies.get(ctx);
-            let mapData = await getMapAnalytics({ user: verifyUser.id }, token);
             let users = await getUsersByMap({ user: verifyUser.id }, token);
             const publicUsers = await getPublicUsers(null, token);
-            return { props: { authenticatedUser: verifyUser, publicUsers: publicUsers, maps: mapData, users: users, token: token } }
+            return { props: { authenticatedUser: verifyUser, publicUsers: publicUsers, users: users, token: token } }
         } catch (error) {
             return {
                 redirect: {

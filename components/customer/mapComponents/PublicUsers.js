@@ -77,7 +77,7 @@ const PublicUsers = ({ user, publicUsers, mapId, token }) => {
         try {
             const updatedAttributes = await putMethod('map-attributes/' + attributeRecordId, { attribute: JSON.stringify(attributesList) });
             if (updatedAttributes) {
-                setStates(states.map((obj) => {
+                setStates(states?.map((obj) => {
                     if (obj.index === index) {
                         return { ...obj, isVarified: false }
                     } else {
@@ -98,7 +98,7 @@ const PublicUsers = ({ user, publicUsers, mapId, token }) => {
         try {
             const updatedAttributes = await putMethod('map-attributes/' + attributeRecordId, { attribute: JSON.stringify(attributesList) });
             if (updatedAttributes) {
-                setStates(states.map((obj) => {
+                setStates(states?.map((obj) => {
                     if (obj?.index === index) {
                         return { ...obj, isVarified: true }
                     } else {
@@ -120,7 +120,7 @@ const PublicUsers = ({ user, publicUsers, mapId, token }) => {
                 try {
                     const res = await putMethod('public-users/' + recordMeta?.pubId, { trust_score: values?.trust_score });
                     if (res) {
-                        setPubUsers(pubUsers.map((obj) => {
+                        setPubUsers(pubUsers?.map((obj) => {
                             if (Number(obj.key) === res.id) {
                                 return { ...obj, trust_score: res?.trust_score }
                             }
