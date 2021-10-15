@@ -36,9 +36,11 @@ const Map = ({ authenticatedUser, collapsed, maps, tags, mapData = null }) => {
   const [file, setFile] = useState();
   const onModalClose = (res) => {
     setCreateMapModalVisible(false);
+    console.log(res);
     router.push({
       pathname: 'create-map',
-      query: { id: res.id }
+      query: { id: res?.id,mapToken:res?.mapId }
+      
     })
 
   }
