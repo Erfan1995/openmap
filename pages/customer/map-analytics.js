@@ -228,12 +228,12 @@ const MapAnalytics = ({ collapsed, authenticatedUser, mapData, allMaps }) => {
                             </Cards>
 
 
-                            <Cards>
+                            {/* <Cards>
                                 <Title >TOTAL USERS</Title>
                                 <Week>Date</Week>
                                 <Content >12</Content>
                                 <State >State</State>
-                            </Cards>
+                            </Cards> */}
 
 {/* 
                             <Cards>
