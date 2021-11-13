@@ -293,7 +293,8 @@ export const getServerSideProps = withPrivateServerSideProps(
             const res = await getMapAnalyticsDataByDate(timestamp, token)
 
             mapData = await getMapAnalytics({ user: verifyUser.id }, token);
-            mapData.map((data) => {
+            mapData?.map((data) => {
+                console.log(mapData);
                 data.created_at = formatDate(data.created_at);
                 data.updated_at = formatDate(data.updated_at);
             })
