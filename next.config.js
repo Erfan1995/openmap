@@ -2,8 +2,8 @@ const withImages = require('next-images')
 module.exports = withImages()
 module.exports = {
     env: {
-        NEXT_PUBLIC_STRAPI_API_URL: 'https://openmaps1.herokuapp.com',
-        // NEXT_PUBLIC_STRAPI_API_URL: 'http://localhost:1337',
+        // NEXT_PUBLIC_STRAPI_API_URL: 'https://openmaps1.herokuapp.com',
+        NEXT_PUBLIC_STRAPI_API_URL: 'http://localhost:1337',
         NEXT_PUBLIC_BASEPATH_URL: 'https://openmaps.link',
         NEXT_PUBLIC_MAPBOX_TOKEN: 'sk.eyJ1IjoiaW50ZWxsaW5ldHdvcmsiLCJhIjoiY2t2MG00aWZwMmlzNDJ2bzBleGVsNWcxeiJ9.al2buRR819pFr268RJ0-kQ',
         NEXT_PUBLIC_MAPBOX_API_URL: 'https://api.mapbox.com',
