@@ -54,7 +54,6 @@ const Users = ({ authenticatedUser, collapsed, users, token }) => {
             attributes: allUsers.find(s => s.id).map_attributes,
             updated_at: allUsers.find(s => s.id).updated_at,
             key: id,
-
         }
     });
     unifiedUsers.map((data) => {

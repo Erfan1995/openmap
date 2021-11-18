@@ -18,6 +18,8 @@ import DatasetConf from './DetasetConf';
 import InjectCode from '../Forms/CodeInjection/index.js';
 import EditSurveyMeta from '../mapComponents/EditSurveyMeta';
 import SelectNewMapSurvey from '../mapComponents/SelectNewMapSurvey';
+import MapLisTab from '../mapComponents/MapListTab';
+import ProgressBar from '../mapComponents/ProgressBar';
 
 const { TabPane } = Tabs;
 const { confirm } = Modal;
@@ -74,6 +76,7 @@ const MapConf = ({ authenticatedUser, styledMaps, tags, mapData, serverSideDatas
     const [datasets, setDatasets] = useState();
     const [selectedDataset, setSelectedDataset] = useState(serverSideDatasets);
     const [layerClicked, setLayerClicked] = useState(true);
+    const [listClicked, setListClicked] = useState(true);
     const [mdcId, setmdcId] = useState();
     const [selectedDIcons, setSelectedDIcons] = useState();
     const [selectedDatasetProperties, setSelectedDatasetProperties] = useState();
@@ -510,16 +513,27 @@ const MapConf = ({ authenticatedUser, styledMaps, tags, mapData, serverSideDatas
                         </TabPane>
                     </Tabs>
                     :
-                    <div>
+                    listClicked ? <div>
                         <Button style={{ marginLeft: -20, marginTop: -30 }} icon={<ArrowLeftOutlined />} onClick={() => {
                             setLayerClicked(true);
                             onConfigTabChanged(true);
                         }} type='link'>back</Button>
-                        <DatasetConf setDataset={setDataset} onMapDataChange={onMapDataChange}
+                        <DatasetConf setListClicked={()=>{
+                            setListClicked(false);
+                            console.log('event clicked ');
+                        }} setDataset={setDataset} onMapDataChange={onMapDataChange}
                             icons={icons} mdcId={mdcId} selectedDIcons={selectedDIcons} token={token}
                             datasetProperties={datasetProperties} selectedDatasetProperties={selectedDatasetProperties}
                             layerType={layerType} changeSelectedIcons={changeSelectedIcons} editedProperties={editedProperties} />
+                    </div> :
+                    <div>
+                        <Button style={{ marginLeft: -20, marginTop: -30 }} icon={<ArrowLeftOutlined />} onClick={() => {
+                            setListClicked(true);
+                            // onConfigTabChanged(true);
+                        }} type='link'>back</Button>
+                        <ProgressBar></ProgressBar>
                     </div>
+
                 }
             </Card>
         </Spin>

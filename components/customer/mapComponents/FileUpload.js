@@ -255,6 +255,7 @@ const FileUpload = ({ onChangeEvent, googleDriveFile, user, onModalClose }) => {
         // if (file.originFileObj.size < 1e6) {
         setInvalidFileSize(false);
         fileReader = new FileReader();
+        console.log(file)
         if (["application/vnd.ms-excel", 'text/csv'].find((item) => item === file.originFileObj.type)) {
             fileReader.onloadend = () => {
                 csvToGeojson(fileReader.result)

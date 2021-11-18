@@ -7,6 +7,20 @@ import { getDatasetsByMap, getClientMapData, getPublicMap } from "lib/api";
 import { extractMapData, extractMapDataPublicUser, getCustomerMapData, getPublicAuthenticatedMapData, getPublicMapData } from "lib/general-functions";
 import { UserContext } from "lib/UserContext";
 import UseAuth from "hooks/useAuth";
+import styled from "styled-components";
+import VideoWidget from './../../components/client/widget/VideoWidget';
+import TextWidget from './../../components/client/widget/TextWidget';
+import SocialWidget from './../../components/client/widget/SocialWidget';
+import ListItem from "components/client/widget/ListItem";
+
+
+import { Tabs, Row, Col, Card, List, Steps } from 'antd';
+import { nodeName } from "jquery";
+import { redirect } from "next/dist/next-server/server/api-utils";
+import Content from "components/client/layout/content";
+const { TabPane } = Tabs;
+const { Meta } = Card;
+const { Step } = Steps;
 
 const Map = ({ manualMapData, mapData, datasets, injectedcodes, publicUser }) => {
 
@@ -75,10 +89,49 @@ const Map = ({ manualMapData, mapData, datasets, injectedcodes, publicUser }) =>
   }
 
 
+  const Content = styled.div`
+    height:700px;
+    width:100%;
+    padding:10px;
+    overflow-y: scroll
+  `;
+
+
+  const RightSide = styled.div`
+    padding:10px;
+    width:100%;
+    height:700px;
+    overflow-y: scroll
+  `;
+
+
+
+  const data = [
+    'Racing car sprays burning fuel into crowd.',
+    'Japanese princess to wed commoner.',
+    'Australian walks 100km after outback crash.',
+    'Man charged over missing wedding girl.',
+    'Los Angeles battles huge wildfires.',
+    'Racing car sprays burning fuel into crowd.',
+    'Japanese princess to wed commoner.',
+    'Australian walks 100km after outback crash.',
+    'Man charged over missing wedding girl.',
+    'Los Angeles battles huge wildfires.',
+    'Racing car sprays burning fuel into crowd.',
+    'Japanese princess to wed commoner.',
+    'Australian walks 100km after outback crash.',
+    'Man charged over missing wedding girl.',
+    'Los Angeles battles huge wildfires.',
+    'Racing car sprays burning fuel into crowd.',
+    'Japanese princess to wed commoner.',
+    'Australian walks 100km after outback crash.',
+    'Man charged over missing wedding girl.',
+    'Los Angeles battles huge wildfires.',
+  ];
+
 
 
   return (
-
     <div>
       <div dangerouslySetInnerHTML={injectCode(false)}>
       </div>
@@ -87,29 +140,53 @@ const Map = ({ manualMapData, mapData, datasets, injectedcodes, publicUser }) =>
       <LayoutPage injectedcodes={injectedcodes} walletAddress={publicUserObject.publicAddress} datasets={datasets} onDataSetChange={onDataSetChange}
         mapInfo={mapData} userId={publicUserObject.id} publicUser={publicUserObject} mapData={mapData}  >
         <Spin spinning={loading}>
-
-
-          <MapWithNoSSR
-            mapZoom={zoomLevel}
-            styleId={mapData.mapstyle?.link || process.env.NEXT_PUBLIC_MAPBOX_DEFAULT_MAP}
-            edit={{
-              edit: false,
-              remove: false,
-            }}
-            draw={{
-              rectangle: false,
-              polygon: false,
-              circle: false,
-              circlemarker: false,
-              polyline: false
-            }}
-            userType='public'
-            manualMapData={customMapData}
-            datasets={datasetData}
-            onCustomeDataChange={onCustomeDataChange}
-            mapData={mapData}
-            userId={publicUser.id}
-            style={{ height: "100vh" }} />
+          <Tabs defaultActiveKey="1" centered >
+            <TabPane tab="Map" key="1">
+              <MapWithNoSSR
+                mapZoom={zoomLevel}
+                styleId={mapData.mapstyle?.link || process.env.NEXT_PUBLIC_MAPBOX_DEFAULT_MAP}
+                edit={{
+                  edit: false,
+                  remove: false,
+                }}
+                draw={{
+                  rectangle: false,
+                  polygon: false,
+                  circle: false,
+                  circlemarker: false,
+                  polyline: false
+                }}
+                userType='public'
+                manualMapData={customMapData}
+                datasets={datasetData}
+                onCustomeDataChange={onCustomeDataChange}
+                mapData={mapData}
+                userId={publicUser.id}
+                style={{ height: "100vh" }} />
+            </TabPane>
+            <TabPane tab="List" key="2">
+              <Row>
+                <Col span={16}>
+                  <Content >
+                    <List
+                      size="small"
+                      dataSource={data}
+                      renderItem={item => <List.Item>
+                          <ListItem item={item}></ListItem>
+                      </List.Item>}
+                    />
+                  </Content>
+                </Col>
+                <Col span={8} >
+                  <RightSide>
+                    <VideoWidget></VideoWidget>
+                    <TextWidget></TextWidget>
+                    <SocialWidget data={data}></SocialWidget>
+                  </RightSide>
+                </Col>
+              </Row>
+            </TabPane>
+          </Tabs>
         </Spin>
       </LayoutPage>
 
