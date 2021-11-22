@@ -77,7 +77,6 @@ const MapLisTab = ({onEdit}) => {
     const [checkAll, setCheckAll] = useState(false);
     const [dataList,setDataList]=useState(data);
     const [widgets,setWidgets]=useState(widgetData);
-    const [selectedItem,setSelectedItem]=useState();
 
 
 
@@ -87,8 +86,6 @@ const MapLisTab = ({onEdit}) => {
             {/* <Menu.Item key="2" style={{ padding: "3px 20px" }}><a onClick={() => showSurveyConfirm()} >{DATASET.DELETE}</a></Menu.Item> */}
         </Menu>
     );
-
-
 
 
 
