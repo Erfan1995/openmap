@@ -211,8 +211,8 @@ const CreateMapContainer = ({ authenticatedUser, collapsed, styledMaps, tags, se
 
       </Layout>
 
-      <div dangerouslySetInnerHTML={injectCode(true)}>
-      </div>
+      {/* <div dangerouslySetInnerHTML={injectCode(true)}>
+      </div> */}
     </div>
   )
 }
