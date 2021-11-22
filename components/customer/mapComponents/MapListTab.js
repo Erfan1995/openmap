@@ -60,7 +60,7 @@ const data = [
 
 
 
-const AttributeDeleteButton = styled.span`
+const ListEditeButton = styled.span`
     font-size:20px;
     font-weight:bold;
     &:hover{
@@ -77,6 +77,7 @@ const MapLisTab = ({onEdit}) => {
     const [checkAll, setCheckAll] = useState(false);
     const [dataList,setDataList]=useState(data);
     const [widgets,setWidgets]=useState(widgetData);
+    const [selectedItem,setSelectedItem]=useState(null);
 
 
 
@@ -127,11 +128,7 @@ const MapLisTab = ({onEdit}) => {
     };
 
 
-
-
-
-
-
+    
     return <div>
         <Row>
             <SubTitle title={'Style'} number={1}></SubTitle>
@@ -144,8 +141,8 @@ const MapLisTab = ({onEdit}) => {
                         <div>
                             <Dropdown size="big" overlay={listMenu} trigger={['click']} >
                                 <a className="ant-dropdown-link"
-                                    onClick={(e) => setSelectedItem(widget)} >
-                                    <AttributeDeleteButton>:</AttributeDeleteButton>
+                                    onClick={(e)=>setSelectedItem(widget)} >
+                                    <ListEditeButton>:</ListEditeButton>
                                 </a>
                             </Dropdown>
                         </div>
@@ -165,7 +162,6 @@ const MapLisTab = ({onEdit}) => {
                 </Col>
             </Row>
             <Divider style={{ margin: '10px 0px' }} />
-            {/* <CheckboxGroup options={plainOptions} value={checkedList} onChange={onChange} /> */}
             {dataList.map((item) => (
                 <Row style={{ width: '100%', marginTop: 10, paddingLeft: 10 }}>
                     <Col span={10}>
