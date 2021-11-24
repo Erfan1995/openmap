@@ -18,8 +18,7 @@ import DatasetConf from './DetasetConf';
 import InjectCode from '../Forms/CodeInjection/index.js';
 import EditSurveyMeta from '../mapComponents/EditSurveyMeta';
 import SelectNewMapSurvey from '../mapComponents/SelectNewMapSurvey';
-import MapLisTab from '../mapComponents/MapListTab';
-import ProgressBar from '../mapComponents/ProgressBar';
+import AddWidget from '../mapComponents/AddWidget';
 
 const { TabPane } = Tabs;
 const { confirm } = Modal;
@@ -531,7 +530,7 @@ const MapConf = ({ authenticatedUser, styledMaps, tags, mapData, serverSideDatas
                             setListClicked(true);
                             // onConfigTabChanged(true);
                         }} type='link'>back</Button>
-                        <ProgressBar></ProgressBar>
+                        <AddWidget></AddWidget>
                     </div>
 
                 }

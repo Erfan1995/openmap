@@ -77,7 +77,6 @@ const MapLisTab = ({onEdit}) => {
     const [checkAll, setCheckAll] = useState(false);
     const [dataList,setDataList]=useState(data);
     const [widgets,setWidgets]=useState(widgetData);
-    const [selectedItem,setSelectedItem]=useState(null);
 
 
 
@@ -128,6 +127,10 @@ const MapLisTab = ({onEdit}) => {
     };
 
 
+    const onSelectedItem=(id)=>{
+        localStorage.setItem('currentWidget',id);
+    }
+
     
     return <div>
         <Row>
@@ -141,7 +144,7 @@ const MapLisTab = ({onEdit}) => {
                         <div>
                             <Dropdown size="big" overlay={listMenu} trigger={['click']} >
                                 <a className="ant-dropdown-link"
-                                    onClick={(e)=>setSelectedItem(widget)} >
+                                    onClick={(e)=>onSelectedItem(widget.id)} >
                                     <ListEditeButton>:</ListEditeButton>
                                 </a>
                             </Dropdown>
