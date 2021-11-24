@@ -1,6 +1,7 @@
 import styled from 'styled-components';
 import React, { useEffect, useState } from "react";
 import * as SurveyJSCreator from "survey-creator";
+import * as SurveyKo from "survey-knockout";
 import * as Survey from "survey-react"
 import { Button, Tabs, Modal, Spin, message, List } from 'antd';
 import { deleteMethod, getSurveyForms, postMethod } from 'lib/api';
@@ -9,7 +10,8 @@ import { ExclamationCircleOutlined } from '@ant-design/icons';
 import { ArrowLeftOutlined } from '@ant-design/icons';
 // import {richEditWidget} from './MapWidget'
 SurveyJSCreator.StylesManager.applyTheme('default');
-
+import { init } from './MapWidget';
+import * as widgets from "surveyjs-widgets";
 import "survey-creator/survey-creator.css";
 import "survey-react/survey.css";
 import EditSurvey from './EditSurvey';
@@ -21,6 +23,12 @@ background:#ffffff;
 padding:20px;
 margin:10px;
 `;
+init(SurveyKo);
+widgets.ckeditor(SurveyKo);
+widgets.bootstrapdatepicker(SurveyKo);
+widgets.bootstrapslider(SurveyKo);
+SurveyKo.Serializer.addProperty("question", "tag:number");
+
 const SurveyCreatorComponent = ({ authenticatedUser, token, surveyForms }) => {
     let surveyCreator;
     const [Json, setJson] = useState([]);
@@ -68,69 +76,6 @@ const SurveyCreatorComponent = ({ authenticatedUser, token, surveyForms }) => {
         });
         setSurveyList(surveyList);
     }
-    let richEditWidget = {
-        name: "richedit",
-        title: "Rich Editor",
-        iconName: "icon-editor",
-        widgetIsLoaded: function () {
-            return true; //We do not have external scripts
-        },
-        isFit: function (question) {
-            return question.getType() == "richedit";
-        },
-        init() {
-            Survey.Serializer.addClass("richedit", [], null, "empty");
-        },
-        htmlTemplate:
-            '<div>\
-          <div>\
-            <button onclick="document.execCommand(\'bold\')">Bold</a>\
-            <button onclick="document.execCommand(\'italic\')">Italic</a>\
-            <button onclick="document.execCommand(\'insertunorderedlist\')">List</a>\
-          </div>\
-          <div class="widget_rich_editor" contenteditable=true style="height:200px"></div>\
-        </div>',
-        afterRender: function (question, el) {
-            var editor = el.getElementsByClassName("widget_rich_editor");
-            if (editor.length == 0) return;
-            editor = editor[0];
-            editor.innerHTML = question.value || "";
-            var changingValue = false;
-            var updateQuestionValue = function () {
-                if (changingValue) return;
-                changingValue = true;
-                question.value = editor.innerHTML;
-                changingValue = false;
-            };
-            if (editor.addEventListener) {
-                var types = [
-                    "input",
-                    "DOMNodeInserted",
-                    "DOMNodeRemoved",
-                    "DOMCharacterDataModified",
-                ];
-                for (var i = 0; i < types.length; i++) {
-                    editor.addEventListener(types[i], updateQuestionValue, false);
-                }
-            }
-            question.valueChangedCallback = function () {
-                if (changingValue) return;
-                changingValue = true;
-                editor.innerHTML = question.value || "";
-                changingValue = false;
-            };
-            var updateReadOnly = function () {
-                var enabled = !question.isReadOnly;
-                var buttons = el.getElementsByTagName("button");
-                for (var i = 0; i < buttons.length; i++) {
-                }
-            };
-            updateReadOnly();
-            question.readOnlyChangedCallback = function () {
-                updateReadOnly();
-            };
-        },
-    };
     useEffect(() => {
         let options = {
             showEmbededSurveyTab: true,
@@ -142,10 +87,7 @@ const SurveyCreatorComponent = ({ authenticatedUser, token, surveyForms }) => {
         };
 
 
-        Survey.CustomWidgetCollection.Instance.add(
-            richEditWidget,
-            "customtype"
-        );
+
         surveyCreator = new SurveyJSCreator.SurveyCreator(
             null,
             options
@@ -233,6 +175,7 @@ const SurveyCreatorComponent = ({ authenticatedUser, token, surveyForms }) => {
         setSurveyClicked(state);
         setSurveyId(item.id);
         setJson(item.forms);
+        console.log(item.forms);
     }
     const editSurvey = (item) => {
         setJson(item);
