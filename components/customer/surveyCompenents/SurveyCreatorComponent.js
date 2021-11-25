@@ -15,19 +15,11 @@ import * as widgets from "surveyjs-widgets";
 import "survey-creator/survey-creator.css";
 import "survey-react/survey.css";
 import EditSurvey from './EditSurvey';
+import $ from "jquery";
 // import { json } from './analytics_data';
 const { confirm } = Modal;
 const { TabPane } = Tabs;
-const Wrapper = styled.div`
-background:#ffffff;
-padding:20px;
-margin:10px;
-`;
 init(SurveyKo);
-widgets.ckeditor(SurveyKo);
-widgets.bootstrapdatepicker(SurveyKo);
-widgets.bootstrapslider(SurveyKo);
-SurveyKo.Serializer.addProperty("question", "tag:number");
 
 const SurveyCreatorComponent = ({ authenticatedUser, token, surveyForms }) => {
     let surveyCreator;
@@ -76,17 +68,18 @@ const SurveyCreatorComponent = ({ authenticatedUser, token, surveyForms }) => {
         });
         setSurveyList(surveyList);
     }
+    let options = {
+        showEmbededSurveyTab: true,
+        haveCommercialLicense: true,
+        showLogicTab: true,
+        showJSONEditorTab: true,
+        showTestSurveyTab: true,
+        showTranslationTab: true
+    };
+
+
+
     useEffect(() => {
-        let options = {
-            showEmbededSurveyTab: true,
-            haveCommercialLicense: true,
-            showLogicTab: true,
-            showJSONEditorTab: true,
-            showTestSurveyTab: true,
-            showTranslationTab: true
-        };
-
-
 
         surveyCreator = new SurveyJSCreator.SurveyCreator(
             null,
@@ -172,10 +165,11 @@ const SurveyCreatorComponent = ({ authenticatedUser, token, surveyForms }) => {
     }
 
     const displaySurvey = (item, state) => {
+        init(Survey);
         setSurveyClicked(state);
         setSurveyId(item.id);
-        setJson(item.forms);
-        console.log(item.forms);
+        setJson(new Survey.Model(item.forms));
+        console.log(new Survey.Model(item.forms));
     }
     const editSurvey = (item) => {
         setJson(item);
@@ -203,7 +197,7 @@ const SurveyCreatorComponent = ({ authenticatedUser, token, surveyForms }) => {
                                 setSurveyClicked(false);
                             }} type='link'>back</Button>
                             <Survey.Survey
-                                json={Json}
+                                model={Json}
                                 showCompletedPage={false}
                             // onComplete={data => onCompleteSurvey(data)}
                             >

@@ -1,4 +1,6 @@
-export function init(Survey) {
+import * as Survey from "survey-react"
+
+export function init(SurveyKo) {
   let widget = { //the widget name. It should be unique and written in lowercase.
     name: "richedit",
     title: "Rich Editor",
@@ -10,28 +12,28 @@ export function init(Survey) {
       return question.getType() == "richedit";
     },
     init() {
-      Survey.Serializer.addClass("richedit", [], null, "empty");
+      SurveyKo.Serializer.addClass("richedit", [], null, "empty");
     },
     activatedByChanged: function (activatedBy) {
       //we do not need to check acticatedBy parameter, since we will use our widget for customType only
       //We are creating a new class and derived it from text question type. It means that text model (properties and fuctions) will be available to us
-      Survey.JsonObject.metaData.addClass("richedit", [], null, "text");
+      SurveyKo.JsonObject.metaData.addClass("richedit", [], null, "text");
       //signaturepad is derived from "empty" class - basic question class
       //Survey.JsonObject.metaData.addClass("signaturepad", [], null, "empty");
 
       //Add new property(s)
       //For more information go to https://surveyjs.io/Examples/Builder/?id=addproperties#content-docs
-      Survey.JsonObject.metaData.addProperties("richedit", [
-          { name: "buttonText", default: "Click Me" }
+      SurveyKo.JsonObject.metaData.addProperties("richedit", [
+        { name: "buttonText", default: "Click Me" }
       ]);
-  },
+    },
     isDefaultRender: false,
     htmlTemplate: "<div><input /><button></button></div>",
 
     //Our element will be rendered base on template.
     //We do not need to do anything here
     afterRender: function (question, el) {
-         //el is our root element in htmlTemplate, is "div" in our case
+      //el is our root element in htmlTemplate, is "div" in our case
       //get the text element
       var text = el.getElementsByTagName("input")[0];
       //set some properties
@@ -41,17 +43,17 @@ export function init(Survey) {
       var button = el.getElementsByTagName("button")[0];
       button.innerText = question.buttonText;
       button.onclick = function () {
-          question.value = "You have clicked me";
+        question.value = "You have clicked me";
       }
 
       //set the changed value into question value
       text.onchange = function () {
-          question.value = text.value;
+        question.value = text.value;
       }
       var onValueChangedCallback = function () {
-          text.value = question.value ? question.value : "";
+        text.value = question.value ? question.value : "";
       }
-      var onReadOnlyChangedCallback = function() {
+      var onReadOnlyChangedCallback = function () {
         if (question.isReadOnly) {
           text.setAttribute('disabled', 'disabled');
           button.setAttribute('disabled', 'disabled');
@@ -70,7 +72,11 @@ export function init(Survey) {
       onReadOnlyChangedCallback();
     }
   }
-  Survey.CustomWidgetCollection.Instance.add(
+  SurveyKo.CustomWidgetCollection.Instance.addCustomWidget(
+    widget,
+    "customtype"
+  );
+  Survey.CustomWidgetCollection.Instance.addCustomWidget(
     widget,
     "customtype"
   );
