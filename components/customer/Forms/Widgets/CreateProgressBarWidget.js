@@ -40,7 +40,7 @@ const CreateProgressBarWidget = ({ mdcId, datsetProperties, token, layerType, wi
     const [steps,setSteps]=useState([]);
 
 
-    console.log('widgets '+JSON.stringify(widget));
+    // console.log('widgets '+JSON.stringify(widget));
 
 
     const uploadButton = (
@@ -72,14 +72,17 @@ const CreateProgressBarWidget = ({ mdcId, datsetProperties, token, layerType, wi
         form
             .validateFields()
             .then(async (values) => {
-                widget.progressbar.map((item) => {
-                    progressbar.push({ 'title': item.title, 'hover_text': item.hover_text, 'icon': item.icon[0], 'is_active': item.is_active });
-                });
-                progressbar.push({ 'title': values.title, 'hover_text': values.hover_text, 'icon': '', 'is_active': false });
-                const res = await putFileMethod('widgets/' + widget.id, { 'progressbar': progressbar });
-                if (res) {
-                    console.log('widgets ' + JSON.stringify(res.progressbar) + ' id ' + widget.id);
-                }
+                // widget.progressbar.map((item) => {
+                //     progressbar.push({ 'title': item.title, 'hover_text': item.hover_text, 'icon': item.icon[0], 'is_active': item.is_active });
+                // });
+                // progressbar.push({ 'title': values.title, 'hover_text': values.hover_text, 'icon': '', 'is_active': false });
+                // const res = await putFileMethod('widgets/' + widget.id, { 'progressbar': progressbar });
+                // if (res) {
+                //     console.log('widgets ' + JSON.stringify(res.progressbar) + ' id ' + widget.id);
+                // }
+
+                progressbar=widget.progressbar.push({ 'title': values.title, 'hover_text': values.hover_text, 'icon': '', 'is_active': false })
+                console.log('mdaddjo '+JSON.stringify(widget.progressbar));
                 setLoading(false);
             }).catch(e => {
                 setLoading(false);
@@ -97,10 +100,10 @@ const CreateProgressBarWidget = ({ mdcId, datsetProperties, token, layerType, wi
                     <Space direction='vertical'>
                         <Row>{DATASET.STYLE}</Row>
                         <Row className="w-full">
-                            <Stepper steps={widget?.progressbar}></Stepper>
+                            {/* <Stepper steps={widget?.progressbar}></Stepper> */}
                         </Row>
                         <Row className="w-full">
-                            <BreadCrumb steps={widget?.progressbar}></BreadCrumb>
+                            {/* <BreadCrumb steps={widget?.progressbar}></BreadCrumb> */}
                         </Row>
                     </Space>
                 </Row>
