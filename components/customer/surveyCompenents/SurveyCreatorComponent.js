@@ -169,11 +169,20 @@ const SurveyCreatorComponent = ({ authenticatedUser, token, surveyForms }) => {
         setSurveyClicked(state);
         setSurveyId(item.id);
         setJson(new Survey.Model(item.forms));
-        console.log(new Survey.Model(item.forms));
     }
     const editSurvey = (item) => {
         setJson(item);
         setVisible(true);
+    }
+    const onCompleteSurvey = (data) => {
+        let myLatLng;
+        let questions = Object.values(data.questionHashes.names);
+        questions.map(question => {
+            if (question[0].lat) {
+                myLatLng = `${question[0].lat},${question[0].lng}`
+            }
+        })
+        console.log(myLatLng);
     }
     return (
         <Spin spinning={loading}>
@@ -199,7 +208,7 @@ const SurveyCreatorComponent = ({ authenticatedUser, token, surveyForms }) => {
                             <Survey.Survey
                                 model={Json}
                                 showCompletedPage={false}
-                            // onComplete={data => onCompleteSurvey(data)}
+                                onComplete={data => onCompleteSurvey(data)}
                             >
                             </Survey.Survey>
                         </div> :

@@ -1,85 +1,86 @@
-import * as Survey from "survey-react"
-
+import { Loader } from "@googlemaps/js-api-loader";
 export function init(SurveyKo) {
   let widget = { //the widget name. It should be unique and written in lowercase.
-    name: "richedit",
-    title: "Rich Editor",
-    iconName: "icon-editor",
+    name: "googlemap",
+    title: "google map survey",
+    iconName: "my-custom-icon",
     widgetIsLoaded: function () {
       return true; //We do not have external scripts
     },
     isFit: function (question) {
-      return question.getType() == "richedit";
+      return question.getType() == "googlemap";
     },
     init() {
-      SurveyKo.Serializer.addClass("richedit", [], null, "empty");
+      // SurveyKo.Serializer.addClass("map", [], null, "empty");
     },
     activatedByChanged: function (activatedBy) {
-      //we do not need to check acticatedBy parameter, since we will use our widget for customType only
-      //We are creating a new class and derived it from text question type. It means that text model (properties and fuctions) will be available to us
-      SurveyKo.JsonObject.metaData.addClass("richedit", [], null, "text");
-      //signaturepad is derived from "empty" class - basic question class
-      //Survey.JsonObject.metaData.addClass("signaturepad", [], null, "empty");
-
-      //Add new property(s)
-      //For more information go to https://surveyjs.io/Examples/Builder/?id=addproperties#content-docs
-      SurveyKo.JsonObject.metaData.addProperties("richedit", [
-        { name: "buttonText", default: "Click Me" }
+      SurveyKo.JsonObject.metaData.addClass("googlemap", [], null, "text");
+      SurveyKo.JsonObject.metaData.addProperties("googlemap", [
+        { name: "lat", default: 41 },
+        { name: "lng", default: 28 },
       ]);
+      createProperties(SurveyKo);
     },
     isDefaultRender: false,
-    htmlTemplate: "<div><input /><button></button></div>",
-
-    //Our element will be rendered base on template.
-    //We do not need to do anything here
+    htmlTemplate:
+      "<div class='custom-tessting-input' id='google-map-design'></div>",
     afterRender: function (question, el) {
-      //el is our root element in htmlTemplate, is "div" in our case
-      //get the text element
-      var text = el.getElementsByTagName("input")[0];
-      //set some properties
-      text.inputType = question.inputType;
-      text.placeholder = question.placeHolder;
-      //get button and set some rpoeprties
-      var button = el.getElementsByTagName("button")[0];
-      button.innerText = question.buttonText;
-      button.onclick = function () {
-        question.value = "You have clicked me";
-      }
-
-      //set the changed value into question value
-      text.onchange = function () {
-        question.value = text.value;
-      }
-      var onValueChangedCallback = function () {
-        text.value = question.value ? question.value : "";
-      }
-      var onReadOnlyChangedCallback = function () {
-        if (question.isReadOnly) {
-          text.setAttribute('disabled', 'disabled');
-          button.setAttribute('disabled', 'disabled');
-        } else {
-          text.removeAttribute("disabled");
-          button.removeAttribute("disabled");
-        }
-      };
-      //if question becomes readonly/enabled add/remove disabled attribute
-      question.readOnlyChangedCallback = onReadOnlyChangedCallback;
-      //if the question value changed in the code, for example you have changed it in JavaScript
-      question.valueChangedCallback = onValueChangedCallback;
-      //set initial value
-      onValueChangedCallback();
-      //make elements disabled if needed
-      onReadOnlyChangedCallback();
-    }
+      var findDiv = document.getElementById("google-map-design");
+      findDiv.style.height = "500px";
+      findDiv.style.width = "100%";
+      let loader = new Loader({
+        apiKey: "AIzaSyBlgQUaksdGk8QypFdyyOFwU8d07giTsuE",
+      });
+      loader
+        .load()
+        .then((google) => {
+          const uluru = { lat: -25.344, lng: 131.036 };
+          let map = new google.maps.Map(document.getElementById("google-map-design"), {
+            center: uluru,
+            zoom: 8,
+          });
+          let marker;
+          google.maps.event.addListener(map, 'click', function (e) {
+            question.lat = e.latLng.lat();
+            question.lng = e.latLng.lng();
+            if (marker) {
+              marker.setPosition(e.latLng);
+            } else {
+              marker = new google.maps.Marker({
+                position: e.latLng,
+                map: map
+              });
+            }
+            map.setCenter(e.latLng);
+          })
+        })
+        .catch((err) => { });
+    },
   }
+
   SurveyKo.CustomWidgetCollection.Instance.addCustomWidget(
     widget,
     "customtype"
   );
-  Survey.CustomWidgetCollection.Instance.addCustomWidget(
-    widget,
-    "customtype"
-  );
+  function createProperties(Survey) {
+    var props = createGeneralProperties(Survey);
+    return props;
+  }
+  function createGeneralProperties(Survey) {
+    return Survey.Serializer.addProperties("googlemap", [
+      {
+        name: "latitude:textbox",
+        category: "general",
+        default: "29.635703",
+      },
+      {
+        name: "longitude:textbox",
+        category: "general",
+        default: "52.521924",
+      },
+    ]);
+  }
+
   //We do not need default rendering here.
   //SurveyJS will render this template by default
 

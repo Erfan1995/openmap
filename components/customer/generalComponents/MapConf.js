@@ -212,6 +212,7 @@ const MapConf = ({ authenticatedUser, styledMaps, tags, mapData, serverSideDatas
     }
     //this function gets called whenever the user click on a dataset or main map popup styles button
     const mdc = async (id, state, type) => {
+        console.log(id);
         setLayerClicked(state);
         onConfigTabChanged(state);
         setLayerType(type);
