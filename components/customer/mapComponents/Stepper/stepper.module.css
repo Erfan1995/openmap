@@ -1,0 +1,53 @@
+
+
+#crumbs ul{
+    list-style: none;
+    display: inline-table;
+    padding:0px
+}
+
+#crumbs ul li{
+    display: inline;
+}
+
+
+#crumbs ul li a{
+    display: block;
+    float: left;
+    height: 40px;
+    width:40px;
+    padding-top:7px;
+    text-align: center;
+    border-radius:50%;
+    position: relative;
+    margin: 0 15px 0 0; 
+    font-size: 15px;
+    text-decoration: none;
+    color: #8093A7;
+    border:1px solid #F3F5FA
+}
+
+
+#crumbs ul li a:after{
+    content: "__";  
+    border-top: 2px solid transparent;
+    position: absolute; 
+    right: -16px;
+    top: 0;
+    z-index: 1;
+    color: #F3F5FA;
+} 
+
+			
+#crumbs ul li:last-child a:after {
+	display: none; 
+}
+			
+#crumbs ul li a:hover {
+	background: #357DFD;
+    color:#fff;
+}
+
+
+		
+		

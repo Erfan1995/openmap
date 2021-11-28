@@ -148,7 +148,20 @@ export const DATASET = {
     ADD_TRUST_SCORE: 'Add Trust Score',
     VARIFY: 'Varify',
     UNVARIFY: 'Unvarify',
-    SURVEY_EDITED_MESSAGE: 'Survey Edited Successfully!'
+    SURVEY_EDITED_MESSAGE: 'Survey Edited Successfully!',
+    HEADER_COLOR:'Color',
+    EDITOR:'Editor',
+    REQUIRED_FIELD:'This field is required',
+    CORRECT_URL_MESSAGE:'This field must be a valid url.',
+    EMBED_RSS_FEED:'Embed Html (RSS Feed)',
+    SUCCESSFULY_UPDATE_MESSAGE:'successfuly updated',
+    OCCURE_ERROR_MESSAGE:'Opps! occured error',
+    STYLE:'Style',
+    COLOR:'Color',
+    PROGRES_BAR_STEPS:'Progress Bar Steps',
+    HOVER_TEXT:'Hover Text',
+    ICON:'Icon',
+    ADD_STEP:'Add Step'
 
 
 }
