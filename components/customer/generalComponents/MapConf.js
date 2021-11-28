@@ -528,9 +528,8 @@ const MapConf = ({ authenticatedUser, styledMaps, tags, mapData, serverSideDatas
                     <div>
                         <Button style={{ marginLeft: -20, marginTop: -30 }} icon={<ArrowLeftOutlined />} onClick={() => {
                             setListClicked(true);
-                            // onConfigTabChanged(true);
                         }} type='link'>back</Button>
-                        <AddWidget></AddWidget>
+                        <AddWidget mdcId={mdcId} token={token} layerType={layerType} datasetProperties={datasetProperties} selectedDatasetProperties={selectedDatasetProperties}></AddWidget>
                     </div>
 
                 }

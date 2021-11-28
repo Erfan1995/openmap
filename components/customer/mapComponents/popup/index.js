@@ -103,8 +103,6 @@ padding: 10px;
 `
 
 
-
-
 const Popup = ({ mdcId, properties, selectedDatasetProperties, layerType, setDataset, onMapDataChange, token, editedProperties }) => {
     const [loading, setLoading] = useState(false);
     const [checkedList, setCheckedList] = useState(selectedDatasetProperties);
@@ -216,7 +214,7 @@ const Popup = ({ mdcId, properties, selectedDatasetProperties, layerType, setDat
             .then(async (values) => {
                 // initialFormValues[e.target.id] = e.target.value;
                 if (layerType === "dataset") {
-                    const res = await putMethod('mapdatasetconfs/' + mdcId, { edited_dataset_properties: values });
+                    const res = await putMethod('widgets/' + mdcId, { edited_dataset_properties: values });
                     if (res) {
                         initialFormValues = res.edited_dataset_properties;
                         setDataset();

@@ -8,7 +8,6 @@ const DatasetConf = ({ setListClicked,icons, mdcId, selectedDIcons, datasetPrope
     setDataset, onMapDataChange, changeSelectedIcons, token }) => {
 
         const onEdit=()=>{
-                console.log('edit youe data ');
                 setListClicked();
         }
 
@@ -25,7 +24,7 @@ const DatasetConf = ({ setListClicked,icons, mdcId, selectedDIcons, datasetPrope
                         selectedDatasetProperties={selectedDatasetProperties} layerType={layerType} token={token} />
                 </TabPane>
                 <TabPane tab="List" key="4">
-                    <MapLisTab onEdit={onEdit}></MapLisTab>
+                    <MapLisTab onEdit={onEdit} mdcId={mdcId} datasetProperties={datasetProperties} token={token}></MapLisTab>
                 </TabPane>
             </Tabs>
         </div>

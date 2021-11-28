@@ -1,10 +1,10 @@
 
-import styles from './breadcrumb.module.css'
+import styles from './stepper.module.css'
 import Image from 'next/image';
 import { getStrapiMedia } from 'lib/media';
 import styled from 'styled-components';
 
-const BreadCrumb = ({steps}) => {
+const Stepper = ({steps}) => {
 
     const Photo = styled.img`
         width:20px;
@@ -25,4 +25,4 @@ const BreadCrumb = ({steps}) => {
     </div>: null;
 }
 
-export default BreadCrumb;
+export default Stepper;
