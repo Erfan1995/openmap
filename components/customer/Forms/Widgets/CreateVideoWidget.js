@@ -11,18 +11,11 @@ import { DATASET } from 'static/constant';
 const CreateVideoWidget = ({ widget }) => {
 
     const [form] = Form.useForm();
-    const [colorCode, setColorCode] = useState("#f80e38");
+    const [colorCode, setColorCode] = useState(widget?.video?.color);
     const [loading, setLoading] = useState(false);
-    const [video, setVideo] = useState(null);
 
 
-    useEffect(()=>{
-        setVideo(widget?.video);
-        setColorCode(widget?.video?.color);
-    });
-
-
-    const onSubmit = async () => {
+    const onSubmit = async (e) => {
         setLoading(true);
             form
             .validateFields()
@@ -30,7 +23,6 @@ const CreateVideoWidget = ({ widget }) => {
                 let currentVideo = { 'title': values.title, 'video_link': values.video_link, 'color': colorCode };
                 const res = await putMethod('widgets/' + widget.id, { 'video': currentVideo });
                 if (res) {
-                    setVideo(res?.video);
                     message.success(DATASET.SUCCESSFULY_UPDATE_MESSAGE);
                 }
                 setLoading(false);
@@ -42,9 +34,9 @@ const CreateVideoWidget = ({ widget }) => {
 
 
 
-    return <div>
+    return (typeof widget.video !== 'undefined' && widget.video.length !== 0) ?  <div>
         <Spin spinning={loading}>
-            <Form form={form} name='videoForm' initialValues={video} onFinish={onSubmit}>
+            <Form form={form} name='videoForm' initialValues={widget.video} onFinish={onSubmit}>
                 <Space direction='vertical'>
                     <Row>{DATASET.TITLE}</Row>
                     <Row>
@@ -58,7 +50,7 @@ const CreateVideoWidget = ({ widget }) => {
                             {DATASET.HEADER_COLOR}
                         </Col>
                         <Col span={4}>
-                            <ColorPicker color={colorCode} onChange={(color) => setColorCode(color.color)} />
+                            <ColorPicker color={widget?.video?.color} onChange={(color) => setColorCode(color.color)} />
                         </Col>
                     </Row>
                     <br />
@@ -81,7 +73,7 @@ const CreateVideoWidget = ({ widget }) => {
             </Form>
 
         </Spin>
-    </div>
+    </div> :<div></div>
 }
 
 export default CreateVideoWidget

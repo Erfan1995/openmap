@@ -105,13 +105,13 @@ const MapLisTab = ({ onEdit, mdcId, datasetProperties, token }) => {
         async function fetchWidget() {
             try {
                 const response = await getWidgets(mdcId, token);
-                if (response) {
+                if (typeof response !== 'undefined' && response.length !== 0) {
                     setCurrentWidget(response[0]);
                 }
                 else{
                     const res=await createWidget();
                     if(res){
-                        console.log('res '+ JSON.stringify(res));
+                        setCurrentWidget(res);
                     }
                 }
             }catch(e){

@@ -2,7 +2,7 @@
 import 'rc-color-picker/assets/index.css';
 import { Col, Row, Input, Button, Space, Form, Spin, message } from "antd";
 import ColorPicker from 'rc-color-picker';
-import { useEffect, useState } from 'react';
+import { useState } from 'react';
 import { postMethod, putMethod } from 'lib/api';
 const { TextArea } = Input;
 import { DATASET } from 'static/constant';
@@ -13,14 +13,6 @@ const CreateTextWidget = ({ widget }) => {
     const [value, setValue] = useState('');
     const [colorCode, setColorCode] = useState('#ff0000');
     const [loading, setLoading] = useState(false);
-    const [textItem, setTextItem] = useState(null);
-
-    useEffect(() => {
-        if (widget?.text != null) {
-            setColorCode(widget?.text?.color);
-            setTextItem(widget?.text);
-        }
-    })
 
 
     const onSubmit = async () => {
@@ -28,10 +20,9 @@ const CreateTextWidget = ({ widget }) => {
         form
             .validateFields()
             .then(async (values) => {
-                let textItem = { 'title': values.title, 'description': values.descriptiom, 'color': colorCode };
+                let textItem = { 'title': values.title, 'description': values.description, 'color': colorCode };
                 const res = await putMethod('widgets/' + widget.id, { 'text': textItem });
                 if (res) {
-                    setTextItem(res?.text)
                     message.success(DATASET.SUCCESSFULY_UPDATE_MESSAGE)
                 }
                 setLoading(false);
@@ -42,9 +33,9 @@ const CreateTextWidget = ({ widget }) => {
     }
 
 
-    return <div>
+    return (typeof widget?.text !== 'undefined' && widget?.text?.length !== 0) ? <div>
         <Spin spinning={loading}>
-            <Form form={form} name="text" onFinish={onSubmit} initialValues={textItem}>
+            <Form form={form} name="text" onFinish={onSubmit} initialValues={widget?.text}>
                 <Space direction='vertical'>
                     <Row>{DATASET.TITLE}</Row>
                     <Row>
@@ -58,7 +49,7 @@ const CreateTextWidget = ({ widget }) => {
                             {DATASET.HEADER_COLOR}
                         </Col>
                         <Col span={4}>
-                            <ColorPicker color={colorCode} onChange={(color) => setColorCode(color.color)} />
+                            <ColorPicker color={widget?.text?.color} onChange={(color) => setColorCode(color.color)} />
                         </Col>
                     </Row>
                     <br />
@@ -66,7 +57,7 @@ const CreateTextWidget = ({ widget }) => {
                         {DATASET.EDITOR}
                     </Row>
                     <Row>
-                        <Form.Item name="descriptiom" rules={[{ required: true, message: DATASET.PLACE_HOLDER_DESCRIPTION }]}>
+                        <Form.Item name="description" rules={[{ required: true, message: DATASET.PLACE_HOLDER_DESCRIPTION }]}>
                             <TextArea placeholder={DATASET.PLACE_HOLDER_DESCRIPTION} rows={4}></TextArea>
                         </Form.Item>
                     </Row>
@@ -80,7 +71,7 @@ const CreateTextWidget = ({ widget }) => {
                 </Space>
             </Form>
         </Spin>
-    </div>
+    </div> : <div></div>
 }
 
 export default CreateTextWidget

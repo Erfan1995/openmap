@@ -40,10 +40,7 @@ const CreateProgressBarWidget = ({ mdcId, datsetProperties, token, layerType, wi
     const [steps,setSteps]=useState([]);
 
 
-
-
     console.log('widgets '+JSON.stringify(widget));
-
 
 
     const uploadButton = (
@@ -59,7 +56,6 @@ const CreateProgressBarWidget = ({ mdcId, datsetProperties, token, layerType, wi
             return;
         }
         if (info.file.status === 'done') {
-            // Get this url from response in real world.
             setIcon(info.file);
             getBase64(info.file.originFileObj, imageUrl => {
                 setImageUrl(imageUrl);
@@ -70,44 +66,20 @@ const CreateProgressBarWidget = ({ mdcId, datsetProperties, token, layerType, wi
     };
 
 
-    console.log('widget '+JSON.stringify());
-
     const onSubmit = async (data) => {
-
-        // const fData = new FormData();
-        //         let res = null;
-        //         setLoading(true);
-        //         fData.append('data',JSON.stringify(values));
-        //         if (file) {
-        //             fData.append('files.loginLogo', file.file.originFileObj, file.file.originFileObj.name);
-        //         }
-
-
         setLoading(true);
         let progressbar = [];
         form
             .validateFields()
             .then(async (values) => {
-                const fData = new FormData();
-                // widget.progressbar.map((item) => {
-                //     progressbar.push({ 'title': item.title, 'hover_text': item.hover_text, 'icon': item.icon, 'is_active': false });
-                // });
-
-                // fData.append('data',JSON.stringify(values));
-                // if (file) {
-                //     fData.append('files.loginLogo', file.file.originFileObj, file.file.originFileObj.name);
-                // }
-
-  
+                widget.progressbar.map((item) => {
+                    progressbar.push({ 'title': item.title, 'hover_text': item.hover_text, 'icon': item.icon[0], 'is_active': item.is_active });
+                });
                 progressbar.push({ 'title': values.title, 'hover_text': values.hover_text, 'icon': '', 'is_active': false });
-                fData.append('data', JSON.stringify(values));
-                if(icon){
-                    fData.append('files.icon',icon.originFileObj,icon.originFileObj.name);
+                const res = await putFileMethod('widgets/' + widget.id, { 'progressbar': progressbar });
+                if (res) {
+                    console.log('widgets ' + JSON.stringify(res.progressbar) + ' id ' + widget.id);
                 }
-                // const res = await putFileMethod('widgets/' + widget.id, { 'progressbar': fData });
-                // if (res) {
-                //     console.log('widgets ' + JSON.stringify(res.progressbar) + ' id ' + widget.id);
-                // }
                 setLoading(false);
             }).catch(e => {
                 setLoading(false);
@@ -117,7 +89,7 @@ const CreateProgressBarWidget = ({ mdcId, datsetProperties, token, layerType, wi
 
 
 
-    return < div >
+    return (typeof widget?.progressbar !== 'undefined' && widget?.progressbar !== null) ? < div >
         <Spin spinning={loading}>
             <Space direction='vertical'>
                 <br />
@@ -207,7 +179,7 @@ const CreateProgressBarWidget = ({ mdcId, datsetProperties, token, layerType, wi
                 </Row>
             </Space>
         </Spin>
-    </div>
+    </div> : <div></div>
 }
 
 
