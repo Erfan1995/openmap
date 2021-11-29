@@ -34,7 +34,7 @@ const CreateVideoWidget = ({ widget }) => {
 
 
 
-    return (typeof widget.video !== 'undefined' && widget.video.length !== 0) ?  <div>
+    return (typeof widget?.video !== 'undefined' && widget?.video?.length !== 0) ?  <div>
         <Spin spinning={loading}>
             <Form form={form} name='videoForm' initialValues={widget.video} onFinish={onSubmit}>
                 <Space direction='vertical'>

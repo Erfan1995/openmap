@@ -13,7 +13,6 @@ const CreateNewsFeedWidget = ({ widget }) => {
     const [colorCode, setColorCode] = useState("ff0000");
     const [loading, setLoading] = useState(false);
 
-
     const onSubmit = async () => {
         setLoading(true);
         form

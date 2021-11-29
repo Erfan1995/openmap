@@ -4,7 +4,7 @@ import Image from 'next/image';
 import { getStrapiMedia } from 'lib/media';
 import styled from 'styled-components';
 
-const BreadCrumb = ({steps}) => {
+const BreadCrumb = ({ steps, onStepClick }) => {
 
     const Photo = styled.img`
         width:20px;
@@ -17,12 +17,11 @@ const BreadCrumb = ({steps}) => {
 
     return steps ? <div id={styles.crumbs}>
         <ul>
-            {steps?.map((step)=>{
-                console.log('step '+step.icon[0].url);
-            return <li><a href="#1"><Photo src={getStrapiMedia(step.icon[0])}></Photo></a></li>
+            {steps?.map((step) => {
+                return <li><a href="#1" onClick={() => onStepClick(step)}><Photo src={getStrapiMedia(step.icon)}></Photo></a></li>
             })}
         </ul>
-    </div>: null;
+    </div> : null;
 }
 
 export default BreadCrumb;
