@@ -5,3 +5,4 @@ const SharedSurvey = ({ survey }) => {
         <div>heloooooooooooooooooooooooooo</div>
     )
 }
+export default SharedSurvey;

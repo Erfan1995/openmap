@@ -3,7 +3,8 @@ import { extractMapDataPublic } from "lib/general-functions";
 
 
 import dynamic from "next/dynamic";
-export default function Home({ mapData = null, manualMapData = null, datasets = null, mapToken = null, type, survey = null }) {
+export default function Home({ mapData = null, manualMapData = null, datasets = null, mapToken = null, type = null, survey = null }) {
+  console.log(mapData);
   const Dashboard = dynamic(() => import("../components/dashboard"), {
     ssr: false
   });
@@ -11,7 +12,7 @@ export default function Home({ mapData = null, manualMapData = null, datasets = 
     ssr: false
   })
   return (
-    <div>{type === '0' ?
+    <div>{type === 'map' ?
       <Dashboard mapData={mapData} manualMapData={manualMapData} datasets={datasets} mapToken={mapToken} />
       :
       <SharedSurvey survey={survey} />
@@ -40,7 +41,7 @@ export async function getServerSideProps(ctx) {
         }
       } else {
         return {
-          props: { type: type, survey: res[0] }
+          props: { type: 'survey', survey: res[0] }
         }
       }
     } else if (ctx.query.t === '0') {
@@ -56,10 +57,12 @@ export async function getServerSideProps(ctx) {
           }
         } else {
           const datasetData = await getMethod(`datasets?_where[0][maps.id]=${id}`, null, false);
+          console.log(datasetData, 'ressssssssssssssssss');
+
           return {
             props: {
               mapData: res[0], manualMapData: await extractMapDataPublic(res[0]),
-              datasets: datasetData, mapToken: mapToken, type: type
+              datasets: datasetData, mapToken: mapToken, type: 'map'
             },
           };
         }
