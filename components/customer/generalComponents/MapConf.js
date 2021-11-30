@@ -79,6 +79,7 @@ const MapConf = ({ authenticatedUser, styledMaps, tags, mapData, serverSideDatas
     const [mdcId, setmdcId] = useState();
     const [selectedDIcons, setSelectedDIcons] = useState();
     const [selectedDatasetProperties, setSelectedDatasetProperties] = useState();
+    const [listviewProperties,setListviewProperties]=useState();
     const [datasetProperties, setDatasetProperties] = useState();
     const [layerType, setLayerType] = useState();
     const [loading, setLoading] = useState(false);
@@ -218,6 +219,7 @@ const MapConf = ({ authenticatedUser, styledMaps, tags, mapData, serverSideDatas
         setLayerType(type);
         setSelectedDIcons([]);
         setSelectedDatasetProperties([]);
+        setListviewProperties([]);
         setDatasetProperties([]);
         if (type === "dataset") {
             const datasetDetails = await getDatasetDetails({ dataset: id }, token);
@@ -225,7 +227,9 @@ const MapConf = ({ authenticatedUser, styledMaps, tags, mapData, serverSideDatas
                 setDatasetProperties(datasetDetails[0]?.properties)
             }
             const mapDatasetConf = await getMapDatasetConf({ dataset: id, map: mapData.id }, token);
-            if (mapDatasetConf) setmdcId(Number(mapDatasetConf[0]?.id));
+            if (mapDatasetConf) {
+                setmdcId(Number(mapDatasetConf[0]?.id));
+            }
             const selectedIcons = await getDatasetConfContent({ id: mapDatasetConf[0]?.id }, token);
             if (selectedIcons.length > 0) {
                 if (selectedIcons[0].icon !== null) {
@@ -237,7 +241,8 @@ const MapConf = ({ authenticatedUser, styledMaps, tags, mapData, serverSideDatas
                 }
 
                 setSelectedDatasetProperties(selectedIcons[0]?.selected_dataset_properties);
-                setEditedProperties(selectedIcons[0]?.edited_dataset_properties)
+                setEditedProperties(selectedIcons[0]?.edited_dataset_properties);
+                setListviewProperties(selectedIcons[0]?.listview_properties);
             }
         } else if (type === "main") {
             surveyForms.map(data => {
@@ -272,6 +277,7 @@ const MapConf = ({ authenticatedUser, styledMaps, tags, mapData, serverSideDatas
                     }
                     setSelectedDatasetProperties(selectedproperties[0]?.selected_survey_properties);
                     setEditedProperties(selectedproperties[0]?.edited_survey_properties);
+                    setListviewProperties(selectedproperties[0]?.listview_properties);
                 }
             }
         }
@@ -521,7 +527,7 @@ const MapConf = ({ authenticatedUser, styledMaps, tags, mapData, serverSideDatas
                         <DatasetConf setListClicked={()=>{
                             setListClicked(false);
                             console.log('event clicked ');
-                        }} setDataset={setDataset} onMapDataChange={onMapDataChange}
+                        }} setDataset={setDataset} onMapDataChange={onMapDataChange} listviewProperties={listviewProperties}
                             icons={icons} mdcId={mdcId} selectedDIcons={selectedDIcons} token={token}
                             datasetProperties={datasetProperties} selectedDatasetProperties={selectedDatasetProperties}
                             layerType={layerType} changeSelectedIcons={changeSelectedIcons} editedProperties={editedProperties} />

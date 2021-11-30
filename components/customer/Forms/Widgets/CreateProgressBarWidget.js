@@ -6,8 +6,8 @@ import BreadCrumb from 'components/customer/mapComponents/Breadcrumb/breadcrumb'
 import Stepper from 'components/customer/mapComponents/Stepper/stepper';
 import { UploadOutlined } from '@ant-design/icons';
 import { useEffect, useState } from 'react';
-import { putFileMethod, putMethod, getWidgets } from 'lib/api';
-import { PlusOutlined,LoadingOutlined } from '@ant-design/icons';
+import { putFileMethod, putMethod, getWidgets, postFileMethod } from 'lib/api';
+import { PlusOutlined, LoadingOutlined } from '@ant-design/icons';
 import { DATASET } from 'static/constant';
 
 
@@ -37,18 +37,20 @@ const CreateProgressBarWidget = ({ mdcId, datsetProperties, token, layerType, wi
     const [colorCode, setColorCode] = useState('#ff0000');
     const [uploading, setUploading] = useState(false);
     const [imageUrl, setImageUrl] = useState("");
-    const [steps,setSteps]=useState([]);
+    const [steps, setSteps] = useState([]);
 
 
-    // console.log('widgets '+JSON.stringify(widget));
+    useEffect(() => {
+        setSteps(widget?.progressbars);
+    }, [widget])
 
 
     const uploadButton = (
         <div>
-          {uploading ? <LoadingOutlined /> : <PlusOutlined />}
-          <div style={{ marginTop: 8 }}>Upload</div>
+            {uploading ? <LoadingOutlined /> : <PlusOutlined />}
+            <div style={{ marginTop: 8 }}>Upload</div>
         </div>
-      );
+    );
 
     const handleChange = info => {
         if (info.file.status === 'uploading') {
@@ -67,22 +69,20 @@ const CreateProgressBarWidget = ({ mdcId, datsetProperties, token, layerType, wi
 
 
     const onSubmit = async (data) => {
+        const fData = new FormData();
         setLoading(true);
-        let progressbar = [];
         form
             .validateFields()
             .then(async (values) => {
-                // widget.progressbar.map((item) => {
-                //     progressbar.push({ 'title': item.title, 'hover_text': item.hover_text, 'icon': item.icon[0], 'is_active': item.is_active });
-                // });
-                // progressbar.push({ 'title': values.title, 'hover_text': values.hover_text, 'icon': '', 'is_active': false });
-                // const res = await putFileMethod('widgets/' + widget.id, { 'progressbar': progressbar });
-                // if (res) {
-                //     console.log('widgets ' + JSON.stringify(res.progressbar) + ' id ' + widget.id);
-                // }
-
-                progressbar=widget.progressbar.push({ 'title': values.title, 'hover_text': values.hover_text, 'icon': '', 'is_active': false })
-                console.log('mdaddjo '+JSON.stringify(widget.progressbar));
+                fData.append('data', JSON.stringify({ 'title': values.title, 'hover_text': values.hover_text, 'widget': widget.id }));
+                if (icon) {
+                    fData.append('files.icon', icon.originFileObj, icon.originFileObj.name);
+                }
+                const res = await postFileMethod('progressbars', fData);
+                if (res) {
+                    message.success('step added successfuly');
+                    steps.push({ 'title': res.title, 'hovet_text': res.hover_text, 'id': res.id, 'icon': res.icon });
+                }
                 setLoading(false);
             }).catch(e => {
                 setLoading(false);
@@ -91,8 +91,12 @@ const CreateProgressBarWidget = ({ mdcId, datsetProperties, token, layerType, wi
     }
 
 
+    const onStepClick = (e) => {
+        console.log(' item '+e);
+    }
 
-    return (typeof widget?.progressbar !== 'undefined' && widget?.progressbar !== null) ? < div >
+
+    return (typeof widget?.progressbars !== 'undefined') ? < div >
         <Spin spinning={loading}>
             <Space direction='vertical'>
                 <br />
@@ -100,10 +104,10 @@ const CreateProgressBarWidget = ({ mdcId, datsetProperties, token, layerType, wi
                     <Space direction='vertical'>
                         <Row>{DATASET.STYLE}</Row>
                         <Row className="w-full">
-                            {/* <Stepper steps={widget?.progressbar}></Stepper> */}
+                            <Stepper steps={steps} onStepClick={onStepClick}></Stepper>
                         </Row>
                         <Row className="w-full">
-                            {/* <BreadCrumb steps={widget?.progressbar}></BreadCrumb> */}
+                            <BreadCrumb steps={steps} onStepClick={onStepClick}></BreadCrumb>
                         </Row>
                     </Space>
                 </Row>
@@ -147,9 +151,6 @@ const CreateProgressBarWidget = ({ mdcId, datsetProperties, token, layerType, wi
                                             <Space direction='vertical'>
                                                 <Row>{DATASET.ICON}</Row>
                                                 <Row>
-                                                    {/* <Upload {...props}>
-                                                        <Button style={{ height: 60, width: 60, borderRadius: 5, fontSize: 20, fontWeight: 'bold' }} icon={<UploadOutlined />}></Button>
-                                                    </Upload> */}
                                                     <Upload
                                                         name="icon"
                                                         listType="picture-card"
@@ -157,6 +158,7 @@ const CreateProgressBarWidget = ({ mdcId, datsetProperties, token, layerType, wi
                                                         showUploadList={false}
                                                         beforeUpload={beforeUpload}
                                                         onChange={handleChange}
+
                                                     >
                                                         {imageUrl ? <img src={imageUrl} alt="avatar" style={{ width: '100%' }} /> : uploadButton}
                                                     </Upload>

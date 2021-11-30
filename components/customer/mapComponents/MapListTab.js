@@ -1,11 +1,12 @@
 
 import SubTitle from "../generalComponents/SubTitle"
 
-import { Row, Checkbox, Menu, Dropdown, Col, Divider, Button, Input, Space } from "antd"
-import { DATASET } from '../../../static/constant'
+import { Row, Checkbox, Menu, Dropdown, Col, Divider, Button, Input, Space, message } from "antd"
 import styled from "styled-components"
 import { useEffect, useState } from "react"
 import { getWidgets, postMethod } from "lib/api"
+import { putMethod } from "lib/api"
+import { DATASET } from "../../../static/constant"
 
 const widgetData = [
     {
@@ -32,41 +33,6 @@ const widgetData = [
 
 
 
-const data = [
-    {
-        'id': '1',
-        'title': 'Title 1',
-        'checked': true,
-        'value': 'First',
-    },
-    {
-        'id': '2',
-        'title': 'Title 2',
-        'checked': true,
-        'value': 'Second',
-    },
-    {
-        'id': '3',
-        'title': 'Title 3',
-        'checked': false,
-        'value': 'Third',
-    },
-    {
-        'id': '4',
-        'title': 'Title 4',
-        'checked': true,
-        'value': 'Fourth',
-    },
-    {
-        'id': '5',
-        'title': 'Title 5',
-        'checked': false,
-        'value': 'Fifth',
-    },
-]
-
-
-
 const ListEditeButton = styled.span`
     font-size:20px;
     font-weight:bold;
@@ -78,49 +44,33 @@ const ListEditeButton = styled.span`
 
 
 
-const MapLisTab = ({ onEdit, mdcId, datasetProperties, token }) => {
+const MapLisTab = ({ onEdit, mdcId, datasetProperties, listviewProperties, token }) => {
 
     const [indeterminate, setIndeterminate] = useState(false);
     const [checkAll, setCheckAll] = useState(false);
-    const [dataList, setDataList] = useState(data);
+    const [dataList, setDataList] = useState([]);
     const [widgets, setWidgets] = useState(widgetData);
-    const [currentWidget, setCurrentWidget] = useState([]);
-
-    const listMenu = (
-        <Menu >
-            <Menu.Item key="1" style={{ padding: "3px 20px" }}><a onClick={onEdit} >{DATASET.EDIT}</a></Menu.Item>
-            {/* <Menu.Item key="2" style={{ padding: "3px 20px" }}><a onClick={() => showSurveyConfirm()} >{DATASET.DELETE}</a></Menu.Item> */}
-        </Menu>
-    );
-
 
     useEffect(() => {
-        async function createWidget() {
-            const res = await postMethod('widgets/', { 'mapdatasetconf': mdcId });
-            if (res) {
-                console.log('response ' + JSON.stringify(res));
-            }
+        let properties = [];
+        if(listviewProperties!=null){
+            setDataList(listviewProperties);
         }
-
-        async function fetchWidget() {
-            try {
-                const response = await getWidgets(mdcId, token);
-                if (typeof response !== 'undefined' && response.length !== 0) {
-                    setCurrentWidget(response[0]);
-                }
-                else{
-                    const res=await createWidget();
-                    if(res){
-                        setCurrentWidget(res);
-                    }
-                }
-            }catch(e){
-                console.log('error '+e)
-            }
+        else{
+            datasetProperties?.map((proptery, i) => {
+                properties.push({ 'id': i + 1, 'title': 'title' + (i + 1), 'value': proptery.value, 'checked': proptery.state })
+            });
+            setDataList(properties);
         }
+        
+    }, [])
 
-        fetchWidget()
-    }, [mdcId,token])
+
+    const listMenu = (
+        <Menu>
+            <Menu.Item key="1" style={{ padding: "3px 20px" }}><a onClick={onEdit} >{DATASET.EDIT}</a></Menu.Item>
+        </Menu>
+    );
 
 
     const onChangeState = (e) => {
@@ -135,22 +85,31 @@ const MapLisTab = ({ onEdit, mdcId, datasetProperties, token }) => {
     }
 
 
-    const onSave = e => {
-        console.log('datalist' + JSON.stringify(dataList));
+    const onSave = async (e) => {
+        try {
+            const response = await putMethod('mapdatasetconfs/' + mdcId, { 'listview_properties': dataList });
+            if (response) {
+                message.success(DATASET.SUCCESS)
+            }
+        } catch (e) {
+            message.error(e?.message);
+        }
     }
 
 
-    const onTextChange = e => {
-        let temList = [];
+    const onTextChange = (e) => {
+
         const id = (e.target.id).split("_")[1];
+        const newValue = e.target.value;
+
         setDataList(dataList.map((element) => {
-            if (element.id === id) {
-                return { ...element, value: e.target.value }
+            if (element.id == id) {
+                return { ...element, value: newValue }
             }
             else {
                 return { ...element, value: element.value }
             }
-        }))
+        }));
     }
 
 
@@ -165,7 +124,7 @@ const MapLisTab = ({ onEdit, mdcId, datasetProperties, token }) => {
                 checkedItems = element.checked ? ++checkedItems : checkedItems;
                 return { ...element, checked: element.checked }
             }
-        }))
+        }));
         setCheckAll(checkedItems === dataList.length);
         setIndeterminate(!!checkedItems && checkedItems < dataList.length)
     };
@@ -187,7 +146,7 @@ const MapLisTab = ({ onEdit, mdcId, datasetProperties, token }) => {
 
     return <div>
         <Row>
-            <SubTitle title={'Style'} number={1}></SubTitle>
+            <SubTitle title={DATASET.STYLE} number={1}></SubTitle>
             {widgets.map((widget) => (
                 <Row style={{ width: '100%', paddingLeft: 20 }}>
                     <Col span={21} >
@@ -206,15 +165,15 @@ const MapLisTab = ({ onEdit, mdcId, datasetProperties, token }) => {
                 </Row>
             ))}
 
-            <SubTitle title={'Show Items'} number={2}></SubTitle>
+            <SubTitle title={DATASET.SHOW_ITEMS} number={2}></SubTitle>
             <Row style={{ width: '100%', paddingLeft: 10 }}>
                 <Col span={18}>
                     <Checkbox indeterminate={indeterminate} onChange={onCheckAllChange} checked={checkAll}>
-                        Check all
+                        {DATASET.CHECK_ALL}
                     </Checkbox>
                 </Col>
                 <Col span={6}>
-                    <Button type="primary" onClick={onSave}>Save</Button>
+                    <Button type="primary" onClick={onSave}>{DATASET.SAVE}</Button>
                 </Col>
             </Row>
             <Divider style={{ margin: '10px 0px' }} />

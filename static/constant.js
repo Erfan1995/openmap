@@ -161,7 +161,8 @@ export const DATASET = {
     PROGRES_BAR_STEPS:'Progress Bar Steps',
     HOVER_TEXT:'Hover Text',
     ICON:'Icon',
-    ADD_STEP:'Add Step'
+    ADD_STEP:'Add Step',
+    SHOW_ITEMS:'Show Items',
 
 
 }
@@ -195,6 +196,7 @@ export const MAP = {
     SING_IN: 'Sign in',
     MAP: 'Map',
     LIST: 'List',
+    CHECK_ALL:'Check all',
 
 }
 
