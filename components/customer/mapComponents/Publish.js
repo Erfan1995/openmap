@@ -37,7 +37,7 @@ const Publish = ({ mapData }) => {
 
     useEffect(() => {
         if (mapData) {
-            setLink(`${basePath}/?mapToken=${mapData.mapId}&id=${mapData.id}`)
+            setLink(`${basePath}/?t=0&mapToken=${mapData.mapId}&id=${mapData.id}`)
             setEmbed(`<iframe width="100%" height="520" frameborder="0" src="${basePath}/embed?mapToken=${mapData.mapId}&id=${mapData.id}" allowfullscreen webkitallowfullscreen mozallowfullscreen oallowfullscreen msallowfullscreen></iframe>`)
         }
         else {
