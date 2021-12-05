@@ -18,7 +18,7 @@ const BreadCrumb = ({ steps, onStepClick }) => {
     return steps ? <div id={styles.crumbs}>
         <ul>
             {steps?.map((step) => {
-                return <li><a href="#1" onClick={() => onStepClick(step)}><Photo src={getStrapiMedia(step.icon)}></Photo></a></li>
+                return <li><a href="#1" onClick={() => onStepClick(step)}><Photo src={getStrapiMedia(step?.icon)}></Photo></a></li>
             })}
         </ul>
     </div> : null;

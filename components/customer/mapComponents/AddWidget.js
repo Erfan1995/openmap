@@ -9,6 +9,7 @@ import { getWidgets, postMethod } from 'lib/api';
 
 
 const AddWidget = ({ mdcId, token }) => {
+    console.log('mcdid '+mdcId);
     const [selected, setSelected] = useState(0);
     const [widget, setWidget] = useState([]);
 

@@ -7,11 +7,44 @@ import { deleteMethod, getSurveyForms, postMethod } from 'lib/api';
 import { DATASET } from 'static/constant';
 import { ExclamationCircleOutlined } from '@ant-design/icons';
 import { ArrowLeftOutlined } from '@ant-design/icons';
-SurveyJSCreator.StylesManager.applyTheme('default');
-
 import "survey-creator/survey-creator.css";
 import "survey-react/survey.css";
 import EditSurvey from './EditSurvey';
+
+
+
+var mainColor = "#7ff07f";
+var mainHoverColor = "#6fe06f";
+var textColor = "#4a4a4a";
+var headerColor = "#7ff07f";
+var headerBackgroundColor = "#4a4a4a";
+var bodyContainerBackgroundColor = "#f8f8f8";
+
+var defaultThemeColorsSurvey = Survey
+    .StylesManager
+    .ThemeColors["default"];
+defaultThemeColorsSurvey["$main-color"] = mainColor;
+defaultThemeColorsSurvey["$main-hover-color"] = mainHoverColor;
+defaultThemeColorsSurvey["$text-color"] = textColor;
+defaultThemeColorsSurvey["$header-color"] = headerColor;
+defaultThemeColorsSurvey["$header-background-color"] = headerBackgroundColor;
+defaultThemeColorsSurvey["$body-container-background-color"] = bodyContainerBackgroundColor;
+var defaultThemeColorsEditor = SurveyJSCreator
+    .StylesManager
+    .ThemeColors["default"];
+defaultThemeColorsEditor["$primary-color"] = mainColor;
+defaultThemeColorsEditor["$secondary-color"] = mainColor;
+defaultThemeColorsEditor["$primary-hover-color"] = mainHoverColor;
+defaultThemeColorsEditor["$primary-text-color"] = textColor;
+defaultThemeColorsEditor["$selection-border-color"] = mainColor;
+
+Survey
+    .StylesManager
+    .applyTheme();
+
+SurveyJSCreator.StylesManager.applyTheme();
+
+
 // import { json } from './analytics_data';
 const { confirm } = Modal;
 const { TabPane } = Tabs;

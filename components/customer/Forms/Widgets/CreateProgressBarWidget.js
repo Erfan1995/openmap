@@ -1,14 +1,30 @@
 
 import 'rc-color-picker/assets/index.css';
-import { Col, Row, Card, Input, Button, Space, Form, Upload, Progress, Spin, message } from "antd";
+import { Col, Row, Card, Input, Button, Space, Form, Upload, Modal, Spin, message, Menu, Dropdown } from "antd";
 import ColorPicker from 'rc-color-picker';
 import BreadCrumb from 'components/customer/mapComponents/Breadcrumb/breadcrumb';
 import Stepper from 'components/customer/mapComponents/Stepper/stepper';
 import { UploadOutlined } from '@ant-design/icons';
-import { useEffect, useState } from 'react';
-import { putFileMethod, putMethod, getWidgets, postFileMethod } from 'lib/api';
+import { useEffect, useRef, useState } from 'react';
+import { putFileMethod, deleteMethod } from 'lib/api';
 import { PlusOutlined, LoadingOutlined } from '@ant-design/icons';
 import { DATASET } from 'static/constant';
+import styled from 'styled-components';
+import AddStep from './addStep';
+import { getStrapiMedia } from 'lib/media';
+
+
+
+
+
+const ListEditeButton = styled.span`
+    font-size:20px;
+    font-weight:bold;
+    &:hover{
+    font-size:22px;
+    }
+    padding:4px;
+    `;
 
 
 
@@ -38,11 +54,24 @@ const CreateProgressBarWidget = ({ mdcId, datsetProperties, token, layerType, wi
     const [uploading, setUploading] = useState(false);
     const [imageUrl, setImageUrl] = useState("");
     const [steps, setSteps] = useState([]);
+    const [addModalVisible, setAddModalVisible] = useState(false);
+    const childRef = useRef();
+    const [selectedStep, setSelectedStep] = useState(null);
+    const [file, setFile] = useState();
+    const [defaultValues, setDefaultValues] = useState(null);
 
 
     useEffect(() => {
         setSteps(widget?.progressbars);
-    }, [widget])
+        form.setFieldsValue(defaultValues)
+    }, [widget, form, defaultValues]);
+
+
+    const listMenu = (
+        <Menu>
+            <Menu.Item key="1" style={{ padding: "3px 20px" }}><a onClick={() => onDelete(defaultValues?.id)} >{DATASET.DELETE}</a></Menu.Item>
+        </Menu>
+    );
 
 
     const uploadButton = (
@@ -74,14 +103,23 @@ const CreateProgressBarWidget = ({ mdcId, datsetProperties, token, layerType, wi
         form
             .validateFields()
             .then(async (values) => {
+                console.log(' resource ' + JSON.stringify(values));
                 fData.append('data', JSON.stringify({ 'title': values.title, 'hover_text': values.hover_text, 'widget': widget.id }));
                 if (icon) {
                     fData.append('files.icon', icon.originFileObj, icon.originFileObj.name);
                 }
-                const res = await postFileMethod('progressbars', fData);
+                const res = await putFileMethod('progressbars/' + defaultValues.id, fData);
                 if (res) {
                     message.success('step added successfuly');
-                    steps.push({ 'title': res.title, 'hovet_text': res.hover_text, 'id': res.id, 'icon': res.icon });
+                    setSteps(steps.map((step) => {
+                        if (step.id === defaultValues?.id) {
+                            return { ...step, title: res.title, hover_text: res.hover_text, icon: res.icon, id: res.id }
+                        }
+                        else {
+                            return { ...step, step: step }
+                        }
+                    }));
+
                 }
                 setLoading(false);
             }).catch(e => {
@@ -91,8 +129,31 @@ const CreateProgressBarWidget = ({ mdcId, datsetProperties, token, layerType, wi
     }
 
 
-    const onStepClick = (e) => {
-        console.log(' item '+e);
+
+    const onStepClick = (step) => {
+        setDefaultValues(step);
+        setImageUrl(getStrapiMedia(step.icon));
+        setIcon(null);
+    }
+
+
+    const onDelete = async (id) => {
+        const res = deleteMethod('progressbars/' + id);
+        if (res) {
+            const newList = steps.filter((step) => step.id !== id);
+            setDefaultValues(null);
+            setSteps(newList);
+        }
+    }
+
+    const onModalClose = (res) => {
+        steps.push({ 'title': res.title, 'hover_text': res.hover_text, 'id': res.id, 'icon': res.icon });
+        setAddModalVisible(false);
+    }
+
+
+    const addImageFile = (file) => {
+        setFile(file);
     }
 
 
@@ -125,62 +186,91 @@ const CreateProgressBarWidget = ({ mdcId, datsetProperties, token, layerType, wi
                     {DATASET.PROGRES_BAR_STEPS}
                 </Row>
                 <Row>
-                    <Form form={form} name="progressbar" onFinish={onSubmit}>
-
+                    <Form form={form} name="progressbar" onFinish={onSubmit} initialValues={defaultValues}>
                         <Space direction='vertical'>
-                            <Card bodyStyle={{ padding: 10 }}>
-                                <Row>
-                                    <Space>
-                                        <Col span={22}>
-                                            <Space direction='vertical'>
-                                                <Row>{DATASET.TITLE}</Row>
-                                                <Row>
-                                                    <Form.Item name="title" rules={[{ required: true, message: 'Please input title!' }]}>
-                                                        <Input placeholder="title" />
-                                                    </Form.Item>
-                                                </Row>
-                                                <Row>{DATASET.HOVER_TEXT}</Row>
-                                                <Row>
-                                                    <Form.Item name="hover_text" rules={[{ required: true, message: 'Please input hover text!' }]}>
-                                                        <Input name="hover_text" placeholder="hover text" />
-                                                    </Form.Item>
-                                                </Row>
-                                            </Space>
-                                        </Col>
-                                        <Col span={2}>
-                                            <Space direction='vertical'>
-                                                <Row>{DATASET.ICON}</Row>
-                                                <Row>
-                                                    <Upload
-                                                        name="icon"
-                                                        listType="picture-card"
-                                                        className="avatar-uploader"
-                                                        showUploadList={false}
-                                                        beforeUpload={beforeUpload}
-                                                        onChange={handleChange}
-
-                                                    >
-                                                        {imageUrl ? <img src={imageUrl} alt="avatar" style={{ width: '100%' }} /> : uploadButton}
-                                                    </Upload>
-                                                </Row>
-                                                <Row>
-                                                    <Button type="primary" htmlType="submit" style={{ borderRadius: 5, }}>
-                                                        {DATASET.SAVE}
-                                                    </Button>
-                                                </Row>
-                                            </Space>
-                                        </Col>
-                                    </Space>
-                                </Row>
-                            </Card>
                             <Row>
-                                <Button type='dashed' style={{ width: '100%', height: 50 }}>
-                                    {DATASET.ADD_STEP}
-                                </Button>
+                                <Col span={23}>
+                                    <Space direction="vertical">
+                                        { defaultValues !==null ?
+                                            <Card bodyStyle={{ padding: 10 }}>
+                                                <Row>
+                                                    <Space>
+                                                        <Col span={22}>
+                                                            <Space direction='vertical'>
+                                                                <Row>{DATASET.TITLE}</Row>
+                                                                <Row>
+                                                                    <Form.Item name="title" rules={[{ required: true, message: 'Please input title!' }]}>
+                                                                        <Input placeholder="title" />
+                                                                    </Form.Item>
+                                                                </Row>
+                                                                <Row>{DATASET.HOVER_TEXT}</Row>
+                                                                <Row>
+                                                                    <Form.Item name="hover_text" rules={[{ required: true, message: 'Please input hover text!' }]}>
+                                                                        <Input placeholder="hover text" />
+                                                                    </Form.Item>
+                                                                </Row>
+                                                            </Space>
+                                                        </Col>
+                                                        <Col span={2}>
+                                                            <Space direction='vertical'>
+                                                                <Row>{DATASET.ICON}</Row>
+                                                                <Row>
+                                                                    <Upload
+                                                                        name="icon"
+                                                                        listType="picture-card"
+                                                                        className="avatar-uploader"
+                                                                        showUploadList={false}
+                                                                        beforeUpload={beforeUpload}
+                                                                        onChange={handleChange}
+                                                                    >
+                                                                        {imageUrl ? <img src={imageUrl} alt="avatar" style={{ width: '100%' }} /> : uploadButton}
+                                                                    </Upload>
+                                                                </Row>
+                                                                <Row>
+                                                                    <Button type="primary" htmlType="submit" style={{ borderRadius: 5, }}>
+                                                                        {DATASET.SAVE}
+                                                                    </Button>
+                                                                </Row>
+                                                            </Space>
+                                                        </Col>
+                                                    </Space>
+                                                </Row>
+                                            </Card>:<div></div>
+                                        }
+                                        <Row>
+                                            <Button type='dashed' onClick={() => setAddModalVisible(true)} style={{ width: '100%', height: 50 }}>
+                                                {DATASET.ADD_STEP}
+                                            </Button>
+                                        </Row>
+                                    </Space>
+                                </Col>
+                                {defaultValues !== null ? <Col span={1}>
+                                    <Row style={{ width: '100%', height: '100%', paddingTop: 80 }}>
+                                        <Col span={3}>
+                                            <div>
+                                                <Dropdown size="big" overlay={listMenu} trigger={['click']} >
+                                                    <a className="ant-dropdown-link">
+                                                        <ListEditeButton>:</ListEditeButton>
+                                                    </a>
+                                                </Dropdown>
+                                            </div>
+                                        </Col>
+                                    </Row>
+                                </Col> : <div></div>}
                             </Row>
-
                         </Space>
                     </Form>
+                    <Modal
+                        title={DATASET.ADD_STEP}
+                        centered
+                        width={500}
+                        visible={addModalVisible}
+                        destroyOnClose={true}
+                        onOk={() => childRef.current.saveData(file)}
+                        onCancel={() => setAddModalVisible(false)}
+                    >
+                        <AddStep widgetId={widget?.id} ref={childRef} onModalClose={(res) => onModalClose(res)} addImageFile={addImageFile}></AddStep>
+                    </Modal>
                 </Row>
             </Space>
         </Spin>

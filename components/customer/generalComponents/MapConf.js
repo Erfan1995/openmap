@@ -95,8 +95,8 @@ const MapConf = ({ authenticatedUser, styledMaps, tags, mapData, serverSideDatas
     const router = useRouter();
     const [surveyModalVisible, setSurveyModalVisible] = useState();
     const menu = (
-        <Menu >
-            <Menu.Item key="1" style={{ padding: "3px 20px" }}><a onClick={() => showConfirm()} >{DATASET.DELETE}</a></Menu.Item>
+        <Menu>
+            <Menu.Item key="1" style={{ padding: "3px 20px" }}><a onClick={() => showConfirm()}>{DATASET.DELETE}</a></Menu.Item>
         </Menu>
     );
     const changeStyle = async (item) => {
