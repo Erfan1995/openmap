@@ -25,13 +25,9 @@ export default function Home({ mapData = null, manualMapData = null, datasets = 
 
 export async function getServerSideProps(ctx) {
   try {
-    console.log(typeof (ctx.query.t));
-    console.log(ctx.query.survey);
     if (ctx.query.t === '1') {
-      console.log('heloooooooooooooooooooooooooooooooo')
       const { type, surveyId } = ctx.query;
       const res = await getMethod(`surveys?id=${ctx.query.survey}`, null, false);
-      console.log(res, 'ressssssssssssssssssss');
       if (!res.length > 0) {
         return {
           redirect: {
@@ -57,8 +53,6 @@ export async function getServerSideProps(ctx) {
           }
         } else {
           const datasetData = await getMethod(`datasets?_where[0][maps.id]=${id}`, null, false);
-          console.log(datasetData, 'ressssssssssssssssss');
-
           return {
             props: {
               mapData: res[0], manualMapData: await extractMapDataPublic(res[0]),

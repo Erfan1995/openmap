@@ -110,15 +110,12 @@ const SurveyCreatorComponent = ({ authenticatedUser, token, surveyForms }) => {
         surveyCreator.render("surveyCreatorContainer");
     });
     const callback = async (key) => {
-
         if (!(JSON.parse(surveyCreator.text)?.pages[0]?.elements?.length > 0)) {
             tabChangeEvent(key);
         } else {
             showSurvayConfirm(key);
-
         }
     }
-
 
     const tabChangeEvent = async (key) => {
         setSurveyClicked(false)
@@ -202,19 +199,11 @@ const SurveyCreatorComponent = ({ authenticatedUser, token, surveyForms }) => {
         setShareModalVisible(false)
     }
     const onCompleteSurvey = (data) => {
-        let myLatLng;
-        let questions = Object.values(data.questionHashes.names);
-        questions.map(question => {
-            if (question[0].lat) {
-                myLatLng = `${question[0].lat},${question[0].lng}`
-            }
-        })
-        console.log(myLatLng);
+       
     }
     return (
         <Spin spinning={loading}>
             <Tabs
-                // defaultActiveKey="1" 
                 activeKey={activeKey}
                 onChange={callback}>
 
@@ -235,7 +224,7 @@ const SurveyCreatorComponent = ({ authenticatedUser, token, surveyForms }) => {
                             <Survey.Survey
                                 model={Json}
                                 showCompletedPage={false}
-                                onComplete={data => onCompleteSurvey(data)}
+                                // onComplete={data => onCompleteSurvey(data)}
                             >
                             </Survey.Survey>
                         </div> :
@@ -282,12 +271,10 @@ const SurveyCreatorComponent = ({ authenticatedUser, token, surveyForms }) => {
                         destroyOnClose={true}
                         onCancel={onModalClose}
                         footer={[]}
-                        style={{ padding: 0 }}
-                    >
+                        style={{ padding: 0 }}>
                         <MainWrapper>
                             <Row>
                                 <Col xs={24} sm={24} md={12} lg={12} xl={12} className='padding-10'>
-
                                     <Boxs >
                                         <IconWrapper>
                                             <LinkOutlined />
@@ -306,19 +293,15 @@ const SurveyCreatorComponent = ({ authenticatedUser, token, surveyForms }) => {
 
                                 <Col xs={24} sm={24} md={12} lg={12} xl={12} className='padding-10'>
                                     <Boxs >
+                                        <Typography.Title level={5} className='margin-top-20'>Scan the QR Code</Typography.Title>
+                                        <p>Scan this QR code to view and fill the survey on your mobile devices.</p>
                                         <QRCode value={link} />
                                     </Boxs>
                                 </Col>
-
                             </Row>
-
-
                         </MainWrapper>
-
                     </Modal>
                 </TabPane>
-
-
             </Tabs>
         </Spin>
     )

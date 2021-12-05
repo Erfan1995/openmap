@@ -1,14 +1,17 @@
-
+import dynamic from "next/dynamic";
 import { useEffect, useState } from 'react';
 import CreateProgressBarWidget from '../Forms/Widgets/CreateProgressBarWidget';
 import CreateVideoWidget from '../Forms/Widgets/CreateVideoWidget';
-import CreateTextWidget from '../Forms/Widgets/CreateTextWidget';
+// import CreateTextWidget from '../Forms/Widgets/CreateTextWidget';
 import CreateNewsFeedWidget from '../Forms/Widgets/CreateNewsFeedWidget';
 import { getWidgets, postMethod } from 'lib/api';
 
 
 
 const AddWidget = ({ mdcId, token }) => {
+    const CreateTextWidget = dynamic(() => import("../Forms/Widgets/CreateTextWidget"), {
+        ssr: false
+      });
     const [selected, setSelected] = useState(0);
     const [widget, setWidget] = useState([]);
 
