@@ -214,7 +214,7 @@ const Popup = ({ mdcId, properties, selectedDatasetProperties, layerType, setDat
             .then(async (values) => {
                 // initialFormValues[e.target.id] = e.target.value;
                 if (layerType === "dataset") {
-                    const res = await putMethod('widgets/' + mdcId, { edited_dataset_properties: values });
+                    const res = await putMethod('mapdatasetconfs/' + mdcId, { edited_dataset_properties: values });
                     if (res) {
                         initialFormValues = res.edited_dataset_properties;
                         setDataset();
@@ -249,8 +249,8 @@ const Popup = ({ mdcId, properties, selectedDatasetProperties, layerType, setDat
                     <div className="slides">
                         {
                             PopUp?.map((item, index) => (
-                                <div  key={'div'+item.name + index}>
-                                    <PopUpCart  key={item.name + index} onClick={() => selectPopupStyle(item.name)}
+                                <div key={'div' + item.name + index}>
+                                    <PopUpCart key={item.name + index} onClick={() => selectPopupStyle(item.name)}
                                         cover={<img alt="example" src={item.cover}
                                         />}
                                     />
