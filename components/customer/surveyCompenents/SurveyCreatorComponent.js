@@ -1,8 +1,8 @@
 import styled from 'styled-components';
 import React, { useEffect, useState } from "react";
 import * as SurveyJSCreator from "survey-creator";
+import * as SurveyKo from "survey-knockout";
 import * as Survey from "survey-react"
-import { Button, Tabs, Modal, Spin, message, List } from 'antd';
 import { deleteMethod, getSurveyForms, postMethod } from 'lib/api';
 import { DATASET } from 'static/constant';
 import { ExclamationCircleOutlined } from '@ant-design/icons';
@@ -46,14 +46,40 @@ SurveyJSCreator.StylesManager.applyTheme();
 
 
 // import { json } from './analytics_data';
+import { init } from './MapWidget';
+import "survey-creator/survey-creator.css";
+import "survey-react/survey.css";
+import EditSurvey from './EditSurvey';
+import copy from 'copy-to-clipboard';
+import { CopyOutlined, GlobalOutlined, LinkOutlined } from '@ant-design/icons';
+import { Modal, Spin, Row, Col, Typography, Input, message, List, Button, Tabs } from 'antd';
 const { confirm } = Modal;
 const { TabPane } = Tabs;
-const Wrapper = styled.div`
-background:#ffffff;
-padding:20px;
-margin:10px;
+init(SurveyKo);
+SurveyJSCreator.StylesManager.applyTheme('default');
+
+const Boxs = styled.div`
+  background-color: #fff;
+  min-height: 200px;
+  text-align: center;
+  padding:40px 20px;
+
+`;
+
+
+const IconWrapper = styled.span`
+padding:10px 12px;
+border:1px solid #efefef;
+`;
+
+const MainWrapper = styled.div`
+min-height: 330px;
+width: 100 %;
+background-color: #f9f9f9;
+padding: 50px;
 `;
 const SurveyCreatorComponent = ({ authenticatedUser, token, surveyForms }) => {
+    let QRCode = require('qrcode.react');
     let surveyCreator;
     const [Json, setJson] = useState([]);
     const [loading, setLoading] = useState(false);
@@ -62,7 +88,10 @@ const SurveyCreatorComponent = ({ authenticatedUser, token, surveyForms }) => {
     const [surveyClicked, setSurveyClicked] = useState(false);
     const [surveyList, setSurveyList] = useState(surveyForms);
     const [surveyId, setSurveyId] = useState();
+    const [shareModalVisible, setShareModalVisible] = useState(false);
+    const [link, setLink] = useState('');
 
+    const basePath = process.env.NEXT_PUBLIC_BASEPATH_URL;
     const saveMySurvey = async () => {
         const dd = JSON.parse(surveyCreator.text)
         if (!dd.pages[0].elements) {
@@ -100,23 +129,16 @@ const SurveyCreatorComponent = ({ authenticatedUser, token, surveyForms }) => {
         });
         setSurveyList(surveyList);
     }
-    // const onCompleteSurvey = async (data) => {
-    //     setLoading(true);
-    //     const res = await postMethod('surveyresults', { survey: surveyId, result: data.valuesHash });
-    //     if (res) {
-    //         setLoading(false);
-    //     }
+    let options = {
+        showEmbededSurveyTab: true,
+        haveCommercialLicense: true,
+        showLogicTab: true,
+        showJSONEditorTab: true,
+        showTestSurveyTab: true,
+        showTranslationTab: true
+    };
 
-    // }
     useEffect(() => {
-        let options = {
-            showEmbededSurveyTab: true,
-            haveCommercialLicense: true,
-            showLogicTab: true,
-            showJSONEditorTab: true,
-            showTestSurveyTab: true,
-            showTranslationTab: true
-        };
 
         surveyCreator = new SurveyJSCreator.SurveyCreator(
             null,
@@ -127,15 +149,12 @@ const SurveyCreatorComponent = ({ authenticatedUser, token, surveyForms }) => {
         surveyCreator.render("surveyCreatorContainer");
     });
     const callback = async (key) => {
-
         if (!(JSON.parse(surveyCreator.text)?.pages[0]?.elements?.length > 0)) {
             tabChangeEvent(key);
         } else {
             showSurvayConfirm(key);
-
         }
     }
-
 
     const tabChangeEvent = async (key) => {
         setSurveyClicked(false)
@@ -186,8 +205,6 @@ const SurveyCreatorComponent = ({ authenticatedUser, token, surveyForms }) => {
         });
     }
 
-
-
     function showSurvayConfirm(key) {
         confirm({
             icon: <ExclamationCircleOutlined />,
@@ -202,18 +219,30 @@ const SurveyCreatorComponent = ({ authenticatedUser, token, surveyForms }) => {
     }
 
     const displaySurvey = (item, state) => {
+        init(Survey);
         setSurveyClicked(state);
         setSurveyId(item.id);
-        setJson(item.forms);
+        setJson(new Survey.Model(item.forms));
     }
     const editSurvey = (item) => {
         setJson(item);
         setVisible(true);
     }
+    const shareSurvey = (item) => {
+        setLink(`${basePath}/?t=1&survey=${item.id}`);
+        setShareModalVisible(true);
+
+
+    }
+    const onModalClose = () => {
+        setShareModalVisible(false)
+    }
+    const onCompleteSurvey = (data) => {
+       
+    }
     return (
         <Spin spinning={loading}>
             <Tabs
-                // defaultActiveKey="1" 
                 activeKey={activeKey}
                 onChange={callback}>
 
@@ -232,9 +261,9 @@ const SurveyCreatorComponent = ({ authenticatedUser, token, surveyForms }) => {
                                 setSurveyClicked(false);
                             }} type='link'>back</Button>
                             <Survey.Survey
-                                json={Json}
+                                model={Json}
                                 showCompletedPage={false}
-                            // onComplete={data => onCompleteSurvey(data)}
+                                // onComplete={data => onCompleteSurvey(data)}
                             >
                             </Survey.Survey>
                         </div> :
@@ -243,8 +272,11 @@ const SurveyCreatorComponent = ({ authenticatedUser, token, surveyForms }) => {
                                 pagination={true}
                                 dataSource={surveyList}
                                 renderItem={item => (
-                                    <List.Item style={{ margin: "0px 30px" }} actions={[<a onClick={() => showConfirm(item.id)} >delete</a>,
-                                    <a onClick={() => editSurvey(item)} >edit</a>]}>
+                                    <List.Item style={{ margin: "0px 30px" }} actions={[
+                                        <a onClick={() => showConfirm(item.id)} >delete</a>,
+                                        <a onClick={() => editSurvey(item)} >edit</a>,
+                                        <a onClick={() => shareSurvey(item)}>share</a>
+                                    ]}>
                                         <List.Item.Meta
                                             title={<a onClick={() => displaySurvey(item, true)} >{item.forms.title}</a>}
                                             description={item.forms.description}
@@ -270,9 +302,45 @@ const SurveyCreatorComponent = ({ authenticatedUser, token, surveyForms }) => {
                     >
                         <EditSurvey surveyJson={Json} updateSurveyList={updateSurveyList} />
                     </Modal>
+                    <Modal
+                        title='share survey'
+                        centered
+                        width={1000}
+                        visible={shareModalVisible}
+                        destroyOnClose={true}
+                        onCancel={onModalClose}
+                        footer={[]}
+                        style={{ padding: 0 }}>
+                        <MainWrapper>
+                            <Row>
+                                <Col xs={24} sm={24} md={12} lg={12} xl={12} className='padding-10'>
+                                    <Boxs >
+                                        <IconWrapper>
+                                            <LinkOutlined />
+                                        </IconWrapper>
+                                        <Typography.Title level={5} className='margin-top-20'>Get the Link</Typography.Title>
+                                        <p>Send to your friends, coworkers, or post it in your social networks.</p>
+
+                                        <Input size='large' value={link} addonAfter={<CopyOutlined onClick={() => {
+                                            if (copy(link)) {
+                                                message.success('coppied to Clipboard!')
+                                            }
+                                        }} />} defaultValue="mysite" />
+                                    </Boxs>
+
+                                </Col>
+
+                                <Col xs={24} sm={24} md={12} lg={12} xl={12} className='padding-10'>
+                                    <Boxs >
+                                        <Typography.Title level={5} className='margin-top-20'>Scan the QR Code</Typography.Title>
+                                        <p>Scan this QR code to view and fill the survey on your mobile devices.</p>
+                                        <QRCode value={link} />
+                                    </Boxs>
+                                </Col>
+                            </Row>
+                        </MainWrapper>
+                    </Modal>
                 </TabPane>
-
-
             </Tabs>
         </Spin>
     )

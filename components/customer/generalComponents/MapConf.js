@@ -68,7 +68,7 @@ const SurveyDeleteButton = styled.span`
 `;
 const MapConf = ({ authenticatedUser, styledMaps, tags, mapData, serverSideDatasets, token, icons, setMapStyle,
     setDataset, onMapDataChange, injectedcodes, onConfigTabChanged, serverSideMapSurveys }) => {
-    const [styleId, setStyleID] = useState(mapData.styleId || process.env.NEXT_PUBLIC_MAPBOX_DEFAULT_MAP);
+    const [styleId, setStyleID] = useState(mapData?.styleId || process.env.NEXT_PUBLIC_MAPBOX_DEFAULT_MAP);
     const childRef = useRef();
     const selectDatasetChildRef = useRef();
     const [modalVisible, setModalVisible] = useState(false);
@@ -79,7 +79,7 @@ const MapConf = ({ authenticatedUser, styledMaps, tags, mapData, serverSideDatas
     const [mdcId, setmdcId] = useState();
     const [selectedDIcons, setSelectedDIcons] = useState();
     const [selectedDatasetProperties, setSelectedDatasetProperties] = useState();
-    const [listviewProperties,setListviewProperties]=useState();
+    const [listviewProperties, setListviewProperties] = useState();
     const [datasetProperties, setDatasetProperties] = useState();
     const [layerType, setLayerType] = useState();
     const [loading, setLoading] = useState(false);
@@ -87,6 +87,7 @@ const MapConf = ({ authenticatedUser, styledMaps, tags, mapData, serverSideDatas
     const [datasetId, setDatasetId] = useState();
     const [surveyForms, setSurveyForms] = useState(serverSideMapSurveys);
     const [editedProperties, setEditedProperties] = useState();
+    const [listviewEditedProperties, setListviewEditedProperties] = useState();
     const [selectedSurveys, setSelectedSurveys] = useState(surveyForms);
     const [surveyId, setSurveyId] = useState();
     const [surveys, setSurveys] = useState();
@@ -213,6 +214,7 @@ const MapConf = ({ authenticatedUser, styledMaps, tags, mapData, serverSideDatas
     }
     //this function gets called whenever the user click on a dataset or main map popup styles button
     const mdc = async (id, state, type) => {
+        console.log(id);
         setLayerClicked(state);
         onConfigTabChanged(state);
         setLayerType(type);
@@ -241,7 +243,9 @@ const MapConf = ({ authenticatedUser, styledMaps, tags, mapData, serverSideDatas
 
                 setSelectedDatasetProperties(selectedIcons[0]?.selected_dataset_properties);
                 setEditedProperties(selectedIcons[0]?.edited_dataset_properties);
-                setListviewProperties(selectedIcons[0]?.listview_properties);
+                setListviewProperties(selectedIcons[0]?.listview_dataset_properties);
+                setListviewEditedProperties(selectedIcons[0]?.listview_edited_dataset_properties);
+
             }
         } else if (type === "main") {
             surveyForms.map(data => {
@@ -276,7 +280,8 @@ const MapConf = ({ authenticatedUser, styledMaps, tags, mapData, serverSideDatas
                     }
                     setSelectedDatasetProperties(selectedproperties[0]?.selected_survey_properties);
                     setEditedProperties(selectedproperties[0]?.edited_survey_properties);
-                    setListviewProperties(selectedproperties[0]?.listview_properties);
+                    setListviewProperties(selectedproperties[0]?.listview_survey_properties);
+                    setListviewEditedProperties(selelectedproperties[0]?.listview_edited_survey_properties);
                 }
             }
         }
@@ -523,20 +528,20 @@ const MapConf = ({ authenticatedUser, styledMaps, tags, mapData, serverSideDatas
                             setLayerClicked(true);
                             onConfigTabChanged(true);
                         }} type='link'>back</Button>
-                        <DatasetConf setListClicked={()=>{
+                        <DatasetConf setListClicked={() => {
                             setListClicked(false);
                             console.log('event clicked ');
                         }} setDataset={setDataset} onMapDataChange={onMapDataChange} listviewProperties={listviewProperties}
-                            icons={icons} mdcId={mdcId} selectedDIcons={selectedDIcons} token={token}
+                            listviewEditedProperties={listviewEditedProperties} icons={icons} mdcId={mdcId} selectedDIcons={selectedDIcons} token={token}
                             datasetProperties={datasetProperties} selectedDatasetProperties={selectedDatasetProperties}
                             layerType={layerType} changeSelectedIcons={changeSelectedIcons} editedProperties={editedProperties} />
                     </div> :
-                    <div>
-                        <Button style={{ marginLeft: -20, marginTop: -30 }} icon={<ArrowLeftOutlined />} onClick={() => {
-                            setListClicked(true);
-                        }} type='link'>back</Button>
-                        <AddWidget mdcId={mdcId} token={token} layerType={layerType} datasetProperties={datasetProperties} selectedDatasetProperties={selectedDatasetProperties}></AddWidget>
-                    </div>
+                        <div>
+                            <Button style={{ marginLeft: -20, marginTop: -30 }} icon={<ArrowLeftOutlined />} onClick={() => {
+                                setListClicked(true);
+                            }} type='link'>back</Button>
+                            <AddWidget mdcId={mdcId} token={token} layerType={layerType} datasetProperties={datasetProperties} selectedDatasetProperties={selectedDatasetProperties}></AddWidget>
+                        </div>
 
                 }
             </Card>

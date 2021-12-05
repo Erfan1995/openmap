@@ -211,8 +211,8 @@ const CreateMapContainer = ({ authenticatedUser, collapsed, styledMaps, tags, se
 
       </Layout>
 
-      <div dangerouslySetInnerHTML={injectCode(true)}>
-      </div>
+      {/* <div dangerouslySetInnerHTML={injectCode(true)}>
+      </div> */}
     </div>
   )
 }
@@ -220,20 +220,20 @@ export const getServerSideProps = withPrivateServerSideProps(
   async (ctx, verifyUser) => {
     try {
       const { token } = nookies.get(ctx);
-      const { id,mapToken } = ctx.query;
+      const { id, mapToken } = ctx.query;
 
       if (id && mapToken) {
         let mapData = null;
-
-        mapData = await getMapGeneralData(id,mapToken, token);
+        console.log(token, 'token');
+        mapData = await getMapGeneralData(id, mapToken, token);
 
         if (mapData?.maps?.length > 0) {
           let map = mapData?.maps[0];
-          
+
           map.tags = map?.tags.map(item => Number(item.id));
 
           const manualArray = await extractMapData(map);
-       
+
           let datasets = map?.datasets;
           datasets = datasets.map((item) => {
             let temp = map.mapdatasetconfs.find((obj) => obj.dataset.id === item.id);

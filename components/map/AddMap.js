@@ -118,7 +118,7 @@ const AddMap = ({ onDataSaved, myVisible, geoData, mapData, modalClose, userType
     const callback = async () => {
         setLoading(true);
         try {
-            let res = await getSurveyForms({ maps: mapData.id }, null, false);
+            let res = await getSurveyForms({ maps: mapData.id }, null, true);
             if (res) {
                 setSurveys(res);
                 setLoading(false);
