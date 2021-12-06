@@ -163,7 +163,7 @@ export const DATASET = {
     ICON:'Icon',
     ADD_STEP:'Add Step',
     SHOW_ITEMS:'Show Items',
-
+    RSS_FEED_URL:'RSS feed url'
 
 }
 export const LAT = ['lat', 'Lat', 'LAT', 'latitude', 'Latitude', 'LATITUDE'];
