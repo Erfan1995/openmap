@@ -8,11 +8,11 @@ import { getWidgets, postMethod } from 'lib/api';
 
 
 
-const AddWidget = ({ mdcId, token }) => {
+const AddWidget = ({ mapId, token, layerType }) => {
 
     const CreateTextWidget = dynamic(() => import("../Forms/Widgets/CreateTextWidget"), {
         ssr: false
-      });
+    });
     const [selected, setSelected] = useState(0);
     const [widget, setWidget] = useState([]);
 
@@ -24,7 +24,7 @@ const AddWidget = ({ mdcId, token }) => {
                 setWidget(response[0]);
             }
             else {
-                const res = await postMethod('widgets/', { 'mapdatasetconf': mdcId });
+                const res = await postMethod('widgets/', { 'map': mapId });
                 if (res) {
                     setWidget(res);
                 }
@@ -52,7 +52,7 @@ const AddWidget = ({ mdcId, token }) => {
     }
 
     return <div>
-         {widget!==null ? SelectedView : <div></div>}
+        {widget !== null ? SelectedView : <div></div>}
     </div>
 
 }

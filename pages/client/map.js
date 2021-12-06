@@ -172,16 +172,16 @@ const Map = ({ manualMapData, mapData, datasets, injectedcodes, publicUser }) =>
                       size="small"
                       dataSource={data}
                       renderItem={item => <List.Item>
-                          <ListItem item={item}></ListItem>
+                        <ListItem item={item}></ListItem>
                       </List.Item>}
                     />
                   </Content>
                 </Col>
                 <Col span={8} >
                   <RightSide>
-                    <VideoWidget></VideoWidget>
-                    <TextWidget></TextWidget>
-                    <SocialWidget data={data}></SocialWidget>
+                    <VideoWidget />
+                    <TextWidget />
+                    <SocialWidget data={data} />
                   </RightSide>
                 </Col>
               </Row>

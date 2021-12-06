@@ -281,7 +281,7 @@ const MapConf = ({ authenticatedUser, styledMaps, tags, mapData, serverSideDatas
                     setSelectedDatasetProperties(selectedproperties[0]?.selected_survey_properties);
                     setEditedProperties(selectedproperties[0]?.edited_survey_properties);
                     setListviewProperties(selectedproperties[0]?.listview_survey_properties);
-                    setListviewEditedProperties(selelectedproperties[0]?.listview_edited_survey_properties);
+                    setListviewEditedProperties(selectedproperties[0]?.listview_edited_survey_properties);
                 }
             }
         }
@@ -540,7 +540,7 @@ const MapConf = ({ authenticatedUser, styledMaps, tags, mapData, serverSideDatas
                             <Button style={{ marginLeft: -20, marginTop: -30 }} icon={<ArrowLeftOutlined />} onClick={() => {
                                 setListClicked(true);
                             }} type='link'>back</Button>
-                            <AddWidget mdcId={mdcId} token={token} layerType={layerType} datasetProperties={datasetProperties} selectedDatasetProperties={selectedDatasetProperties}></AddWidget>
+                            <AddWidget mapId={mapData.id} token={token} layerType={layerType} datasetProperties={datasetProperties} selectedDatasetProperties={selectedDatasetProperties} />
                         </div>
 
                 }

@@ -22,6 +22,7 @@ const AppLayout = ({ children, walletAddress, datasets, onDataSetChange, mapInfo
         toggle={toggle}
         onLayerChangeParent={setLayerStyle}
         datasets={datasets}
+        // updates the selected layers on the map when each layer is selected
         onDataSetChange={onDataSetChange}
         mapInfo={mapInfo}
       />
