@@ -1,5 +1,4 @@
 
-
 #crumbs ul{
     list-style: none;
     display: inline-table;
@@ -15,21 +14,20 @@
     display: block;
     float: left;
     height: 40px;
-    background: #F3F5FA;
     text-align: center;
     padding: 8px 8px 0 20px;
     position: relative;
-    margin: 0 10px 0 0; 
+    margin: 5px 10px 0 0; 
     font-size: 15px;
     text-decoration: none;
-    color: #8093A7;
 }
 
 #crumbs ul li a:after{
     content: "";  
     border-top: 20px solid transparent;
     border-bottom: 20px solid transparent;
-    border-left: 10px solid #F3F5FA;
+    border-left-width: 10px;
+    border-left-style: solid;
     position: absolute; 
     right: -10px;
     top: 0;
@@ -67,13 +65,27 @@
 }
 			
 #crumbs ul li a:hover {
-	background: #357DFD;
-    color:#fff;
-}
+	background: green;
+} 
 
 #crumbs ul li a:hover:after {
-	border-left-color: #357DFD;
-    color:#fff;
+	border-left-color: green;
+} 
+
+.disable{
+    background:blue ;
 }
-		
-		
+
+.disable:after{
+    border-left-color:blue ;
+}
+
+.active{
+    background:red !important ;
+}	
+
+.active:after{
+    border-left-color:red !important;
+    /* color:#357DFD !important; */
+};
+

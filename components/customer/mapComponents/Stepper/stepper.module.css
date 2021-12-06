@@ -8,7 +8,6 @@
 
 #crumbs ul li{
     display: inline;
-    margin-top:2px;
 }
 
 
@@ -21,13 +20,17 @@
     text-align: center;
     border-radius:50%;
     position: relative;
-    margin: 0 15px 0 0; 
+    margin: 2px 15px 0 0; 
     font-size: 15px;
     text-decoration: none;
     color: #8093A7;
-    border:1px solid #F3F5FA
+    border:1px solid #F3F5FA;
+    
 }
 
+#crumbs ul li a.habib{
+    background:#8093A7;
+}
 
 #crumbs ul li a:after{
     content: "__";  
@@ -36,7 +39,7 @@
     right: -16px;
     top: 0;
     z-index: 1;
-    color: #F3F5FA;
+    
 } 
 
 			
@@ -45,10 +48,22 @@
 }
 			
 #crumbs ul li a:hover {
-	background: #357DFD;
-    color:#fff;
+	background: green;
 }
 
+.disable{
+    background:blue ;
+}
 
-		
+.disable:after{
+    color: blue;
+}
+
+.active{
+    background:red !important ;
+}	
+
+.active:after{
+    color: red !important;
+};
 		

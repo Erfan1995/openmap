@@ -39,7 +39,7 @@ const AddWidget = ({ mapId, token, layerType }) => {
 
     let SelectedView;
     if (selected == 1) {
-        SelectedView = <CreateProgressBarWidget mdcId={mdcId} token={token} widget={widget}></CreateProgressBarWidget>
+        SelectedView = <CreateProgressBarWidget widget={widget}></CreateProgressBarWidget>
     }
     else if (selected == 2) {
         SelectedView = <CreateVideoWidget widget={widget}></CreateVideoWidget>
