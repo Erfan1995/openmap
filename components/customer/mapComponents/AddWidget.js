@@ -8,27 +8,37 @@ import { getWidgets, postMethod } from 'lib/api';
 
 
 
-const AddWidget = ({ mapId, token, layerType }) => {
+const AddWidget = ({ mapId, mdcId, token, layerType }) => {
 
     const CreateTextWidget = dynamic(() => import("../Forms/Widgets/CreateTextWidget"), {
         ssr: false
     });
     const [selected, setSelected] = useState(0);
     const [widget, setWidget] = useState([]);
+    const [progressbars, setProgressbars] = useState();
 
     useEffect(() => {
         setSelected(localStorage.getItem('currentWidget'));
         async function fetchWidget() {
-            const response = await getWidgets(mdcId, token);
-            if (response && response?.length !== 0) {
-                setWidget(response[0]);
-            }
-            else {
-                const res = await postMethod('widgets/', { 'map': mapId });
-                if (res) {
-                    setWidget(res);
+            let response;
+            if (layerType === "main") {
+                response = await getWidgets(mdcId, mapId, token, 'surveyProgressbars', 'mapsurveyconf');
+
+            } else if (layerType === "dataset") {
+                response = await getWidgets(mdcId, mapId, token, 'datasetProgressbars', 'mapdatasetconf');
+                if (response && response?.length !== 0) {
+                    setWidget(response.widgets[0]);
+                    setProgressbars(response.datasetProgressbars);
+                }
+                else {
+                    const res = await postMethod('widgets/', { 'map': mapId });
+                    if (res) {
+                        setWidget(res);
+                    }
                 }
             }
+            console.log(response);
+
         }
 
         fetchWidget();

@@ -540,7 +540,7 @@ const MapConf = ({ authenticatedUser, styledMaps, tags, mapData, serverSideDatas
                             <Button style={{ marginLeft: -20, marginTop: -30 }} icon={<ArrowLeftOutlined />} onClick={() => {
                                 setListClicked(true);
                             }} type='link'>back</Button>
-                            <AddWidget mapId={mapData.id} token={token} layerType={layerType} datasetProperties={datasetProperties} selectedDatasetProperties={selectedDatasetProperties} />
+                            <AddWidget mapId={mapData.id} mdcId={mdcId} token={token} layerType={layerType} datasetProperties={datasetProperties} selectedDatasetProperties={selectedDatasetProperties} />
                         </div>
 
                 }
