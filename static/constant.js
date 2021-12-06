@@ -80,6 +80,7 @@ export const DATASET = {
     UPLOAD_CSV: 'Please upload CSV file',
     UPLOAD_JSON: 'Please upload JSON file',
     LOGO_FILE: 'Please Add Your Logo [recommended size (70px)]',
+    ICON_FILE: 'Please Add Your Icon [recommended size (70px)]',
     SEND: 'send',
     SIGN_IN_TO_VIEW_DASHBOARD: 'sign in to view the dashboard',
     BACK_TO_HOME: 'Back Home',
@@ -161,11 +162,20 @@ export const DATASET = {
     PROGRES_BAR_STEPS:'Progress Bar Steps',
     HOVER_TEXT:'Hover Text',
     ICON:'Icon',
-    ADD_STEP:'Add Step',
+    ADD_STEP:'Add New Step',
     SHOW_ITEMS:'Show Items',
-    RSS_FEED_URL:'RSS feed url'
-
+    RSS_FEED_URL:'RSS feed url',
+    STEP_ADDED_SUCCESSFUL:'step added successfuly!',
+    STEP_UPDATED_SUCCESSFUL:'step updated successfuly!',
+    UPLOAD_NEW_ICON:'Upload new icon',
+    STEP_UPDATE_FAILED:'Opps step update failed ',
+    STEP_DELETED:'step deleted ',
+    STEP_DELETION_FIELD:'step deletion field',
+    FIELD_CHANGE_STYLE:'failed to change style ',
+    STYLE_CHANGED:'style changed',
+    SELECT_STYLE:'Select Style ',
 }
+
 export const LAT = ['lat', 'Lat', 'LAT', 'latitude', 'Latitude', 'LATITUDE'];
 export const LONG = ['lng', 'Lng', 'LNG', 'lon', 'Lon', 'LON', 'long', 'Long', 'LONG', 'longitude', 'Longitude', 'LONGITUDE'];
 export const API = {

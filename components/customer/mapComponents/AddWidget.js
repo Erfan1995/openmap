@@ -9,6 +9,7 @@ import { getWidgets, postMethod } from 'lib/api';
 
 
 const AddWidget = ({ mdcId, token }) => {
+
     const CreateTextWidget = dynamic(() => import("../Forms/Widgets/CreateTextWidget"), {
         ssr: false
       });

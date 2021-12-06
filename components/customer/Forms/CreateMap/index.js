@@ -119,6 +119,7 @@ const CreateMap = ({ serverSideTags, user, mapData, onModalClose, addImageFile }
                 })
         }
     }), [])
+    
     const props = {
         beforeUpload: file => {
             if ((file.type.split("/")[0]) !== "image") {
