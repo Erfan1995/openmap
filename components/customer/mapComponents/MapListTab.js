@@ -123,11 +123,9 @@ const ListEditeButton = styled.span`
 
 
 const MapLisTab = ({ onEdit, mdcId, properties, editedListViewProperties, listviewProperties, token, layerType }) => {
-    console.log(editedListViewProperties)
     const [indeterminate, setIndeterminate] = useState(false);
     const [checkAll, setCheckAll] = useState(false);
     const [checkedList, setCheckedList] = useState(listviewProperties);
-    const [dataList, setDataList] = useState([]);
     const [widgets, setWidgets] = useState(widgetData);
     const [loading, setLoading] = useState(false);
     const [form] = Form.useForm();

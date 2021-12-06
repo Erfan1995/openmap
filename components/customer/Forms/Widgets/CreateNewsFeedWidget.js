@@ -12,9 +12,9 @@ const CreateNewsFeedWidget = ({ widget }) => {
     const [form] = Form.useForm();
     const [colorCode, setColorCode] = useState("ff0000");
     const [loading, setLoading] = useState(false);
-    const mediumRssFeed = "https://api.rss2json.com/v1/api.json?rss_url=https://dev.to/feed/@kahawaiikailana";
+    const [articles, setArticles] = useState();
+    const mediumRssFeed = "https://api.rss2json.com/v1/api.json?rss_url=https://feeds.feedburner.com/raymondcamdensblog?format=xml";
     const MAX_ARTICLES = 10;
-    let allArticles;
     useEffect(() => {
         const feed = async () => {
             fetch(mediumRssFeed, { headers: { 'Accept': 'application/json' } })
@@ -22,14 +22,14 @@ const CreateNewsFeedWidget = ({ widget }) => {
                 .then((data) => data.items.filter((item) => item.title.length > 0))
                 .then((newArticles) => newArticles.slice(0, MAX_ARTICLES))
                 .then((articles) => {
-                    allArticles = articles;
+                    setArticles(articles);
+                    console.log(articles);
                 })
                 .catch((error) => console.log(error));
 
         }
         feed();
     }, [MAX_ARTICLES]);
-    console.log(allArticles);
     const onSubmit = async () => {
         setLoading(true);
         form
@@ -57,7 +57,6 @@ const CreateNewsFeedWidget = ({ widget }) => {
                             <Input placeholder={DATASET.TITLE_PLACEHOLDER} rules={[{ required: true, message: DATASET.TITLE_PLACEHOLDER }]}></Input>
                         </Form.Item>
                     </Row>
-                    <br />
                     <Row>
                         <Col span={20}>
                             {DATASET.HEADER_COLOR}
@@ -66,17 +65,12 @@ const CreateNewsFeedWidget = ({ widget }) => {
                             <ColorPicker color={widget?.news_feeds?.color} onChange={(color) => setColorCode(color.color)} />
                         </Col>
                     </Row>
-                    <br />
-                    <Row>{DATASET.EMBED_RSS_FEED}</Row>
+                    <Row>{DATASET.RSS_FEED_URL}</Row>
                     <Row>
                         <Form.Item name="rss_feed" rules={[{ required: true, message: DATASET.REQUIRED_FIELD }]}>
-                            <TextArea rows={4}>
-                            </TextArea>
+                            <Input placeholder={DATASET.RSS_FEED_URL} rules={[{ required: true, message: DATASET.TITLE_PLACEHOLDER }]}></Input>
                         </Form.Item>
                     </Row>
-                    <br />
-                    <br />
-                    <br />
                     <Row>
                         <Button type='primary' htmlType="submit">
                             {DATASET.SAVE}

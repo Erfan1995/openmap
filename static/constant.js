@@ -164,6 +164,7 @@ export const DATASET = {
     ICON:'Icon',
     ADD_STEP:'Add New Step',
     SHOW_ITEMS:'Show Items',
+    RSS_FEED_URL:'RSS feed url',
     STEP_ADDED_SUCCESSFUL:'step added successfuly!',
     STEP_UPDATED_SUCCESSFUL:'step updated successfuly!',
     UPLOAD_NEW_ICON:'Upload new icon',
