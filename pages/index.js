@@ -26,6 +26,7 @@ export default function Home({ mapData = null, manualMapData = null, datasets = 
 export async function getServerSideProps(ctx) {
   try {
     if (ctx.query.t === '1') {
+
       const { type, surveyId } = ctx.query;
       const res = await getMethod(`surveys?id=${ctx.query.survey}`, null, false);
       if (!res.length > 0) {
@@ -41,6 +42,8 @@ export async function getServerSideProps(ctx) {
         }
       }
     } else if (ctx.query.t === '0') {
+    console.log('public map '+ctx.query);
+
       const { type, mapToken, id } = ctx.query;
       if (id) {
         const res = await getMethod(`maps?mapId=${decodeURI(mapToken)}&id=${id}`, null, false);
@@ -63,6 +66,8 @@ export async function getServerSideProps(ctx) {
       }
     }
     else {
+    console.log('public map  else ');
+
       return {
         redirect: {
           destination: '/customer/maps',

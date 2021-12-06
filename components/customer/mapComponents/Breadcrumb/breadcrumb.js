@@ -4,7 +4,7 @@ import Image from 'next/image';
 import { getStrapiMedia } from 'lib/media';
 import styled from 'styled-components';
 
-const BreadCrumb = ({ steps, onStepClick }) => {
+const BreadCrumb = ({ steps, onStepClick,color }) => {
 
     const Photo = styled.img`
         width:20px;

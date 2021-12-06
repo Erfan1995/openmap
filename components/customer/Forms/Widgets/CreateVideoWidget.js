@@ -38,13 +38,13 @@ const CreateVideoWidget = ({ widget }) => {
         <Spin spinning={loading}>
             <Form form={form} name='videoForm' initialValues={widget.video} onFinish={onSubmit}>
                 <Space direction='vertical'>
+                    <br/>
                     <Row>{DATASET.TITLE}</Row>
                     <Row>
                         <Form.Item name="title" rules={[{ required: true, message: DATASET.TITLE_PLACEHOLDER }]} >
                             <Input placeholder={DATASET.TITLE_PLACEHOLDER}></Input>
                         </Form.Item>
                     </Row>
-                    <br />
                     <Row>
                         <Col span={20}>
                             {DATASET.HEADER_COLOR}
@@ -53,7 +53,6 @@ const CreateVideoWidget = ({ widget }) => {
                             <ColorPicker color={widget?.video?.color} onChange={(color) => setColorCode(color.color)} />
                         </Col>
                     </Row>
-                    <br />
                     <Row>
                     </Row>
                     <Row>
@@ -61,9 +60,6 @@ const CreateVideoWidget = ({ widget }) => {
                             <Input placeholder="https://www.youtube.com/watch?v=7O9ZDygWZ58"></Input>
                         </Form.Item>
                     </Row>
-                    <br />
-                    <br />
-                    <br />
                     <Row>
                         <Button type='primary' htmlType="submit">
                             {DATASET.SAVE}

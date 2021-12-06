@@ -3,8 +3,10 @@ import styles from './stepper.module.css'
 import Image from 'next/image';
 import { getStrapiMedia } from 'lib/media';
 import styled from 'styled-components';
+import { useEffect } from 'react';
 
-const Stepper = ({ steps, onStepClick }) => {
+const Stepper = ({ steps, onStepClick,color }) => {
+
 
     const Photo = styled.img`
         width:20px;

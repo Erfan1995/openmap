@@ -165,10 +165,16 @@ export const DATASET = {
     ADD_STEP:'Add New Step',
     SHOW_ITEMS:'Show Items',
     STEP_ADDED_SUCCESSFUL:'step added successfuly!',
+    STEP_UPDATED_SUCCESSFUL:'step updated successfuly!',
     UPLOAD_NEW_ICON:'Upload new icon',
-
-
+    STEP_UPDATE_FAILED:'Opps step update failed ',
+    STEP_DELETED:'step deleted ',
+    STEP_DELETION_FIELD:'step deletion field',
+    FIELD_CHANGE_STYLE:'failed to change style ',
+    STYLE_CHANGED:'style changed',
+    SELECT_STYLE:'Select Style ',
 }
+
 export const LAT = ['lat', 'Lat', 'LAT', 'latitude', 'Latitude', 'LATITUDE'];
 export const LONG = ['lng', 'Lng', 'LNG', 'lon', 'Lon', 'LON', 'long', 'Long', 'LONG', 'longitude', 'Longitude', 'LONGITUDE'];
 export const API = {

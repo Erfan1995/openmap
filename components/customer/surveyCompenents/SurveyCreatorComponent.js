@@ -117,7 +117,6 @@ const SurveyCreatorComponent = ({ authenticatedUser, token, surveyForms }) => {
                 }
             } else {
                 message.error("please add title and description")
-
             }
         }
     };
@@ -139,7 +138,6 @@ const SurveyCreatorComponent = ({ authenticatedUser, token, surveyForms }) => {
     };
 
     useEffect(() => {
-
         surveyCreator = new SurveyJSCreator.SurveyCreator(
             null,
             options
@@ -155,6 +153,7 @@ const SurveyCreatorComponent = ({ authenticatedUser, token, surveyForms }) => {
             showSurvayConfirm(key);
         }
     }
+
 
     const tabChangeEvent = async (key) => {
         setSurveyClicked(false)
@@ -172,6 +171,7 @@ const SurveyCreatorComponent = ({ authenticatedUser, token, surveyForms }) => {
             }
         }
     }
+
 
     const deleteSurvey = async (id) => {
         setLoading(true);

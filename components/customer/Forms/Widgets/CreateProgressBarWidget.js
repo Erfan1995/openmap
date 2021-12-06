@@ -1,19 +1,17 @@
 
 import 'rc-color-picker/assets/index.css';
-import { Col, Row, Card, Input, Button, Space, Form, Upload, Modal, Spin, message, Menu, Dropdown } from "antd";
+import { Col, Row, Card, Input, Button, Space, Form, Upload, Modal, Spin, message, Menu, Dropdown, Radio } from "antd";
 import ColorPicker from 'rc-color-picker';
 import BreadCrumb from 'components/customer/mapComponents/Breadcrumb/breadcrumb';
 import Stepper from 'components/customer/mapComponents/Stepper/stepper';
-import { UploadOutlined } from '@ant-design/icons';
 import { useEffect, useRef, useState } from 'react';
-import { putFileMethod, deleteMethod } from 'lib/api';
+import { putFileMethod, deleteMethod, putMethod } from 'lib/api';
 import { PlusOutlined, LoadingOutlined } from '@ant-design/icons';
 import { DATASET } from 'static/constant';
 import styled from 'styled-components';
 import AddStep from './addStep';
 import { getStrapiMedia } from 'lib/media';
-
-
+import { ProgressStyle } from 'lib/constants';
 
 
 
@@ -50,7 +48,7 @@ const CreateProgressBarWidget = ({ mdcId, datsetProperties, token, layerType, wi
     const [form] = Form.useForm();
     const [icon, setIcon] = useState();
     const [loading, setLoading] = useState(false);
-    const [colorCode, setColorCode] = useState('#ff0000');
+    const [colorCode, setColorCode] = useState();
     const [uploading, setUploading] = useState(false);
     const [imageUrl, setImageUrl] = useState("");
     const [steps, setSteps] = useState([]);
@@ -59,12 +57,17 @@ const CreateProgressBarWidget = ({ mdcId, datsetProperties, token, layerType, wi
     const [selectedStep, setSelectedStep] = useState(null);
     const [file, setFile] = useState();
     const [defaultValues, setDefaultValues] = useState(null);
+    const [selectedStyle, setSelectedStyle] = useState('circle-mode');
 
 
     useEffect(() => {
         setSteps(widget?.progressbars);
-        form.setFieldsValue(defaultValues)
-    }, [widget, form, defaultValues]);
+    }, [widget]);
+
+
+    useEffect(() => {
+        form.setFieldsValue(defaultValues);
+    }, [form, defaultValues])
 
 
     const listMenu = (
@@ -80,6 +83,7 @@ const CreateProgressBarWidget = ({ mdcId, datsetProperties, token, layerType, wi
             <div style={{ marginTop: 8 }}>Upload</div>
         </div>
     );
+
 
     const handleChange = info => {
         if (info.file.status === 'uploading') {
@@ -103,14 +107,14 @@ const CreateProgressBarWidget = ({ mdcId, datsetProperties, token, layerType, wi
         form
             .validateFields()
             .then(async (values) => {
-                console.log(' resource ' + JSON.stringify(values));
                 fData.append('data', JSON.stringify({ 'title': values.title, 'hover_text': values.hover_text, 'widget': widget.id }));
                 if (icon) {
                     fData.append('files.icon', icon.originFileObj, icon.originFileObj.name);
                 }
                 const res = await putFileMethod('progressbars/' + defaultValues.id, fData);
                 if (res) {
-                    message.success('step added successfuly');
+                    message.success(DATASET.STEP_UPDATED_SUCCESSFUL);
+                    setSelectedStep(null);
                     setSteps(steps.map((step) => {
                         if (step.id === defaultValues?.id) {
                             return { ...step, title: res.title, hover_text: res.hover_text, icon: res.icon, id: res.id }
@@ -124,7 +128,7 @@ const CreateProgressBarWidget = ({ mdcId, datsetProperties, token, layerType, wi
                 setLoading(false);
             }).catch(e => {
                 setLoading(false);
-                message.error(e?.message);
+                message.error(STEP_UPDATE_FAILED);
             })
     }
 
@@ -134,15 +138,28 @@ const CreateProgressBarWidget = ({ mdcId, datsetProperties, token, layerType, wi
         setDefaultValues(step);
         setImageUrl(getStrapiMedia(step.icon));
         setIcon(null);
+        setSelectedStep(step);
     }
 
 
     const onDelete = async (id) => {
-        const res = deleteMethod('progressbars/' + id);
-        if (res) {
-            const newList = steps.filter((step) => step.id !== id);
-            setDefaultValues(null);
-            setSteps(newList);
+        setLoading(true);
+        try {
+            const res = deleteMethod('progressbars/' + id);
+            if (res) {
+                message.success(DATASET.STEP_DELETED);
+                const newList = steps.filter((step) => step.id !== id);
+                setSteps(newList.map((step) => {
+                    return { ...step, step: step }
+                }));
+                setSelectedStep(null);
+                setLoading(false);
+            }
+        } catch (e) {
+            message.error(DATASET.STEP_DELETION_FIELD);
+        }
+        finally {
+            setLoading(false);
         }
     }
 
@@ -157,6 +174,29 @@ const CreateProgressBarWidget = ({ mdcId, datsetProperties, token, layerType, wi
     }
 
 
+    const onColorChange = (color) => {
+        console.log('color ' + JSON.stringify(color));
+        setColorCode(color);
+    }
+
+
+    const onStyleChange = async (style) => {
+        setLoading(true);
+        try{
+            const res = await putMethod('Widgets/'+widget.id,{'progress_bar_default_style':style.target.value});
+            if (res) {
+                message.success(DATASET.STYLE_CHANGED);
+                setSelectedStyle(style.target.value);
+                setLoading(false);
+            }
+        }catch(e){
+            message.error(DATASET.FIELD_CHANGE_STYLE)
+        }finally{
+            setLoading(false);
+        }
+
+    }
+
     return (typeof widget?.progressbars !== 'undefined') ? < div >
         <Spin spinning={loading}>
             <Space direction='vertical'>
@@ -165,10 +205,25 @@ const CreateProgressBarWidget = ({ mdcId, datsetProperties, token, layerType, wi
                     <Space direction='vertical'>
                         <Row>{DATASET.STYLE}</Row>
                         <Row className="w-full">
-                            <Stepper steps={steps} onStepClick={onStepClick}></Stepper>
+                            <Stepper steps={steps} onStepClick={onStepClick} color={"#ff0000"}></Stepper>
                         </Row>
                         <Row className="w-full">
-                            <BreadCrumb steps={steps} onStepClick={onStepClick}></BreadCrumb>
+                            <BreadCrumb steps={steps} onStepClick={onStepClick} color={"#ff0000"}></BreadCrumb>
+                        </Row>
+                    </Space>
+                </Row>
+                <Row>
+                    <Space direction='vertical'>
+                        <Row>{DATASET.SELECT_STYLE}</Row>
+                        <Row className="w-full">
+                            <Radio.Group
+                                options={ProgressStyle}
+                                value={selectedStyle}
+                                onChange={onStyleChange}
+                                optionType="button"
+                                buttonStyle="solid"
+
+                            />
                         </Row>
                     </Space>
                 </Row>
@@ -178,10 +233,9 @@ const CreateProgressBarWidget = ({ mdcId, datsetProperties, token, layerType, wi
                         {DATASET.COLOR}
                     </Col>
                     <Col span={4}>
-                        <ColorPicker onChange={(color) => setColorCode(color?.color)} />
+                        <ColorPicker onChange={(color) => onColorChange(color)} />
                     </Col>
                 </Row>
-                <br />
                 <Row>
                     {DATASET.PROGRES_BAR_STEPS}
                 </Row>
@@ -191,7 +245,7 @@ const CreateProgressBarWidget = ({ mdcId, datsetProperties, token, layerType, wi
                             <Row>
                                 <Col span={23}>
                                     <Space direction="vertical">
-                                        { defaultValues !==null ?
+                                        {selectedStep !== null ?
                                             <Card bodyStyle={{ padding: 10 }}>
                                                 <Row>
                                                     <Space>
@@ -235,7 +289,7 @@ const CreateProgressBarWidget = ({ mdcId, datsetProperties, token, layerType, wi
                                                         </Col>
                                                     </Space>
                                                 </Row>
-                                            </Card>:<div></div>
+                                            </Card> : <div></div>
                                         }
                                         <Row>
                                             <Button type='dashed' onClick={() => setAddModalVisible(true)} style={{ width: '100%', height: 50 }}>
@@ -244,7 +298,7 @@ const CreateProgressBarWidget = ({ mdcId, datsetProperties, token, layerType, wi
                                         </Row>
                                     </Space>
                                 </Col>
-                                {defaultValues !== null ? <Col span={1}>
+                                {selectedStep !== null ? <Col span={1}>
                                     <Row style={{ width: '100%', height: '100%', paddingTop: 80 }}>
                                         <Col span={3}>
                                             <div>
