@@ -1,11 +1,9 @@
 
 import styles from './breadcrumb.module.css'
-import Image from 'next/image';
 import { getStrapiMedia } from 'lib/media';
 import styled from 'styled-components';
-
-const BreadCrumb = ({ steps, onStepClick,color }) => {
-
+const BreadCrumb = ({ steps, onStepClick, color, activeStep }) => {
+    console.log('active step ' + activeStep + ' color ' + color?.color);
     const Photo = styled.img`
         width:20px;
         height:20px;
@@ -15,13 +13,21 @@ const BreadCrumb = ({ steps, onStepClick,color }) => {
         }
         `
 
+    const Link = styled.a`
+        background-color:${color?.color} ;
+        :after{
+            border-left-color: ${color?.color} ;
+        };
+    `
+
     return steps ? <div id={styles.crumbs}>
         <ul>
             {steps?.map((step) => {
-                return <li><a href="#1" onClick={() => onStepClick(step)}><Photo src={getStrapiMedia(step?.icon)}></Photo></a></li>
+
+                return <li><Link href="#1" className={step.id<=activeStep ? styles.active : styles.disable}  onClick={() => onStepClick(step)}><Photo src={getStrapiMedia(step?.icon)}></Photo></Link></li>
             })}
-        </ul>
-    </div> : null;
+    </ul>
+    </div > : null;
 }
 
 export default BreadCrumb;
