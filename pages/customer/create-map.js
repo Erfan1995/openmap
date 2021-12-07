@@ -38,7 +38,7 @@ const CreateMapContainer = ({ authenticatedUser, collapsed, styledMaps, tags, se
   const [customMapData, setCustomMapData] = useState(manualMapData);
   const [loading, setLoading] = useState(false);
 
-
+  console.log(manualMapData, 'manual map data')
   const [layerClicked, setLayerClicked] = useState(true);
 
   const MapWithNoSSR = dynamic(() => import("../../components/map"), {
@@ -224,9 +224,8 @@ export const getServerSideProps = withPrivateServerSideProps(
 
       if (id && mapToken) {
         let mapData = null;
-        console.log(token, 'token');
         mapData = await getMapGeneralData(id, mapToken, token);
-
+        console.log(mapData);
         if (mapData?.maps?.length > 0) {
           let map = mapData?.maps[0];
 
@@ -259,6 +258,7 @@ export const getServerSideProps = withPrivateServerSideProps(
           tags?.map((item) => {
             item.id = Number(item.id);
           })
+          console.log(manualArray,'arrayaaaaaa');
           return {
             props: {
               authenticatedUser: verifyUser, styledMaps: mapStyles, tags: tags, injectedcodes: injectedcodes,

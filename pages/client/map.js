@@ -12,8 +12,7 @@ import VideoWidget from './../../components/client/widget/VideoWidget';
 import TextWidget from './../../components/client/widget/TextWidget';
 import SocialWidget from './../../components/client/widget/SocialWidget';
 import ListItem from "components/client/widget/ListItem";
-
-
+import { generateListViewData } from "../../lib/general-functions"
 import { Tabs, Row, Col, Card, List, Steps } from 'antd';
 import { nodeName } from "jquery";
 import { redirect } from "next/dist/next-server/server/api-utils";
@@ -31,7 +30,7 @@ const Map = ({ manualMapData, mapData, datasets, injectedcodes, publicUser }) =>
   const [zoomLevel, setZoomLevel] = useState(mapData.zoomLevel);
   const [customMapData, setCustomMapData] = useState(manualMapData);
   const [loading, setLoading] = useState(false);
-
+  const [listData, setListData] = useState([]);
   const { login, logout } = UseAuth();
 
   useEffect(async () => {
@@ -44,7 +43,9 @@ const Map = ({ manualMapData, mapData, datasets, injectedcodes, publicUser }) =>
       }
     }
   }, [])
-
+  useEffect(() => {
+    setListData(generateListViewData(manualMapData, mapData.surveys))
+  }, [])
   const onDataSetChange = (list) => {
     let arr = [];
     list.map(item => {
@@ -171,9 +172,9 @@ const Map = ({ manualMapData, mapData, datasets, injectedcodes, publicUser }) =>
                   <Content >
                     <List
                       size="small"
-                      dataSource={data}
+                      dataSource={listData}
                       renderItem={item => <List.Item>
-                        <ListItem item={item}></ListItem>
+                        <ListItem item={item} />
                       </List.Item>}
                     />
                   </Content>

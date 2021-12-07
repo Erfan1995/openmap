@@ -109,15 +109,12 @@ const CreateProgressBarWidget = ({ widget, mdcId, mdcConf, progressbar, layerTyp
 
 
     const onSubmit = async (data) => {
-        console.log(layerType);
         const fData = new FormData();
         setLoading(true);
         form
             .validateFields()
             .then(async (values) => {
-                console.log(values);
                 if (layerType === "dataset") {
-                    console.log(layerType, 'layerType')
                     fData.append('data', JSON.stringify({ 'title': values.title, 'hover_text': values.hover_text, 'mapdatasetconf': mdcId }));
                     if (icon) {
                         fData.append('files.icon', icon.originFileObj, icon.originFileObj.name);
@@ -143,8 +140,6 @@ const CreateProgressBarWidget = ({ widget, mdcId, mdcConf, progressbar, layerTyp
 
                     }
                 } else if (layerType === "main") {
-                    console.log(layerType);
-                    console.log(values);
                     fData.append('data', JSON.stringify({ 'title': values.title, 'hover_text': values.hover_text, 'mapsurveyconf': mdcId }));
                     if (icon) {
                         fData.append('files.icon', icon.originFileObj, icon.originFileObj.name);

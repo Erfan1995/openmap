@@ -1,7 +1,8 @@
 
 import { Row, Col, Steps, Divider } from "antd";
 import styled from "styled-components";
-
+import { timeSince } from "lib/general-functions";
+import Progressbar from "./progressbar/progressbar";
 const CustomItem = styled.div`
     width:100%;
     border-radius:10px;
@@ -37,20 +38,23 @@ const CustomStepper = () => {
 
 
 const ListItem = ({ item }) => {
+    console.log(item);
     return <CustomItem>
         <Row>
             <Col span={12}>
                 <Row>
                     <SmallTitle>
-                        First Row
+                        {timeSince(new Date(item.pubDate))}
                     </SmallTitle>
                 </Row>
                 <Row style={{ fontSize: 15 }}>
-                    {item}
+                    {item.surveyInfo.title}
                 </Row>
             </Col>
             <Col span={12} style={{ borderLeft: '1px solid #ccc', padding: 10 }}>
-                <CustomStepper></CustomStepper>
+                {item.progressbar.length > 0 && (
+                    <Progressbar steps={item.progressbar} />
+                )}
             </Col>
         </Row>
         <Row>
