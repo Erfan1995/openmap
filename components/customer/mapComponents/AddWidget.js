@@ -23,6 +23,16 @@ const AddWidget = ({ mapId, mdcId, token, layerType }) => {
             let response;
             if (layerType === "main") {
                 response = await getWidgets(mdcId, mapId, token, 'surveyProgressbars', 'mapsurveyconf');
+                if (response && response?.length !== 0) {
+                    setWidget(response.widgets[0]);
+                    setProgressbars(response.datasetProgressbars);
+                }
+                else {
+                    const res = await postMethod('widgets/', { 'map': mapId });
+                    if (res) {
+                        setWidget(res);
+                    }
+                }
 
             } else if (layerType === "dataset") {
                 response = await getWidgets(mdcId, mapId, token, 'datasetProgressbars', 'mapdatasetconf');

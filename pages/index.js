@@ -4,7 +4,6 @@ import { extractMapDataPublic } from "lib/general-functions";
 
 import dynamic from "next/dynamic";
 export default function Home({ mapData = null, manualMapData = null, datasets = null, mapToken = null, type = null, survey = null }) {
-  console.log(mapData);
   const Dashboard = dynamic(() => import("../components/dashboard"), {
     ssr: false
   });

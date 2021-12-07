@@ -100,7 +100,7 @@ const PublicMap = ({ styleId, mapZoom, style, mapData, manualMapData, onCustomeD
 
                     <GeoJSON data={customMapData} pointToLayer={(feature, latlng) => {
                         const iconUrl = getStrapiMedia(feature?.icon?.icon?.length > 0 ? feature?.icon?.icon[0] : null);
-
+                            
                         if (!iconUrl) return L.marker(latlng, {
                             icon: new L.icon({ iconUrl: '/marker-icon.png', iconSize: MapDefaultIconSize })
                         });
