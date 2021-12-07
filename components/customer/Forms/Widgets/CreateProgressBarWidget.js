@@ -44,7 +44,7 @@ function beforeUpload(file) {
     return isJpgOrPng && isLt2M;
 }
 
-const CreateProgressBarWidget = ({ widget,mdcId,mdcConf,progressbar }) => {
+const CreateProgressBarWidget = ({ widget, mdcId, mdcConf, progressbar, layerType }) => {
     const [form] = Form.useForm();
     const [icon, setIcon] = useState();
     const [loading, setLoading] = useState(false);
@@ -65,12 +65,12 @@ const CreateProgressBarWidget = ({ widget,mdcId,mdcConf,progressbar }) => {
         setSteps(progressbar);
         setActiveStep(mdcConf?.selected_step);
         setSelectedStyle(mdcConf?.progress_bar_default_style);
-    }, [progressbar,mdcConf]);
+    }, [progressbar, mdcConf]);
 
 
-    useEffect(()=>{
+    useEffect(() => {
         setColorCode(mdcConf?.progressbar_color);
-    },[colorCode])
+    }, [colorCode])
 
     useEffect(() => {
         form.setFieldsValue(defaultValues);
@@ -109,35 +109,66 @@ const CreateProgressBarWidget = ({ widget,mdcId,mdcConf,progressbar }) => {
 
 
     const onSubmit = async (data) => {
+        console.log(layerType);
         const fData = new FormData();
         setLoading(true);
         form
             .validateFields()
             .then(async (values) => {
-
-                fData.append('data', JSON.stringify({ 'title': values.title, 'hover_text': values.hover_text, 'mapdatasetconf': mdcId }));
-                if (icon) {
-                    fData.append('files.icon', icon.originFileObj, icon.originFileObj.name);
-                }
-                const res = await putFileMethod('dataset-progressbars/' + defaultValues.id, fData);
-                if (res) {
-                    if (values.is_active) {
-                        const widgetRes = await putMethod('mapdatasetconfs/' + mdcId, { 'selected_step':Number(defaultValues.id)});
-                        if (widgetRes) {
-                            setActiveStep(widgetRes.selected_step);
-                        }
+                console.log(values);
+                if (layerType === "dataset") {
+                    console.log(layerType, 'layerType')
+                    fData.append('data', JSON.stringify({ 'title': values.title, 'hover_text': values.hover_text, 'mapdatasetconf': mdcId }));
+                    if (icon) {
+                        fData.append('files.icon', icon.originFileObj, icon.originFileObj.name);
                     }
-                    message.success(DATASET.STEP_UPDATED_SUCCESSFUL);
-                    setSelectedStep(null);
-                    setSteps(steps.map((step) => {
-                        if (step.id === defaultValues?.id) {
-                            return { ...step, title: res.title, hover_text: res.hover_text, icon: res.icon, id: res.id }
+                    const res = await putFileMethod('dataset-progressbars/' + defaultValues.id, fData);
+                    if (res) {
+                        if (values.is_active) {
+                            const widgetRes = await putMethod('mapdatasetconfs/' + mdcId, { 'selected_step': Number(defaultValues.id) });
+                            if (widgetRes) {
+                                setActiveStep(widgetRes.selected_step);
+                            }
                         }
-                        else {
-                            return { ...step, step: step }
-                        }
-                    }));
+                        message.success(DATASET.STEP_UPDATED_SUCCESSFUL);
+                        setSelectedStep(null);
+                        setSteps(steps.map((step) => {
+                            if (step.id === defaultValues?.id) {
+                                return { ...step, title: res.title, hover_text: res.hover_text, icon: res.icon, id: res.id }
+                            }
+                            else {
+                                return { ...step, step: step }
+                            }
+                        }));
 
+                    }
+                } else if (layerType === "main") {
+                    console.log(layerType);
+                    console.log(values);
+                    fData.append('data', JSON.stringify({ 'title': values.title, 'hover_text': values.hover_text, 'mapsurveyconf': mdcId }));
+                    if (icon) {
+                        fData.append('files.icon', icon.originFileObj, icon.originFileObj.name);
+                    }
+                    const res = await putFileMethod('survey-progressbars/' + defaultValues.id, fData);
+                    if (res) {
+                        if (values.is_active) {
+                            const widgetRes = await putMethod('mapsurveyconfs/' + mdcId, { 'selected_step': Number(defaultValues.id) });
+                            if (widgetRes) {
+                                setActiveStep(widgetRes.selected_step);
+                            }
+                        }
+                        message.success(DATASET.STEP_UPDATED_SUCCESSFUL);
+                        setSelectedStep(null);
+                        setSteps(steps.map((step) => {
+                            if (step.id === defaultValues?.id) {
+                                return { ...step, title: res.title, hover_text: res.hover_text, icon: res.icon, id: res.id }
+                            }
+                            else {
+                                return { ...step, step: step }
+                            }
+                        }));
+
+                    }
                 }
                 setLoading(false);
             }).catch(e => {
@@ -149,7 +180,7 @@ const CreateProgressBarWidget = ({ widget,mdcId,mdcConf,progressbar }) => {
 
 
     const onStepClick = (step) => {
-        console.log('values '+JSON.stringify(step));
+        console.log('values ' + JSON.stringify(step));
         setDefaultValues({ 'id': step.id, 'title': step.title, 'hover_text': step.hover_text, 'is_active': activeStep == step.id ? true : false });
         setImageUrl(getStrapiMedia(step.icon));
         setIcon(null);
@@ -160,7 +191,12 @@ const CreateProgressBarWidget = ({ widget,mdcId,mdcConf,progressbar }) => {
     const onDelete = async (id) => {
         setLoading(true);
         try {
-            const res = deleteMethod('dataset-progressbars/' + id);
+            let res;
+            if (layerType === 'dataset') {
+                res = deleteMethod('dataset-progressbars/' + id);
+            } else if (layerType === "main") {
+                res = deleteMethod('survey-progressbars/' + id);
+            }
             if (res) {
                 message.success(DATASET.STEP_DELETED);
                 const newList = steps.filter((step) => step.id !== id);
@@ -192,7 +228,12 @@ const CreateProgressBarWidget = ({ widget,mdcId,mdcConf,progressbar }) => {
     const onColorChange = async (color) => {
         setLoading(true);
         try {
-            const res = await putMethod('mapdatasetconfs/' + mdcId, { 'progressbar_color': color?.color });
+            let res;
+            if (layerType === "dataset") {
+                res = await putMethod('mapdatasetconfs/' + mdcId, { 'progressbar_color': color?.color });
+            } else if (layerType === "main") {
+                res = await putMethod('mapsurveyconfs/' + mdcId, { 'progressbar_color': color?.color });
+            }
             if (res) {
                 setColorCode(color);
             }
@@ -207,7 +248,12 @@ const CreateProgressBarWidget = ({ widget,mdcId,mdcConf,progressbar }) => {
     const onStyleChange = async (style) => {
         setLoading(true);
         try {
-            const res = await putMethod('mapdatasetconfs/' + mdcId, { 'progress_bar_default_style': style.target.value });
+            let res;
+            if (layerType === "dataset") {
+                res = await putMethod('mapdatasetconfs/' + mdcId, { 'progress_bar_default_style': style.target.value });
+            } else if (layerType === "main") {
+                res = await putMethod('mapsurveyconfs/' + mdcId, { 'progress_bar_default_style': style.target.value });
+            }
             if (res) {
                 message.success(DATASET.STYLE_CHANGED);
                 setSelectedStyle(style.target.value);
@@ -319,7 +365,7 @@ const CreateProgressBarWidget = ({ widget,mdcId,mdcConf,progressbar }) => {
                                                 </Row>
                                             </Card> : <div></div>
                                         }
-                                        <Row style={{ minWidth: 250}}>
+                                        <Row style={{ minWidth: 250 }}>
                                             <Button type='dashed' onClick={() => setAddModalVisible(true)} style={{ width: '100%', height: 50 }}>
                                                 {DATASET.ADD_STEP}
                                             </Button>
@@ -348,7 +394,7 @@ const CreateProgressBarWidget = ({ widget,mdcId,mdcConf,progressbar }) => {
                         width={500}
                         visible={addModalVisible}
                         destroyOnClose={true}
-                        onOk={() => childRef.current.saveData(file)}
+                        onOk={() => childRef.current.saveData(file, layerType)}
                         onCancel={() => setAddModalVisible(false)}>
                         <AddStep mdcId={mdcId} ref={childRef} onModalClose={(res) => onModalClose(res)} addImageFile={addImageFile}></AddStep>
                     </Modal>

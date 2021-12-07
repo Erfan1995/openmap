@@ -23,7 +23,8 @@ const { Meta } = Card;
 const { Step } = Steps;
 
 const Map = ({ manualMapData, mapData, datasets, injectedcodes, publicUser }) => {
-
+  console.log(manualMapData);
+  console.log(mapData.surveys);
   const [intiLoading, setInitLoading] = useState(true);
   const [publicUserObject, setPublicUserObject] = useState(publicUser);
   const [datasetData, setDatasetData] = useState(datasets);

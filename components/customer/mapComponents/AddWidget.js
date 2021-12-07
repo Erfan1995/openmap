@@ -24,9 +24,12 @@ const AddWidget = ({ mapId, mdcId, token, layerType }) => {
             let response;
             if (layerType === "main") {
                 response = await getWidgets(mdcId, mapId, token, 'surveyProgressbars', 'mapsurveyconf');
+                console.log(response);
                 if (response && response?.length !== 0) {
                     setWidget(response.widgets[0]);
-                    setProgressbars(response.datasetProgressbars);
+                    setProgressbars(response.surveyProgressbars);
+                    setMdcConf(response?.surveyProgressbars[0]?.mapsurveyconf);
+
                 }
                 else {
                     const res = await postMethod('widgets/', { 'map': mapId });
@@ -60,7 +63,7 @@ const AddWidget = ({ mapId, mdcId, token, layerType }) => {
 
     let SelectedView;
     if (selected == 1) {
-        SelectedView = <CreateProgressBarWidget mdcConf={mdcConf} mdcId={mdcId} progressbar={progressbars} widget={widget} />
+        SelectedView = <CreateProgressBarWidget mdcConf={mdcConf} mdcId={mdcId} progressbar={progressbars} widget={widget} layerType={layerType} />
     }
     else if (selected == 2) {
         SelectedView = <CreateVideoWidget widget={widget} />

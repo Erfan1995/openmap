@@ -18,7 +18,7 @@ const Photo = styled.div`
 `
 
 
-const AddStep = ({ mdcId, onModalClose,addImageFile }, ref) => {
+const AddStep = ({ mdcId, onModalClose, addImageFile }, ref) => {
     const [form] = Form.useForm();
     const [loading, setLoading] = useState(false);
     const [imageUrl, setImageUrl] = useState();
@@ -67,21 +67,36 @@ const AddStep = ({ mdcId, onModalClose,addImageFile }, ref) => {
 
 
     useImperativeHandle(ref, () => ({
-        saveData(file) {
+        saveData(file, layerType) {
             form
                 .validateFields()
                 .then(async (values) => {
-                    const fData = new FormData();
-                    let res = null;
-                    fData.append('data', JSON.stringify({ 'title': values.title, 'hover_text': values.hover_text, 'mapdatasetconf': mdcId }));
-                    if (file) {
-                        fData.append('files.icon', file.originFileObj, file.originFileObj.name);
-                    }
-                    setLoading(true);
-                    res = await postFileMethod('dataset-progressbars', fData);
-                    if (res) {
-                        message.success(DATASET.STEP_ADDED_SUCCESSFUL);
-                        onModalClose(res);
+                    if (layerType === "main") {
+                        const fData = new FormData();
+                        let res = null;
+                        fData.append('data', JSON.stringify({ 'title': values.title, 'hover_text': values.hover_text, 'mapsurveyconf': mdcId }));
+                        if (file) {
+                            fData.append('files.icon', file.originFileObj, file.originFileObj.name);
+                        }
+                        setLoading(true);
+                        res = await postFileMethod('survey-progressbars', fData);
+                        if (res) {
+                            message.success(DATASET.STEP_ADDED_SUCCESSFUL);
+                            onModalClose(res);
+                        }
+                    } else if (layerType === "dataset") {
+                        const fData = new FormData();
+                        let res = null;
+                        fData.append('data', JSON.stringify({ 'title': values.title, 'hover_text': values.hover_text, 'mapdatasetconf': mdcId }));
+                        if (file) {
+                            fData.append('files.icon', file.originFileObj, file.originFileObj.name);
+                        }
+                        setLoading(true);
+                        res = await postFileMethod('dataset-progressbars', fData);
+                        if (res) {
+                            message.success(DATASET.STEP_ADDED_SUCCESSFUL);
+                            onModalClose(res);
+                        }
                     }
                     setLoading(false);
                 })
