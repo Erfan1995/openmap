@@ -7,7 +7,6 @@ import { style } from '../styles';
 
 const Stepper = ({ steps, onStepClick ,activeStep,color}) => {
 
-    
     const Photo = styled.img`
         width:20px;
         height:20px;
@@ -18,9 +17,9 @@ const Stepper = ({ steps, onStepClick ,activeStep,color}) => {
         `
 
         const Link = styled.a`
-        background-color:${color?.color} ;
+        background-color:${color}  ;
         :after{
-            color: ${color?.color} ;
+            color: ${color} ;
         };
 
     `

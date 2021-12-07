@@ -44,7 +44,7 @@ function beforeUpload(file) {
     return isJpgOrPng && isLt2M;
 }
 
-const CreateProgressBarWidget = ({ mdcId, mdcConf, progressbar }) => {
+const CreateProgressBarWidget = ({ mdcId, mdcConf, progressbar}) => {
     const [form] = Form.useForm();
     const [icon, setIcon] = useState();
     const [loading, setLoading] = useState(false);
@@ -60,21 +60,25 @@ const CreateProgressBarWidget = ({ mdcId, mdcConf, progressbar }) => {
     const [selectedStyle, setSelectedStyle] = useState(null);
     const [activeStep, setActiveStep] = useState();
 
-    
+
     useEffect(() => {
         setSteps(progressbar);
-        setColorCode(mdcConf?.progressbar_color)
-    },[progressbar]);
+    }, [progressbar]);
 
-    useEffect(()=>{
+    useEffect(() => {
         setActiveStep(mdcConf?.selected_step);
-        setSelectedStyle(mdcConf?.progress_bar_default_style);   
-    },[mdcConf]);
+        setSelectedStyle(mdcConf?.progress_bar_default_style);
+        setColorCode(mdcConf?.progressbar_color)
+    }, [mdcConf]);
 
     useEffect(() => {
         form.setFieldsValue(defaultValues);
     }, [form, defaultValues])
 
+    useEffect(()=>{
+        setColorCode(colorCode);
+    },[colorCode])
+ 
 
     const listMenu = (
         <Menu>
@@ -120,8 +124,14 @@ const CreateProgressBarWidget = ({ mdcId, mdcConf, progressbar }) => {
                 }
                 const res = await putFileMethod('dataset-progressbars/' + defaultValues.id, fData);
                 if (res) {
-                    if (values.is_active) {
+                    if (values.is_active && defaultValues.id !== activeStep) {
                         const widgetRes = await putMethod('mapdatasetconfs/' + mdcId, { 'selected_step': Number(defaultValues.id) });
+                        if (widgetRes) {
+                            setActiveStep(widgetRes.selected_step);
+                        }
+                    }
+                    else if (!values.is_active && defaultValues.id === activeStep) {
+                        const widgetRes = await putMethod('mapdatasetconfs/' + mdcId, { 'selected_step': 0 });
                         if (widgetRes) {
                             setActiveStep(widgetRes.selected_step);
                         }
@@ -176,6 +186,7 @@ const CreateProgressBarWidget = ({ mdcId, mdcConf, progressbar }) => {
         }
     }
 
+
     const onModalClose = (res) => {
         steps.push({ 'title': res.title, 'hover_text': res.hover_text, 'id': res.id, 'icon': res.icon });
         setAddModalVisible(false);
@@ -227,10 +238,10 @@ const CreateProgressBarWidget = ({ mdcId, mdcConf, progressbar }) => {
                     <Space direction='vertical'>
                         <Row>{DATASET.STYLE}</Row>
                         <Row className="w-full">
-                            <Stepper steps={steps} activeStep={activeStep} onStepClick={onStepClick} color={colorCode}></Stepper>
+                            <Stepper steps={steps} activeStep={activeStep} onStepClick={onStepClick} color={colorCode!==null ? colorCode?.color : mdcConf?.progressbar_color}></Stepper>
                         </Row>
                         <Row className="w-full">
-                            <BreadCrumb steps={steps} activeStep={activeStep} onStepClick={onStepClick} color={colorCode}></BreadCrumb>
+                            <BreadCrumb steps={steps} activeStep={activeStep} onStepClick={onStepClick} color={colorCode!==null ? colorCode?.color : mdcConf?.progressbar_color}></BreadCrumb>
                         </Row>
                     </Space>
                 </Row>
@@ -254,7 +265,7 @@ const CreateProgressBarWidget = ({ mdcId, mdcConf, progressbar }) => {
                         {DATASET.COLOR}
                     </Col>
                     <Col span={4}>
-                        <ColorPicker color={colorCode?.color} onChange={(color) => onColorChange(color)} />
+                        <ColorPicker color={colorCode!==null ? colorCode?.color : mdcConf?.progressbar_color} onChange={(color) => onColorChange(color)} />
                     </Col>
                 </Row>
                 <Row>

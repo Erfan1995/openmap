@@ -14,9 +14,9 @@ const BreadCrumb = ({ steps, onStepClick, color, activeStep }) => {
         `
 
     const Link = styled.a`
-        background-color:${color?.color} ;
+        background-color:${color} ;
         :after{
-            border-left-color: ${color?.color} ;
+            border-left-color: ${color} ;
         };
     `
 
