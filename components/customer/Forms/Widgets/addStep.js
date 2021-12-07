@@ -18,7 +18,7 @@ const Photo = styled.div`
 `
 
 
-const AddStep = ({ widgetId, onModalClose,addImageFile }, ref) => {
+const AddStep = ({ mdcId, onModalClose,addImageFile }, ref) => {
     const [form] = Form.useForm();
     const [loading, setLoading] = useState(false);
     const [imageUrl, setImageUrl] = useState();
@@ -73,12 +73,12 @@ const AddStep = ({ widgetId, onModalClose,addImageFile }, ref) => {
                 .then(async (values) => {
                     const fData = new FormData();
                     let res = null;
-                    fData.append('data', JSON.stringify({ 'title': values.title, 'hover_text': values.hover_text, 'widget': widgetId }));
+                    fData.append('data', JSON.stringify({ 'title': values.title, 'hover_text': values.hover_text, 'mapdatasetconf': mdcId }));
                     if (file) {
                         fData.append('files.icon', file.originFileObj, file.originFileObj.name);
                     }
                     setLoading(true);
-                    res = await postFileMethod('progressbars', fData);
+                    res = await postFileMethod('dataset-progressbars', fData);
                     if (res) {
                         message.success(DATASET.STEP_ADDED_SUCCESSFUL);
                         onModalClose(res);

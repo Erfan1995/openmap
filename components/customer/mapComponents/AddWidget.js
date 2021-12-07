@@ -16,6 +16,7 @@ const AddWidget = ({ mapId, mdcId, token, layerType }) => {
     const [selected, setSelected] = useState(0);
     const [widget, setWidget] = useState([]);
     const [progressbars, setProgressbars] = useState();
+    const [mdcConf, setMdcConf] = useState();
 
     useEffect(() => {
         setSelected(localStorage.getItem('currentWidget'));
@@ -27,8 +28,9 @@ const AddWidget = ({ mapId, mdcId, token, layerType }) => {
             } else if (layerType === "dataset") {
                 response = await getWidgets(mdcId, mapId, token, 'datasetProgressbars', 'mapdatasetconf');
                 if (response && response?.length !== 0) {
-                    setWidget(response.widgets[0]);
-                    setProgressbars(response.datasetProgressbars);
+                    setWidget(response?.widgets[0]);
+                    setProgressbars(response?.datasetProgressbars);
+                    setMdcConf(response?.datasetProgressbars[0]?.mapdatasetconf);
                 }
                 else {
                     const res = await postMethod('widgets/', { 'map': mapId });
@@ -37,7 +39,6 @@ const AddWidget = ({ mapId, mdcId, token, layerType }) => {
                     }
                 }
             }
-            console.log(response);
 
         }
 
@@ -49,7 +50,7 @@ const AddWidget = ({ mapId, mdcId, token, layerType }) => {
 
     let SelectedView;
     if (selected == 1) {
-        SelectedView = <CreateProgressBarWidget widget={widget} />
+        SelectedView = <CreateProgressBarWidget mdcConf={mdcConf} mdcId={mdcId} progressbar={progressbars} widget={widget} />
     }
     else if (selected == 2) {
         SelectedView = <CreateVideoWidget widget={widget} />

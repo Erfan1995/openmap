@@ -53,12 +53,12 @@ const CreateTextWidget = ({ widget }) => {
         setEditorState(editorState);
     }
     return (typeof widget?.text !== 'undefined' && widget?.text?.length !== 0) ? <div>
-        <Spin spinning={loading}>
+        <Spin spinning={loading} >
             <Form form={form} name="text" onFinish={onSubmit} initialValues={widget?.text}>
                 <Space direction='vertical'>
-                    <Row>{DATASET.TITLE}</Row>
+                    <Row >{DATASET.TITLE}</Row>
                     <Row>
-                        <Form.Item name="title" rules={[{ required: true, message: DATASET.TITLE_PLACEHOLDER }]}>
+                        <Form.Item name="title" style={{width:'100%'}} rules={[{ required: true, message: DATASET.TITLE_PLACEHOLDER }]}>
                             <Input placeholder={DATASET.TITLE_PLACEHOLDER}></Input>
                         </Form.Item>
                     </Row>
