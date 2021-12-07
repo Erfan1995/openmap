@@ -51,8 +51,6 @@ const { Title } = Typography;
 const Dashboard = ({ mapData, manualMapData, datasets, mapToken }) => {
 
   const [user, setUser] = useState();
-  console.log('map '+JSON.stringify(mapData.loginTitle)+' image '+JSON.stringify(mapData.loginLogo)+' welcome message '+JSON.stringify(mapData.welcomeMessage));
-
   useEffect(() => {
     setUser({ loading: true });
     localStorage.removeItem('magicUser');
@@ -93,7 +91,7 @@ const Dashboard = ({ mapData, manualMapData, datasets, mapToken }) => {
             <StyledCard>
               <Title level={1}>
                 {/* {mapData.loginTitle} */}
-                <Photo src={getStrapiMedia(mapData?.loginLogo)} alt="image not found"></Photo>
+                <Photo src={getStrapiMedia(mapData?.loginLogo)} alt="image"></Photo>
               </Title>
               <Title level={3}>
                 {mapData?.welcomeMessage}

@@ -7,6 +7,7 @@ import { style } from '../styles';
 
 const Stepper = ({ steps, onStepClick ,activeStep,color}) => {
 
+    
     const Photo = styled.img`
         width:20px;
         height:20px;

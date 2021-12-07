@@ -4,6 +4,7 @@ import { Checkbox, message, Spin, Button, Modal, List, Col, Row, Dropdown, Menu,
 import { putMethod,putFileMethod } from "lib/api";
 import { DATASET } from "static/constant";
 import styled from "styled-components";
+import { LoginData } from "lib/constants";
 import { ExclamationCircleOutlined, InboxOutlined } from '@ant-design/icons'
 
 const { confirm } = Modal;
@@ -48,49 +49,12 @@ function LoginTab({ mapData }) {
             width:100%;
     `;
 
-    const ListTitle = styled.div`
-
-    `;
-
-    const ListIcon = styled.div`
-    
-    `;
-
 
     const SaveButton = styled(Button)`
         margin-top: 20px;
         margin-bottom: 20px;
         float: right !important;
         `;
-
-    const firstData = [
-        {
-            "id": DATASET.ONE,
-            "label": DATASET.EMAIL_LOGIN,
-            "state": false
-        },
-        {
-            "id": DATASET.TWO,
-            "label": DATASET.SOCIAL_LOGIN,
-            "state": false
-        },
-        {
-            "id": DATASET.THREE,
-            "label": DATASET.BLOCKCHAIN_LOGIN,
-            "state": false
-        },
-        {
-            "id": DATASET.FOUR,
-            "label": DATASET.ANNONYMOUS_LOGIN,
-            "state": false
-        },
-        {
-            "id": DATASET.FIFE,
-            "label": DATASET.UNLOCK_PROTOCOL,
-            "state": false
-        }
-    ]
-
 
 
     const attributeMenu = (
@@ -101,7 +65,7 @@ function LoginTab({ mapData }) {
     );
 
     useEffect(() => {
-        mapData.auth_types != null ? setRows(mapData.auth_types) : setRows(firstData);
+        mapData.auth_types != null ? setRows(mapData.auth_types) : setRows(LoginData);
         setAttributes(mapData.auth_attributes != null ? mapData.auth_attributes : []);
     }, []);
 

@@ -44,11 +44,11 @@ function beforeUpload(file) {
     return isJpgOrPng && isLt2M;
 }
 
-const CreateProgressBarWidget = ({ widget,mdcId,mdcConf,progressbar }) => {
+const CreateProgressBarWidget = ({ mdcId, mdcConf, progressbar }) => {
     const [form] = Form.useForm();
     const [icon, setIcon] = useState();
     const [loading, setLoading] = useState(false);
-    const [colorCode, setColorCode] = useState();
+    const [colorCode, setColorCode] = useState(null);
     const [uploading, setUploading] = useState(false);
     const [imageUrl, setImageUrl] = useState("");
     const [steps, setSteps] = useState([]);
@@ -57,20 +57,19 @@ const CreateProgressBarWidget = ({ widget,mdcId,mdcConf,progressbar }) => {
     const [selectedStep, setSelectedStep] = useState(null);
     const [file, setFile] = useState();
     const [defaultValues, setDefaultValues] = useState(null);
-    const [selectedStyle, setSelectedStyle] = useState('circle-mode');
+    const [selectedStyle, setSelectedStyle] = useState(null);
     const [activeStep, setActiveStep] = useState();
 
-
+    
     useEffect(() => {
         setSteps(progressbar);
-        setActiveStep(mdcConf?.selected_step);
-        setSelectedStyle(mdcConf?.progress_bar_default_style);
-    }, [progressbar,mdcConf]);
-
+        setColorCode(mdcConf?.progressbar_color)
+    },[progressbar]);
 
     useEffect(()=>{
-        setColorCode(mdcConf?.progressbar_color);
-    },[colorCode])
+        setActiveStep(mdcConf?.selected_step);
+        setSelectedStyle(mdcConf?.progress_bar_default_style);   
+    },[mdcConf]);
 
     useEffect(() => {
         form.setFieldsValue(defaultValues);
@@ -122,7 +121,7 @@ const CreateProgressBarWidget = ({ widget,mdcId,mdcConf,progressbar }) => {
                 const res = await putFileMethod('dataset-progressbars/' + defaultValues.id, fData);
                 if (res) {
                     if (values.is_active) {
-                        const widgetRes = await putMethod('mapdatasetconfs/' + mdcId, { 'selected_step':Number(defaultValues.id)});
+                        const widgetRes = await putMethod('mapdatasetconfs/' + mdcId, { 'selected_step': Number(defaultValues.id) });
                         if (widgetRes) {
                             setActiveStep(widgetRes.selected_step);
                         }
@@ -149,7 +148,6 @@ const CreateProgressBarWidget = ({ widget,mdcId,mdcConf,progressbar }) => {
 
 
     const onStepClick = (step) => {
-        console.log('values '+JSON.stringify(step));
         setDefaultValues({ 'id': step.id, 'title': step.title, 'hover_text': step.hover_text, 'is_active': activeStep == step.id ? true : false });
         setImageUrl(getStrapiMedia(step.icon));
         setIcon(null);
@@ -276,19 +274,19 @@ const CreateProgressBarWidget = ({ widget,mdcId,mdcConf,progressbar }) => {
                                                             <Row>{DATASET.TITLE}</Row>
                                                             <Row>
                                                                 <Form.Item name="title" rules={[{ required: true, message: 'Please input title!' }]}>
-                                                                    <Input placeholder="title" />
+                                                                    <Input placeholder={DATASET.TITLE} />
                                                                 </Form.Item>
                                                             </Row>
                                                             <Row>{DATASET.HOVER_TEXT}</Row>
                                                             <Row>
                                                                 <Form.Item name="hover_text" rules={[{ required: true, message: 'Please input hover text!' }]}>
-                                                                    <Input placeholder="hover text" />
+                                                                    <Input placeholder={DATASET.HOVER_TEXT} />
                                                                 </Form.Item>
                                                             </Row>
                                                             <Row>
                                                                 <Form.Item name="is_active" valuePropName="checked" >
                                                                     <Checkbox>
-                                                                        Is Active
+                                                                        {DATASET.IS_ACTIVE}
                                                                     </Checkbox>
                                                                 </Form.Item>
                                                             </Row>
@@ -319,7 +317,7 @@ const CreateProgressBarWidget = ({ widget,mdcId,mdcConf,progressbar }) => {
                                                 </Row>
                                             </Card> : <div></div>
                                         }
-                                        <Row style={{ minWidth: 250}}>
+                                        <Row style={{ minWidth: 250 }}>
                                             <Button type='dashed' onClick={() => setAddModalVisible(true)} style={{ width: '100%', height: 50 }}>
                                                 {DATASET.ADD_STEP}
                                             </Button>

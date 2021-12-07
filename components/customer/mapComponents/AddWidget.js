@@ -50,7 +50,7 @@ const AddWidget = ({ mapId, mdcId, token, layerType }) => {
 
     let SelectedView;
     if (selected == 1) {
-        SelectedView = <CreateProgressBarWidget mdcConf={mdcConf} mdcId={mdcId} progressbar={progressbars} widget={widget} />
+        SelectedView = <CreateProgressBarWidget mdcConf={mdcConf} mdcId={mdcId} progressbar={progressbars} />
     }
     else if (selected == 2) {
         SelectedView = <CreateVideoWidget widget={widget} />

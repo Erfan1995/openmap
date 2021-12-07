@@ -3,7 +3,7 @@ import styles from './breadcrumb.module.css'
 import { getStrapiMedia } from 'lib/media';
 import styled from 'styled-components';
 const BreadCrumb = ({ steps, onStepClick, color, activeStep }) => {
-    console.log('active step ' + activeStep + ' color ' + color?.color);
+    
     const Photo = styled.img`
         width:20px;
         height:20px;

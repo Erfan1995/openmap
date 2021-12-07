@@ -50,35 +50,33 @@ const CreateNewsFeedWidget = ({ widget }) => {
     return (typeof widget?.news_feeds !== 'undefined' && widget?.news_feeds?.length !== 0) ? <div>
         <Spin spinning={loading}>
             <Form form={form} onFinish={onSubmit} initialValues={widget?.news_feeds} >
-                <Space direction='vertical' style={{minWidth:'250px'}}>
-                    <Row>{DATASET.TITLE}</Row>
-                    <Row>
-                        <Form.Item name="title" style={{width:'100%'}}>
-                            <Input placeholder={DATASET.TITLE_PLACEHOLDER} rules={[{ required: true, message: DATASET.TITLE_PLACEHOLDER }]}></Input>
-                        </Form.Item>
-                    </Row>
-                    <Row>
-                        <Col span={20}>
-                            {DATASET.HEADER_COLOR}
-                        </Col>
-                        <Col span={4}>
-                            <ColorPicker color={widget?.news_feeds?.color} onChange={(color) => setColorCode(color.color)} />
-                        </Col>
-                    </Row>
-                    <Row>{DATASET.RSS_FEED_URL}</Row>
-                    <Row>
-                        <Form.Item style={{width:'100%'}}  name="rss_feed" rules={[{ required: true, message: DATASET.REQUIRED_FIELD }]}>
-                            <Input placeholder={DATASET.RSS_FEED_URL} rules={[{ required: true, message: DATASET.TITLE_PLACEHOLDER }]}></Input>
-                        </Form.Item>
-                    </Row>
-                    <Row>
-                        <Button type='primary' htmlType="submit">
-                            {DATASET.SAVE}
-                        </Button>
-                    </Row>
-                </Space>
-            </Form>
 
+                <Row>{DATASET.TITLE}</Row>
+                <Row>
+                    <Form.Item name="title" style={{ width: '100%' }}>
+                        <Input placeholder={DATASET.TITLE_PLACEHOLDER} rules={[{ required: true, message: DATASET.TITLE_PLACEHOLDER }]}></Input>
+                    </Form.Item>
+                </Row>
+                <Row>
+                    <Col span={20}>
+                        {DATASET.HEADER_COLOR}
+                    </Col>
+                    <Col span={4}>
+                        <ColorPicker color={widget?.news_feeds?.color} onChange={(color) => setColorCode(color.color)} />
+                    </Col>
+                </Row>
+                <Row>{DATASET.RSS_FEED_URL}</Row>
+                <Row>
+                    <Form.Item style={{ width: '100%' }} name="rss_feed" rules={[{ required: true, message: DATASET.REQUIRED_FIELD }]}>
+                        <Input placeholder={DATASET.RSS_FEED_URL} rules={[{ required: true, message: DATASET.TITLE_PLACEHOLDER }]}></Input>
+                    </Form.Item>
+                </Row>
+                <Row>
+                    <Button type='primary' htmlType="submit">
+                        {DATASET.SAVE}
+                    </Button>
+                </Row>
+            </Form>
         </Spin>
     </div> : <div></div>
 

@@ -171,9 +171,10 @@ export const DATASET = {
     STEP_UPDATE_FAILED:'Opps step update failed ',
     STEP_DELETED:'step deleted ',
     STEP_DELETION_FIELD:'step deletion field',
-    FIELD_CHANGE_STYLE:'failed to change style ',
+    FIELD_CHANGE_STYLE:'Failed to change style ',
     STYLE_CHANGED:'style changed',
     SELECT_STYLE:'Select Style ',
+    IS_ACTIVE:'Is Active',
 }
 
 export const LAT = ['lat', 'Lat', 'LAT', 'latitude', 'Latitude', 'LATITUDE'];

@@ -4,7 +4,7 @@ import MapMarkers from "../mapComponents/MapMarkers";
 import MapLisTab from "../mapComponents/MapListTab";
 const { TabPane } = Tabs;
 import Popup from "../mapComponents/popup";
-const DatasetConf = ({ setListClicked, icons, mdcId, selectedDIcons, datasetProperties, selectedDatasetProperties,
+const DatasetConf = ({ setListClicked, icons, mdcId, selectedDIcons, datasetProperties, selectedDatasetProperties,selectedWidgets,
     listviewProperties, listviewEditedProperties, layerType, editedProperties, setDataset, onMapDataChange,
     changeSelectedIcons, token }) => {
 
@@ -26,7 +26,7 @@ const DatasetConf = ({ setListClicked, icons, mdcId, selectedDIcons, datasetProp
                 </TabPane>
                 <TabPane tab="List" key="4">
                     <MapLisTab onEdit={onEdit} mdcId={mdcId} properties={datasetProperties}
-                        editedListViewProperties={listviewEditedProperties} listviewProperties={listviewProperties}
+                        editedListViewProperties={listviewEditedProperties} selectedWidgets={selectedWidgets} listviewProperties={listviewProperties}
                         token={token} layerType={layerType} />
                 </TabPane>
             </Tabs>

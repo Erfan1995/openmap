@@ -37,12 +37,11 @@ const CreateVideoWidget = ({ widget }) => {
     return (typeof widget?.video !== 'undefined' && widget?.video?.length !== 0) ?  <div>
         <Spin spinning={loading}>
             <Form form={form} name='videoForm' initialValues={widget.video} onFinish={onSubmit}>
-                <Space direction='vertical' style={{minWidth:'250px'}}>
                     <br/>
                     <Row>{DATASET.TITLE}</Row>
                     <Row>
                         <Form.Item style={{width:'100%'}} name="title" rules={[{ required: true, message: DATASET.TITLE_PLACEHOLDER }]} >
-                            <Input placeholder={DATASET.TITLE_PLACEHOLDER}></Input>
+                            <Input  placeholder={DATASET.TITLE_PLACEHOLDER}></Input>
                         </Form.Item>
                     </Row>
                     <Row>
@@ -53,10 +52,9 @@ const CreateVideoWidget = ({ widget }) => {
                             <ColorPicker color={widget?.video?.color} onChange={(color) => setColorCode(color.color)} />
                         </Col>
                     </Row>
-                    <Row>
-                    </Row>
-                    <Row>
-                        <Form.Item style={{minWidth:'100%'}} name="video_link" rules={[{ required: true, message: DATASET.REQUIRED_FIELD }, { type: "url", message: DATASET.CORRECT_URL_MESSAGE }]}>
+                    <br/>
+                    <Row >
+                        <Form.Item style={{width:'100%'}}  name="video_link" rules={[{ required: true, message: DATASET.REQUIRED_FIELD }, { type: "url", message: DATASET.CORRECT_URL_MESSAGE }]}>
                             <Input placeholder="https://www.youtube.com/watch?v=7O9ZDygWZ58"></Input>
                         </Form.Item>
                     </Row>
@@ -65,9 +63,7 @@ const CreateVideoWidget = ({ widget }) => {
                             {DATASET.SAVE}
                         </Button>
                     </Row>
-                </Space>
             </Form>
-
         </Spin>
     </div> :<div></div>
 }
