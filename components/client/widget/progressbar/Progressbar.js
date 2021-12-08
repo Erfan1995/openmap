@@ -25,7 +25,8 @@ const Progressbar = ({ progressbar }) => {
             <div id={styles.circle}>
                 <ul>
                     {progressbar.steps?.map((step) => {
-                        return <li><Link ><Photo src={getStrapiMedia(step.icon)}></Photo></Link></li>
+                        return <li><Link className={step.id <= progressbar.acitveStep ? styles.active : styles.disable}
+                        ><Tooltip title={step?.hover_text}><Photo src={getStrapiMedia(step.icon)}></Photo></Tooltip></Link></li>
                     })}
                 </ul>
             </div> :
