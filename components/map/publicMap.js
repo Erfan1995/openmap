@@ -72,7 +72,6 @@ const PublicMap = ({ styleId, mapZoom, style, mapData, manualMapData, onCustomeD
                         if (!iconUrl) return L.marker(latlng, {
                             icon: new L.icon({ iconUrl: '/marker-icon.png', iconSize: MapDefaultIconSize })
                         });
-
                         return L.marker(latlng, {
                             icon: new L.icon({ iconUrl: iconUrl, iconSize: MapIconSize })
                         })
