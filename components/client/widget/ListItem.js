@@ -1,4 +1,4 @@
-
+import { Loader } from "@googlemaps/js-api-loader";
 import { Row, Col, Steps, Divider } from "antd";
 import styled from "styled-components";
 import { timeSince } from "lib/general-functions";
@@ -38,7 +38,25 @@ const CustomStepper = () => {
 
 
 const ListItem = ({ item }) => {
-    console.log(item);
+    let loader = new Loader({
+        apiKey: "AIzaSyBlgQUaksdGk8QypFdyyOFwU8d07giTsuE",
+    });
+    loader.load().then((google) => {
+        let latlng = new google.maps.LatLng(item.latlng[0], item.latlng[1]);
+        let geocoder = new google.maps.Geocoder();
+        geocoder.geocode({ 'latLng': latlng }, (results, status) => {
+            if (status !== google.maps.GeocoderStatus.OK) {
+                alert(status);
+            }
+            // This is checking to see if the Geoeode Status is OK before proceeding
+            if (status == google.maps.GeocoderStatus.OK) {
+                console.log(results);
+                let address = (results[0].formatted_address);
+                console.log(address);
+            }
+        });
+    })
+
     return <CustomItem>
         <Row>
             <Col span={12}>
