@@ -79,7 +79,7 @@ const MapConf = ({ authenticatedUser, styledMaps, tags, mapData, serverSideDatas
     const [mdcId, setmdcId] = useState();
     const [selectedDIcons, setSelectedDIcons] = useState();
     const [selectedDatasetProperties, setSelectedDatasetProperties] = useState();
-    const [selectedWidgets,setSelectedWidgets]=useState();
+    const [selectedWidgets,setSelectedWidgets]=useState([]);
     const [listviewProperties, setListviewProperties] = useState();
     const [datasetProperties, setDatasetProperties] = useState();
     const [layerType, setLayerType] = useState();
@@ -215,12 +215,12 @@ const MapConf = ({ authenticatedUser, styledMaps, tags, mapData, serverSideDatas
     }
     //this function gets called whenever the user click on a dataset or main map popup styles button
     const mdc = async (id, state, type) => {
+        setSelectedWidgets(mapData?.selected_widgets);
         setLayerClicked(state);
         onConfigTabChanged(state);
         setLayerType(type);
         setSelectedDIcons([]);
         setSelectedDatasetProperties([]);
-        setSelectedWidgets([]);
         setListviewProperties([]);
         setDatasetProperties([]);
         if (type === "dataset") {
@@ -246,7 +246,6 @@ const MapConf = ({ authenticatedUser, styledMaps, tags, mapData, serverSideDatas
                 setEditedProperties(selectedIcons[0]?.edited_dataset_properties);
                 setListviewProperties(selectedIcons[0]?.listview_dataset_properties);
                 setListviewEditedProperties(selectedIcons[0]?.listview_edited_dataset_properties);
-                setSelectedWidgets(selectedIcons[0]?.selected_widgets);
 
             }
         } else if (type === "main") {
@@ -284,7 +283,6 @@ const MapConf = ({ authenticatedUser, styledMaps, tags, mapData, serverSideDatas
                     setEditedProperties(selectedproperties[0]?.edited_survey_properties);
                     setListviewProperties(selectedproperties[0]?.listview_survey_properties);
                     setListviewEditedProperties(selectedproperties[0]?.listview_edited_survey_properties);
-                    setSelectedWidgets(selectedproperties[0]?.selected_widgets);
                 }
             }
         }
@@ -382,7 +380,6 @@ const MapConf = ({ authenticatedUser, styledMaps, tags, mapData, serverSideDatas
     const onModalSurveyClose = (res) => {
         setEditModalVisible(false);
     }
-
 
 
     return (
@@ -536,7 +533,7 @@ const MapConf = ({ authenticatedUser, styledMaps, tags, mapData, serverSideDatas
                         }} setDataset={setDataset} onMapDataChange={onMapDataChange} listviewProperties={listviewProperties}
                             listviewEditedProperties={listviewEditedProperties} icons={icons} mdcId={mdcId} selectedDIcons={selectedDIcons} token={token}
                             datasetProperties={datasetProperties} selectedDatasetProperties={selectedDatasetProperties}
-                            layerType={layerType} changeSelectedIcons={changeSelectedIcons} editedProperties={editedProperties} selectedWidgets={selectedWidgets} />
+                            layerType={layerType} changeSelectedIcons={changeSelectedIcons} editedProperties={editedProperties} selectedWidgets={selectedWidgets} mapId={mapData?.id} />
                     </div> :
                         <div>
                             <Button style={{ marginLeft: -20, marginTop: -30 }} icon={<ArrowLeftOutlined />} onClick={() => {

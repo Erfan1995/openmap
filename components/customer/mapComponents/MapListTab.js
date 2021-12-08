@@ -99,7 +99,7 @@ const ListEditeButton = styled.span`
 
 
 
-const MapLisTab = ({ onEdit, mdcId, properties, editedListViewProperties, listviewProperties, selectedWidgets, token, layerType }) => {
+const MapLisTab = ({ onEdit, mdcId, properties, editedListViewProperties, listviewProperties, selectedWidgets,mapId,token, layerType,onMapDataChange }) => {
     const [indeterminate, setIndeterminate] = useState(false);
     const [checkAll, setCheckAll] = useState(false);
     const [checkedList, setCheckedList] = useState(listviewProperties);
@@ -217,8 +217,6 @@ const MapLisTab = ({ onEdit, mdcId, properties, editedListViewProperties, listvi
                 setLoading(false);
                 message.error(e?.message);
             })
-
-
     }
 
     const onChangeState = async (e) => {
@@ -232,9 +230,10 @@ const MapLisTab = ({ onEdit, mdcId, properties, editedListViewProperties, listvi
                     tempWidgets.push(widget);
                 }
             })
-            const res = await putMethod('mapdatasetconfs/' + mdcId, { selected_widgets: tempWidgets });
+            const res = await putMethod('maps/' + mapId, { selected_widgets: tempWidgets });
             if (res) {
                 setWidgets(tempWidgets);
+                onMapDataChange();
             }
             setLoading(false);
     }

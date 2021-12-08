@@ -10,7 +10,7 @@ import { useEffect, useState } from 'react';
 const CreateNewsFeedWidget = ({ widget }) => {
 
     const [form] = Form.useForm();
-    const [colorCode, setColorCode] = useState("ff0000");
+    const [colorCode, setColorCode] = useState(null);
     const [loading, setLoading] = useState(false);
     const [articles, setArticles] = useState();
     const mediumRssFeed = "https://api.rss2json.com/v1/api.json?rss_url=https://feeds.feedburner.com/raymondcamdensblog?format=xml";
@@ -38,7 +38,8 @@ const CreateNewsFeedWidget = ({ widget }) => {
                 let newsFeed = { 'title': values.title, 'rss_feed': values.rss_feed, 'color': colorCode };
                 const res = await putMethod('widgets/' + widget?.id, { 'news_feeds': newsFeed });
                 if (res) {
-                    message.success(DATASET.SUCCESSFULY_UPDATE_MESSAGE)
+                    message.success(DATASET.SUCCESSFULY_UPDATE_MESSAGE);
+                    setColorCode(res?.color);
                 }
                 setLoading(false);
             }).catch(e => {
@@ -62,7 +63,7 @@ const CreateNewsFeedWidget = ({ widget }) => {
                         {DATASET.HEADER_COLOR}
                     </Col>
                     <Col span={4}>
-                        <ColorPicker color={widget?.news_feeds?.color} onChange={(color) => setColorCode(color.color)} />
+                        <ColorPicker color={colorCode !== null ? colorCode : widget?.news_feeds?.color} onChange={(color) => setColorCode(color.color)} />
                     </Col>
                 </Row>
                 <Row>{DATASET.RSS_FEED_URL}</Row>

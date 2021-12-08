@@ -16,7 +16,7 @@
     float: left;
     height: 40px;
     width:40px;
-    padding-top:7px;
+    padding-top:6px;
     text-align: center;
     border-radius:50%;
     position: relative;
@@ -60,10 +60,10 @@
 }
 
 .active{
-    background:red !important ;
+    background:#1890ff !important ;
 }	
 
 .active:after{
-    color: red !important;
+    color: #1890ff !important;
 };
 		

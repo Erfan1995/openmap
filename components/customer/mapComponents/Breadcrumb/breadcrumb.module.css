@@ -15,9 +15,9 @@
     float: left;
     height: 40px;
     text-align: center;
-    padding: 8px 8px 0 20px;
+    padding: 7px 5px 0 20px;
     position: relative;
-    margin: 5px 10px 0 0; 
+    margin: 5px 6px 0 0; 
     font-size: 15px;
     text-decoration: none;
 }
@@ -81,11 +81,10 @@
 }
 
 .active{
-    background:red !important ;
+    background:#1890ff !important ;
 }	
 
 .active:after{
-    border-left-color:red !important;
-    /* color:#357DFD !important; */
+    border-left-color:#1890ff !important;
 };
 
