@@ -16,7 +16,7 @@
     float: left;
     height: 40px;
     width:40px;
-    padding-top:7px;
+    padding-top:6px;
     text-align: center;
     border-radius:50%;
     position: relative;
@@ -51,19 +51,97 @@
 	background: green;
 }
 
+
+
+
+
+#flash ul{
+    list-style: none;
+    display: inline-table;
+    padding:0px
+}
+
+#flash ul li{
+    display: inline;
+    margin-top: 2px;
+}
+
+#flash ul li a{
+    display: block;
+    float: left;
+    height: 40px;
+    text-align: center;
+    padding: 7px 5px 0 20px;
+    position: relative;
+    margin: 5px 6px 0 0; 
+    font-size: 15px;
+    text-decoration: none;
+}
+
+#flash ul li a:after{
+    content: "";  
+    border-top: 20px solid transparent;
+    border-bottom: 20px solid transparent;
+    border-left-width: 10px;
+    border-left-style: solid;
+    position: absolute; 
+    right: -10px;
+    top: 0;
+    z-index: 1;
+} 
+
+
+#flash ul li a:before{
+    content: "";  
+    border-top: 20px solid transparent;
+    border-bottom: 20px solid transparent;
+    border-left: 10px solid #fff;
+    position: absolute; 
+    left: 0; 
+    top: 0;
+} 
+
+
+#flash ul li:first-child a {
+	border-top-left-radius: 10px; border-bottom-left-radius: 10px;
+    padding-left:10px
+	}
+
+#flash ul li:first-child a:before {
+	display: none; 
+}
+				
+#flash ul li:last-child a {
+	padding-right: 15px;
+	border-top-right-radius: 10px; border-bottom-right-radius: 10px;
+}
+
+#flash ul li:last-child a:after {
+	display: none; 
+}
+			
+#flash ul li a:hover {
+	background: green;
+} 
+
+#flash ul li a:hover:after {
+	border-left-color: green;
+} 
+
+
 .disable{
     background:blue ;
 }
 
 .disable:after{
-    color: blue;
+    border-left-color:blue ;
 }
 
 .active{
-    background:red !important ;
+    background:#0ccf4d !important ;
 }	
 
 .active:after{
-    color: red !important;
+    border-left-color:#0ccf4d !important;
 };
 		
