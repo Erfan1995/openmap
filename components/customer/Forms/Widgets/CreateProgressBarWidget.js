@@ -63,17 +63,21 @@ const CreateProgressBarWidget = ({ mdcId, mdcConf, progressbar, layerType }) => 
 
     useEffect(() => {
         setSteps(progressbar);
-        setColorCode(mdcConf?.progressbar_color)
-    },[progressbar]);
+    }, [progressbar]);
 
-    useEffect(()=>{
+    useEffect(() => {
         setActiveStep(mdcConf?.selected_step);
         setSelectedStyle(mdcConf?.progress_bar_default_style);
-    },[mdcConf]);
+        setColorCode(mdcConf?.progressbar_color)
+    }, [mdcConf]);
 
     useEffect(() => {
         form.setFieldsValue(defaultValues);
     }, [form, defaultValues])
+
+    useEffect(() => {
+        setColorCode(colorCode);
+    }, [colorCode])
 
 
     const listMenu = (
@@ -120,8 +124,14 @@ const CreateProgressBarWidget = ({ mdcId, mdcConf, progressbar, layerType }) => 
                     }
                     const res = await putFileMethod('dataset-progressbars/' + defaultValues.id, fData);
                     if (res) {
-                        if (values.is_active) {
+                        if (values.is_active && defaultValues.id !== activeStep) {
                             const widgetRes = await putMethod('mapdatasetconfs/' + mdcId, { 'selected_step': Number(defaultValues.id) });
+                            if (widgetRes) {
+                                setActiveStep(widgetRes.selected_step);
+                            }
+                        }
+                        else if (!values.is_active && defaultValues.id === activeStep) {
+                            const widgetRes = await putMethod('mapdatasetconfs/' + mdcId, { 'selected_step': 0 });
                             if (widgetRes) {
                                 setActiveStep(widgetRes.selected_step);
                             }
@@ -132,10 +142,18 @@ const CreateProgressBarWidget = ({ mdcId, mdcConf, progressbar, layerType }) => 
                             if (step.id === defaultValues?.id) {
                                 return { ...step, title: res.title, hover_text: res.hover_text, icon: res.icon, id: res.id }
                             }
-                            else {
-                                return { ...step, step: step }
-                            }
-                        }));
+                            message.success(DATASET.STEP_UPDATED_SUCCESSFUL);
+                            setSelectedStep(null);
+                            setSteps(steps.map((step) => {
+                                if (step.id === defaultValues?.id) {
+                                    return { ...step, title: res.title, hover_text: res.hover_text, icon: res.icon, id: res.id }
+                                }
+                                else {
+                                    return { ...step, step: step }
+                                }
+                            }));
+
+                        }))
 
                     }
                 } else if (layerType === "main") {
@@ -145,8 +163,14 @@ const CreateProgressBarWidget = ({ mdcId, mdcConf, progressbar, layerType }) => 
                     }
                     const res = await putFileMethod('survey-progressbars/' + defaultValues.id, fData);
                     if (res) {
-                        if (values.is_active) {
+                        if (values.is_active && defaultValues.id !== activeStep) {
                             const widgetRes = await putMethod('mapsurveyconfs/' + mdcId, { 'selected_step': Number(defaultValues.id) });
+                            if (widgetRes) {
+                                setActiveStep(widgetRes.selected_step);
+                            }
+                        }
+                        else if (!values.is_active && defaultValues.id === activeStep) {
+                            const widgetRes = await putMethod('mapsurveyconfs/' + mdcId, { 'selected_step': 0 });
                             if (widgetRes) {
                                 setActiveStep(widgetRes.selected_step);
                             }
@@ -157,10 +181,18 @@ const CreateProgressBarWidget = ({ mdcId, mdcConf, progressbar, layerType }) => 
                             if (step.id === defaultValues?.id) {
                                 return { ...step, title: res.title, hover_text: res.hover_text, icon: res.icon, id: res.id }
                             }
-                            else {
-                                return { ...step, step: step }
-                            }
-                        }));
+                            message.success(DATASET.STEP_UPDATED_SUCCESSFUL);
+                            setSelectedStep(null);
+                            setSteps(steps.map((step) => {
+                                if (step.id === defaultValues?.id) {
+                                    return { ...step, title: res.title, hover_text: res.hover_text, icon: res.icon, id: res.id }
+                                }
+                                else {
+                                    return { ...step, step: step }
+                                }
+                            }));
+
+                        }))
 
                     }
                 }
@@ -206,6 +238,7 @@ const CreateProgressBarWidget = ({ mdcId, mdcConf, progressbar, layerType }) => 
             setLoading(false);
         }
     }
+
 
     const onModalClose = (res) => {
         steps.push({ 'title': res.title, 'hover_text': res.hover_text, 'id': res.id, 'icon': res.icon });
@@ -268,10 +301,10 @@ const CreateProgressBarWidget = ({ mdcId, mdcConf, progressbar, layerType }) => 
                     <Space direction='vertical'>
                         <Row>{DATASET.STYLE}</Row>
                         <Row className="w-full">
-                            <Stepper steps={steps} activeStep={activeStep} onStepClick={onStepClick} color={colorCode}></Stepper>
+                            <Stepper steps={steps} activeStep={activeStep} onStepClick={onStepClick} color={colorCode !== null ? colorCode?.color : mdcConf?.progressbar_color}></Stepper>
                         </Row>
                         <Row className="w-full">
-                            <BreadCrumb steps={steps} activeStep={activeStep} onStepClick={onStepClick} color={colorCode}></BreadCrumb>
+                            <BreadCrumb steps={steps} activeStep={activeStep} onStepClick={onStepClick} color={colorCode !== null ? colorCode?.color : mdcConf?.progressbar_color}></BreadCrumb>
                         </Row>
                     </Space>
                 </Row>
@@ -295,7 +328,7 @@ const CreateProgressBarWidget = ({ mdcId, mdcConf, progressbar, layerType }) => 
                         {DATASET.COLOR}
                     </Col>
                     <Col span={4}>
-                        <ColorPicker color={colorCode?.color} onChange={(color) => onColorChange(color)} />
+                        <ColorPicker color={colorCode !== null ? colorCode?.color : mdcConf?.progressbar_color} onChange={(color) => onColorChange(color)} />
                     </Col>
                 </Row>
                 <Row>
