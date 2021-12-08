@@ -25,7 +25,8 @@ const BreadCrumb = ({ steps, onStepClick, color, activeStep }) => {
         <ul>
             {steps?.map((step) => {
                 return <li>
-                <Link href="#1" className={step.id <= activeStep ? styles.active : styles.disable} onClick={() => onStepClick(step)}><Tooltip title={step.hover_text}><Photo src={getStrapiMedia(step?.icon)}></Photo></Tooltip></Link>
+                <Link href="#1" className={step.id <= activeStep ? styles.active : styles.disable}
+                 onClick={() => onStepClick(step)}><Tooltip title={step.hover_text}><Photo src={getStrapiMedia(step?.icon)}></Photo></Tooltip></Link>
             </li>
             })}
         </ul>

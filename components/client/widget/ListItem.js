@@ -38,24 +38,24 @@ const CustomStepper = () => {
 
 
 const ListItem = ({ item }) => {
-    let loader = new Loader({
-        apiKey: "AIzaSyB_VDWRbprK5cMsT-mj0dgAR-G2bMyHLKU",
-    });
-    loader.load().then((google) => {
-        let latlng = new google.maps.LatLng(item.latlng[0], item.latlng[1]);
-        let geocoder = new google.maps.Geocoder();
-        geocoder.geocode({ 'latLng': latlng }, (results, status) => {
-            if (status !== google.maps.GeocoderStatus.OK) {
-                alert(status);
-            }
-            // This is checking to see if the Geoeode Status is OK before proceeding
-            if (status == google.maps.GeocoderStatus.OK) {
-                console.log(results);
-                let address = (results[0].formatted_address);
-                console.log(address);
-            }
-        });
-    })
+    // let loader = new Loader({
+    //     apiKey: "AIzaSyB_VDWRbprK5cMsT-mj0dgAR-G2bMyHLKU",
+    // });
+    // loader.load().then((google) => {
+    //     let latlng = new google.maps.LatLng(item.latlng[0], item.latlng[1]);
+    //     let geocoder = new google.maps.Geocoder();
+    //     geocoder.geocode({ 'latLng': latlng }, (results, status) => {
+    //         if (status !== google.maps.GeocoderStatus.OK) {
+    //             alert(status);
+    //         }
+    //         // This is checking to see if the Geoeode Status is OK before proceeding
+    //         if (status == google.maps.GeocoderStatus.OK) {
+    //             console.log(results);
+    //             let address = (results[0].formatted_address);
+    //             console.log(address);
+    //         }
+    //     });
+    // })
 
     return <CustomItem>
         <Row>
@@ -70,8 +70,8 @@ const ListItem = ({ item }) => {
                 </Row>
             </Col>
             <Col span={12} style={{ borderLeft: '1px solid #ccc', padding: 10 }}>
-                {item.progressbar.length > 0 && (
-                    <Progressbar steps={item.progressbar} />
+                {item.progressbar.steps.length > 0 && (
+                    <Progressbar progressbar={item.progressbar} />
                 )}
             </Col>
         </Row>

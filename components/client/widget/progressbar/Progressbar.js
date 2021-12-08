@@ -2,8 +2,8 @@ import { getStrapiMedia } from "lib/media";
 import styles from "./progressbar.module.css";
 import styled from 'styled-components';
 
-const Progressbar = ({steps}) => {
-   
+const Progressbar = ({ progressbar }) => {
+    console.log(progressbar);
     const Photo = styled.img`
     width:20px;
     height:20px;
@@ -20,10 +20,10 @@ const Progressbar = ({steps}) => {
         };
 
     `
-    return steps ? <div id={styles.crumbs}>
+    return progressbar.steps ? <div id={styles.circle}>
         <ul>
-            {steps?.map((step) => {
-                return <li><Link  href="#1" ><Photo src={getStrapiMedia(step.icon)}></Photo></Link></li>
+            {progressbar.steps?.map((step) => {
+                return <li><Link href="#1" ><Photo src={getStrapiMedia(step.icon)}></Photo></Link></li>
             })}
         </ul>
     </div> : null;
