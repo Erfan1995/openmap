@@ -38,7 +38,7 @@ const CreateMapContainer = ({ authenticatedUser, collapsed, styledMaps, tags, se
   const [customMapData, setCustomMapData] = useState(manualMapData);
   const [loading, setLoading] = useState(false);
 
-  console.log(manualMapData, 'manual map data')
+
   const [layerClicked, setLayerClicked] = useState(true);
 
   const MapWithNoSSR = dynamic(() => import("../../components/map"), {
