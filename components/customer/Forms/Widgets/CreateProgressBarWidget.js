@@ -172,18 +172,10 @@ const CreateProgressBarWidget = ({ mdcId, mdcConf, progressbar, layerType }) => 
                             if (step.id === defaultValues?.id) {
                                 return { ...step, title: res.title, hover_text: res.hover_text, icon: res.icon, id: res.id }
                             }
-                            message.success(DATASET.STEP_UPDATED_SUCCESSFUL);
-                            setSelectedStep(null);
-                            setSteps(steps.map((step) => {
-                                if (step.id === defaultValues?.id) {
-                                    return { ...step, title: res.title, hover_text: res.hover_text, icon: res.icon, id: res.id }
-                                }
-                                else {
-                                    return { ...step, step: step }
-                                }
-                            }));
-
-                        }))
+                            else {
+                                return { ...step, step: step }
+                            }
+                        }));
 
                     }
                 }

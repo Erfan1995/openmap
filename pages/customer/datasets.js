@@ -1,7 +1,7 @@
 import Layout from '../../components/customer/layout/Layout';
 import withPrivateServerSideProps from '../../utils/withPrivateServerSideProps';
 import { useEffect, useState } from 'react';
-import { Button, Divider, Typography, Tabs, Modal, Spin, message, notification } from 'antd';
+import { Button, Divider, Typography, Tabs, Modal, Spin, message, notification, Card, Row, Avatar } from 'antd';
 import styled from 'styled-components';
 const { Title } = Typography;
 const { TabPane } = Tabs;
@@ -15,6 +15,7 @@ import csv from 'csv';
 import GeoJSON from 'geojson';
 import { LAT, LONG, DATASET } from '../../static/constant'
 import dynamic from 'next/dynamic';
+import { SettingOutlined, PlusCircleFilled } from '@ant-design/icons';
 
 const MapsWrapper = styled.div`
 background:#ffffff;
@@ -82,6 +83,61 @@ const Dataset = ({ authenticatedUser, collapsed, locked_data, unlocked_data, tag
                     <TabPane tab={<span>{DATASET.LOCKED_DATASETS}</span>} key="2">
                         <LockedDatasetTable data={lockedDataset} updateUnlockedData={updateUnlockedData}
                             updatedLockedData={updatedLockedData} />
+                    </TabPane>
+                    <TabPane tab={<span>{DATASET.API}</span>} key="3">
+                        <Row style={{ background: '#ececec', padding: 5 }}>
+                            <Card bodyStyle={{ padding: 10 }} style={{ width: 200, margin: 10, borderRadius: 20 }}>
+                                <Row>
+                                    <SettingOutlined></SettingOutlined>
+                                </Row>
+                                <Row>
+                                    <Avatar
+                                        size={{ xs: 24, sm: 32, md: 40, lg: 64, xl: 80, xxl: 100 }}
+                                        style={{ background: '#ececec' }}
+                                    >
+
+                                    </Avatar>
+                                </Row>
+                                <Row>
+                                    Card Content
+                                </Row>
+                            </Card>
+                            <Card bodyStyle={{ padding: 10 }} style={{ width: 200, margin: 10, borderRadius: 20 }}>
+                                <Row>
+                                    <PlusCircleFilled></PlusCircleFilled>
+                                </Row>
+                                <Row>
+                                    <Avatar
+                                        size={{ xs: 24, sm: 32, md: 40, lg: 64, xl: 80, xxl: 100 }}
+                                        style={{ background: '#ececec' }}
+                                    >
+
+                                    </Avatar>
+                                </Row>
+                                <Row>
+                                    Card Content
+                                </Row>
+                            </Card>
+                            <Card bodyStyle={{ padding: 10 }} style={{ width: 250, margin: 10, borderRadius: 20 }}>
+                                <Row>
+                                    <SettingOutlined></SettingOutlined>
+                                </Row>
+                                <Row>
+                                    <Avatar
+                                        size={{ xs: 24, sm: 32, md: 40, lg: 64, xl: 80, xxl: 100 }}
+                                        style={{ background: '#ececec' }}
+                                    >
+
+                                    </Avatar>
+                                </Row>
+                                <Row>
+                                    Card Content
+                                </Row>
+                            </Card>
+                        </Row>
+                    </TabPane>
+                    <TabPane tab={<span>{DATASET.SHARED}</span>} key="4">
+                        hhkhkh kh hkh h kh h k
                     </TabPane>
                 </Tabs>
             </MapsWrapper>
