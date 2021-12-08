@@ -44,11 +44,11 @@ function beforeUpload(file) {
     return isJpgOrPng && isLt2M;
 }
 
-const CreateProgressBarWidget = ({ widget, mdcId, mdcConf, progressbar, layerType }) => {
+const CreateProgressBarWidget = ({ mdcId, mdcConf, progressbar, layerType }) => {
     const [form] = Form.useForm();
     const [icon, setIcon] = useState();
     const [loading, setLoading] = useState(false);
-    const [colorCode, setColorCode] = useState();
+    const [colorCode, setColorCode] = useState(null);
     const [uploading, setUploading] = useState(false);
     const [imageUrl, setImageUrl] = useState("");
     const [steps, setSteps] = useState([]);
@@ -57,20 +57,19 @@ const CreateProgressBarWidget = ({ widget, mdcId, mdcConf, progressbar, layerTyp
     const [selectedStep, setSelectedStep] = useState(null);
     const [file, setFile] = useState();
     const [defaultValues, setDefaultValues] = useState(null);
-    const [selectedStyle, setSelectedStyle] = useState('circle-mode');
+    const [selectedStyle, setSelectedStyle] = useState(null);
     const [activeStep, setActiveStep] = useState();
 
 
     useEffect(() => {
         setSteps(progressbar);
+        setColorCode(mdcConf?.progressbar_color)
+    },[progressbar]);
+
+    useEffect(()=>{
         setActiveStep(mdcConf?.selected_step);
         setSelectedStyle(mdcConf?.progress_bar_default_style);
-    }, [progressbar, mdcConf]);
-
-
-    useEffect(() => {
-        setColorCode(mdcConf?.progressbar_color);
-    }, [colorCode])
+    },[mdcConf]);
 
     useEffect(() => {
         form.setFieldsValue(defaultValues);
@@ -175,7 +174,6 @@ const CreateProgressBarWidget = ({ widget, mdcId, mdcConf, progressbar, layerTyp
 
 
     const onStepClick = (step) => {
-        console.log('values ' + JSON.stringify(step));
         setDefaultValues({ 'id': step.id, 'title': step.title, 'hover_text': step.hover_text, 'is_active': activeStep == step.id ? true : false });
         setImageUrl(getStrapiMedia(step.icon));
         setIcon(null);
@@ -317,19 +315,19 @@ const CreateProgressBarWidget = ({ widget, mdcId, mdcConf, progressbar, layerTyp
                                                             <Row>{DATASET.TITLE}</Row>
                                                             <Row>
                                                                 <Form.Item name="title" rules={[{ required: true, message: 'Please input title!' }]}>
-                                                                    <Input placeholder="title" />
+                                                                    <Input placeholder={DATASET.TITLE} />
                                                                 </Form.Item>
                                                             </Row>
                                                             <Row>{DATASET.HOVER_TEXT}</Row>
                                                             <Row>
                                                                 <Form.Item name="hover_text" rules={[{ required: true, message: 'Please input hover text!' }]}>
-                                                                    <Input placeholder="hover text" />
+                                                                    <Input placeholder={DATASET.HOVER_TEXT} />
                                                                 </Form.Item>
                                                             </Row>
                                                             <Row>
                                                                 <Form.Item name="is_active" valuePropName="checked" >
                                                                     <Checkbox>
-                                                                        Is Active
+                                                                        {DATASET.IS_ACTIVE}
                                                                     </Checkbox>
                                                                 </Form.Item>
                                                             </Row>

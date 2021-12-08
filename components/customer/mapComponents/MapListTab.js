@@ -8,6 +8,7 @@ import { getWidgets, postMethod } from "lib/api"
 import { putMethod } from "lib/api"
 import { DATASET } from "../../../static/constant"
 const CheckboxGroup = Checkbox.Group;
+import { WidgetsData } from "lib/constants"
 const GeneralCSS = createGlobalStyle`
 .ant-checkbox-wrapper{
     padding:14px  !important;
@@ -86,30 +87,6 @@ const GeneralCSS = createGlobalStyle`
   }
 
 `
-const widgetData = [
-    {
-        'id': '1',
-        'title': 'Progress Bar',
-        'checked': true
-    },
-    {
-        'id': '2',
-        'title': 'Video Widget',
-        'checked': false
-    },
-    {
-        'id': '3',
-        'title': 'Text Widget',
-        'checked': true
-    },
-    {
-        'id': '4',
-        'title': 'Newsfeed Widget',
-        'checked': false
-    },
-]
-
-
 
 const ListEditeButton = styled.span`
     font-size:20px;
@@ -122,11 +99,11 @@ const ListEditeButton = styled.span`
 
 
 
-const MapLisTab = ({ onEdit, mdcId, properties, editedListViewProperties, listviewProperties, token, layerType }) => {
+const MapLisTab = ({ onEdit, mdcId, properties, editedListViewProperties, listviewProperties, selectedWidgets, token, layerType }) => {
     const [indeterminate, setIndeterminate] = useState(false);
     const [checkAll, setCheckAll] = useState(false);
     const [checkedList, setCheckedList] = useState(listviewProperties);
-    const [widgets, setWidgets] = useState(widgetData);
+    const [widgets, setWidgets] = useState(selectedWidgets !== null ? selectedWidgets : WidgetsData);
     const [loading, setLoading] = useState(false);
     const [form] = Form.useForm();
 
@@ -134,7 +111,6 @@ const MapLisTab = ({ onEdit, mdcId, properties, editedListViewProperties, listvi
     let dynamicFormContent = [];
     let initialValues = {};
     let initialFormValues = {};
-
 
     if (layerType === "dataset") {
         let i = 0;
@@ -245,15 +221,22 @@ const MapLisTab = ({ onEdit, mdcId, properties, editedListViewProperties, listvi
 
     }
 
-    const onChangeState = (e) => {
-        setWidgets(widgets.map((widget) => {
-            if (widget.id === e.target.id) {
-                return { ...widget, checked: e.target.checked }
+    const onChangeState = async (e) => {
+        setLoading(true);
+            let tempWidgets = [];
+            widgets.map((widget) => {
+                if (widget.id === e.target.id) {
+                    tempWidgets.push({ 'id': widget.id, 'title': widget.title, 'checked': e.target.checked })
+                }
+                else {
+                    tempWidgets.push(widget);
+                }
+            })
+            const res = await putMethod('mapdatasetconfs/' + mdcId, { selected_widgets: tempWidgets });
+            if (res) {
+                setWidgets(tempWidgets);
             }
-            else {
-                return { ...widget, checked: widget.checked }
-            }
-        }))
+            setLoading(false);
     }
 
     const onSelectedItem = (id) => {
@@ -270,7 +253,7 @@ const MapLisTab = ({ onEdit, mdcId, properties, editedListViewProperties, listvi
                 {widgets.map((widget) => (
                     <Row style={{ width: '100%', paddingLeft: 20 }}>
                         <Col span={21} >
-                            <Checkbox id={widget.id} onChange={onChangeState}>{widget.title}</Checkbox>
+                            <Checkbox id={widget.id} checked={widget.checked} onChange={onChangeState}>{widget.title}</Checkbox>
                         </Col>
                         <Col span={3}>
                             <div>
