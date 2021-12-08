@@ -1,15 +1,13 @@
 
 import styles from './stepper.module.css'
-import Image from 'next/image';
 import { getStrapiMedia } from 'lib/media';
 import styled from 'styled-components';
-import { style } from '../styles';
-
+import { Tooltip } from 'antd';
 const Stepper = ({ steps, onStepClick ,activeStep,color}) => {
 
     const Photo = styled.img`
-        width:20px;
-        height:20px;
+        width:25px;
+        height:25px;
         :hover{
             opacity:0.8;
             cursor:pointer;
@@ -27,7 +25,7 @@ const Stepper = ({ steps, onStepClick ,activeStep,color}) => {
     return steps ? <div id={styles.crumbs}>
         <ul>
             {steps?.map((step) => {
-                return <li><Link className={step.id<=activeStep ? styles.active : styles.disable} href="#1" onClick={() => onStepClick(step)}><Photo src={getStrapiMedia(step.icon)}></Photo></Link></li>
+                return <li><Link className={step.id<=activeStep ? styles.active : styles.disable} href="#1" onClick={() => onStepClick(step)}><Tooltip title={step?.hover_text}><Photo src={getStrapiMedia(step.icon)}></Photo></Tooltip></Link></li>
             })}
         </ul>
     </div> : null;

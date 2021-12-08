@@ -22,8 +22,7 @@ const CreateTextWidget = ({ widget }) => {
         eState = EditorState.createWithContent(contentState);
     }
     const [form] = Form.useForm();
-    const [value, setValue] = useState('');
-    const [colorCode, setColorCode] = useState('#ff0000');
+    const [colorCode, setColorCode] = useState(null);
     const [loading, setLoading] = useState(false);
     const [editorState, setEditorState] = useState(eState);
     const onSubmit = async () => {
@@ -39,7 +38,8 @@ const CreateTextWidget = ({ widget }) => {
                 let textItem = { 'title': values.title, 'description': editorValueInHtml, 'color': colorCode };
                 const res = await putMethod('widgets/' + widget.id, { 'text': textItem });
                 if (res) {
-                    message.success(DATASET.SUCCESSFULY_UPDATE_MESSAGE)
+                    message.success(DATASET.SUCCESSFULY_UPDATE_MESSAGE);
+                    setColorCode(res.color);
                 }
                 setLoading(false);
             }).catch(e => {
@@ -66,7 +66,7 @@ const CreateTextWidget = ({ widget }) => {
                             {DATASET.HEADER_COLOR}
                         </Col>
                         <Col span={4}>
-                            <ColorPicker color={widget?.text?.color} onChange={(color) => setColorCode(color.color)} />
+                            <ColorPicker color={colorCode!==null ? colorCode : widget?.text?.color} onChange={(color) => setColorCode(color.color)} />
                         </Col>
                     </Row>
                     <Row>

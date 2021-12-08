@@ -11,7 +11,7 @@ import { DATASET } from 'static/constant';
 const CreateVideoWidget = ({ widget }) => {
 
     const [form] = Form.useForm();
-    const [colorCode, setColorCode] = useState(widget?.video?.color);
+    const [colorCode, setColorCode] = useState(null);
     const [loading, setLoading] = useState(false);
 
 
@@ -24,6 +24,7 @@ const CreateVideoWidget = ({ widget }) => {
                 const res = await putMethod('widgets/' + widget.id, { 'video': currentVideo });
                 if (res) {
                     message.success(DATASET.SUCCESSFULY_UPDATE_MESSAGE);
+                    setColorCode(res?.color);
                 }
                 setLoading(false);
             }).catch(e => {
@@ -49,7 +50,7 @@ const CreateVideoWidget = ({ widget }) => {
                             {DATASET.HEADER_COLOR}
                         </Col>
                         <Col span={4}>
-                            <ColorPicker color={widget?.video?.color} onChange={(color) => setColorCode(color.color)} />
+                            <ColorPicker color={colorCode!==null ? colorCode : widget?.video?.color} onChange={(color) => setColorCode(color.color)} />
                         </Col>
                     </Row>
                     <br/>
