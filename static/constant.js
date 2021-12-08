@@ -175,6 +175,8 @@ export const DATASET = {
     STYLE_CHANGED:'style changed',
     SELECT_STYLE:'Select Style ',
     IS_ACTIVE:'Is Active',
+    API:'API',
+    SHARED:'Shared',
 }
 
 export const LAT = ['lat', 'Lat', 'LAT', 'latitude', 'Latitude', 'LATITUDE'];
