@@ -1,7 +1,7 @@
 import Layout from '../../components/customer/layout/Layout';
 import withPrivateServerSideProps from '../../utils/withPrivateServerSideProps';
 import { useEffect, useState } from 'react';
-import { Button, Divider, Typography, Tabs, Modal, Spin, message, notification, Card, Row, Avatar } from 'antd';
+import { Button, Divider, Typography, Tabs, Modal, Spin, message, notification, Card, Row, Avatar, Space } from 'antd';
 import styled from 'styled-components';
 const { Title } = Typography;
 const { TabPane } = Tabs;
@@ -87,52 +87,58 @@ const Dataset = ({ authenticatedUser, collapsed, locked_data, unlocked_data, tag
                     <TabPane tab={<span>{DATASET.API}</span>} key="3">
                         <Row style={{ background: '#ececec', padding: 5 }}>
                             <Card bodyStyle={{ padding: 10 }} style={{ width: 200, margin: 10, borderRadius: 20 }}>
-                                <Row>
-                                    <SettingOutlined></SettingOutlined>
-                                </Row>
-                                <Row>
-                                    <Avatar
-                                        size={{ xs: 24, sm: 32, md: 40, lg: 64, xl: 80, xxl: 100 }}
-                                        style={{ background: '#ececec' }}
-                                    >
+                                <Space direction="vertical" style={{ width: '100%' }}>
+                                    <Row justify="end">
+                                        <SettingOutlined></SettingOutlined>
+                                    </Row>
+                                    <Row justify="center">
+                                        <Avatar
+                                            size={{ xs: 24, sm: 32, md: 40, lg: 64, xl: 80, xxl: 100 }}
+                                            style={{ background: '#ececec' }}
+                                        >
 
-                                    </Avatar>
-                                </Row>
-                                <Row>
-                                    Card Content
-                                </Row>
+                                        </Avatar>
+                                    </Row>
+                                    <Row justify="center">
+                                        Card Content
+                                    </Row>
+                                </Space>
                             </Card>
                             <Card bodyStyle={{ padding: 10 }} style={{ width: 200, margin: 10, borderRadius: 20 }}>
-                                <Row>
-                                    <PlusCircleFilled></PlusCircleFilled>
-                                </Row>
-                                <Row>
-                                    <Avatar
-                                        size={{ xs: 24, sm: 32, md: 40, lg: 64, xl: 80, xxl: 100 }}
-                                        style={{ background: '#ececec' }}
-                                    >
+                                <Space direction="vertical" style={{ width: '100%' }}>
+                                    <Row justify="end">
+                                        <PlusCircleFilled></PlusCircleFilled>
+                                    </Row>
+                                    <Row justify="center">
+                                        <Avatar
+                                            size={{ xs: 24, sm: 32, md: 40, lg: 64, xl: 80, xxl: 100 }}
+                                            style={{ background: '#ececec' }}
+                                        >
 
-                                    </Avatar>
-                                </Row>
-                                <Row>
-                                    Card Content
-                                </Row>
+                                        </Avatar>
+                                    </Row>
+                                    <Row justify="center">
+                                        Card Content
+                                    </Row>
+                                </Space>
                             </Card>
-                            <Card bodyStyle={{ padding: 10 }} style={{ width: 250, margin: 10, borderRadius: 20 }}>
-                                <Row>
-                                    <SettingOutlined></SettingOutlined>
-                                </Row>
-                                <Row>
-                                    <Avatar
-                                        size={{ xs: 24, sm: 32, md: 40, lg: 64, xl: 80, xxl: 100 }}
-                                        style={{ background: '#ececec' }}
-                                    >
+                            <Card bodyStyle={{ padding: 10 }} style={{ width: 200, margin: 10, borderRadius: 20 }}>
+                                <Space direction='vertical' style={{ width: '100%' }}>
+                                    <Row justify="end">
+                                        <SettingOutlined></SettingOutlined>
+                                    </Row>
+                                    <Row justify="center">
+                                        <Avatar
+                                            size={{ xs: 24, sm: 32, md: 40, lg: 64, xl: 80, xxl: 100 }}
+                                            style={{ background: '#ececec' }}
+                                        >
 
-                                    </Avatar>
-                                </Row>
-                                <Row>
-                                    Card Content
-                                </Row>
+                                        </Avatar>
+                                    </Row>
+                                    <Row justify="center">
+                                        Card Content
+                                    </Row>
+                                </Space>
                             </Card>
                         </Row>
                     </TabPane>

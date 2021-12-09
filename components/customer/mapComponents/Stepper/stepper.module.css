@@ -11,7 +11,7 @@
 }
 
 
-#crumbs ul li a{
+#crumbs ul li div a{
     display: block;
     float: left;
     height: 40px;
@@ -28,11 +28,9 @@
     
 }
 
-#crumbs ul li a.habib{
-    background:#8093A7;
-}
 
-#crumbs ul li a:after{
+
+#crumbs ul li div a:after{
     content: "__";  
     border-top: 2px solid transparent;
     position: absolute; 
@@ -47,7 +45,7 @@
 	display: none; 
 }
 			
-#crumbs ul li a:hover {
+#crumbs ul li div a:hover {
 	background: green;
 }
 
