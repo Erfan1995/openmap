@@ -18,8 +18,7 @@ const CustomItem = styled.div`
 
 
 const TextDev = styled.div`
-    font-size: 10px; 
-    padding-top: 10px;
+    font-size: 11px; 
     color:#aaa
 `;
 
@@ -46,7 +45,7 @@ const ListItem = ({ item, makeModalVisible }) => {
     //         }
     //     });
     // })
-
+    let itemText = Object.entries(item.surveyData[0]);
     return <CustomItem onClick={() => makeModalVisible(item)} >
         <div>
             <Row>
@@ -59,6 +58,11 @@ const ListItem = ({ item, makeModalVisible }) => {
                     <Row style={{ fontSize: 15 }}>
                         {item.surveyInfo.title}
                     </Row>
+                    <Row>
+                        <SmallTitle>
+                            New York,USA
+                        </SmallTitle>
+                    </Row>
                 </Col>
                 <Col span={12} style={{ borderLeft: '1px solid #ccc', padding: 10 }}>
                     {item.progressbar.steps.length > 0 && (
@@ -68,7 +72,7 @@ const ListItem = ({ item, makeModalVisible }) => {
             </Row>
             <Row>
                 <TextDev>
-                    Video provides a powerful way to help you prove your point. When you click Online Video, you can paste in the embed code for the video you want to add.
+                    {itemText[0][1]}
                 </TextDev>
             </Row>
         </div>

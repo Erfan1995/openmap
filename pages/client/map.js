@@ -21,8 +21,8 @@ const { TabPane } = Tabs;
 const { Meta } = Card;
 
 const Map = ({ manualMapData, mapData, datasets, injectedcodes, publicUser }) => {
-  console.log(manualMapData);
-  console.log(mapData.surveys);
+  console.log(mapData);
+  let widgets = mapData.widget;
   const [intiLoading, setInitLoading] = useState(true);
   const [publicUserObject, setPublicUserObject] = useState(publicUser);
   const [datasetData, setDatasetData] = useState(datasets);
@@ -111,30 +111,6 @@ const Map = ({ manualMapData, mapData, datasets, injectedcodes, publicUser }) =>
     cursor:pointer;
   }
 `
-
-  const data = [
-    'Racing car sprays burning fuel into crowd.',
-    'Japanese princess to wed commoner.',
-    'Australian walks 100km after outback crash.',
-    'Man charged over missing wedding girl.',
-    'Los Angeles battles huge wildfires.',
-    'Racing car sprays burning fuel into crowd.',
-    'Japanese princess to wed commoner.',
-    'Australian walks 100km after outback crash.',
-    'Man charged over missing wedding girl.',
-    'Los Angeles battles huge wildfires.',
-    'Racing car sprays burning fuel into crowd.',
-    'Japanese princess to wed commoner.',
-    'Australian walks 100km after outback crash.',
-    'Man charged over missing wedding girl.',
-    'Los Angeles battles huge wildfires.',
-    'Racing car sprays burning fuel into crowd.',
-    'Japanese princess to wed commoner.',
-    'Australian walks 100km after outback crash.',
-    'Man charged over missing wedding girl.',
-    'Los Angeles battles huge wildfires.',
-  ];
-
   const makeModalVisible = (item) => {
     setModalVisible(true);
     setSelectedItem(item);
@@ -172,21 +148,6 @@ const Map = ({ manualMapData, mapData, datasets, injectedcodes, publicUser }) =>
                 mapData={mapData}
                 userId={publicUser.id}
                 style={{ height: "100vh" }} />
-              <Modal
-                centered
-                bodyStyle={{ overflowX: 'scroll' }}
-                width={800}
-                visible={modalVisible}
-                destroyOnClose={true}
-                onCancel={() => {
-                  setModalVisible(false)
-                }}
-                footer={[
-                  <Button key="close" onClick={() => { setModalVisible(false) }}> close</Button>
-                ]}
-              >
-                <ListItemDetails item={selectedItem} />
-              </Modal>
             </TabPane>
             <TabPane tab="List" key="2">
               <Row>
@@ -203,15 +164,29 @@ const Map = ({ manualMapData, mapData, datasets, injectedcodes, publicUser }) =>
                 </Col>
                 <Col span={8} >
                   <RightSide>
-                    <VideoWidget />
-                    <TextWidget />
-                    <SocialWidget data={data} />
+                    <VideoWidget videoWidget={widgets.video} />
+                    <TextWidget textWidget={widgets.text} />
+                    <SocialWidget newsFeedWidget={widgets.news_feeds} />
                   </RightSide>
                 </Col>
               </Row>
             </TabPane>
           </Tabs>
-
+          <Modal
+            centered
+            bodyStyle={{ overflowX: 'scroll' }}
+            width={800}
+            visible={modalVisible}
+            destroyOnClose={true}
+            onCancel={() => {
+              setModalVisible(false)
+            }}
+            footer={[
+              <Button key="close" onClick={() => { setModalVisible(false) }}> close</Button>
+            ]}
+          >
+            <ListItemDetails item={selectedItem} />
+          </Modal>
         </Spin>
       </LayoutPage>
 
