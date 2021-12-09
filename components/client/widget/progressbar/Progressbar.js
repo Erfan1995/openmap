@@ -1,7 +1,7 @@
 import { getStrapiMedia } from "lib/media";
 import styles from "./progressbar.module.css";
 import styled from 'styled-components';
-import { Tooltip } from 'antd';
+import { Tooltip, Row } from 'antd';
 
 const Progressbar = ({ progressbar }) => {
     console.log(progressbar);
@@ -20,13 +20,31 @@ const Progressbar = ({ progressbar }) => {
             border-left-color: ${progressbar.progressbarColor} ;
         };
     `
+    const StepWrapper = styled.div`
+    display: inline-block
+    `
+
+    const StepTitle = styled.span`
+        font-size:9px;
+    `
     return progressbar.steps ? <div>
         {progressbar.progressbarStyle === "circle-mode" || !progressbar.progressbarStyle ?
             <div id={styles.circle}>
                 <ul>
                     {progressbar.steps?.map((step) => {
-                        return <li><Link className={step.id <= progressbar.acitveStep ? styles.active : styles.disable}
-                        ><Tooltip title={step?.hover_text}><Photo src={getStrapiMedia(step.icon)}></Photo></Tooltip></Link></li>
+                        return <li>
+                            <StepWrapper>
+                                <Row>
+                                    <Link className={step.id <= progressbar.acitveStep ? styles.active : styles.disable}
+                                    ><Tooltip title={step?.hover_text}><Photo src={getStrapiMedia(step.icon)}></Photo></Tooltip></Link>
+                                </Row>
+                                <Row justify="center">
+                                    <StepTitle>
+                                        {step.title}
+                                    </StepTitle>
+                                </Row>
+                            </StepWrapper>
+                        </li>
                     })}
                 </ul>
             </div> :
@@ -34,8 +52,17 @@ const Progressbar = ({ progressbar }) => {
                 <ul>
                     {progressbar.steps?.map((step) => {
                         return <li>
-                            <Link className={step.id <= progressbar.acitveStep ? styles.active : styles.disable}>
-                                <Tooltip title={step.hover_text}><Photo src={getStrapiMedia(step?.icon)}></Photo></Tooltip></Link>
+                            <StepWrapper>
+                                <Row>
+                                    <Link className={step.id <= progressbar.acitveStep ? styles.active : styles.disable}>
+                                        <Tooltip title={step.hover_text}><Photo src={getStrapiMedia(step?.icon)}></Photo></Tooltip></Link>
+                                </Row>
+                                <Row justify="center">
+                                    <StepTitle>
+                                        {step.title}
+                                    </StepTitle>
+                                </Row>
+                            </StepWrapper>
                         </li>
                     })}
                 </ul>
