@@ -1,5 +1,5 @@
 import { Loader } from "@googlemaps/js-api-loader";
-import { Row, Col, Steps, Divider, Modal } from "antd";
+import { Row, Col } from "antd";
 import styled from "styled-components";
 import { timeSince } from "lib/general-functions";
 import Progressbar from "./progressbar/progressbar";
@@ -27,23 +27,7 @@ const SmallTitle = styled.div`
     color:#aaa;
     font-size:10px
 `;
-
-const { Step } = Steps
-
-const CustomStepper = () => {
-    return <div>
-        <Steps current={1} size='small' responsive='true' progressDot={false}>
-            <Step title="Finished" />
-            <Step title="In Progress" />
-            <Step title="Waiting" />
-            <Step title="Finish" />
-        </Steps>
-    </div>
-}
-
-
-const ListItem = ({ item }) => {
-    const [modalVisible, setModalVisible] = useState(false);
+const ListItem = ({ item, makeModalVisible }) => {
     // let loader = new Loader({
     //     apiKey: "AIzaSyB_VDWRbprK5cMsT-mj0dgAR-G2bMyHLKU",
     // });
@@ -62,10 +46,8 @@ const ListItem = ({ item }) => {
     //         }
     //     });
     // })
-    const makeModalVisible = (state) => {
-        setModalVisible(state);
-    }
-    return <CustomItem onClick={() => setModalVisible(true)}>
+
+    return <CustomItem onClick={() => makeModalVisible(item)} >
         <div>
             <Row>
                 <Col span={12}>
@@ -90,22 +72,7 @@ const ListItem = ({ item }) => {
                 </TextDev>
             </Row>
         </div>
-        <Modal
-           centered
-           bodyStyle={{ overflowX: 'scroll' }}
-           width={800}
-           visible={modalVisible}
-           destroyOnClose={true}
-           onCancel={() => {
-               setModalVisible(false)
-           }}
-           destroyOnClose={true}
-           footer={[
-            //    <Button key="close" onClick={() => { setModalVisible(false) }}> {DATASET.CLOSE}</Button>
-           ]}
-        >
-            {/* <AddStep mdcId={mdcId} ref={childRef} onModalClose={(res) => onModalClose(res)} addImageFile={addImageFile}></AddStep> */}
-        </Modal>
+
     </CustomItem>
 }
 

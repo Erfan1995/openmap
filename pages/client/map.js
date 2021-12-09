@@ -16,6 +16,7 @@ import { Tabs, Row, Col, Card, List, Modal, Spin, Button } from 'antd';
 import { nodeName } from "jquery";
 import { redirect } from "next/dist/next-server/server/api-utils";
 import Content from "components/client/layout/content";
+import ListItemDetails from "components/client/widget/ListeItemDetails";
 const { TabPane } = Tabs;
 const { Meta } = Card;
 
@@ -31,7 +32,7 @@ const Map = ({ manualMapData, mapData, datasets, injectedcodes, publicUser }) =>
   const [listData, setListData] = useState([]);
   const { login, logout } = UseAuth();
   const [modalVisible, setModalVisible] = useState(false);
-
+  const [selectedItem, setSelectedItem] = useState();
   useEffect(async () => {
     const user = JSON.parse(localStorage.getItem('magicUser'));
     if (!user?.issuer) {
@@ -134,7 +135,10 @@ const Map = ({ manualMapData, mapData, datasets, injectedcodes, publicUser }) =>
     'Los Angeles battles huge wildfires.',
   ];
 
-
+  const makeModalVisible = (item) => {
+    setModalVisible(true);
+    setSelectedItem(item);
+  }
 
   return (
     <div>
@@ -181,6 +185,7 @@ const Map = ({ manualMapData, mapData, datasets, injectedcodes, publicUser }) =>
                   <Button key="close" onClick={() => { setModalVisible(false) }}> close</Button>
                 ]}
               >
+                <ListItemDetails item={selectedItem} />
               </Modal>
             </TabPane>
             <TabPane tab="List" key="2">
@@ -191,7 +196,7 @@ const Map = ({ manualMapData, mapData, datasets, injectedcodes, publicUser }) =>
                       size="small"
                       dataSource={listData}
                       renderItem={item => <List.Item>
-                        <ListItem item={item} onClick={() => setModalVisible(true)} />
+                        <ListItem item={item} makeModalVisible={makeModalVisible} />
                       </List.Item>}
                     />
                   </Content>

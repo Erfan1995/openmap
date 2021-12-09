@@ -4,7 +4,6 @@ import styled from 'styled-components';
 import { Tooltip, Row } from 'antd';
 
 const Progressbar = ({ progressbar }) => {
-    console.log(progressbar);
     const Photo = styled.img`
     width:25px;
     height:25px;

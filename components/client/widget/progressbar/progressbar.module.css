@@ -20,7 +20,7 @@
     text-align: center;
     border-radius:50%;
     position: relative;
-    margin: 2px 15px 0 0; 
+    margin: 2px 30px 0 0; 
     font-size: 15px;
     text-decoration: none;
     color: #8093A7;
@@ -33,10 +33,10 @@
 }
 
 #circle ul li a:after{
-    content: "__";  
+    content: "____";  
     border-top: 2px solid transparent;
     position: absolute; 
-    right: -16px;
+    right: -31px;
     top: 0;
     z-index: 1;
     
@@ -70,11 +70,12 @@
     display: block;
     float: left;
     height: 40px;
+    width:75px;
     text-align: center;
     padding: 7px 5px 0 20px;
     position: relative;
-    margin: 5px 6px 0 0; 
-    font-size: 15px;
+    margin: 5px 3px 0 0; 
+    /* font-size: 15px; */
     text-decoration: none;
 }
 
@@ -111,14 +112,14 @@
 	display: none; 
 }
 				
-#flash ul li:last-child a {
+/* #flash ul li:last-child a {
 	padding-right: 15px;
 	border-top-right-radius: 10px; border-bottom-right-radius: 10px;
-}
+} */
 
-#flash ul li:last-child a:after {
+/* #flash ul li:last-child a:after {
 	display: none; 
-}
+} */
 			
 /* #flash ul li a:hover {
 	background: green;
