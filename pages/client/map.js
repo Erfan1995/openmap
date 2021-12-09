@@ -2,7 +2,6 @@ import dynamic from "next/dynamic";
 import LayoutPage from "components/client/layout";
 import { useContext, useEffect, useState } from "react";
 // import UseAuth from "hooks/useAuth";
-import { Spin } from 'antd';
 import { getDatasetsByMap, getClientMapData, getPublicMap } from "lib/api";
 import { extractMapData, extractMapDataPublicUser, getCustomerMapData, getPublicAuthenticatedMapData, getPublicMapData } from "lib/general-functions";
 import { UserContext } from "lib/UserContext";
@@ -13,13 +12,12 @@ import TextWidget from './../../components/client/widget/TextWidget';
 import SocialWidget from './../../components/client/widget/SocialWidget';
 import ListItem from "components/client/widget/ListItem";
 import { generateListViewData } from "../../lib/general-functions"
-import { Tabs, Row, Col, Card, List, Steps } from 'antd';
+import { Tabs, Row, Col, Card, List, Modal, Spin, Button } from 'antd';
 import { nodeName } from "jquery";
 import { redirect } from "next/dist/next-server/server/api-utils";
 import Content from "components/client/layout/content";
 const { TabPane } = Tabs;
 const { Meta } = Card;
-const { Step } = Steps;
 
 const Map = ({ manualMapData, mapData, datasets, injectedcodes, publicUser }) => {
   console.log(manualMapData);
@@ -32,6 +30,7 @@ const Map = ({ manualMapData, mapData, datasets, injectedcodes, publicUser }) =>
   const [loading, setLoading] = useState(false);
   const [listData, setListData] = useState([]);
   const { login, logout } = UseAuth();
+  const [modalVisible, setModalVisible] = useState(false);
 
   useEffect(async () => {
     const user = JSON.parse(localStorage.getItem('magicUser'));
@@ -106,7 +105,11 @@ const Map = ({ manualMapData, mapData, datasets, injectedcodes, publicUser }) =>
     overflow-y: scroll
   `;
 
-
+  const ListItemWrapper = styled.div`
+  &hover{
+    cursor:pointer;
+  }
+`
 
   const data = [
     'Racing car sprays burning fuel into crowd.',
@@ -165,6 +168,20 @@ const Map = ({ manualMapData, mapData, datasets, injectedcodes, publicUser }) =>
                 mapData={mapData}
                 userId={publicUser.id}
                 style={{ height: "100vh" }} />
+              <Modal
+                centered
+                bodyStyle={{ overflowX: 'scroll' }}
+                width={800}
+                visible={modalVisible}
+                destroyOnClose={true}
+                onCancel={() => {
+                  setModalVisible(false)
+                }}
+                footer={[
+                  <Button key="close" onClick={() => { setModalVisible(false) }}> close</Button>
+                ]}
+              >
+              </Modal>
             </TabPane>
             <TabPane tab="List" key="2">
               <Row>
@@ -174,7 +191,7 @@ const Map = ({ manualMapData, mapData, datasets, injectedcodes, publicUser }) =>
                       size="small"
                       dataSource={listData}
                       renderItem={item => <List.Item>
-                        <ListItem item={item} />
+                        <ListItem item={item} onClick={() => setModalVisible(true)} />
                       </List.Item>}
                     />
                   </Content>
@@ -189,6 +206,7 @@ const Map = ({ manualMapData, mapData, datasets, injectedcodes, publicUser }) =>
               </Row>
             </TabPane>
           </Tabs>
+
         </Spin>
       </LayoutPage>
 

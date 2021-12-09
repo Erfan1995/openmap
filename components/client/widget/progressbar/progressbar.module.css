@@ -47,9 +47,9 @@
 	display: none; 
 }
 			
-#circle ul li a:hover {
+/* #circle ul li a:hover {
 	background: green;
-}
+} */
 
 
 
@@ -138,10 +138,10 @@
 }
 
 .active{
-    background:#0ccf4d !important ;
+    background:#28a745 !important ;
 }	
 
 .active:after{
-    border-left-color:#0ccf4d !important;
+    border-left-color:#28a745 !important;
 };
 		
