@@ -20,16 +20,18 @@ import ListItemDetails from "components/client/widget/ListeItemDetails";
 const { TabPane } = Tabs;
 const { Meta } = Card;
 
-const Map = ({ manualMapData, mapData, datasets, injectedcodes, publicUser }) => {
-  console.log(mapData);
+const Map = ({ serverSideManualMapData, mapData, datasets, injectedcodes, publicUser }) => {
+  console.log(mapData.surveys);
   let widgets = mapData.widget;
+  let manualMapData = serverSideManualMapData;
+  console.log(manualMapData);
   const [intiLoading, setInitLoading] = useState(true);
   const [publicUserObject, setPublicUserObject] = useState(publicUser);
   const [datasetData, setDatasetData] = useState(datasets);
   const [zoomLevel, setZoomLevel] = useState(mapData.zoomLevel);
   const [customMapData, setCustomMapData] = useState(manualMapData);
   const [loading, setLoading] = useState(false);
-  const [listData, setListData] = useState([]);
+  const [listData, setListData] = useState(generateListViewData(manualMapData, mapData.surveys));
   const { login, logout } = UseAuth();
   const [modalVisible, setModalVisible] = useState(false);
   const [selectedItem, setSelectedItem] = useState();
@@ -43,9 +45,7 @@ const Map = ({ manualMapData, mapData, datasets, injectedcodes, publicUser }) =>
       }
     }
   }, [])
-  useEffect(() => {
-    setListData(generateListViewData(manualMapData, mapData.surveys))
-  }, [])
+
   const onDataSetChange = (list) => {
     let arr = [];
     list.map(item => {
@@ -57,6 +57,18 @@ const Map = ({ manualMapData, mapData, datasets, injectedcodes, publicUser }) =>
     })
     setZoomLevel(localStorage.getItem('zoom') || mapData.zoomLevel);
     setDatasetData(arr);
+  }
+  const onSurveySelectChange = (list) => {
+    let arr = [];
+    list.map(item => {
+      manualMapData.map(obj => {
+        if (obj.mapSurveyConf.survey.id === item) {
+          arr.push(obj)
+        }
+      })
+    });
+    setListData(generateListViewData(arr, mapData.surveys));
+    setCustomMapData(arr);
   }
   const MapWithNoSSR = dynamic(() => import("../../components/map/publicMap"), {
     ssr: false
@@ -70,6 +82,8 @@ const Map = ({ manualMapData, mapData, datasets, injectedcodes, publicUser }) =>
       const publicData = await extractMapDataPublicUser(data, publicUser.publicAddress);
       if (customerData && publicData) {
         setCustomMapData([...customerData, ...publicData]);
+        manualMapData = [...customerData, ...publicData]
+        setListData(generateListViewData([...customerData, ...publicData], mapData.surveys));
         setLoading(false)
       }
     } catch (e) {
@@ -123,7 +137,9 @@ const Map = ({ manualMapData, mapData, datasets, injectedcodes, publicUser }) =>
       {/* {!intiLoading && */}
 
       <LayoutPage injectedcodes={injectedcodes} walletAddress={publicUserObject.publicAddress} datasets={datasets} onDataSetChange={onDataSetChange}
-        mapInfo={mapData} userId={publicUserObject.id} publicUser={publicUserObject} mapData={mapData}  >
+        mapInfo={mapData} userId={publicUserObject.id} publicUser={publicUserObject} mapData={mapData}
+        surveys={mapData.surveys} onSurveySelectChange={onSurveySelectChange}
+      >
         <Spin spinning={loading}>
           <Tabs defaultActiveKey="1" centered >
             <TabPane tab="Map" key="1">
@@ -215,6 +231,7 @@ export async function getServerSideProps(ctx) {
         }
       } else {
         mapData = data?.maps[0];
+        console.log(mapData);
         if (mapData) {
           datasets = mapData?.datasets.map((item) => {
             let temp = mapData.mapdatasetconfs.find((obj) => obj.dataset.id === item.id);
@@ -227,7 +244,7 @@ export async function getServerSideProps(ctx) {
 
     return {
       props: {
-        manualMapData: [...await extractMapData(mapData), ...await extractMapDataPublicUser(mapData, publicUserAddress)]
+        serverSideManualMapData: [...await extractMapData(mapData), ...await extractMapDataPublicUser(mapData, publicUserAddress)]
         , mapData: mapData,
         datasets: datasets,
         injectedcodes: injectedcodes,
