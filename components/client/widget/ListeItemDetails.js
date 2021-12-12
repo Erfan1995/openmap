@@ -51,7 +51,7 @@ const ListItemDetails = ({ item }) => {
             </Row>
             <Row>
                 <DateTitle>
-                    Kabul, Afghanistan
+                    {item.address}
                 </DateTitle>
             </Row>
             <Row>

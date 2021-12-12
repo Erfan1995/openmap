@@ -1,4 +1,4 @@
-import { Modal,  Col, Row,  List, Card, Spin, Typography } from 'antd';
+import { Modal, Col, Row, List, Card, Spin, Typography, message } from 'antd';
 import { useEffect, useState } from 'react';
 import { getSurveyForms, postMethod } from 'lib/api';
 import { API, MAP } from '../../static/constant';
@@ -45,16 +45,32 @@ const AddMap = ({ onDataSaved, myVisible, geoData, mapData, modalClose, userType
     const [surveys, setSurveys] = useState([]);
     const [selectedSurvey, setSelectedSurveys] = useState();
     const [topPadding, setTopPadding] = useState(150);
+    const [address, setAddress] = useState(" ");
+    var resolvedFlag = true;
+
+    useEffect(async () => {
+        let lat = geoData.coordinates[0];
+        let lng = geoData.coordinates[1];
+        await fetch(`https://geocode.arcgis.com/arcgis/rest/services/World/GeocodeServer/reverseGeocode?f=pjson&featureTypes=&location=${lat}%2C${lng}`,
+            { headers: { 'Accept': 'application/json' } })
+            .then((res) => res.json())
+            .then((data) => {
+                setAddress(data.address.LongLabel);
+            });
+    }, [])
 
     const onCompleteSurvey = async (data) => {
+        console.log(address);
         setLoading(true);
         data.valuesHash.geolocation = mapManualData.coordinates;
+
         try {
             let values = {};
             values.map = mainMapData.id;
             values.geometry = mapManualData;
             values.properties = data.valuesHash;
             values.survey = selectedSurvey.id;
+            values.address = address;
             if (geoData.type === 'Point') {
                 values.icon = selectedIcons ? selectedIcons.id : null;
             }

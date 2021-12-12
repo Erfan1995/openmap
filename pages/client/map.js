@@ -204,7 +204,7 @@ const Map = ({ serverSideManualMapData, mapData, datasets, injectedcodes, public
             bodyStyle={{ overflowX: 'scroll' }}
             width={800}
             visible={modalVisible}
-            destroyOnClose={true}
+            // destroyOnClose={true}
             onCancel={() => {
               setModalVisible(false)
             }}
