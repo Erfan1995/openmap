@@ -35,7 +35,7 @@ const CreateNewsFeedWidget = ({ widget }) => {
         form
             .validateFields()
             .then(async (values) => {
-                let newsFeed = { 'title': values.title, 'rss_feed': values.rss_feed, 'color': colorCode };
+                let newsFeed = { 'title': values.title, 'rss_feed': values.rss_feed, 'color': colorCode !== null ? colorCode : widget?.news_feeds?.color };
                 const res = await putMethod('widgets/' + widget?.id, { 'news_feeds': newsFeed });
                 if (res) {
                     message.success(DATASET.SUCCESSFULY_UPDATE_MESSAGE);

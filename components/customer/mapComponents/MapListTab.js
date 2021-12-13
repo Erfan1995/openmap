@@ -99,13 +99,14 @@ const ListEditeButton = styled.span`
 
 
 
-const MapLisTab = ({ onEdit, mdcId, properties, editedListViewProperties, listviewProperties, selectedWidgets,mapId,token, layerType,onMapDataChange }) => {
+const MapLisTab = ({ onEdit, mdcId, properties, editedListViewProperties, listviewProperties, selectedWidgets,mapId,token, layerType,onMapDataChange,selectedProgressbar }) => {
     const [indeterminate, setIndeterminate] = useState(false);
     const [checkAll, setCheckAll] = useState(false);
     const [checkedList, setCheckedList] = useState(listviewProperties);
     const [widgets, setWidgets] = useState(selectedWidgets !== null ? selectedWidgets : WidgetsData);
     const [loading, setLoading] = useState(false);
     const [form] = Form.useForm();
+    const [selectedProgress,setSelectedProgress]=useState(selectedProgressbar);
 
     let options = [];
     let dynamicFormContent = [];
@@ -222,20 +223,37 @@ const MapLisTab = ({ onEdit, mdcId, properties, editedListViewProperties, listvi
     const onChangeState = async (e) => {
         setLoading(true);
             let tempWidgets = [];
-            widgets.map((widget) => {
-                if (widget.id === e.target.id) {
-                    tempWidgets.push({ 'id': widget.id, 'title': widget.title, 'checked': e.target.checked })
+            if(e.target.id==1){
+                if (layerType === "dataset") {
+                    const res = await putMethod('mapdatasetconfs/' + mdcId, { progressbar_selected: e.target.checked });
+                    if (res) {
+                        setSelectedProgress(e.target.checked);
+                        setLoading(false);
+                    }
+                } else if (layerType === "main") {
+                    const res = await putMethod('mapsurveyconfs/' + mdcId, { progressbar_selected: e.target.checked });
+                    if (res) {
+                        setSelectedProgress(e.target.checked);
+                        setLoading(false);
+                    }
                 }
-                else {
-                    tempWidgets.push(widget);
-                }
-            })
-            const res = await putMethod('maps/' + mapId, { selected_widgets: tempWidgets });
-            if (res) {
-                setWidgets(tempWidgets);
-                onMapDataChange();
             }
-            setLoading(false);
+            else{
+                widgets.map((widget) => {
+                    if (widget.id === e.target.id) {
+                        tempWidgets.push({ 'id': widget.id, 'title': widget.title, 'checked': e.target.checked })
+                    }
+                    else {
+                        tempWidgets.push(widget);
+                    }
+                });
+                const res = await putMethod('maps/' + mapId, { selected_widgets: tempWidgets });
+                if (res) {
+                    setWidgets(tempWidgets);
+                    onMapDataChange();
+                }
+                setLoading(false);
+            }
     }
 
     const onSelectedItem = (id) => {
@@ -249,6 +267,21 @@ const MapLisTab = ({ onEdit, mdcId, properties, editedListViewProperties, listvi
 
             <Row>
                 <SubTitle title={DATASET.STYLE} number={1}></SubTitle>
+                <Row style={{ width: '100%', paddingLeft: 20 }}>
+                        <Col span={21} >
+                            <Checkbox id="1" checked={selectedProgress} onChange={onChangeState}>Progress Bar</Checkbox>
+                        </Col>
+                        <Col span={3}>
+                            <div>
+                                <Dropdown size="big" overlay={listMenu} trigger={['click']} >
+                                    <a className="ant-dropdown-link"
+                                        onClick={(e) => onSelectedItem(1)} >
+                                        <ListEditeButton>:</ListEditeButton>
+                                    </a>
+                                </Dropdown>
+                            </div>
+                        </Col>
+                    </Row>
                 {widgets.map((widget) => (
                     <Row style={{ width: '100%', paddingLeft: 20 }}>
                         <Col span={21} >

@@ -77,6 +77,7 @@ const MapConf = ({ authenticatedUser, styledMaps, tags, mapData, serverSideDatas
     const [layerClicked, setLayerClicked] = useState(true);
     const [listClicked, setListClicked] = useState(true);
     const [mdcId, setmdcId] = useState();
+    const [selectedProgressbar,setSelectedProgressbar]=useState();
     const [selectedDIcons, setSelectedDIcons] = useState();
     const [selectedDatasetProperties, setSelectedDatasetProperties] = useState();
     const [selectedWidgets,setSelectedWidgets]=useState([]);
@@ -231,6 +232,7 @@ const MapConf = ({ authenticatedUser, styledMaps, tags, mapData, serverSideDatas
             const mapDatasetConf = await getMapDatasetConf({ dataset: id, map: mapData.id }, token);
             if (mapDatasetConf) {
                 setmdcId(Number(mapDatasetConf[0]?.id));
+                setSelectedProgressbar(mapDatasetConf[0]?.progressbar_selected)
             }
             const selectedIcons = await getDatasetConfContent({ id: mapDatasetConf[0]?.id }, token);
             if (selectedIcons.length > 0) {
@@ -266,6 +268,7 @@ const MapConf = ({ authenticatedUser, styledMaps, tags, mapData, serverSideDatas
             if (mapSurveyConf) {
                 let i = 0;
                 setmdcId(Number(mapSurveyConf[0]?.id));
+                setSelectedProgressbar(mapSurveyConf[0]?.progressbar_selected)
                 const selectedproperties = await getSurveyConfContent({ id: mapSurveyConf[0]?.id }, token);
 
                 if (selectedproperties.length > 0) {
@@ -532,7 +535,7 @@ const MapConf = ({ authenticatedUser, styledMaps, tags, mapData, serverSideDatas
                             setListClicked(false);
                         }} setDataset={setDataset} onMapDataChange={onMapDataChange} listviewProperties={listviewProperties}
                             listviewEditedProperties={listviewEditedProperties} icons={icons} mdcId={mdcId} selectedDIcons={selectedDIcons} token={token}
-                            datasetProperties={datasetProperties} selectedDatasetProperties={selectedDatasetProperties}
+                            datasetProperties={datasetProperties} selectedDatasetProperties={selectedDatasetProperties} selectedProgressbar={selectedProgressbar}
                             layerType={layerType} changeSelectedIcons={changeSelectedIcons} editedProperties={editedProperties} selectedWidgets={selectedWidgets} mapId={mapData?.id} />
                     </div> :
                         <div>

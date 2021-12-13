@@ -177,6 +177,9 @@ export const DATASET = {
     IS_ACTIVE:'Is Active',
     API:'API',
     SHARED:'Shared',
+    USER_API:'User API',
+    TWITTER_API:'Twitter API',
+    
 }
 
 export const LAT = ['lat', 'Lat', 'LAT', 'latitude', 'Latitude', 'LATITUDE'];

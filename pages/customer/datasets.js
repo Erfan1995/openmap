@@ -1,11 +1,11 @@
 import Layout from '../../components/customer/layout/Layout';
 import withPrivateServerSideProps from '../../utils/withPrivateServerSideProps';
 import { useEffect, useState } from 'react';
-import { Button, Divider, Typography, Tabs, Modal, Spin, message, notification, Card, Row, Avatar, Space } from 'antd';
+import { Button, Divider, Typography, Tabs, Modal, Spin, message, notification, Card, Row, Avatar, Space, Image } from 'antd';
 import styled from 'styled-components';
 const { Title } = Typography;
 const { TabPane } = Tabs;
-import { postMethod, getDatasets, getTags, deleteMethod } from "../../lib/api";
+import { postMethod, getDatasets, getTags, deleteMethod, getIpLocation } from "../../lib/api";
 import { formatDate, fileSizeReadable } from "../../lib/general-functions";
 // import FileUpload from '../../components/customer/mapComponents/FileUpload';
 import nookies from 'nookies';
@@ -15,7 +15,7 @@ import csv from 'csv';
 import GeoJSON from 'geojson';
 import { LAT, LONG, DATASET } from '../../static/constant'
 import dynamic from 'next/dynamic';
-import { SettingOutlined, PlusCircleFilled } from '@ant-design/icons';
+import { SettingOutlined, PlusCircleFilled, TwitterOutlined } from '@ant-design/icons';
 
 const MapsWrapper = styled.div`
 background:#ffffff;
@@ -30,6 +30,30 @@ const CardTitle = styled(Title)`
   margin-bottom: 10px;
   float: left !important;
 `;
+
+const ApiTitle = styled.div`
+    font-size: 15px;
+    color:#929292;    
+`
+
+const CardWrapper = styled(Row)`
+    background: #ececec;
+    padding: 5px; 
+`
+
+
+const CardAvatar = styled(Avatar)`
+    background: #ececec;
+`
+
+const CardAPI = styled(Card)`
+    width: 200px; 
+    margin: 10px; 
+    border-radius: 20px
+`
+const CardSpace = styled(Space)`
+    width: 100%
+`
 
 const Dataset = ({ authenticatedUser, collapsed, locked_data, unlocked_data, tags }) => {
     const FileUpload = dynamic(() => import('components/customer/mapComponents/FileUpload'), {
@@ -58,6 +82,12 @@ const Dataset = ({ authenticatedUser, collapsed, locked_data, unlocked_data, tag
         setVisible(false);
         setDataset([...dataset, res]);
     }
+
+    const onClick = async () => {
+        const res = await getIpLocation();
+        console.log('response ' + JSON.stringify(res));
+    }
+
     return (
         <Layout collapsed={collapsed} user={authenticatedUser}>
             <MapsWrapper  >
@@ -85,65 +115,61 @@ const Dataset = ({ authenticatedUser, collapsed, locked_data, unlocked_data, tag
                             updatedLockedData={updatedLockedData} />
                     </TabPane>
                     <TabPane tab={<span>{DATASET.API}</span>} key="3">
-                        <Row style={{ background: '#ececec', padding: 5 }}>
-                            <Card bodyStyle={{ padding: 10 }} style={{ width: 200, margin: 10, borderRadius: 20 }}>
-                                <Space direction="vertical" style={{ width: '100%' }}>
+                        <CardWrapper>
+                            <CardAPI bodyStyle={{ padding: 10 }}>
+                                <CardSpace direction="vertical">
                                     <Row justify="end">
-                                        <SettingOutlined></SettingOutlined>
+                                        <SettingOutlined style={{ color: '#878787' }}></SettingOutlined>
                                     </Row>
                                     <Row justify="center">
-                                        <Avatar
+                                        <CardAvatar
                                             size={{ xs: 24, sm: 32, md: 40, lg: 64, xl: 80, xxl: 100 }}
-                                            style={{ background: '#ececec' }}
                                         >
-
-                                        </Avatar>
+                                            <img src='/placeholder.png' height="40"></img>
+                                        </CardAvatar>
                                     </Row>
                                     <Row justify="center">
-                                        Card Content
+                                        <ApiTitle>{DATASET.USER_API}</ApiTitle>
                                     </Row>
-                                </Space>
-                            </Card>
-                            <Card bodyStyle={{ padding: 10 }} style={{ width: 200, margin: 10, borderRadius: 20 }}>
-                                <Space direction="vertical" style={{ width: '100%' }}>
+                                </CardSpace>
+                            </CardAPI>
+                            <CardAPI bodyStyle={{ padding: 10 }} >
+                                <CardSpace direction="vertical">
                                     <Row justify="end">
-                                        <PlusCircleFilled></PlusCircleFilled>
+                                        <PlusCircleFilled style={{ color: "#46a5c6" }}></PlusCircleFilled>
                                     </Row>
                                     <Row justify="center">
-                                        <Avatar
+                                        <CardAvatar
                                             size={{ xs: 24, sm: 32, md: 40, lg: 64, xl: 80, xxl: 100 }}
-                                            style={{ background: '#ececec' }}
+                                            icon={<TwitterOutlined style={{ color: '#41a9ea' }}></TwitterOutlined>}
                                         >
-
-                                        </Avatar>
+                                        </CardAvatar>
                                     </Row>
                                     <Row justify="center">
-                                        Card Content
+                                        <ApiTitle>{DATASET.TWITTER_API}</ApiTitle>
                                     </Row>
-                                </Space>
-                            </Card>
-                            <Card bodyStyle={{ padding: 10 }} style={{ width: 200, margin: 10, borderRadius: 20 }}>
-                                <Space direction='vertical' style={{ width: '100%' }}>
+                                </CardSpace>
+                            </CardAPI>
+                            <CardAPI bodyStyle={{ padding: 10 }} >
+                                <CardSpace direction='vertical'>
                                     <Row justify="end">
-                                        <SettingOutlined></SettingOutlined>
+                                        <SettingOutlined style={{ color: '#878787' }}></SettingOutlined>
                                     </Row>
                                     <Row justify="center">
-                                        <Avatar
+                                        <CardAvatar
                                             size={{ xs: 24, sm: 32, md: 40, lg: 64, xl: 80, xxl: 100 }}
-                                            style={{ background: '#ececec' }}
                                         >
-
-                                        </Avatar>
+                                        </CardAvatar>
                                     </Row>
                                     <Row justify="center">
-                                        Card Content
+                                        <ApiTitle>New API</ApiTitle>
                                     </Row>
-                                </Space>
-                            </Card>
-                        </Row>
+                                </CardSpace>
+                            </CardAPI>
+                        </CardWrapper>
                     </TabPane>
                     <TabPane tab={<span>{DATASET.SHARED}</span>} key="4">
-                        hhkhkh kh hkh h kh h k
+                        SHARE TAB
                     </TabPane>
                 </Tabs>
             </MapsWrapper>

@@ -20,7 +20,7 @@ const CreateVideoWidget = ({ widget }) => {
             form
             .validateFields()
             .then(async (values) => {
-                let currentVideo = { 'title': values.title, 'video_link': values.video_link, 'color': colorCode };
+                let currentVideo = { 'title': values.title, 'video_link': values.video_link, 'color': colorCode!==null ? colorCode : widget?.video?.color };
                 const res = await putMethod('widgets/' + widget.id, { 'video': currentVideo });
                 if (res) {
                     message.success(DATASET.SUCCESSFULY_UPDATE_MESSAGE);

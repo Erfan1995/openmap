@@ -35,7 +35,7 @@ const CreateTextWidget = ({ widget }) => {
         form
             .validateFields()
             .then(async (values) => {
-                let textItem = { 'title': values.title, 'description': editorValueInHtml, 'color': colorCode };
+                let textItem = { 'title': values.title, 'description': editorValueInHtml, 'color': colorCode!==null ? colorCode : widget?.text?.color };
                 const res = await putMethod('widgets/' + widget.id, { 'text': textItem });
                 if (res) {
                     message.success(DATASET.SUCCESSFULY_UPDATE_MESSAGE);
