@@ -3,10 +3,8 @@ import { Card, Row, Col } from "antd"
 import { InfoCircleFilled } from "@ant-design/icons"
 import styled from "styled-components"
 
-
 const Title = styled.div`
     width: 100%;
-    background-color:#542344;
     border-top-right-radius:5px;
     border-top-left-radius:5px;
 
@@ -47,13 +45,13 @@ const BlackTitle = styled.div`
     font-weight: bold 
 `;
 
-const ReadMore=styled.div`
+const ReadMore = styled.div`
     width:100%;
     text-align:right
 `;
 
 
-const TextWidget = () => {
+const TextWidget = ({ textWidget }) => {
     return <Card
         bodyStyle={{ padding: '0px 10px 10px 10px' }}
         style={{
@@ -64,14 +62,14 @@ const TextWidget = () => {
             boxShadow: "5px 8px 24px 5px rgba(208, 216, 243, 0.6)"
         }}
         cover={
-            <Title>
+            <Title style={{ background: textWidget.color ? textWidget.color : '#542344' }}>
                 <H2>
-                    <InfoCircleFilled style={{ fontSize: 20, color: '#00b0ff' }} /> Who's listening to your stories?
+                    <InfoCircleFilled style={{ fontSize: 20, color: '#00b0ff', paddingRight: '3px' }} />{textWidget.title}
                 </H2>
             </Title>
         }
     >
-        <Row>
+        {/* <Row>
             <Col span={8}><PurpleText>4567</PurpleText> </Col>
             <Col span={16}>
                 <SampleText>
@@ -112,9 +110,10 @@ const TextWidget = () => {
         </Row>
         <Row >
             <ReadMore>
-            <a>More ...</a>
+                <a>More ...</a>
             </ReadMore>
-        </Row>
+        </Row> */}
+        <div dangerouslySetInnerHTML={{ __html: textWidget.description }} />
     </Card>
 }
 

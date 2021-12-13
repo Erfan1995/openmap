@@ -2,7 +2,6 @@ import dynamic from "next/dynamic";
 import LayoutPage from "components/client/layout";
 import { useContext, useEffect, useState } from "react";
 // import UseAuth from "hooks/useAuth";
-import { Spin } from 'antd';
 import { getDatasetsByMap, getClientMapData, getPublicMap } from "lib/api";
 import { extractMapData, extractMapDataPublicUser, getCustomerMapData, getPublicAuthenticatedMapData, getPublicMapData } from "lib/general-functions";
 import { UserContext } from "lib/UserContext";
@@ -13,27 +12,33 @@ import TextWidget from './../../components/client/widget/TextWidget';
 import SocialWidget from './../../components/client/widget/SocialWidget';
 import ListItem from "components/client/widget/ListItem";
 import { generateListViewData } from "../../lib/general-functions"
-import { Tabs, Row, Col, Card, List, Steps } from 'antd';
+import { Tabs, Row, Col, Card, List, Modal, Spin, Button } from 'antd';
 import { nodeName } from "jquery";
 import { redirect } from "next/dist/next-server/server/api-utils";
 import Content from "components/client/layout/content";
+import ListItemDetails from "components/client/widget/ListeItemDetails";
 const { TabPane } = Tabs;
 const { Meta } = Card;
-const { Step } = Steps;
 
-const Map = ({ manualMapData, mapData, datasets, injectedcodes, publicUser }) => {
-  console.log(manualMapData);
+const Map = ({ serverSideManualMapData, mapData, datasets, injectedcodes, publicUser }) => {
   console.log(mapData.surveys);
+  let widgets = mapData.widget;
+  let manualMapData = serverSideManualMapData;
+  console.log(manualMapData);
   const [intiLoading, setInitLoading] = useState(true);
   const [publicUserObject, setPublicUserObject] = useState(publicUser);
   const [datasetData, setDatasetData] = useState(datasets);
   const [zoomLevel, setZoomLevel] = useState(mapData.zoomLevel);
   const [customMapData, setCustomMapData] = useState(manualMapData);
   const [loading, setLoading] = useState(false);
-  const [listData, setListData] = useState([]);
+  const [listData, setListData] = useState(generateListViewData(manualMapData, mapData.surveys));
   const { login, logout } = UseAuth();
-
+  const [modalVisible, setModalVisible] = useState(false);
+  const [selectedItem, setSelectedItem] = useState();
+  const [ip, setIP] = useState('');
+  Request.ServerVariables
   useEffect(async () => {
+    getData();
     const user = JSON.parse(localStorage.getItem('magicUser'));
     if (!user?.issuer) {
       const res = await login(mapData);
@@ -43,9 +48,15 @@ const Map = ({ manualMapData, mapData, datasets, injectedcodes, publicUser }) =>
       }
     }
   }, [])
-  useEffect(() => {
-    setListData(generateListViewData(manualMapData, mapData.surveys))
-  }, [])
+
+  // fetches users ip address and location details
+  const getData = async () => {
+    const res = await fetch('https://ipapi.co/json/')
+      .then((res) => res.json())
+      .then((data) => {
+        console.log(data);
+      })
+  }
   const onDataSetChange = (list) => {
     let arr = [];
     list.map(item => {
@@ -57,6 +68,18 @@ const Map = ({ manualMapData, mapData, datasets, injectedcodes, publicUser }) =>
     })
     setZoomLevel(localStorage.getItem('zoom') || mapData.zoomLevel);
     setDatasetData(arr);
+  }
+  const onSurveySelectChange = (list) => {
+    let arr = [];
+    list.map(item => {
+      manualMapData.map(obj => {
+        if (obj.mapSurveyConf.survey.id === item) {
+          arr.push(obj)
+        }
+      })
+    });
+    setListData(generateListViewData(arr, mapData.surveys));
+    setCustomMapData(arr);
   }
   const MapWithNoSSR = dynamic(() => import("../../components/map/publicMap"), {
     ssr: false
@@ -70,6 +93,8 @@ const Map = ({ manualMapData, mapData, datasets, injectedcodes, publicUser }) =>
       const publicData = await extractMapDataPublicUser(data, publicUser.publicAddress);
       if (customerData && publicData) {
         setCustomMapData([...customerData, ...publicData]);
+        manualMapData = [...customerData, ...publicData]
+        setListData(generateListViewData([...customerData, ...publicData], mapData.surveys));
         setLoading(false)
       }
     } catch (e) {
@@ -106,32 +131,15 @@ const Map = ({ manualMapData, mapData, datasets, injectedcodes, publicUser }) =>
     overflow-y: scroll
   `;
 
-
-
-  const data = [
-    'Racing car sprays burning fuel into crowd.',
-    'Japanese princess to wed commoner.',
-    'Australian walks 100km after outback crash.',
-    'Man charged over missing wedding girl.',
-    'Los Angeles battles huge wildfires.',
-    'Racing car sprays burning fuel into crowd.',
-    'Japanese princess to wed commoner.',
-    'Australian walks 100km after outback crash.',
-    'Man charged over missing wedding girl.',
-    'Los Angeles battles huge wildfires.',
-    'Racing car sprays burning fuel into crowd.',
-    'Japanese princess to wed commoner.',
-    'Australian walks 100km after outback crash.',
-    'Man charged over missing wedding girl.',
-    'Los Angeles battles huge wildfires.',
-    'Racing car sprays burning fuel into crowd.',
-    'Japanese princess to wed commoner.',
-    'Australian walks 100km after outback crash.',
-    'Man charged over missing wedding girl.',
-    'Los Angeles battles huge wildfires.',
-  ];
-
-
+  const ListItemWrapper = styled.div`
+  &hover{
+    cursor:pointer;
+  }
+`
+  const makeModalVisible = (item) => {
+    setModalVisible(true);
+    setSelectedItem(item);
+  }
 
   return (
     <div>
@@ -140,7 +148,9 @@ const Map = ({ manualMapData, mapData, datasets, injectedcodes, publicUser }) =>
       {/* {!intiLoading && */}
 
       <LayoutPage injectedcodes={injectedcodes} walletAddress={publicUserObject.publicAddress} datasets={datasets} onDataSetChange={onDataSetChange}
-        mapInfo={mapData} userId={publicUserObject.id} publicUser={publicUserObject} mapData={mapData}  >
+        mapInfo={mapData} userId={publicUserObject.id} publicUser={publicUserObject} mapData={mapData}
+        surveys={mapData.surveys} onSurveySelectChange={onSurveySelectChange}
+      >
         <Spin spinning={loading}>
           <Tabs defaultActiveKey="1" centered >
             <TabPane tab="Map" key="1">
@@ -174,21 +184,36 @@ const Map = ({ manualMapData, mapData, datasets, injectedcodes, publicUser }) =>
                       size="small"
                       dataSource={listData}
                       renderItem={item => <List.Item>
-                        <ListItem item={item} />
+                        <ListItem item={item} makeModalVisible={makeModalVisible} />
                       </List.Item>}
                     />
                   </Content>
                 </Col>
                 <Col span={8} >
                   <RightSide>
-                    <VideoWidget />
-                    <TextWidget />
-                    <SocialWidget data={data} />
+                    <VideoWidget videoWidget={widgets.video} />
+                    <TextWidget textWidget={widgets.text} />
+                    <SocialWidget newsFeedWidget={widgets.news_feeds} />
                   </RightSide>
                 </Col>
               </Row>
             </TabPane>
           </Tabs>
+          <Modal
+            centered
+            bodyStyle={{ overflowX: 'scroll' }}
+            width={800}
+            visible={modalVisible}
+            // destroyOnClose={true}
+            onCancel={() => {
+              setModalVisible(false)
+            }}
+            footer={[
+              <Button key="close" onClick={() => { setModalVisible(false) }}> close</Button>
+            ]}
+          >
+            <ListItemDetails item={selectedItem} />
+          </Modal>
         </Spin>
       </LayoutPage>
 
@@ -217,6 +242,7 @@ export async function getServerSideProps(ctx) {
         }
       } else {
         mapData = data?.maps[0];
+        console.log(mapData);
         if (mapData) {
           datasets = mapData?.datasets.map((item) => {
             let temp = mapData.mapdatasetconfs.find((obj) => obj.dataset.id === item.id);
@@ -229,7 +255,7 @@ export async function getServerSideProps(ctx) {
 
     return {
       props: {
-        manualMapData: [...await extractMapData(mapData), ...await extractMapDataPublicUser(mapData, publicUserAddress)]
+        serverSideManualMapData: [...await extractMapData(mapData), ...await extractMapDataPublicUser(mapData, publicUserAddress)]
         , mapData: mapData,
         datasets: datasets,
         injectedcodes: injectedcodes,
