@@ -28,7 +28,7 @@ const SmallTitle = styled.div`
     font-size:10px
 `;
 const ListItem = ({ item, makeModalVisible }) => {
-
+    console.log(item);
     let itemText = Object.entries(item.surveyData[0]);
     return (
         <CustomItem onClick={() => makeModalVisible(item)} >
@@ -45,12 +45,12 @@ const ListItem = ({ item, makeModalVisible }) => {
                         </Row>
                         <Row>
                             <SmallTitle>
-                               {item.address}
+                                {item.address}
                             </SmallTitle>
                         </Row>
                     </Col>
                     <Col span={12} style={{ borderLeft: '1px solid #ccc', padding: 10 }}>
-                        {item.progressbar.steps.length > 0 && (
+                        {item.progressbar.steps.length > 0 && item.progressbar.progressbarStatus && (
                             <Progressbar progressbar={item.progressbar} />
                         )}
                     </Col>
