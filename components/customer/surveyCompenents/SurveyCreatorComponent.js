@@ -279,7 +279,7 @@ const SurveyCreatorComponent = ({ authenticatedUser, token, surveyForms }) => {
         setShareModalVisible(false)
     }
     const onCompleteSurvey = (data) => {
-       
+        console.log(data);
     }
     return (
         <Spin spinning={loading}>
@@ -304,7 +304,7 @@ const SurveyCreatorComponent = ({ authenticatedUser, token, surveyForms }) => {
                             <Survey.Survey
                                 model={Json}
                                 showCompletedPage={false}
-                                // onComplete={data => onCompleteSurvey(data)}
+                                onComplete={data => onCompleteSurvey(data)}
                             >
                             </Survey.Survey>
                         </div> :
