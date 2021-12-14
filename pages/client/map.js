@@ -21,7 +21,7 @@ const { TabPane } = Tabs;
 const { Meta } = Card;
 
 const Map = ({ serverSideManualMapData, mapData, datasets, injectedcodes, publicUser }) => {
-  console.log(mapData.surveys);
+  console.log(mapData);
   let widgets = mapData.widget;
   let manualMapData = serverSideManualMapData;
   console.log(manualMapData);
@@ -191,9 +191,15 @@ const Map = ({ serverSideManualMapData, mapData, datasets, injectedcodes, public
                 </Col>
                 <Col span={8} >
                   <RightSide>
-                    <VideoWidget videoWidget={widgets.video} />
-                    <TextWidget textWidget={widgets.text} />
-                    <SocialWidget newsFeedWidget={widgets.news_feeds} />
+                    {mapData.selected_widgets[0].checked && (
+                      <VideoWidget videoWidget={widgets.video} />
+                    )}
+                    {mapData.selected_widgets[1].checked && (
+                      <TextWidget textWidget={widgets.text} />
+                    )}
+                    {mapData.selected_widgets[2].checked && (
+                      <SocialWidget newsFeedWidget={widgets.news_feeds} />
+                    )}
                   </RightSide>
                 </Col>
               </Row>
