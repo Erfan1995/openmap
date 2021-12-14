@@ -5,6 +5,7 @@ import * as SurveyKo from "survey-knockout";
 import * as Survey from "survey-react"
 import { deleteMethod, getSurveyForms, postMethod } from 'lib/api';
 import { DATASET } from 'static/constant';
+import { SUREVEY_COLORS } from 'static/constant';
 import { ExclamationCircleOutlined } from '@ant-design/icons';
 import { ArrowLeftOutlined } from '@ant-design/icons';
 import * as widgets from "surveyjs-widgets";
@@ -23,36 +24,43 @@ import "jquery-bar-rating";
 import "icheck/skins/square/blue.css";
 import "pretty-checkbox/dist/pretty-checkbox.css";
 
+// import { json } from './analytics_data';
+import { init } from './MapWidget';
+import "survey-creator/survey-creator.css";
+import "survey-knockout/survey.css";
+import "survey-react/survey.css";
+import EditSurvey from './EditSurvey';
+import copy from 'copy-to-clipboard';
+import { CopyOutlined, GlobalOutlined, LinkOutlined } from '@ant-design/icons';
+import { Modal, Spin, Row, Col, Typography, Input, message, List, Button, Tabs } from 'antd';
 
 
-var mainColor = "#7ff07f";
-var mainHoverColor = "#6fe06f";
-var textColor = "#4a4a4a";
-var headerColor = "#7ff07f";
-var headerBackgroundColor = "#4a4a4a";
-var bodyContainerBackgroundColor = "#f8f8f8";
+const { confirm } = Modal;
+const { TabPane } = Tabs;
 
-var defaultThemeColorsSurvey = Survey
-    .StylesManager
-    .ThemeColors["default"];
-defaultThemeColorsSurvey["$main-color"] = mainColor;
-defaultThemeColorsSurvey["$main-hover-color"] = mainHoverColor;
-defaultThemeColorsSurvey["$text-color"] = textColor;
-defaultThemeColorsSurvey["$header-color"] = headerColor;
-defaultThemeColorsSurvey["$header-background-color"] = headerBackgroundColor;
-defaultThemeColorsSurvey["$body-container-background-color"] = bodyContainerBackgroundColor;
-var defaultThemeColorsEditor = SurveyJSCreator
-    .StylesManager
-    .ThemeColors["default"];
-defaultThemeColorsEditor["$primary-color"] = mainColor;
-defaultThemeColorsEditor["$secondary-color"] = mainColor;
-defaultThemeColorsEditor["$primary-hover-color"] = mainHoverColor;
-defaultThemeColorsEditor["$primary-text-color"] = textColor;
-defaultThemeColorsEditor["$selection-border-color"] = mainColor;
+const Boxs = styled.div`
+    background-color: #fff;
+    min-height: 200px;
+    text-align: center;
+    padding:40px 20px;
+`;
 
-Survey
-    .StylesManager
-    .applyTheme();
+
+const IconWrapper = styled.span`
+    padding:10px 12px;
+    border:1px solid #efefef;
+`;
+
+
+const MainWrapper = styled.div`
+    min-height: 330px;
+    width: 100 %;
+    background-color: #f9f9f9;
+    padding: 50px;
+`;
+
+
+// custom widget added on survey
 widgets.icheck(Survey, $);
 // widgets.prettycheckbox(Survey);
 widgets.select2(Survey, $);
@@ -67,23 +75,8 @@ widgets.ckeditor(Survey);
 widgets.autocomplete(Survey, $);
 widgets.bootstrapslider(Survey);
 
-SurveyJSCreator.StylesManager.applyTheme();
 
-
-// import { json } from './analytics_data';
-import { init } from './MapWidget';
-import "survey-creator/survey-creator.css";
-import "survey-react/survey.css";
-import EditSurvey from './EditSurvey';
-import copy from 'copy-to-clipboard';
-import { CopyOutlined, GlobalOutlined, LinkOutlined } from '@ant-design/icons';
-import { Modal, Spin, Row, Col, Typography, Input, message, List, Button, Tabs } from 'antd';
-const { confirm } = Modal;
-const { TabPane } = Tabs;
-init(SurveyKo);
-SurveyJSCreator.StylesManager.applyTheme('default');
-
-
+// custom widget showed on editor 
 widgets.icheck(SurveyKo, $);
 widgets.prettycheckbox(SurveyKo);
 widgets.select2(SurveyKo, $);
@@ -98,27 +91,11 @@ widgets.ckeditor(SurveyKo);
 // widgets.autocomplete(SurveyKo, $);
 widgets.bootstrapslider(SurveyKo);
 window["$"] = window["jQuery"] = $;
+init(SurveyKo);
 
 
-const Boxs = styled.div`
-  background-color: #fff;
-  min-height: 200px;
-  text-align: center;
-  padding:40px 20px;
-`;
 
 
-const IconWrapper = styled.span`
-padding:10px 12px;
-border:1px solid #efefef;
-`;
-
-const MainWrapper = styled.div`
-min-height: 330px;
-width: 100 %;
-background-color: #f9f9f9;
-padding: 50px;
-`;
 const SurveyCreatorComponent = ({ authenticatedUser, token, surveyForms }) => {
     let QRCode = require('qrcode.react');
     let surveyCreator;
@@ -131,8 +108,9 @@ const SurveyCreatorComponent = ({ authenticatedUser, token, surveyForms }) => {
     const [surveyId, setSurveyId] = useState();
     const [shareModalVisible, setShareModalVisible] = useState(false);
     const [link, setLink] = useState('');
-
     const basePath = process.env.NEXT_PUBLIC_BASEPATH_URL;
+
+
     const saveMySurvey = async () => {
         const dd = JSON.parse(surveyCreator.text)
         if (!dd.pages[0].elements) {
@@ -179,6 +157,24 @@ const SurveyCreatorComponent = ({ authenticatedUser, token, surveyForms }) => {
     };
 
     useEffect(() => {
+
+        var defaultThemeColorsSurvey = SurveyKo.StylesManager.ThemeColors["default"];
+        defaultThemeColorsSurvey["$main-color"] = SUREVEY_COLORS.MAIN_COLOR;
+        defaultThemeColorsSurvey["$main-hover-color"] = SUREVEY_COLORS.MAIN_HOVER_COLOR;
+        defaultThemeColorsSurvey["$text-color"] = SUREVEY_COLORS.TEXT_COLOR;
+        defaultThemeColorsSurvey["$header-color"] = SUREVEY_COLORS.HEADER_COLOR;
+        defaultThemeColorsSurvey["$header-background-color"] = SUREVEY_COLORS.HEADER_BACKGROUND_COLOR;
+        defaultThemeColorsSurvey["$body-container-background-color"] = SUREVEY_COLORS.BODY_CONTAINER_BACKGROUND_COLOR;
+        SurveyKo.StylesManager.applyTheme(defaultThemeColorsSurvey);
+
+        var defaultThemeColorsEditor = SurveyJSCreator.StylesManager.ThemeColors["default"];
+        defaultThemeColorsEditor["$primary-color"] = SUREVEY_COLORS.MAIN_COLOR;
+        defaultThemeColorsEditor["$secondary-color"] = SUREVEY_COLORS.MAIN_COLOR;
+        defaultThemeColorsEditor["$primary-hover-color"] = SUREVEY_COLORS.MAIN_HOVER_COLOR;
+        defaultThemeColorsEditor["$primary-text-color"] = SUREVEY_COLORS.TEXT_COLOR;
+        defaultThemeColorsEditor["$selection-border-color"] = SUREVEY_COLORS.MAIN_COLOR;
+        SurveyJSCreator.StylesManager.applyTheme();
+
         surveyCreator = new SurveyJSCreator.SurveyCreator(
             null,
             options

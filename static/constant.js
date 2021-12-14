@@ -248,3 +248,13 @@ export const COLORS = [
     "rgb(255, 127, 80)",
     "rgb(222, 49, 99)"
 ];
+
+export const SUREVEY_COLORS={
+    'MAIN_COLOR':"#7ff07f",
+    'MAIN_HOVER_COLOR':'#6fe06f',
+    'TEXT_COLOR':"#4a4a4a",
+    'HEADER_COLOR':'#7ff07f',
+    'HEADER_BACKGROUND_COLOR':'#4a4a4a',
+    'BODY_CONTAINER_BACKGROUND_COLOR':'#f8f8f8'
+}
+
