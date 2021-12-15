@@ -3,7 +3,7 @@ import React, { useEffect, useState } from "react";
 import * as SurveyJSCreator from "survey-creator";
 import * as SurveyKo from "survey-knockout";
 import * as Survey from "survey-react"
-import { deleteMethod, getSurveyForms, postMethod } from 'lib/api';
+import { deleteMethod, getSurveyForms, postMethod, getMaps } from 'lib/api';
 import { DATASET } from 'static/constant';
 import { SUREVEY_COLORS } from 'static/constant';
 import { ExclamationCircleOutlined } from '@ant-design/icons';
@@ -32,19 +32,33 @@ import "survey-react/survey.css";
 import EditSurvey from './EditSurvey';
 import copy from 'copy-to-clipboard';
 import { CopyOutlined, GlobalOutlined, LinkOutlined } from '@ant-design/icons';
-import { Modal, Spin, Row, Col, Typography, Input, message, List, Button, Tabs } from 'antd';
-
+import { Modal, Spin, Row, Col, Card, Typography, Input, message, List, Button, Tabs } from 'antd';
+import { getStrapiMedia } from "lib/media";
 
 const { confirm } = Modal;
 const { TabPane } = Tabs;
-
+const { Title } = Typography;
+const Photo = styled.img`
+  width:43px;
+  height:43px;
+  :hover{
+      opacity:0.8;
+  }
+`
 const Boxs = styled.div`
     background-color: #fff;
     min-height: 200px;
     text-align: center;
     padding:40px 20px;
 `;
+const MapCard = styled(Card)`
+ min-height:200px;
+ &:hover{
+    cursor:pointer;
+    border:1px solid #a1a1a1;
 
+}
+`
 
 const IconWrapper = styled.span`
     padding:10px 12px;
@@ -108,6 +122,9 @@ const SurveyCreatorComponent = ({ authenticatedUser, token, surveyForms }) => {
     const [surveyId, setSurveyId] = useState();
     const [shareModalVisible, setShareModalVisible] = useState(false);
     const [link, setLink] = useState('');
+    const [maps, setMaps] = useState([]);
+    const [selectedMap, setSelectedMap] = useState();
+    const [modalLoading, setModalLoading] = useState(false);
     const basePath = process.env.NEXT_PUBLIC_BASEPATH_URL;
 
 
@@ -265,9 +282,22 @@ const SurveyCreatorComponent = ({ authenticatedUser, token, surveyForms }) => {
         setJson(item);
         setVisible(true);
     }
-    const shareSurvey = (item) => {
-        setLink(`${basePath}/?t=1&survey=${item.id}`);
+    const shareSurvey = async (item) => {
+        setSelectedMap(null);
         setShareModalVisible(true);
+        try {
+            setLoading(true);
+            const maps = await getMaps(authenticatedUser.id, token);
+            if (maps) {
+                setMaps(maps);
+                setLoading(false);
+            }
+            setLink(`${basePath}/?t=1&survey=${item.id}`);
+        } catch (e) {
+            setLoading(false);
+        }
+        console.log(maps)
+
 
 
     }
@@ -276,6 +306,9 @@ const SurveyCreatorComponent = ({ authenticatedUser, token, surveyForms }) => {
     }
     const onCompleteSurvey = (data) => {
         console.log(data);
+    }
+    const selectMap = (map) => {
+        setSelectedMap(map)
     }
     return (
         <Spin spinning={loading}>
@@ -349,32 +382,64 @@ const SurveyCreatorComponent = ({ authenticatedUser, token, surveyForms }) => {
                         footer={[]}
                         style={{ padding: 0 }}>
                         <MainWrapper>
-                            <Row>
-                                <Col xs={24} sm={24} md={12} lg={12} xl={12} className='padding-10'>
-                                    <Boxs >
-                                        <IconWrapper>
-                                            <LinkOutlined />
-                                        </IconWrapper>
-                                        <Typography.Title level={5} className='margin-top-20'>Get the Link</Typography.Title>
-                                        <p>Send to your friends, coworkers, or post it in your social networks.</p>
+                            <Spin spinning={modalLoading}>
+                                {!selectedMap &&
+                                    <Col span={24} className='padding-10 text-center'>
+                                        <List
+                                            grid={{
+                                                gutter: 16,
+                                                xs: 1,
+                                                sm: 2,
+                                                md: 3,
+                                                lg: 3,
+                                                xl: 3,
+                                                xxl: 3,
+                                            }}
+                                            dataSource={maps}
+                                            renderItem={(item, index) => (
+                                                <List.Item >
+                                                    <MapCard key={`mapCard${index}`} className={item.isSelected ? 'selectedBox' : ''} onClick={() => selectMap(item)} >
+                                                        <img src={getStrapiMedia(item.logo)} style={{ height: 70 }} />
 
-                                        <Input size='large' value={link} addonAfter={<CopyOutlined onClick={() => {
-                                            if (copy(link)) {
-                                                message.success('coppied to Clipboard!')
-                                            }
-                                        }} />} defaultValue="mysite" />
-                                    </Boxs>
+                                                        <Title level={5} className='margin-top-10 text-center'>
+                                                            {item.title}
+                                                        </Title>
 
-                                </Col>
+                                                    </MapCard>
+                                                </List.Item>
+                                            )}
+                                        />
+                                    </Col>
+                                }
+                                {selectedMap &&
+                                    <Row>
+                                        <Col xs={24} sm={24} md={12} lg={12} xl={12} className='padding-10'>
+                                            <Boxs >
+                                                <IconWrapper>
+                                                    <LinkOutlined />
+                                                </IconWrapper>
+                                                <Typography.Title level={5} className='margin-top-20'>Get the Link</Typography.Title>
+                                                <p>Send to your friends, coworkers, or post it in your social networks.</p>
 
-                                <Col xs={24} sm={24} md={12} lg={12} xl={12} className='padding-10'>
-                                    <Boxs >
-                                        <Typography.Title level={5} className='margin-top-20'>Scan the QR Code</Typography.Title>
-                                        <p>Scan this QR code to view and fill the survey on your mobile devices.</p>
-                                        <QRCode value={link} />
-                                    </Boxs>
-                                </Col>
-                            </Row>
+                                                <Input size='large' value={link} addonAfter={<CopyOutlined onClick={() => {
+                                                    if (copy(link)) {
+                                                        message.success('coppied to Clipboard!')
+                                                    }
+                                                }} />} defaultValue="mysite" />
+                                            </Boxs>
+
+                                        </Col>
+
+                                        <Col xs={24} sm={24} md={12} lg={12} xl={12} className='padding-10'>
+                                            <Boxs >
+                                                <Typography.Title level={5} className='margin-top-20'>Scan the QR Code</Typography.Title>
+                                                <p>Scan this QR code to view and fill the survey on your mobile devices.</p>
+                                                <QRCode value={link} />
+                                            </Boxs>
+                                        </Col>
+                                    </Row>
+                                }
+                            </Spin>
                         </MainWrapper>
                     </Modal>
                 </TabPane>

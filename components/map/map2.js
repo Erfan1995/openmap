@@ -103,7 +103,7 @@ export default class EditControlExample extends Component {
         pointToLayer: (feature, latlng) => {
           const iconUrl = getStrapiMedia(feature?.icon?.icon?.length > 0 ? feature?.icon?.icon[0] : null);
 
-          if (!iconUrl) return L.marker(latlng,{
+          if (!iconUrl) return L.marker(latlng, {
             icon: new L.icon({ iconUrl: '/marker-icon.png', iconSize: MapDefaultIconSize })
           });
 
@@ -112,7 +112,7 @@ export default class EditControlExample extends Component {
           })
         },
         onEachFeature: (feature = {}, layer) => {
-          const { properties,mapSurveyConf } = feature;
+          const { properties, mapSurveyConf } = feature;
           if (!properties) return;
 
           if (!(mapSurveyConf?.selected_survey_properties)) {
@@ -124,7 +124,7 @@ export default class EditControlExample extends Component {
           }
 
 
-          layer.bindPopup(`<div>${getSpecifictPopup(properties, mapSurveyConf?.default_popup_style_slug || '', mapSurveyConf?.selected_survey_properties || [],mapSurveyConf?.edited_survey_properties)}</div>`)
+          layer.bindPopup(`<div>${getSpecifictPopup(properties, mapSurveyConf?.default_popup_style_slug || '', mapSurveyConf?.selected_survey_properties || [], mapSurveyConf?.edited_survey_properties)}</div>`)
         }
       })
       let leafletFG = reactFGref;

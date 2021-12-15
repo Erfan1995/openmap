@@ -78,6 +78,7 @@ const AddMap = ({ onDataSaved, myVisible, geoData, mapData, modalClose, userType
             if (userType === 'public') {
                 values.is_approved = false;
                 values.public_user = userId;
+                console.log(values)
                 res = await postMethod('mmdpublicusers', values, false);
             } else {
                 values.is_approved = true;
