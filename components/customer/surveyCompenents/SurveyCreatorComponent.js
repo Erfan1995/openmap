@@ -126,7 +126,7 @@ const SurveyCreatorComponent = ({ authenticatedUser, token, surveyForms }) => {
     const [maps, setMaps] = useState([]);
     const [selectedMap, setSelectedMap] = useState();
     const basePath = process.env.NEXT_PUBLIC_BASEPATH_URL;
-
+    console.log(surveyForms);
 
     const saveMySurvey = async () => {
         const dd = JSON.parse(surveyCreator.text)
@@ -286,20 +286,8 @@ const SurveyCreatorComponent = ({ authenticatedUser, token, surveyForms }) => {
         setSelectedMap(null);
         setShareModalVisible(true);
         setSurveyId(item.id);
-        try {
-            setLoading(true);
-            const maps = await getMaps(authenticatedUser.id, token);
-            if (maps) {
-                setMaps(maps);
-                setLoading(false);
-            }
-        } catch (e) {
-            setLoading(false);
-        }
-        console.log(maps)
-
-
-
+        setMaps(item.maps);
+        setLoading(false);
     }
     const onModalClose = () => {
         setShareModalVisible(false)
@@ -344,9 +332,10 @@ const SurveyCreatorComponent = ({ authenticatedUser, token, surveyForms }) => {
                                 dataSource={surveyList}
                                 renderItem={item => (
                                     <List.Item style={{ margin: "0px 30px" }} actions={[
-                                        <a onClick={() => showConfirm(item.id)} >delete</a>,
-                                        <a onClick={() => editSurvey(item)} >edit</a>,
-                                        <a onClick={() => shareSurvey(item)}>share</a>
+                                        <a onClick={() => displaySurvey(item, true)} >Preview</a>,
+                                        <a onClick={() => showConfirm(item.id)} >Delete</a>,
+                                        <a onClick={() => editSurvey(item)} >Edit</a>,
+                                        <a onClick={() => shareSurvey(item)}>Share</a>
                                     ]}>
                                         <List.Item.Meta
                                             title={<a onClick={() => displaySurvey(item, true)} >{item.forms.title}</a>}
@@ -374,7 +363,6 @@ const SurveyCreatorComponent = ({ authenticatedUser, token, surveyForms }) => {
                         <EditSurvey surveyJson={Json} updateSurveyList={updateSurveyList} />
                     </Modal>
                     <Modal
-                        title='share survey'
                         centered
                         width={1000}
                         visible={shareModalVisible}
@@ -385,7 +373,7 @@ const SurveyCreatorComponent = ({ authenticatedUser, token, surveyForms }) => {
                         <MainWrapper>
                             {!selectedMap &&
                                 <Col span={24} className='padding-10 text-center'>
-                                    <Title>Which map do you want to integrate the survey with?</Title>
+                                    <Title>Maps linked to this survey! If you haven't linked any, please do it in Maps dashboard.</Title>
                                     <List
                                         grid={{
                                             gutter: 16,

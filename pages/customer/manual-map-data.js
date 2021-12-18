@@ -32,8 +32,8 @@ const ManualMapData = ({ authenticatedUser, collapsed, token, surveyForms }) => 
     const [manualMapData, setManualMapData] = useState();
     const [mapsDataTofilter, setMapsDataToFilter] = useState();
     const [mapDataClicked, setMapDataClicked] = useState(false);
-    const [printData,setPrintData]=useState([]);
-
+    const [printData, setPrintData] = useState([]);
+    console.log(surveyForms)
     surveyForms.map(data => {
         data.title = data.forms.title;
         data.description = data.forms.description;
@@ -76,7 +76,7 @@ const ManualMapData = ({ authenticatedUser, collapsed, token, surveyForms }) => 
             res = await getMethod(`mmdpublicusers?_where[0][map.user]=${authenticatedUser.id}&survey=${row.id}`);
             if (res) {
                 res.map((map) => {
-                    map.publicAddress = map.public_user.publicAddress
+                    map.publicAddress = map?.public_user?.publicAddress
                 })
             }
             setMapDataClicked(false);
@@ -160,7 +160,7 @@ const ManualMapData = ({ authenticatedUser, collapsed, token, surveyForms }) => 
 
 
     {
-        var printColumn=mapDataClicked ? [
+        var printColumn = mapDataClicked ? [
             {
                 title: DATASET.APPROVED,
                 dataIndex: 'is_approved',
@@ -171,7 +171,7 @@ const ManualMapData = ({ authenticatedUser, collapsed, token, surveyForms }) => 
                 dataIndex: 'maps',
                 key: 'maps',
             },
-        ] :[
+        ] : [
             {
                 title: DATASET.PUBLIC_USERS,
                 dataIndex: 'publicAddress',
@@ -187,35 +187,35 @@ const ManualMapData = ({ authenticatedUser, collapsed, token, surveyForms }) => 
                 dataIndex: 'maps',
                 key: 'maps',
             },
-    
+
         ]
     }
 
 
     const exportToPDF = () => {
-        var colItems={};
-        formElementsName.concat(printColumn).map((data)=>{
-            colItems[data.dataIndex]=data.title;
+        var colItems = {};
+        formElementsName.concat(printColumn).map((data) => {
+            colItems[data.dataIndex] = data.title;
         });
-    
-        if(printData != null && printData.length > 0){
-            const doc=jsPDF();
+
+        if (printData != null && printData.length > 0) {
+            const doc = jsPDF();
             doc.autoTable({
-              head:[colItems],
-              body:printData
+                head: [colItems],
+                body: printData
             });
             doc.save('table.pdf')
         }
-        else{
+        else {
             message.info('Form is Empty');
         }
-        
+
     }
 
 
     const onFilterChange = (data) => {
         setPrintData(data['currentDataSource'])
-      }
+    }
 
 
     return (

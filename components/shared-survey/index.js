@@ -4,6 +4,8 @@ import { init } from 'components/customer/surveyCompenents/MapWidget';
 import "survey-react/survey.css";
 import "survey-creator/survey-creator.css";
 import { useEffect, useState } from 'react';
+import { postMethod } from 'lib/api';
+
 Survey.StylesManager.ThemeColors['green'];
 const Wrapper = styled.div`
     padding:100px
@@ -12,41 +14,61 @@ const Wrapper = styled.div`
 const SharedSurvey = ({ survey, mapId }) => {
     const [json, setJson] = useState([]);
     const [surveyId, setSurveyId] = useState();
+    const [userInfo, setUserInfo] = useState();
+    console.log(survey);
     init(Survey);
 
     useEffect(() => {
         setSurveyId(survey.id);
         setJson(survey.forms);
-    }, [survey])
+        getUserIp();
+    }, [survey]);
 
+    // fetches users ip address and location details
+    const getUserIp = async () => {
+        const res = await fetch('https://ipapi.co/json/')
+            .then((res) => res.json())
+            .then((data) => {
+                setUserInfo(data);
+            })
+    }
     const onCompleteSurvey = (data) => {
         let latlng;
-        let address;
-        console.log(data.valuesHash)
+        let geometry;
+        let properties = data.valuesHash;
         Object.entries(data.valuesHash).map(value => {
-            console.log(value);
             if (value[1].lat) {
-                latlng = [value[1].lat, value[1].lng];
-                address = getAddress(value[1].lat, value[1].lng);
+                latlng = [value[1].lng, value[1].lat];
+                geometry = { 'type': 'Point', 'coordinates': latlng };
+                getAddress(value[1].lat, value[1].lng, geometry, properties);
             }
         })
-        console.log(address);
 
     }
-    const getAddress = async (lat, lng) => {
+    const store = async (geometry, properties, address) => {
+        let values = {};
+        values.map = mapId;
+        values.geometry = geometry;
+        values.properties = properties;
+        values.survey = surveyId;
+        values.address = address;
+        values.ip = userInfo.ip;
+        values.is_approved = false;
+        const res = await postMethod('mmdpublicusers', values, false);
+
+    }
+
+    const getAddress = async (lat, lng, geometry, properties) => {
         console.log(lat, lng);
-        let address;
-        await fetch(`https://geocode.arcgis.com/arcgis/rest/services/World/GeocodeServer/reverseGeocode?f=pjson&featureTypes=&location=${lat}%2C${lng}`,
+        await fetch(`https://geocode.arcgis.com/arcgis/rest/services/World/GeocodeServer/reverseGeocode?f=pjson&featureTypes=&location=${lng}%2C${lat}`,
             { headers: { 'Accept': 'application/json' } })
             .then((res) => res.json())
             .then((data) => {
                 console.log(data);
-                address = data.address.LongLabel;
+                store(geometry, properties, data.address.LongLabel);
             });
-        console.log(address);
-        return address;
-
     }
+
     return (
         <Wrapper>
             <div>

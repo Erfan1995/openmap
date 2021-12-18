@@ -38,7 +38,6 @@ const Map = ({ serverSideManualMapData, mapData, datasets, injectedcodes, public
   const [ip, setIP] = useState('');
   Request.ServerVariables
   useEffect(async () => {
-    getData();
     const user = JSON.parse(localStorage.getItem('magicUser'));
     if (!user?.issuer) {
       const res = await login(mapData);
@@ -49,14 +48,14 @@ const Map = ({ serverSideManualMapData, mapData, datasets, injectedcodes, public
     }
   }, [])
 
-  // fetches users ip address and location details
-  const getData = async () => {
-    const res = await fetch('https://ipapi.co/json/')
-      .then((res) => res.json())
-      .then((data) => {
-        console.log(data);
-      })
-  }
+  // // fetches users ip address and location details
+  // const getData = async () => {
+  //   const res = await fetch('https://ipapi.co/json/')
+  //     .then((res) => res.json())
+  //     .then((data) => {
+  //       console.log(data);
+  //     })
+  // }
   const onDataSetChange = (list) => {
     let arr = [];
     list.map(item => {
