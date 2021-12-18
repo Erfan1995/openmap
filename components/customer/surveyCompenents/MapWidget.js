@@ -1,10 +1,12 @@
 import * as L from 'leaflet';
+import * as ELG from "esri-leaflet-geocoder";
 import "leaflet/dist/leaflet.css";
 import "leaflet/dist/leaflet.css";
 import "leaflet-draw/dist/leaflet.draw.css";
 import "leaflet-defaulticon-compatibility/dist/leaflet-defaulticon-compatibility.css";
 import "leaflet-defaulticon-compatibility";
 export function init(SurveyKo) {
+  let url = process.env.NEXT_PUBLIC_MAPBOX_DEFAULT_MAP
   let widget = {
     name: "mapselectpoint",
     title: "Map select point",
@@ -18,9 +20,6 @@ export function init(SurveyKo) {
 
     activatedByChanged: function (activatedBy) {
       SurveyKo.JsonObject.metaData.addClass("mapselectpoint", [], null, "text");
-      // SurveyKo.JsonObject.metaData.addProperties("mapselectpoint", [
-      //   { name: "buttonText", default: "Click Me" },
-      // ]);
     },
     isDefaultRender: false,
     htmlTemplate: "<div><input /> Map below <div id='mapsurvey' style='height:300px;'></div></div>",
@@ -28,17 +27,26 @@ export function init(SurveyKo) {
       var mapEl = el.getElementsByTagName("div")[0];
       var map = L.map(mapEl).setView([56.38775579397605, -114.1411612983107], 4);
       L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
-        attribution: '&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors'
+        attribution: `&copy; <a href=${url}`
       }).addTo(map);
       map.invalidateSize();
+      // const geocoder = ELG.geocodeService({
+      //   apiKey: "AAPKfbae8be22c3243b386735342c33a55db_LFSYugKKprHOSdlwGVZf-XNHIfM9WyRXBxL3wCORsxJ-e3zYrDO3D0b61huKDey"
+      // })
       let marker;
       map.on("click", function (e) {
         if (marker) {
           map.removeLayer(marker);
         }
         marker = new L.Marker([e.latlng.lat, e.latlng.lng]).addTo(map);
+        // geocoder.reverse().latlng(e.latlng).run(function (err, result) {
+        //   if (err) {
+        //     return;
+        //   }
+        //   console.log(err);
+        //   console.log(result);
+        // })
         question.value = marker.getLatLng();
-        console.log(marker.getLatLng())
       });
 
       var text = el.getElementsByTagName("input")[0];

@@ -29,6 +29,7 @@
     "csv": "^5.5.0",
     "draft-js": "^0.11.7",
     "draftjs-to-html": "^0.9.1",
+    "esri-leaflet-geocoder": "^3.1.1",
     "file-system": "^2.2.2",
     "framer-motion": "^4.1.17",
     "gapi-script": "^1.2.0",

@@ -9,7 +9,7 @@ const Wrapper = styled.div`
     padding:100px
 `
 
-const SharedSurvey = ({ survey }) => {
+const SharedSurvey = ({ survey, mapId }) => {
     const [json, setJson] = useState([]);
     const [surveyId, setSurveyId] = useState();
     init(Survey);
@@ -19,17 +19,33 @@ const SharedSurvey = ({ survey }) => {
         setJson(survey.forms);
     }, [survey])
 
-  
     const onCompleteSurvey = (data) => {
-        console.log(data)
-        let myLatLng;
-        let questions = Object.values(data.questionHashes.names);
-        questions.map(question => {
-            if (question[0].lat) {
-                myLatLng = `${question[0].lat},${question[0].lng}`
+        let latlng;
+        let address;
+        console.log(data.valuesHash)
+        Object.entries(data.valuesHash).map(value => {
+            console.log(value);
+            if (value[1].lat) {
+                latlng = [value[1].lat, value[1].lng];
+                address = getAddress(value[1].lat, value[1].lng);
             }
         })
-        console.log(myLatLng);
+        console.log(address);
+
+    }
+    const getAddress = async (lat, lng) => {
+        console.log(lat, lng);
+        let address;
+        await fetch(`https://geocode.arcgis.com/arcgis/rest/services/World/GeocodeServer/reverseGeocode?f=pjson&featureTypes=&location=${lat}%2C${lng}`,
+            { headers: { 'Accept': 'application/json' } })
+            .then((res) => res.json())
+            .then((data) => {
+                console.log(data);
+                address = data.address.LongLabel;
+            });
+        console.log(address);
+        return address;
+
     }
     return (
         <Wrapper>

@@ -3,7 +3,9 @@ import { extractMapDataPublic } from "lib/general-functions";
 
 
 import dynamic from "next/dynamic";
-export default function Home({ mapData = null, manualMapData = null, datasets = null, mapToken = null, type = null, survey = null }) {
+export default function Home({ mapData = null, manualMapData = null, datasets = null, mapToken = null,
+  type = null, survey = null, mapId = null }) {
+  console.log(mapId)
   const Dashboard = dynamic(() => import("../components/dashboard"), {
     ssr: false
   });
@@ -14,7 +16,7 @@ export default function Home({ mapData = null, manualMapData = null, datasets = 
     <div>{type === 'map' ?
       <Dashboard mapData={mapData} manualMapData={manualMapData} datasets={datasets} mapToken={mapToken} />
       :
-      <SharedSurvey survey={survey} />
+      <SharedSurvey survey={survey} mapId={mapId} />
     }
     </div>
   );
@@ -25,7 +27,8 @@ export default function Home({ mapData = null, manualMapData = null, datasets = 
 export async function getServerSideProps(ctx) {
   try {
     if (ctx.query.t === '1') {
-      const { type, surveyId } = ctx.query;
+      const { type, surveyId, map } = ctx.query;
+      console.log(ctx.query);
       const res = await getMethod(`surveys?id=${ctx.query.survey}`, null, false);
       if (!res.length > 0) {
         return {
@@ -36,7 +39,7 @@ export async function getServerSideProps(ctx) {
         }
       } else {
         return {
-          props: { type: 'survey', survey: res[0] }
+          props: { type: 'survey', survey: res[0], mapId: map }
         }
       }
     } else if (ctx.query.t === '0') {
