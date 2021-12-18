@@ -49,18 +49,21 @@ const AddMap = ({ onDataSaved, myVisible, geoData, mapData, modalClose, userType
     var resolvedFlag = true;
 
     useEffect(async () => {
+        console.log(geoData)
+        let url = process.env.NEXT_PUBLIC_MAPBOX_DEFAULT_MAP
+        console.log(url)
         let lat = geoData.coordinates[0];
         let lng = geoData.coordinates[1];
         await fetch(`https://geocode.arcgis.com/arcgis/rest/services/World/GeocodeServer/reverseGeocode?f=pjson&featureTypes=&location=${lat}%2C${lng}`,
             { headers: { 'Accept': 'application/json' } })
             .then((res) => res.json())
             .then((data) => {
+                console.log(data);
                 setAddress(data.address.LongLabel);
             });
     }, [])
 
     const onCompleteSurvey = async (data) => {
-        console.log(address);
         setLoading(true);
         data.valuesHash.geolocation = mapManualData.coordinates;
 

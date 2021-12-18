@@ -1,88 +1,76 @@
-import { Loader } from "@googlemaps/js-api-loader";
+import * as L from 'leaflet';
+import "leaflet/dist/leaflet.css";
+import "leaflet/dist/leaflet.css";
+import "leaflet-draw/dist/leaflet.draw.css";
+import "leaflet-defaulticon-compatibility/dist/leaflet-defaulticon-compatibility.css";
+import "leaflet-defaulticon-compatibility";
 export function init(SurveyKo) {
-  let widget = { //the widget name. It should be unique and written in lowercase.
-    name: "googlemap",
-    title: "google map survey",
-    iconName: "my-custom-icon",
+  let url = process.env.NEXT_PUBLIC_MAPBOX_DEFAULT_MAP
+  let widget = {
+    name: "mapselectpoint",
+    title: "Map select point",
+    iconName: "",
     widgetIsLoaded: function () {
-      return true; //We do not have external scripts
+      return true; //we do not require anything so we just return true.
     },
     isFit: function (question) {
-      return question.getType() == "googlemap";
+      return question.getType() === "mapselectpoint";
     },
-    init() {
-      // SurveyKo.Serializer.addClass("map", [], null, "empty");
-    },
+
     activatedByChanged: function (activatedBy) {
-      SurveyKo.JsonObject.metaData.addClass("googlemap", [], null, "text");
-      SurveyKo.JsonObject.metaData.addProperties("googlemap", [
-        { name: "lat", default: 41 },
-        { name: "lng", default: 28 },
-      ]);
-      createProperties(SurveyKo);
+      SurveyKo.JsonObject.metaData.addClass("mapselectpoint", [], null, "text");
     },
     isDefaultRender: false,
-    htmlTemplate:
-      "<div class='custom-tessting-input' id='google-map-design'></div>",
+    htmlTemplate: "<div><input /> Map below <div id='mapsurvey' style='height:300px;'></div></div>",
     afterRender: function (question, el) {
-      var findDiv = document.getElementById("google-map-design");
-      findDiv.style.height = "500px";
-      findDiv.style.width = "100%";
-      let loader = new Loader({
-        apiKey: "AIzaSyBlgQUaksdGk8QypFdyyOFwU8d07giTsuE",
+      var mapEl = el.getElementsByTagName("div")[0];
+      var map = L.map(mapEl).setView([32.44303111097896, -100.45234580921135], 4);
+      L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
+        attribution: `&copy; <a href=${url}`
+      }).addTo(map);
+      map.invalidateSize();
+      let marker;
+      map.on("click", function (e) {
+        if (marker) {
+          map.removeLayer(marker);
+        }
+        marker = new L.Marker([e.latlng.lat, e.latlng.lng]).addTo(map);
+        question.value = marker.getLatLng();
       });
-      loader
-        .load()
-        .then((google) => {
-          const uluru = { lat: -25.344, lng: 131.036 };
-          let map = new google.maps.Map(document.getElementById("google-map-design"), {
-            center: uluru,
-            zoom: 8,
-          });
-          let marker;
-          google.maps.event.addListener(map, 'click', function (e) {
-            question.lat = e.latLng.lat();
-            question.lng = e.latLng.lng();
-            if (marker) {
-              marker.setPosition(e.latLng);
-            } else {
-              marker = new google.maps.Marker({
-                position: e.latLng,
-                map: map
-              });
-            }
-            map.setCenter(e.latLng);
-          })
-        })
-        .catch((err) => { });
+
+      var text = el.getElementsByTagName("input")[0];
+      //set some properties
+      text.inputType = question.inputType;
+      text.placeholder = question.placeHolder;
+
+      text.onchange = function () {
+        question.value = text.value;
+      };
+      var onValueChangedCallback = function () {
+        text.value = question.value ? question.value : "";
+      };
+      var onReadOnlyChangedCallback = function () {
+        if (question.isReadOnly) {
+          text.setAttribute("disabled", "disabled");
+        } else {
+          text.removeAttribute("disabled");
+        }
+      };
+      question.readOnlyChangedCallback = onReadOnlyChangedCallback;
+      question.valueChangedCallback = onValueChangedCallback;
+      onValueChangedCallback();
+      onReadOnlyChangedCallback();
     },
-  }
+    //Use it to destroy the widget. It is typically needed by jQuery widgets
+    willUnmount: function (question, el) {
+      //We do not need to clear anything in our simple example
+      //Here is the example to destroy the image picker
+      //var $el = $(el).find("select");
+      //$el.data('picker').destroy();
+    },
+  };
 
-  SurveyKo.CustomWidgetCollection.Instance.addCustomWidget(
-    widget,
-    "customtype"
-  );
-  function createProperties(Survey) {
-    var props = createGeneralProperties(Survey);
-    return props;
-  }
-  function createGeneralProperties(Survey) {
-    return Survey.Serializer.addProperties("googlemap", [
-      {
-        name: "latitude:textbox",
-        category: "general",
-        default: "29.635703",
-      },
-      {
-        name: "longitude:textbox",
-        category: "general",
-        default: "52.521924",
-      },
-    ]);
-  }
 
-  //We do not need default rendering here.
-  //SurveyJS will render this template by default
-
-};
-
+  //Register our widget in singleton custom widget collection
+  SurveyKo.CustomWidgetCollection.Instance.addCustomWidget(widget, "customtype");
+}
