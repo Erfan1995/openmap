@@ -9,6 +9,8 @@ const CustomItem = styled.div`
     padding:30px;
     box-shadow:0 16px 16px hsl(0deg 0% 0% / 0.075);
     height:600px;
+    overflow-y: scroll;
+    scroll-behavior: smooth;
 `;
 
 const ItemTitle = styled.div`

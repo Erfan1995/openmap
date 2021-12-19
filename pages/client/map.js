@@ -23,10 +23,8 @@ const { TabPane } = Tabs;
 const { Meta } = Card;
 
 const Map = ({ serverSideManualMapData, mapData, datasets, injectedcodes, publicUser }) => {
-  console.log(datasets);
   let widgets = mapData.widget;
   let manualMapData = serverSideManualMapData;
-  console.log(manualMapData);
   const [intiLoading, setInitLoading] = useState(true);
   const [publicUserObject, setPublicUserObject] = useState(publicUser);
   const [datasetData, setDatasetData] = useState(datasets);
@@ -79,7 +77,7 @@ const Map = ({ serverSideManualMapData, mapData, datasets, injectedcodes, public
     });
     selectedSurveys = arr;
     setListData([...generateListViewSurvey(arr, mapData.surveys), ...generateListViewDataset(selectedDatasets)]);
-    setZoomLevel(localStorage.getItem('zoom') || mapData.zoomLevel);
+    // setZoomLevel(localStorage.getItem('zoom') || mapData.zoomLevel);
     setCustomMapData(arr);
   }
   const MapWithNoSSR = dynamic(() => import("../../components/map/publicMap"), {
@@ -141,8 +139,11 @@ const Map = ({ serverSideManualMapData, mapData, datasets, injectedcodes, public
     setModalVisible(true);
     setSelectedItem(item);
   }
-  const callback = () => {
-    setZoomLevel(localStorage.getItem('zoom') || mapData.zoomLevel);
+  const callback = (key) => {
+    if (key === '1') {
+      setDatasetData(selectedDatasets);
+      setZoomLevel(localStorage.getItem('zoom') || mapData.zoomLevel);
+    }
   }
   return (
     <div>
@@ -155,7 +156,7 @@ const Map = ({ serverSideManualMapData, mapData, datasets, injectedcodes, public
         surveys={mapData.surveys} onSurveySelectChange={onSurveySelectChange}
       >
         <Spin spinning={loading}>
-          <Tabs defaultActiveKey="1" centered onCanPlay={callback}>
+          <Tabs defaultActiveKey="1" centered onChange={callback}>
             <TabPane tab="Map" key="1">
               <MapWithNoSSR
                 mapZoom={zoomLevel}

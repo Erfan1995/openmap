@@ -28,9 +28,7 @@ const SmallTitle = styled.div`
     font-size:10px
 `;
 const ListItem = ({ item, makeModalVisible }) => {
-    console.log(item);
     let itemText = Object.entries(item.data[0]);
-    console.log(itemText)
     return (
         <CustomItem onClick={() => makeModalVisible(item)} >
             <div>
