@@ -30,8 +30,8 @@ const Progressbar = ({ progressbar }) => {
         {progressbar.progressbarStyle === "circle-mode" || !progressbar.progressbarStyle ?
             <div id={styles.circle}>
                 <ul>
-                    {progressbar.steps?.map((step) => {
-                        return <li>
+                    {progressbar.steps?.map((step, i) => {
+                        return <li key={i}>
                             <StepWrapper>
                                 <Row>
                                     <Link className={step.id <= progressbar.acitveStep ? styles.active : styles.disable}
@@ -49,9 +49,9 @@ const Progressbar = ({ progressbar }) => {
             </div> :
             <div id={styles.flash}>
                 <ul>
-                    {progressbar.steps?.map((step) => {
-                        return <li>
-                            <StepWrapper>
+                    {progressbar.steps?.map((step, i) => {
+                        return <li key={i}>
+                            <StepWrapper >
                                 <Row>
                                     <Link className={step.id <= progressbar.acitveStep ? styles.active : styles.disable}>
                                         <Tooltip title={step.hover_text}><Photo src={getStrapiMedia(step?.icon)}></Photo></Tooltip></Link>

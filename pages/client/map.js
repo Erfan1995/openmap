@@ -63,7 +63,7 @@ const Map = ({ serverSideManualMapData, mapData, datasets, injectedcodes, public
     })
     selectedDatasets = arr;
     setListData([...generateListViewSurvey(selectedSurveys, mapData.surveys), ...generateListViewDataset(arr)]);
-    setZoomLevel(localStorage.getItem('zoom') || mapData.zoomLevel);
+    // setZoomLevel(localStorage.getItem('zoom') || mapData.zoomLevel);
     setDatasetData(arr);
   }
   const onSurveySelectChange = (list) => {
