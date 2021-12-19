@@ -1,42 +1,28 @@
-import { Table, Tag, Space, Dropdown, Menu, message, Modal, Spin } from 'antd';
+import { Table, Tag, Space, Dropdown, Menu, message, Modal, Spin, Row } from 'antd';
 import React, { useEffect, useState } from 'react';
 import { DownOutlined, ExclamationCircleOutlined } from '@ant-design/icons';
 import { deleteMethod, putMethod, getPublicUsers, getIpLocation } from "../../../lib/api";
-import UserLocationDetails from './UserLocationDetails';
 import 'antd/dist/antd.css';
 import { DATASET } from '../../../static/constant'
 const { confirm } = Modal;
-const UserLocationTable = () => {
+const UserLocationDetails = ({ id }) => {
     const [loading, setLoading] = useState(false);
-    const [users, setUsers] = useState([]);
     const [userIp, setUserIp] = useState(null);
     const [userId, setUserId] = useState(0);
-    const [visible,setVisible]=useState(false);
+    const [users, setUsers] = useState([]);
 
     useEffect(() => {
         async function fetchPublicUser() {
             setLoading(true);
-            let response = await getPublicUsers(null);
-            if (response) {
+            let response = await getPublicUsers({ id: id });
                 setUsers(response);
-            }
             setLoading(false);
         }
         fetchPublicUser();
+
     }, []);
 
 
-    function showConfirm() {
-        confirm({
-            icon: <ExclamationCircleOutlined />,
-            content: <p>{DATASET.DELETE_CONFIRM}</p>,
-            onOk() {
-                deleteDataset()
-            },
-            onCancel() {
-            },
-        });
-    }
 
 
     const onGetUserLocation = async () => {
@@ -104,19 +90,12 @@ const UserLocationTable = () => {
     ];
     return (<>
         <Spin spinning={loading}>
-            <Table dataSource={users} columns={columns} />
-            <Modal
-                centered
-                width='700px'
-                visible={visible}
-                destroyOnClose={true}
-                footer={[]}
-                onCancel={() => setVisible(false)}>
-                <UserLocationDetails id={userId}></UserLocationDetails>
-            </Modal>
+            <div>
+                {users}
+            </div>
         </Spin>
 
     </>)
 }
 
-export default UserLocationTable
+export default UserLocationDetails

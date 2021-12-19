@@ -176,7 +176,7 @@ const Dataset = ({ authenticatedUser, collapsed, locked_data, unlocked_data, tag
                             destroyOnClose={true}
                             footer={[]}
                             onCancel={() => setLocationVisible(false)}>
-                   
+    
                                 <UserLocationTable/>
                             {/* <Spin spinning={loading}> */}
 
