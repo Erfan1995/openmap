@@ -11,6 +11,7 @@ import { formatDate, fileSizeReadable } from "../../lib/general-functions";
 import nookies from 'nookies';
 import UnlockedDataset from '../../components/customer/mapComponents/UnlockedDatasetTable';
 import LockedDatasetTable from '../../components/customer/mapComponents/LockedDatasetTable';
+import UserLocationTable from 'components/customer/mapComponents/UserLocationTable';
 import csv from 'csv';
 import GeoJSON from 'geojson';
 import { LAT, LONG, DATASET } from '../../static/constant'
@@ -63,6 +64,7 @@ const Dataset = ({ authenticatedUser, collapsed, locked_data, unlocked_data, tag
     const [lockedDataset, setLockedDataset] = useState(locked_data);
     const [visible, setVisible] = useState(false);
     const [loading, setLoading] = useState(false);
+    const [locationVisible, setLocationVisible] = useState(false);
 
     const updateUnlockedData = (unlockedData, lockedData) => {
         setDataset([...dataset, unlockedData[0]]);
@@ -84,8 +86,8 @@ const Dataset = ({ authenticatedUser, collapsed, locked_data, unlocked_data, tag
     }
 
     const onClick = async () => {
-        const res = await getIpLocation();
-        console.log('response ' + JSON.stringify(res));
+        // const res = await getIpLocation();
+        // console.log('response ' + JSON.stringify(res));
     }
 
     return (
@@ -119,7 +121,7 @@ const Dataset = ({ authenticatedUser, collapsed, locked_data, unlocked_data, tag
                             <CardAPI bodyStyle={{ padding: 10 }}>
                                 <CardSpace direction="vertical">
                                     <Row justify="end">
-                                        <SettingOutlined style={{ color: '#878787' }}></SettingOutlined>
+                                        <SettingOutlined onClick={() => setLocationVisible(true)} style={{ color: '#878787' }}></SettingOutlined>
                                     </Row>
                                     <Row justify="center">
                                         <CardAvatar
@@ -167,6 +169,20 @@ const Dataset = ({ authenticatedUser, collapsed, locked_data, unlocked_data, tag
                                 </CardSpace>
                             </CardAPI>
                         </CardWrapper>
+                        <Modal
+                            centered
+                            width='100%'
+                            visible={locationVisible}
+                            destroyOnClose={true}
+                            footer={[]}
+                            onCancel={() => setLocationVisible(false)}>
+                   
+                                <UserLocationTable/>
+                            {/* <Spin spinning={loading}> */}
+
+                                {/* <FileUpload user={authenticatedUser} onModalClose={onModalClose} /> */}
+                            {/* </Spin> */}
+                        </Modal>
                     </TabPane>
                     <TabPane tab={<span>{DATASET.SHARED}</span>} key="4">
                         SHARE TAB

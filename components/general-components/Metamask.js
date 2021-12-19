@@ -115,8 +115,6 @@ const Metamask = ({ mapDetails }) => {
             message.error(e.message);
             return;
         }
-
-
     };
 
 
