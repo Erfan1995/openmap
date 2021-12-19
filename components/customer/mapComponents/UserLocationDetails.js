@@ -43,9 +43,9 @@ const UserLocationDetails = ({ id }) => {
 
     const menu = (
         <Menu >
-            <Menu.Item key="0"><a onClick={() => setVisible(true)}>{DATASET.Unlock}</a></Menu.Item>
+            <Menu.Item key="0"><a onClick={() => setVisible(true)}>Location Details</a></Menu.Item>
             <Menu.Divider />
-            <Menu.Item key="1"><a onClick={() => onGetUserLocation()}>get user location</a></Menu.Item>
+            <Menu.Item key="1"><a onClick={() => onGetUserLocation()}>Get User Location</a></Menu.Item>
         </Menu>
     );
 
