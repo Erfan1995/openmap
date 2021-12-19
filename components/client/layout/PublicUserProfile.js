@@ -176,7 +176,6 @@ const PublicUserProfile = ({ userId, onModalClose, serverPublicUser, customWalle
                     onModalClose(res);
                     setLoading(false);
                 }
-
             })
             .catch((error) => {
                 setLoading(false);
