@@ -29,7 +29,8 @@ const SmallTitle = styled.div`
 `;
 const ListItem = ({ item, makeModalVisible }) => {
     console.log(item);
-    let itemText = Object.entries(item.surveyData[0]);
+    let itemText = Object.entries(item.data[0]);
+    console.log(itemText)
     return (
         <CustomItem onClick={() => makeModalVisible(item)} >
             <div>
@@ -41,7 +42,7 @@ const ListItem = ({ item, makeModalVisible }) => {
                             </SmallTitle>
                         </Row>
                         <Row style={{ fontSize: 15 }}>
-                            {item.surveyInfo.title}
+                            {item.metaData.title}
                         </Row>
                         <Row>
                             <SmallTitle>

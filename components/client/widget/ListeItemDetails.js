@@ -32,8 +32,8 @@ const DateTitle = styled.div`
 `;
 const ListItemDetails = ({ item }) => {
     let questionAndAnswers = []
-    item.surveyData.map((surveyData) => {
-        Object.entries(surveyData).map((data) => {
+    item.data.map((data) => {
+        Object.entries(data).map((data) => {
             questionAndAnswers.push(data);
         })
     })
@@ -46,7 +46,7 @@ const ListItemDetails = ({ item }) => {
             </Row>
             <Row>
                 <ItemTitle>
-                    {item.surveyInfo.title}
+                    {item.metaData.title}
                 </ItemTitle>
             </Row>
             <Row>
@@ -68,7 +68,7 @@ const ListItemDetails = ({ item }) => {
                             <Question>{survey[0]}</Question>
                         </Row>
                         <Row>
-                            <Answer style={{}}>{survey[1]}</Answer>
+                            <Answer>{survey[1]}</Answer>
                         </Row>
                         <Divider style={{ width: '100%' }} />
 

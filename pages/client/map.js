@@ -3,7 +3,10 @@ import LayoutPage from "components/client/layout";
 import { useContext, useEffect, useState } from "react";
 // import UseAuth from "hooks/useAuth";
 import { getDatasetsByMap, getClientMapData, getPublicMap } from "lib/api";
-import { extractMapData, extractMapDataPublicUser, getCustomerMapData, getPublicAuthenticatedMapData, getPublicMapData } from "lib/general-functions";
+import {
+  extractMapData, extractMapDataPublicUser, generateListViewDataset, generateListViewSurvey,
+  getCustomerMapData, getPublicAuthenticatedMapData, getPublicMapData
+} from "lib/general-functions";
 import { UserContext } from "lib/UserContext";
 import UseAuth from "hooks/useAuth";
 import styled from "styled-components";
@@ -11,7 +14,6 @@ import VideoWidget from './../../components/client/widget/VideoWidget';
 import TextWidget from './../../components/client/widget/TextWidget';
 import SocialWidget from './../../components/client/widget/SocialWidget';
 import ListItem from "components/client/widget/ListItem";
-import { generateListViewData } from "../../lib/general-functions"
 import { Tabs, Row, Col, Card, List, Modal, Spin, Button } from 'antd';
 import { nodeName } from "jquery";
 import { redirect } from "next/dist/next-server/server/api-utils";
@@ -21,7 +23,7 @@ const { TabPane } = Tabs;
 const { Meta } = Card;
 
 const Map = ({ serverSideManualMapData, mapData, datasets, injectedcodes, publicUser }) => {
-  console.log(mapData);
+  console.log(datasets);
   let widgets = mapData.widget;
   let manualMapData = serverSideManualMapData;
   console.log(manualMapData);
@@ -31,13 +33,17 @@ const Map = ({ serverSideManualMapData, mapData, datasets, injectedcodes, public
   const [zoomLevel, setZoomLevel] = useState(mapData.zoomLevel);
   const [customMapData, setCustomMapData] = useState(manualMapData);
   const [loading, setLoading] = useState(false);
-  const [listData, setListData] = useState(generateListViewData(manualMapData, mapData.surveys));
+  const [listData, setListData] = useState();
   const { login, logout } = UseAuth();
   const [modalVisible, setModalVisible] = useState(false);
   const [selectedItem, setSelectedItem] = useState();
-  const [ip, setIP] = useState('');
+  let selectedDatasets = datasets;
+  let selectedSurveys = manualMapData;
   Request.ServerVariables
   useEffect(async () => {
+    let datasetData = generateListViewDataset(datasets)
+    let surveyData = generateListViewSurvey(manualMapData, mapData.surveys);
+    setListData([...surveyData, ...datasetData]);
     const user = JSON.parse(localStorage.getItem('magicUser'));
     if (!user?.issuer) {
       const res = await login(mapData);
@@ -48,14 +54,6 @@ const Map = ({ serverSideManualMapData, mapData, datasets, injectedcodes, public
     }
   }, [])
 
-  // // fetches users ip address and location details
-  // const getData = async () => {
-  //   const res = await fetch('https://ipapi.co/json/')
-  //     .then((res) => res.json())
-  //     .then((data) => {
-  //       console.log(data);
-  //     })
-  // }
   const onDataSetChange = (list) => {
     let arr = [];
     list.map(item => {
@@ -65,6 +63,8 @@ const Map = ({ serverSideManualMapData, mapData, datasets, injectedcodes, public
         }
       })
     })
+    selectedDatasets = arr;
+    setListData([...generateListViewSurvey(selectedSurveys, mapData.surveys), ...generateListViewDataset(arr)]);
     setZoomLevel(localStorage.getItem('zoom') || mapData.zoomLevel);
     setDatasetData(arr);
   }
@@ -77,7 +77,9 @@ const Map = ({ serverSideManualMapData, mapData, datasets, injectedcodes, public
         }
       })
     });
-    setListData(generateListViewData(arr, mapData.surveys));
+    selectedSurveys = arr;
+    setListData([...generateListViewSurvey(arr, mapData.surveys), ...generateListViewDataset(selectedDatasets)]);
+    setZoomLevel(localStorage.getItem('zoom') || mapData.zoomLevel);
     setCustomMapData(arr);
   }
   const MapWithNoSSR = dynamic(() => import("../../components/map/publicMap"), {
@@ -93,7 +95,7 @@ const Map = ({ serverSideManualMapData, mapData, datasets, injectedcodes, public
       if (customerData && publicData) {
         setCustomMapData([...customerData, ...publicData]);
         manualMapData = [...customerData, ...publicData]
-        setListData(generateListViewData([...customerData, ...publicData], mapData.surveys));
+        setListData(generateListViewSurvey([...customerData, ...publicData], mapData.surveys));
         setLoading(false)
       }
     } catch (e) {
@@ -139,7 +141,9 @@ const Map = ({ serverSideManualMapData, mapData, datasets, injectedcodes, public
     setModalVisible(true);
     setSelectedItem(item);
   }
-
+  const callback = () => {
+    setZoomLevel(localStorage.getItem('zoom') || mapData.zoomLevel);
+  }
   return (
     <div>
       <div dangerouslySetInnerHTML={injectCode(false)}>
@@ -151,7 +155,7 @@ const Map = ({ serverSideManualMapData, mapData, datasets, injectedcodes, public
         surveys={mapData.surveys} onSurveySelectChange={onSurveySelectChange}
       >
         <Spin spinning={loading}>
-          <Tabs defaultActiveKey="1" centered >
+          <Tabs defaultActiveKey="1" centered onCanPlay={callback}>
             <TabPane tab="Map" key="1">
               <MapWithNoSSR
                 mapZoom={zoomLevel}
@@ -247,7 +251,6 @@ export async function getServerSideProps(ctx) {
         }
       } else {
         mapData = data?.maps[0];
-        console.log(mapData);
         if (mapData) {
           datasets = mapData?.datasets.map((item) => {
             let temp = mapData.mapdatasetconfs.find((obj) => obj.dataset.id === item.id);
