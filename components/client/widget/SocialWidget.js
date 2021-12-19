@@ -1,4 +1,4 @@
-import { Card, List, Row } from "antd"
+import { Card, List, Row, message } from "antd"
 import { InfoCircleFilled, ClockCircleOutlined } from "@ant-design/icons"
 import styled from "styled-components"
 import { useState, useEffect } from "react";
@@ -36,7 +36,10 @@ const SocialWidget = ({ newsFeedWidget }) => {
       .then((articles) => {
         setArticles(articles);
       })
-      .catch((error) => console.log(error));
+      .catch((error) => {
+        message.error(error);
+        setArticles([]);
+      });
 
   }, [MAX_ARTICLES]);
   return <Card

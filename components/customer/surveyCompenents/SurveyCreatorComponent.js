@@ -8,7 +8,6 @@ import copy from 'copy-to-clipboard';
 import { CopyOutlined, GlobalOutlined, LinkOutlined } from '@ant-design/icons';
 import { Modal, Spin, Row, Col, Card, Typography, Input, message, List, Button, Tabs } from 'antd';
 import { getStrapiMedia } from "lib/media";
-import * as ELG from "esri-leaflet-geocoder";
 import { deleteMethod, getSurveyForms, postMethod, getMaps } from 'lib/api';
 import { DATASET } from 'static/constant';
 import { SUREVEY_COLORS } from 'static/constant';
@@ -313,9 +312,6 @@ const SurveyCreatorComponent = ({ authenticatedUser, token, surveyForms }) => {
     const onModalClose = () => {
         setShareModalVisible(false)
     }
-    const onCompleteSurvey = (data) => {
-        console.log(data);
-    }
     const selectMap = (map) => {
         setLink(`${basePath}/?t=1&survey=${surveyId}&map=${map.id}`);
         setSelectedMap(map)
@@ -326,7 +322,7 @@ const SurveyCreatorComponent = ({ authenticatedUser, token, surveyForms }) => {
                 activeKey={activeKey}
                 onChange={callback}>
 
-                <TabPane tab={<span>create survey</span>} key="1">
+                <TabPane tab={<span>{DATASET.CREATE_SURVEY}</span>} key="1">
                     <div>
                         <script type="text/html" id="custom-tab-survey-templates">
                             {`<div id="test">TEST</div>`}
@@ -334,16 +330,16 @@ const SurveyCreatorComponent = ({ authenticatedUser, token, surveyForms }) => {
                         <div id="surveyCreatorContainer" />
                     </div>
                 </TabPane>
-                <TabPane tab={<span>view survey</span>} key="2">
+                <TabPane tab={<span>{DATASET.VIEW_SURVEY}</span>} key="2">
                     {surveyClicked ?
                         <div>
                             <Button style={{ marginLeft: -10, marginTop: -30 }} icon={<ArrowLeftOutlined />} onClick={() => {
                                 setSurveyClicked(false);
-                            }} type='link'>back</Button>
+                            }} type='link'>{DATASET.BACK}</Button>
                             <Survey.Survey
                                 model={Json}
                                 showCompletedPage={false}
-                                onComplete={data => onCompleteSurvey(data)}
+                            // onComplete={data => onCompleteSurvey(data)}
                             >
                             </Survey.Survey>
                         </div> :
@@ -353,10 +349,10 @@ const SurveyCreatorComponent = ({ authenticatedUser, token, surveyForms }) => {
                                 dataSource={surveyList}
                                 renderItem={item => (
                                     <List.Item style={{ margin: "0px 30px" }} actions={[
-                                        <a onClick={() => displaySurvey(item, true)} >Preview</a>,
-                                        <a onClick={() => showConfirm(item.id)} >Delete</a>,
-                                        <a onClick={() => editSurvey(item)} >Edit</a>,
-                                        <a onClick={() => shareSurvey(item)}>Share</a>
+                                        <a onClick={() => displaySurvey(item, true)} >{DATASET.PREVIEW}</a>,
+                                        <a onClick={() => showConfirm(item.id)} >{DATASET.DELETE}</a>,
+                                        <a onClick={() => editSurvey(item)} >{DATASET.EDIT}</a>,
+                                        <a onClick={() => shareSurvey(item)}>{DATASET.SHARE}</a>
                                     ]}>
                                         <List.Item.Meta
                                             title={<a onClick={() => displaySurvey(item, true)} >{item.forms.title}</a>}
@@ -394,7 +390,7 @@ const SurveyCreatorComponent = ({ authenticatedUser, token, surveyForms }) => {
                         <MainWrapper>
                             {!selectedMap &&
                                 <Col span={24} className='padding-10 text-center'>
-                                    <Title>Maps linked to this survey! If you haven't linked any, please do it in Maps dashboard.</Title>
+                                    <Title>{DATASET.SHARE_DESCRIPTION}</Title>
                                     <List
                                         grid={{
                                             gutter: 16,
@@ -428,8 +424,8 @@ const SurveyCreatorComponent = ({ authenticatedUser, token, surveyForms }) => {
                                             <IconWrapper>
                                                 <LinkOutlined />
                                             </IconWrapper>
-                                            <Typography.Title level={5} className='margin-top-20'>Get the Link</Typography.Title>
-                                            <p>Send to your friends, coworkers, or post it in your social networks.</p>
+                                            <Typography.Title level={5} className='margin-top-20'>{DATASET.GET_LINK}</Typography.Title>
+                                            <p>{DATASET.GET_LINK_DESCRIPTION}</p>
 
                                             <Input size='large' value={link} addonAfter={<CopyOutlined onClick={() => {
                                                 if (copy(link)) {
@@ -442,8 +438,8 @@ const SurveyCreatorComponent = ({ authenticatedUser, token, surveyForms }) => {
 
                                     <Col xs={24} sm={24} md={12} lg={12} xl={12} className='padding-10'>
                                         <Boxs >
-                                            <Typography.Title level={5} className='margin-top-20'>Scan the QR Code</Typography.Title>
-                                            <p>Scan this QR code to view and fill the survey on your mobile devices.</p>
+                                            <Typography.Title level={5} className='margin-top-20'>{DATASET.SCAN_QR_CODE}</Typography.Title>
+                                            <p>{DATASET.SCAN_QR_CODE_DESCRIPTION}</p>
                                             <QRCode value={link} />
                                         </Boxs>
                                     </Col>

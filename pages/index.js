@@ -28,7 +28,6 @@ export async function getServerSideProps(ctx) {
   try {
     if (ctx.query.t === '1') {
       const { type, surveyId, map } = ctx.query;
-      console.log(ctx.query);
       const res = await getMethod(`surveys?id=${ctx.query.survey}`, null, false);
       if (!res.length > 0) {
         return {

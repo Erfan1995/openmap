@@ -9,6 +9,8 @@ const CustomItem = styled.div`
     padding:30px;
     box-shadow:0 16px 16px hsl(0deg 0% 0% / 0.075);
     height:600px;
+    overflow-y: scroll;
+    scroll-behavior: smooth;
 `;
 
 const ItemTitle = styled.div`
@@ -32,8 +34,8 @@ const DateTitle = styled.div`
 `;
 const ListItemDetails = ({ item }) => {
     let questionAndAnswers = []
-    item.surveyData.map((surveyData) => {
-        Object.entries(surveyData).map((data) => {
+    item.data.map((data) => {
+        Object.entries(data).map((data) => {
             questionAndAnswers.push(data);
         })
     })
@@ -46,7 +48,7 @@ const ListItemDetails = ({ item }) => {
             </Row>
             <Row>
                 <ItemTitle>
-                    {item.surveyInfo.title}
+                    {item.metaData.title}
                 </ItemTitle>
             </Row>
             <Row>
@@ -68,7 +70,7 @@ const ListItemDetails = ({ item }) => {
                             <Question>{survey[0]}</Question>
                         </Row>
                         <Row>
-                            <Answer style={{}}>{survey[1]}</Answer>
+                            <Answer>{survey[1]}</Answer>
                         </Row>
                         <Divider style={{ width: '100%' }} />
 

@@ -1,6 +1,6 @@
 
 import { Card, Row } from "antd";
-import ReactPlayer from "react-player";
+import ReactPlayer from "react-player/lazy";
 import styled from "styled-components";
 
 
@@ -35,7 +35,11 @@ const VideoWidget = ({ videoWidget }) => {
         }
     >
         <Row>
-            <ReactPlayer height="160px" url={videoWidget.video_link} />
+            <ReactPlayer height="160px"
+                url={videoWidget.video_link}
+                controls={true}
+                
+            />
         </Row>
     </Card>
 }
