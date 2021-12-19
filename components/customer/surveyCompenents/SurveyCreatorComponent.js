@@ -3,6 +3,11 @@ import React, { useEffect, useState } from "react";
 import * as SurveyJSCreator from "survey-creator";
 import * as SurveyKo from "survey-knockout";
 import * as Survey from "survey-react"
+import EditSurvey from './EditSurvey';
+import copy from 'copy-to-clipboard';
+import { CopyOutlined, GlobalOutlined, LinkOutlined } from '@ant-design/icons';
+import { Modal, Spin, Row, Col, Card, Typography, Input, message, List, Button, Tabs } from 'antd';
+import { getStrapiMedia } from "lib/media";
 import { deleteMethod, getSurveyForms, postMethod, getMaps } from 'lib/api';
 import { DATASET } from 'static/constant';
 import { SUREVEY_COLORS } from 'static/constant';
@@ -12,28 +17,28 @@ import * as widgets from "surveyjs-widgets";
 import $ from "jquery";
 import "jquery-ui/themes/base/all.css";
 import "nouislider/distribute/nouislider.css";
-import "select2/dist/css/select2.css";
 import "bootstrap-slider/dist/css/bootstrap-slider.css";
-
-import "jquery-bar-rating/dist/themes/css-stars.css";
-import "jquery-bar-rating/dist/themes/fontawesome-stars.css";
 import "jquery-ui/ui/widgets/datepicker.js";
+
 import "select2/dist/js/select2.js";
-import "jquery-bar-rating";
+import "select2/dist/css/select2.css";
+
 
 import "icheck/skins/square/blue.css";
 import "pretty-checkbox/dist/pretty-checkbox.css";
+import "easy-autocomplete/dist/easy-autocomplete.css";
 
-// import { json } from './analytics_data';
+
+// bar rating 
+import "jquery-bar-rating/dist/themes/css-stars.css";
+import "jquery-bar-rating/dist/jquery.barrating.min.js";
+import "jquery-bar-rating/dist/themes/fontawesome-stars.css";
+
+
 import { init } from './MapWidget';
 import "survey-creator/survey-creator.css";
 import "survey-knockout/survey.css";
 import "survey-react/survey.css";
-import EditSurvey from './EditSurvey';
-import copy from 'copy-to-clipboard';
-import { CopyOutlined, GlobalOutlined, LinkOutlined } from '@ant-design/icons';
-import { Modal, Spin, Row, Col, Card, Typography, Input, message, List, Button, Tabs } from 'antd';
-import { getStrapiMedia } from "lib/media";
 
 const { confirm } = Modal;
 const { TabPane } = Tabs;
@@ -74,43 +79,8 @@ const MainWrapper = styled.div`
 `;
 
 
-// custom widget added on survey
-widgets.icheck(Survey, $);
-// widgets.prettycheckbox(Survey);
-widgets.select2(Survey, $);
-widgets.inputmask(Survey);
-widgets.jquerybarrating(Survey, $);
-widgets.jqueryuidatepicker(Survey, $);
-widgets.nouislider(Survey);
-widgets.select2tagbox(Survey, $);
-//widgets.signaturepad(Survey);
-widgets.sortablejs(Survey);
-widgets.ckeditor(Survey);
-widgets.autocomplete(Survey, $);
-widgets.bootstrapslider(Survey);
-
-
-// custom widget showed on editor 
-widgets.icheck(SurveyKo, $);
-widgets.prettycheckbox(SurveyKo);
-widgets.select2(SurveyKo, $);
-widgets.inputmask(SurveyKo);
-widgets.jquerybarrating(SurveyKo, $);
-widgets.jqueryuidatepicker(SurveyKo, $);
-widgets.nouislider(SurveyKo);
-widgets.select2tagbox(SurveyKo, $);
-// widgets.signaturepad(SurveyKo);
-widgets.sortablejs(SurveyKo);
-widgets.ckeditor(SurveyKo);
-// widgets.autocomplete(SurveyKo, $);
-widgets.bootstrapslider(SurveyKo);
-window["$"] = window["jQuery"] = $;
-init(SurveyKo);
-
-
-
-
 const SurveyCreatorComponent = ({ authenticatedUser, token, surveyForms }) => {
+
     let QRCode = require('qrcode.react');
     let surveyCreator;
     const [Json, setJson] = useState([]);
@@ -172,7 +142,58 @@ const SurveyCreatorComponent = ({ authenticatedUser, token, surveyForms }) => {
         showTranslationTab: true
     };
 
+
     useEffect(() => {
+        window["$"] = window["jQuery"] = $;
+        require("emotion-ratings/dist/emotion-ratings.js");
+        require("easy-autocomplete/dist/jquery.easy-autocomplete.js");
+
+        // ckeditor
+        // const self = this;
+        // if (self.alreadyRendered) return;
+        const script = document.createElement("script");
+        script.src = "https://cdn.ckeditor.com/4.14.1/standard/ckeditor.js";
+        document.head.append(script);
+        script.onload = function () {
+            window.CKEDITOR;
+        // self.alreadyRendered = true;
+        // if (self.forceUpdate) self.forceUpdate(); // need only for REACT
+        };
+
+
+        // custom widget added on survey
+        widgets.icheck(Survey, $);
+        widgets.prettycheckbox(Survey);
+        widgets.select2(Survey, $);
+        widgets.inputmask(Survey);
+        widgets.jquerybarrating(Survey, $);
+        widgets.jqueryuidatepicker(Survey, $);
+        widgets.nouislider(Survey);
+        widgets.select2tagbox(Survey, $);
+        //widgets.signaturepad(Survey);
+        widgets.sortablejs(Survey);
+        widgets.ckeditor(Survey);
+        widgets.autocomplete(Survey);
+        widgets.bootstrapslider(Survey);
+        widgets.emotionsratings(Survey);
+
+        // custom widget showed on editor 
+        widgets.icheck(SurveyKo, $);
+        widgets.prettycheckbox(SurveyKo);
+        widgets.select2(SurveyKo);
+        widgets.inputmask(SurveyKo);
+        widgets.jquerybarrating(SurveyKo, $);
+        widgets.jqueryuidatepicker(SurveyKo, $);
+        widgets.nouislider(SurveyKo);
+        widgets.select2tagbox(SurveyKo, $);
+        // widgets.signaturepad(SurveyKo);
+        widgets.sortablejs(SurveyKo);
+        widgets.ckeditor(SurveyKo);
+        widgets.autocomplete(SurveyKo);
+        widgets.bootstrapslider(SurveyKo);
+        widgets.emotionsratings(SurveyKo);
+        init(SurveyKo);
+
 
         var defaultThemeColorsSurvey = SurveyKo.StylesManager.ThemeColors["default"];
         defaultThemeColorsSurvey["$main-color"] = SUREVEY_COLORS.MAIN_COLOR;
