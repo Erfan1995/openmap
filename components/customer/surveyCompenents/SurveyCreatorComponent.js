@@ -156,8 +156,8 @@ const SurveyCreatorComponent = ({ authenticatedUser, token, surveyForms }) => {
         document.head.append(script);
         script.onload = function () {
             window.CKEDITOR;
-        // self.alreadyRendered = true;
-        // if (self.forceUpdate) self.forceUpdate(); // need only for REACT
+            // self.alreadyRendered = true;
+            // if (self.forceUpdate) self.forceUpdate(); // need only for REACT
         };
 
 
@@ -210,7 +210,7 @@ const SurveyCreatorComponent = ({ authenticatedUser, token, surveyForms }) => {
         defaultThemeColorsEditor["$primary-hover-color"] = SUREVEY_COLORS.MAIN_HOVER_COLOR;
         defaultThemeColorsEditor["$primary-text-color"] = SUREVEY_COLORS.TEXT_COLOR;
         defaultThemeColorsEditor["$selection-border-color"] = SUREVEY_COLORS.MAIN_COLOR;
-        SurveyJSCreator.StylesManager.applyTheme();
+        SurveyJSCreator.StylesManager.applyTheme(defaultThemeColorsEditor);
 
         surveyCreator = new SurveyJSCreator.SurveyCreator(
             null,

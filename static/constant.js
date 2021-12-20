@@ -192,7 +192,25 @@ export const DATASET = {
     GET_LINK_DESCRIPTION: 'Send to your friends, coworkers, or post it in your social networks.',
     SCAN_QR_CODE: 'Scan the QR Code',
     SCAN_QR_CODE_DESCRIPTION: 'Scan this QR code to view and fill the survey on your mobile devices.',
-
+    USER_LOCATION_INFO:'User Location Inof',
+    IP_ADDRESS:'IP Address',
+    ZIP_CODE:'Zip Code',
+    CITY:'City',
+    IP_TYPE:'IP Type',
+    LATITUTE:'Latitude',
+    LONGITUDE:'Longitude',
+    COUNTRY:'Country',
+    COUNTRY_CODE:'Country Code',
+    CONTINENT:'Continent',
+    CONTINENT_CODE:'Continent Code',
+    LOCATION:'Location',
+    IS_EU:'Is EU',
+    GEO_NAME_ID:'Geo Name Id',
+    LANGUAGES:'Languages',
+    LANGUAGE_NAME:'Name',
+    LANGUAGE_CODE:'Code',
+    LANGUAGE_NATIVE:'Native',
+    LOCATION_EMPTY_MESSAGE:'location data empty !'
 }
 
 export const LAT = ['lat', 'Lat', 'LAT', 'latitude', 'Latitude', 'LATITUDE'];

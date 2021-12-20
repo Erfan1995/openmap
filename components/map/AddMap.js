@@ -4,10 +4,35 @@ import { getSurveyForms, postMethod } from 'lib/api';
 import { API, MAP } from '../../static/constant';
 import { getStrapiMedia } from 'lib/media';
 import * as Survey from "survey-react"
+// import * as SurveyKo from "survey-knockout";
 import styled from 'styled-components';
+import * as widgets from "surveyjs-widgets";
+import { SUREVEY_COLORS } from '../../static/constant';
+import $ from "jquery";
+import "jquery-ui/themes/base/all.css";
+import "nouislider/distribute/nouislider.css";
+import "bootstrap-slider/dist/css/bootstrap-slider.css";
+import "jquery-ui/ui/widgets/datepicker.js";
+
+import "select2/dist/js/select2.js";
+import "select2/dist/css/select2.css";
+
+
+import "icheck/skins/square/blue.css";
+import "pretty-checkbox/dist/pretty-checkbox.css";
+import "easy-autocomplete/dist/easy-autocomplete.css";
+
+
+// bar rating 
+import "jquery-bar-rating/dist/themes/css-stars.css";
+import "jquery-bar-rating/dist/jquery.barrating.min.js";
+import "jquery-bar-rating/dist/themes/fontawesome-stars.css";
+
 
 import "survey-creator/survey-creator.css";
+import "survey-knockout/survey.css";
 import "survey-react/survey.css";
+
 
 const { Title } = Typography;
 const Photo = styled.img`
@@ -49,7 +74,67 @@ const AddMap = ({ onDataSaved, myVisible, geoData, mapData, modalClose, userType
     var resolvedFlag = true;
 
     useEffect(async () => {
-        console.log(geoData)
+        window["$"] = window["jQuery"] = $;
+        require("emotion-ratings/dist/emotion-ratings.js");
+        require("easy-autocomplete/dist/jquery.easy-autocomplete.js");
+
+        // ckeditor
+        // const self = this;
+        // if (self.alreadyRendered) return;
+        const script = document.createElement("script");
+        script.src = "https://cdn.ckeditor.com/4.14.1/standard/ckeditor.js";
+        document.head.append(script);
+        script.onload = function () {
+            window.CKEDITOR;
+            // self.alreadyRendered = true;
+            // if (self.forceUpdate) self.forceUpdate(); // need only for REACT
+        };
+
+        widgets.icheck(Survey, $);
+        widgets.prettycheckbox(Survey);
+        widgets.select2(Survey, $);
+        widgets.inputmask(Survey);
+        widgets.jquerybarrating(Survey, $);
+        widgets.jqueryuidatepicker(Survey, $);
+        widgets.nouislider(Survey);
+        widgets.select2tagbox(Survey, $);
+        widgets.sortablejs(Survey);
+        widgets.ckeditor(Survey);
+        widgets.autocomplete(Survey);
+        widgets.bootstrapslider(Survey);
+        widgets.emotionsratings(Survey);
+
+        // var defaultThemeColorsSurvey = Survey.StylesManager.ThemeColors["default"];
+        // defaultThemeColorsSurvey["$main-color"] = SUREVEY_COLORS.MAIN_COLOR;
+        // defaultThemeColorsSurvey["$main-hover-color"] = SUREVEY_COLORS.MAIN_HOVER_COLOR;
+        // defaultThemeColorsSurvey["$text-color"] = SUREVEY_COLORS.TEXT_COLOR;
+        // defaultThemeColorsSurvey["$header-color"] = SUREVEY_COLORS.HEADER_COLOR;
+        // defaultThemeColorsSurvey["$header-background-color"] = SUREVEY_COLORS.HEADER_BACKGROUND_COLOR;
+        // defaultThemeColorsSurvey["$body-container-background-color"] = SUREVEY_COLORS.BODY_CONTAINER_BACKGROUND_COLOR;
+        // Survey.StylesManager.applyTheme(defaultThemeColorsSurvey);
+
+        // var defaultThemeColorsEditor = Survey.StylesManager.ThemeColors["default"];
+        // defaultThemeColorsEditor["$primary-color"] = SUREVEY_COLORS.MAIN_COLOR;
+        // defaultThemeColorsEditor["$secondary-color"] = SUREVEY_COLORS.MAIN_COLOR;
+        // defaultThemeColorsEditor["$primary-hover-color"] = SUREVEY_COLORS.MAIN_HOVER_COLOR;
+        // defaultThemeColorsEditor["$primary-text-color"] = SUREVEY_COLORS.TEXT_COLOR;
+        // defaultThemeColorsEditor["$selection-border-color"] = SUREVEY_COLORS.MAIN_COLOR;
+        // Survey.StylesManager.applyTheme();
+
+        var defaultThemeColors = Survey
+            .StylesManager
+            .ThemeColors["default"];
+        defaultThemeColors["$main-color"] = "#7ff07f";
+        defaultThemeColors["$main-hover-color"] = "#6fe06f";
+        defaultThemeColors["$text-color"] = "#4a4a4a";
+        defaultThemeColors["$header-color"] = "#7ff07f";
+        defaultThemeColors["$body-container-background-color"] = "#f8f8f8";
+
+        Survey
+            .StylesManager
+            .applyTheme();
+
+
         let url = process.env.NEXT_PUBLIC_MAPBOX_DEFAULT_MAP
         console.log(url)
         let lat = geoData.coordinates[0];

@@ -5,8 +5,36 @@ import "survey-react/survey.css";
 import "survey-creator/survey-creator.css";
 import { useEffect, useState } from 'react';
 import { postMethod } from 'lib/api';
+import * as widgets from "surveyjs-widgets";
+import { SUREVEY_COLORS } from 'static/constant';
+import $ from "jquery";
+import "jquery-ui/themes/base/all.css";
+import "nouislider/distribute/nouislider.css";
+import "bootstrap-slider/dist/css/bootstrap-slider.css";
+import "jquery-ui/ui/widgets/datepicker.js";
 
-Survey.StylesManager.ThemeColors['green'];
+import "select2/dist/js/select2.js";
+import "select2/dist/css/select2.css";
+
+
+import "icheck/skins/square/blue.css";
+import "pretty-checkbox/dist/pretty-checkbox.css";
+import "easy-autocomplete/dist/easy-autocomplete.css";
+
+
+// bar rating 
+import "jquery-bar-rating/dist/themes/css-stars.css";
+import "jquery-bar-rating/dist/jquery.barrating.min.js";
+import "jquery-bar-rating/dist/themes/fontawesome-stars.css";
+
+var defaultThemeColors = Survey.StylesManager.ThemeColors["default"];
+defaultThemeColors["$main-color"] = SUREVEY_COLORS.MAIN_HOVER_COLOR;
+defaultThemeColors["$main-hover-color"] = SUREVEY_COLORS.MAIN_HOVER_COLOR;
+defaultThemeColors["$text-color"] = SUREVEY_COLORS.TEXT_COLOR;
+defaultThemeColors["$header-color"] = SUREVEY_COLORS.HEADER_COLOR;
+defaultThemeColors["$body-container-background-color"] = SUREVEY_COLORS.BODY_CONTAINER_BACKGROUND_COLOR;
+Survey.StylesManager.applyTheme();
+
 const Wrapper = styled.div`
     padding:100px
 `
@@ -19,6 +47,36 @@ const SharedSurvey = ({ survey, mapId }) => {
     init(Survey);
 
     useEffect(() => {
+        window["$"] = window["jQuery"] = $;
+        require("emotion-ratings/dist/emotion-ratings.js");
+        require("easy-autocomplete/dist/jquery.easy-autocomplete.js");
+
+        // ckeditor
+        // const self = this;
+        // if (self.alreadyRendered) return;
+        const script = document.createElement("script");
+        script.src = "https://cdn.ckeditor.com/4.14.1/standard/ckeditor.js";
+        document.head.append(script);
+        script.onload = function () {
+            window.CKEDITOR;
+            // self.alreadyRendered = true;
+            // if (self.forceUpdate) self.forceUpdate(); // need only for REACT
+        };
+
+        widgets.icheck(Survey, $);
+        widgets.prettycheckbox(Survey);
+        widgets.select2(Survey, $);
+        widgets.inputmask(Survey);
+        widgets.jquerybarrating(Survey, $);
+        widgets.jqueryuidatepicker(Survey, $);
+        widgets.nouislider(Survey);
+        widgets.select2tagbox(Survey, $);
+        widgets.sortablejs(Survey);
+        widgets.ckeditor(Survey);
+        widgets.autocomplete(Survey);
+        widgets.bootstrapslider(Survey);
+        widgets.emotionsratings(Survey);
+
         setSurveyId(survey.id);
         setJson(survey.forms);
         getUserIp();
@@ -55,7 +113,6 @@ const SharedSurvey = ({ survey, mapId }) => {
         values.ip = userInfo.ip;
         values.is_approved = false;
         const res = await postMethod('mmdpublicusers', values, false);
-
     }
 
     const getAddress = async (lat, lng, geometry, properties) => {
