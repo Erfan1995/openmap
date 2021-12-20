@@ -12,7 +12,7 @@ module.exports = {
         NEXT_PUBLIC_SECRET_KEY: 'cknmtc2iz285r17pb0pdidcj8',
         NEXT_PUBLIC_MAPBOX_IMAGES_STYLE: 'cknmtc2iz285r17pb0pdidcj8',
         NEXT_PUBLIC_GOOGLE_DRIVE_API_KEY: 'AIzaSyBNAqRQb04cDRy_J000ZExO9BP059njz6w',
-        NEXT_PUBLIC_GOOGLE_DRIVE_CLIENT_ID: '607167356748-sdjmef39r0691gitear1td49g7r427be.apps.googleusercontent.com',
+        NEXT_PUBLIC_GOOGLE_DRIVE_CLIENT_ID: '444357902281-6dtv2fm157sdr3kil7nn0744e0r1olps.apps.googleusercontent.com',
         NEXT_PUBLIC_MAGIC_PUBLISHABLE_KEY: 'pk_live_821D777D0B037D7F',
         MAGIC_SECRET_KEY: 'sk_live_630CF475890D028F',
     },
