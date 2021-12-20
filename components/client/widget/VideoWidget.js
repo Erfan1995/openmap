@@ -36,7 +36,7 @@ const VideoWidget = ({ videoWidget }) => {
     >
         <Row>
             <ReactPlayer height="160px"
-                url={videoWidget.video_link}
+                url={videoWidget?.video_link}
                 controls={true}
                 
             />

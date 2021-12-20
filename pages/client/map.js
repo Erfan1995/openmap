@@ -35,8 +35,10 @@ const Map = ({ serverSideManualMapData, mapData, datasets, injectedcodes, public
   const { login, logout } = UseAuth();
   const [modalVisible, setModalVisible] = useState(false);
   const [selectedItem, setSelectedItem] = useState();
-  let selectedDatasets = datasets;
-  let selectedSurveys = manualMapData;
+  const [selectedDatasets, setSelectedDatasets] = useState(datasets)
+  const [selectedSurveys, setSelectedSurveys] = useState(manualMapData);
+  // let selectedDatasets = [];
+  // let selectedSurveys = [];
   Request.ServerVariables
   useEffect(async () => {
     let datasetData = generateListViewDataset(datasets)
@@ -61,7 +63,8 @@ const Map = ({ serverSideManualMapData, mapData, datasets, injectedcodes, public
         }
       })
     })
-    selectedDatasets = arr;
+    // selectedDatasets = arr;
+    setSelectedDatasets(arr);
     setListData([...generateListViewSurvey(selectedSurveys, mapData.surveys), ...generateListViewDataset(arr)]);
     // setZoomLevel(localStorage.getItem('zoom') || mapData.zoomLevel);
     setDatasetData(arr);
@@ -75,7 +78,8 @@ const Map = ({ serverSideManualMapData, mapData, datasets, injectedcodes, public
         }
       })
     });
-    selectedSurveys = arr;
+    // selectedSurveys = arr;
+    setSelectedSurveys(arr);
     setListData([...generateListViewSurvey(arr, mapData.surveys), ...generateListViewDataset(selectedDatasets)]);
     // setZoomLevel(localStorage.getItem('zoom') || mapData.zoomLevel);
     setCustomMapData(arr);

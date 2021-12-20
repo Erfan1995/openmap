@@ -104,46 +104,31 @@ const AddMap = ({ onDataSaved, myVisible, geoData, mapData, modalClose, userType
         widgets.bootstrapslider(Survey);
         widgets.emotionsratings(Survey);
 
-        // var defaultThemeColorsSurvey = Survey.StylesManager.ThemeColors["default"];
-        // defaultThemeColorsSurvey["$main-color"] = SUREVEY_COLORS.MAIN_COLOR;
-        // defaultThemeColorsSurvey["$main-hover-color"] = SUREVEY_COLORS.MAIN_HOVER_COLOR;
-        // defaultThemeColorsSurvey["$text-color"] = SUREVEY_COLORS.TEXT_COLOR;
-        // defaultThemeColorsSurvey["$header-color"] = SUREVEY_COLORS.HEADER_COLOR;
-        // defaultThemeColorsSurvey["$header-background-color"] = SUREVEY_COLORS.HEADER_BACKGROUND_COLOR;
-        // defaultThemeColorsSurvey["$body-container-background-color"] = SUREVEY_COLORS.BODY_CONTAINER_BACKGROUND_COLOR;
-        // Survey.StylesManager.applyTheme(defaultThemeColorsSurvey);
+        var defaultThemeColorsSurvey = Survey.StylesManager.ThemeColors["default"];
+        defaultThemeColorsSurvey["$main-color"] = SUREVEY_COLORS.MAIN_COLOR;
+        defaultThemeColorsSurvey["$main-hover-color"] = SUREVEY_COLORS.MAIN_HOVER_COLOR;
+        defaultThemeColorsSurvey["$text-color"] = SUREVEY_COLORS.TEXT_COLOR;
+        defaultThemeColorsSurvey["$header-color"] = SUREVEY_COLORS.HEADER_COLOR;
+        defaultThemeColorsSurvey["$header-background-color"] = SUREVEY_COLORS.HEADER_BACKGROUND_COLOR;
+        defaultThemeColorsSurvey["$body-container-background-color"] = SUREVEY_COLORS.BODY_CONTAINER_BACKGROUND_COLOR;
+        Survey.StylesManager.applyTheme(defaultThemeColorsSurvey);
 
-        // var defaultThemeColorsEditor = Survey.StylesManager.ThemeColors["default"];
-        // defaultThemeColorsEditor["$primary-color"] = SUREVEY_COLORS.MAIN_COLOR;
-        // defaultThemeColorsEditor["$secondary-color"] = SUREVEY_COLORS.MAIN_COLOR;
-        // defaultThemeColorsEditor["$primary-hover-color"] = SUREVEY_COLORS.MAIN_HOVER_COLOR;
-        // defaultThemeColorsEditor["$primary-text-color"] = SUREVEY_COLORS.TEXT_COLOR;
-        // defaultThemeColorsEditor["$selection-border-color"] = SUREVEY_COLORS.MAIN_COLOR;
-        // Survey.StylesManager.applyTheme();
-
-        var defaultThemeColors = Survey
-            .StylesManager
-            .ThemeColors["default"];
-        defaultThemeColors["$main-color"] = "#7ff07f";
-        defaultThemeColors["$main-hover-color"] = "#6fe06f";
-        defaultThemeColors["$text-color"] = "#4a4a4a";
-        defaultThemeColors["$header-color"] = "#7ff07f";
-        defaultThemeColors["$body-container-background-color"] = "#f8f8f8";
-
-        Survey
-            .StylesManager
-            .applyTheme();
+        var defaultThemeColorsEditor = Survey.StylesManager.ThemeColors["default"];
+        defaultThemeColorsEditor["$primary-color"] = SUREVEY_COLORS.MAIN_COLOR;
+        defaultThemeColorsEditor["$secondary-color"] = SUREVEY_COLORS.MAIN_COLOR;
+        defaultThemeColorsEditor["$primary-hover-color"] = SUREVEY_COLORS.MAIN_HOVER_COLOR;
+        defaultThemeColorsEditor["$primary-text-color"] = SUREVEY_COLORS.TEXT_COLOR;
+        defaultThemeColorsEditor["$selection-border-color"] = SUREVEY_COLORS.MAIN_COLOR;
+        Survey.StylesManager.applyTheme();
 
 
         let url = process.env.NEXT_PUBLIC_MAPBOX_DEFAULT_MAP
-        console.log(url)
         let lat = geoData.coordinates[0];
         let lng = geoData.coordinates[1];
         await fetch(`https://geocode.arcgis.com/arcgis/rest/services/World/GeocodeServer/reverseGeocode?f=pjson&featureTypes=&location=${lat}%2C${lng}`,
             { headers: { 'Accept': 'application/json' } })
             .then((res) => res.json())
             .then((data) => {
-                console.log(data);
                 setAddress(data.address.LongLabel);
             });
     }, [])
