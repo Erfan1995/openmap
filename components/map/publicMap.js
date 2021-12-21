@@ -42,7 +42,6 @@ const PublicMap = ({ styleId, mapZoom, style, mapData, manualMapData, onCustomeD
 
         onCustomeDataChange();
     }
-
     return (
 
 

@@ -64,8 +64,8 @@ const ListItemDetails = ({ item }) => {
                 </div>
             </Row>
             <div>
-                {questionAndAnswers.map((survey) => {
-                    return <div>
+                {questionAndAnswers.map((survey, i) => {
+                    return <div key={i}>
                         <Row>
                             <Question>{survey[0]}</Question>
                         </Row>

@@ -28,7 +28,13 @@ const SocialWidget = ({ newsFeedWidget }) => {
   const [articles, setArticles] = useState();
   const mediumRssFeed = "https://api.rss2json.com/v1/api.json?rss_url=" + newsFeedWidget.rss_feed;
   const MAX_ARTICLES = 10;
-  useEffect(async () => {
+  useEffect(() => {
+    getRSSFeed();
+    return () => {
+      setArticles([]);
+    };
+  }, [MAX_ARTICLES]);
+  const getRSSFeed = async () => {
     await fetch(mediumRssFeed, { headers: { 'Accept': 'application/json' } })
       .then((res) => res.json())
       .then((data) => data.items.filter((item) => item.title.length > 0))
@@ -40,8 +46,7 @@ const SocialWidget = ({ newsFeedWidget }) => {
         message.error(error);
         setArticles([]);
       });
-
-  }, [MAX_ARTICLES]);
+  }
   return <Card
     bodyStyle={{ padding: '0px 10px 10px 10px' }}
     style={{

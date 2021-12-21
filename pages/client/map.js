@@ -4,10 +4,8 @@ import { useContext, useEffect, useState } from "react";
 // import UseAuth from "hooks/useAuth";
 import { getDatasetsByMap, getClientMapData, getPublicMap } from "lib/api";
 import {
-  extractMapData, extractMapDataPublicUser, generateListViewDataset, generateListViewSurvey,
-  getCustomerMapData, getPublicAuthenticatedMapData, getPublicMapData
+  extractMapData, extractMapDataPublicUser, generateListViewDataset, generateListViewSurvey
 } from "lib/general-functions";
-import { UserContext } from "lib/UserContext";
 import UseAuth from "hooks/useAuth";
 import styled from "styled-components";
 import VideoWidget from './../../components/client/widget/VideoWidget';
@@ -15,12 +13,26 @@ import TextWidget from './../../components/client/widget/TextWidget';
 import SocialWidget from './../../components/client/widget/SocialWidget';
 import ListItem from "components/client/widget/ListItem";
 import { Tabs, Row, Col, Card, List, Modal, Spin, Button } from 'antd';
-import { nodeName } from "jquery";
-import { redirect } from "next/dist/next-server/server/api-utils";
-import Content from "components/client/layout/content";
 import ListItemDetails from "components/client/widget/ListeItemDetails";
 const { TabPane } = Tabs;
 const { Meta } = Card;
+
+
+const Content = styled.div`
+  height:700px;
+  width:100%;
+  padding:10px;
+  overflow-y: scroll
+`;
+
+
+const RightSide = styled.div`
+  padding:10px;
+  width:100%;
+  height:700px;
+  overflow-y: scroll
+`;
+
 
 const Map = ({ serverSideManualMapData, mapData, datasets, injectedcodes, publicUser }) => {
   let widgets = mapData.widget;
@@ -37,8 +49,11 @@ const Map = ({ serverSideManualMapData, mapData, datasets, injectedcodes, public
   const [selectedItem, setSelectedItem] = useState();
   const [selectedDatasets, setSelectedDatasets] = useState(datasets)
   const [selectedSurveys, setSelectedSurveys] = useState(manualMapData);
-  // let selectedDatasets = [];
-  // let selectedSurveys = [];
+
+  const MapWithNoSSR = dynamic(() => import("../../components/map/publicMap"), {
+    ssr: false
+  });
+
   Request.ServerVariables
   useEffect(async () => {
     let datasetData = generateListViewDataset(datasets)
@@ -63,10 +78,9 @@ const Map = ({ serverSideManualMapData, mapData, datasets, injectedcodes, public
         }
       })
     })
-    // selectedDatasets = arr;
     setSelectedDatasets(arr);
     setListData([...generateListViewSurvey(selectedSurveys, mapData.surveys), ...generateListViewDataset(arr)]);
-    // setZoomLevel(localStorage.getItem('zoom') || mapData.zoomLevel);
+    setZoomLevel(localStorage.getItem('zoom') || mapData.zoomLevel);
     setDatasetData(arr);
   }
   const onSurveySelectChange = (list) => {
@@ -78,15 +92,11 @@ const Map = ({ serverSideManualMapData, mapData, datasets, injectedcodes, public
         }
       })
     });
-    // selectedSurveys = arr;
     setSelectedSurveys(arr);
     setListData([...generateListViewSurvey(arr, mapData.surveys), ...generateListViewDataset(selectedDatasets)]);
     // setZoomLevel(localStorage.getItem('zoom') || mapData.zoomLevel);
     setCustomMapData(arr);
   }
-  const MapWithNoSSR = dynamic(() => import("../../components/map/publicMap"), {
-    ssr: false
-  });
 
   const onCustomeDataChange = async () => {
     setLoading(true);
@@ -118,27 +128,6 @@ const Map = ({ serverSideManualMapData, mapData, datasets, injectedcodes, public
     return { __html: text };
   }
 
-
-  const Content = styled.div`
-    height:700px;
-    width:100%;
-    padding:10px;
-    overflow-y: scroll
-  `;
-
-
-  const RightSide = styled.div`
-    padding:10px;
-    width:100%;
-    height:700px;
-    overflow-y: scroll
-  `;
-
-  const ListItemWrapper = styled.div`
-  &hover{
-    cursor:pointer;
-  }
-`
   const makeModalVisible = (item) => {
     setModalVisible(true);
     setSelectedItem(item);
@@ -146,7 +135,7 @@ const Map = ({ serverSideManualMapData, mapData, datasets, injectedcodes, public
   const callback = (key) => {
     if (key === '1') {
       setDatasetData(selectedDatasets);
-      setZoomLevel(localStorage.getItem('zoom') || mapData.zoomLevel);
+      setZoomLevel(2);
     }
   }
   return (
@@ -199,13 +188,13 @@ const Map = ({ serverSideManualMapData, mapData, datasets, injectedcodes, public
                 </Col>
                 <Col span={8} >
                   <RightSide>
-                    {mapData.selected_widgets[0].checked && (
+                    {mapData.selected_widgets && mapData.selected_widgets[0].checked && (
                       <VideoWidget videoWidget={widgets.video} />
                     )}
-                    {mapData.selected_widgets[1].checked && (
+                    {mapData.selected_widgets && mapData.selected_widgets[1].checked && (
                       <TextWidget textWidget={widgets.text} />
                     )}
-                    {mapData.selected_widgets[2].checked && (
+                    {mapData.selected_widgets && mapData.selected_widgets[2].checked && (
                       <SocialWidget newsFeedWidget={widgets.news_feeds} />
                     )}
                   </RightSide>
