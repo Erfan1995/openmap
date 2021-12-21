@@ -14,6 +14,7 @@ import { SUREVEY_COLORS } from 'static/constant';
 import { ExclamationCircleOutlined } from '@ant-design/icons';
 import { ArrowLeftOutlined } from '@ant-design/icons';
 import * as widgets from "surveyjs-widgets";
+window["$"] = window["jQuery"] = $;
 import $ from "jquery";
 import "jquery-ui/themes/base/all.css";
 import "nouislider/distribute/nouislider.css";
@@ -23,22 +24,23 @@ import "jquery-ui/ui/widgets/datepicker.js";
 import "select2/dist/js/select2.js";
 import "select2/dist/css/select2.css";
 
-
 import "icheck/skins/square/blue.css";
 import "pretty-checkbox/dist/pretty-checkbox.css";
 import "easy-autocomplete/dist/easy-autocomplete.css";
-
 
 // bar rating 
 import "jquery-bar-rating/dist/themes/css-stars.css";
 import "jquery-bar-rating/dist/jquery.barrating.min.js";
 import "jquery-bar-rating/dist/themes/fontawesome-stars.css";
 
-
 import { init } from './MapWidget';
 import "survey-creator/survey-creator.css";
 import "survey-knockout/survey.css";
 import "survey-react/survey.css";
+
+require("emotion-ratings/dist/emotion-ratings.js");
+require("easy-autocomplete/dist/jquery.easy-autocomplete.js");
+
 
 const { confirm } = Modal;
 const { TabPane } = Tabs;
@@ -79,7 +81,61 @@ const MainWrapper = styled.div`
 `;
 
 
+var defaultThemeColorsSurvey = SurveyKo.StylesManager.ThemeColors["default"];
+defaultThemeColorsSurvey["$main-color"] = SUREVEY_COLORS.MAIN_COLOR;
+defaultThemeColorsSurvey["$main-hover-color"] = SUREVEY_COLORS.MAIN_HOVER_COLOR;
+defaultThemeColorsSurvey["$text-color"] = SUREVEY_COLORS.TEXT_COLOR;
+defaultThemeColorsSurvey["$header-color"] = SUREVEY_COLORS.HEADER_COLOR;
+defaultThemeColorsSurvey["$header-background-color"] = SUREVEY_COLORS.HEADER_BACKGROUND_COLOR;
+defaultThemeColorsSurvey["$body-container-background-color"] = SUREVEY_COLORS.BODY_CONTAINER_BACKGROUND_COLOR;
+SurveyKo.StylesManager.applyTheme(defaultThemeColorsSurvey);
+
+var defaultThemeColorsEditor = SurveyJSCreator.StylesManager.ThemeColors["default"];
+defaultThemeColorsEditor["$primary-color"] = SUREVEY_COLORS.MAIN_COLOR;
+defaultThemeColorsEditor["$secondary-color"] = SUREVEY_COLORS.MAIN_COLOR;
+defaultThemeColorsEditor["$primary-hover-color"] = SUREVEY_COLORS.MAIN_HOVER_COLOR;
+defaultThemeColorsEditor["$primary-text-color"] = SUREVEY_COLORS.TEXT_COLOR;
+defaultThemeColorsEditor["$selection-border-color"] = SUREVEY_COLORS.MAIN_COLOR;
+SurveyJSCreator.StylesManager.applyTheme(defaultThemeColorsEditor);
+
+
+// custom widget added on survey
+widgets.icheck(Survey, $);
+widgets.prettycheckbox(Survey);
+widgets.select2(Survey, $);
+widgets.inputmask(Survey);
+widgets.jquerybarrating(Survey, $);
+widgets.jqueryuidatepicker(Survey, $);
+widgets.nouislider(Survey);
+widgets.select2tagbox(Survey, $);
+//widgets.signaturepad(Survey);
+widgets.sortablejs(Survey);
+// widgets.ckeditor(Survey);
+widgets.autocomplete(Survey);
+widgets.bootstrapslider(Survey);
+widgets.emotionsratings(Survey);
+
+
+// custom widget showed on editor 
+widgets.icheck(SurveyKo, $);
+widgets.prettycheckbox(SurveyKo);
+widgets.select2(SurveyKo);
+widgets.inputmask(SurveyKo);
+widgets.jquerybarrating(SurveyKo, $);
+widgets.jqueryuidatepicker(SurveyKo, $);
+widgets.nouislider(SurveyKo);
+widgets.select2tagbox(SurveyKo, $);
+// widgets.signaturepad(SurveyKo);
+widgets.sortablejs(SurveyKo);
+// widgets.ckeditor(SurveyKo);
+widgets.autocomplete(SurveyKo);
+widgets.bootstrapslider(SurveyKo);
+widgets.emotionsratings(SurveyKo);
+
+init(SurveyKo);
+
 const SurveyCreatorComponent = ({ authenticatedUser, token, surveyForms }) => {
+
 
     let QRCode = require('qrcode.react');
     let surveyCreator;
@@ -94,8 +150,10 @@ const SurveyCreatorComponent = ({ authenticatedUser, token, surveyForms }) => {
     const [link, setLink] = useState('');
     const [maps, setMaps] = useState([]);
     const [selectedMap, setSelectedMap] = useState();
+    const [scriptLoaded, setScriptLoaded] = useState(false);
+
     const basePath = process.env.NEXT_PUBLIC_BASEPATH_URL;
-    console.log(surveyForms);
+
 
     const saveMySurvey = async () => {
         const dd = JSON.parse(surveyCreator.text)
@@ -144,73 +202,16 @@ const SurveyCreatorComponent = ({ authenticatedUser, token, surveyForms }) => {
 
 
     useEffect(() => {
-        window["$"] = window["jQuery"] = $;
-        require("emotion-ratings/dist/emotion-ratings.js");
-        require("easy-autocomplete/dist/jquery.easy-autocomplete.js");
 
-        // ckeditor
-        // const self = this;
-        // if (self.alreadyRendered) return;
-        const script = document.createElement("script");
-        script.src = "https://cdn.ckeditor.com/4.14.1/standard/ckeditor.js";
-        document.head.append(script);
-        script.onload = function () {
-            window.CKEDITOR;
-            // self.alreadyRendered = true;
-            // if (self.forceUpdate) self.forceUpdate(); // need only for REACT
-        };
+        if (typeof window !== undefined && !scriptLoaded) {
+            const script = document.createElement('script');
+            script.src = "https://cdn.ckeditor.com/4.14.1/standard/ckeditor.js";// Or any other location , example head
+            document.head.append(script);
+            setScriptLoaded(true);
+                widgets.ckeditor(Survey);
+                widgets.ckeditor(SurveyKo);
+        }
 
-
-        // custom widget added on survey
-        widgets.icheck(Survey, $);
-        widgets.prettycheckbox(Survey);
-        widgets.select2(Survey, $);
-        widgets.inputmask(Survey);
-        widgets.jquerybarrating(Survey, $);
-        widgets.jqueryuidatepicker(Survey, $);
-        widgets.nouislider(Survey);
-        widgets.select2tagbox(Survey, $);
-        //widgets.signaturepad(Survey);
-        widgets.sortablejs(Survey);
-        widgets.ckeditor(Survey);
-        widgets.autocomplete(Survey);
-        widgets.bootstrapslider(Survey);
-        widgets.emotionsratings(Survey);
-
-        // custom widget showed on editor 
-        widgets.icheck(SurveyKo, $);
-        widgets.prettycheckbox(SurveyKo);
-        widgets.select2(SurveyKo);
-        widgets.inputmask(SurveyKo);
-        widgets.jquerybarrating(SurveyKo, $);
-        widgets.jqueryuidatepicker(SurveyKo, $);
-        widgets.nouislider(SurveyKo);
-        widgets.select2tagbox(SurveyKo, $);
-        // widgets.signaturepad(SurveyKo);
-        widgets.sortablejs(SurveyKo);
-        widgets.ckeditor(SurveyKo);
-        widgets.autocomplete(SurveyKo);
-        widgets.bootstrapslider(SurveyKo);
-        widgets.emotionsratings(SurveyKo);
-        init(SurveyKo);
-
-
-        var defaultThemeColorsSurvey = SurveyKo.StylesManager.ThemeColors["default"];
-        defaultThemeColorsSurvey["$main-color"] = SUREVEY_COLORS.MAIN_COLOR;
-        defaultThemeColorsSurvey["$main-hover-color"] = SUREVEY_COLORS.MAIN_HOVER_COLOR;
-        defaultThemeColorsSurvey["$text-color"] = SUREVEY_COLORS.TEXT_COLOR;
-        defaultThemeColorsSurvey["$header-color"] = SUREVEY_COLORS.HEADER_COLOR;
-        defaultThemeColorsSurvey["$header-background-color"] = SUREVEY_COLORS.HEADER_BACKGROUND_COLOR;
-        defaultThemeColorsSurvey["$body-container-background-color"] = SUREVEY_COLORS.BODY_CONTAINER_BACKGROUND_COLOR;
-        SurveyKo.StylesManager.applyTheme(defaultThemeColorsSurvey);
-
-        var defaultThemeColorsEditor = SurveyJSCreator.StylesManager.ThemeColors["default"];
-        defaultThemeColorsEditor["$primary-color"] = SUREVEY_COLORS.MAIN_COLOR;
-        defaultThemeColorsEditor["$secondary-color"] = SUREVEY_COLORS.MAIN_COLOR;
-        defaultThemeColorsEditor["$primary-hover-color"] = SUREVEY_COLORS.MAIN_HOVER_COLOR;
-        defaultThemeColorsEditor["$primary-text-color"] = SUREVEY_COLORS.TEXT_COLOR;
-        defaultThemeColorsEditor["$selection-border-color"] = SUREVEY_COLORS.MAIN_COLOR;
-        SurveyJSCreator.StylesManager.applyTheme(defaultThemeColorsEditor);
 
         surveyCreator = new SurveyJSCreator.SurveyCreator(
             null,

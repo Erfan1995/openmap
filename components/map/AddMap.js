@@ -136,7 +136,6 @@ const AddMap = ({ onDataSaved, myVisible, geoData, mapData, modalClose, userType
     const onCompleteSurvey = async (data) => {
         setLoading(true);
         data.valuesHash.geolocation = mapManualData.coordinates;
-
         try {
             let values = {};
             values.map = mainMapData.id;
@@ -157,7 +156,6 @@ const AddMap = ({ onDataSaved, myVisible, geoData, mapData, modalClose, userType
                 values.user = userId;
                 res = await postMethod('mmdcustomers', values);
             }
-
 
             if (res) {
                 setVisible(false);
