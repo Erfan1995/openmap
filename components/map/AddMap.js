@@ -109,12 +109,11 @@ const AddMap = ({ onDataSaved, myVisible, geoData, mapData, modalClose, userType
         defaultThemeColorsSurvey["$main-hover-color"] = SUREVEY_COLORS.MAIN_HOVER_COLOR;
         defaultThemeColorsSurvey["$text-color"] = SUREVEY_COLORS.TEXT_COLOR;
         defaultThemeColorsSurvey["$header-color"] = SUREVEY_COLORS.HEADER_COLOR;
-        // defaultThemeColorsSurvey["$header-background-color"] = SUREVEY_COLORS.HEADER_BACKGROUND_COLOR;
         defaultThemeColorsSurvey["$body-container-background-color"] = SUREVEY_COLORS.BODY_CONTAINER_BACKGROUND_COLOR;
         Survey.StylesManager.applyTheme(defaultThemeColorsSurvey);
 
         var defaultThemeColorsEditor = Survey.StylesManager.ThemeColors["default"];
-        defaultThemeColorsEditor["$primary-color"] = SUREVEY_COLORS.MAIN_COLOR;
+        defaultThemeColorsEditor["$primary-color"] = SUREVEY_COLORS.MAIN_COLOR; 
         defaultThemeColorsEditor["$secondary-color"] = SUREVEY_COLORS.MAIN_COLOR;
         defaultThemeColorsEditor["$primary-hover-color"] = SUREVEY_COLORS.MAIN_HOVER_COLOR;
         defaultThemeColorsEditor["$primary-text-color"] = SUREVEY_COLORS.TEXT_COLOR;
