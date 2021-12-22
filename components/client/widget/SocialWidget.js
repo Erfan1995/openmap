@@ -37,7 +37,7 @@ const SocialWidget = ({ newsFeedWidget }) => {
   const getRSSFeed = async () => {
     await fetch(mediumRssFeed, { headers: { 'Accept': 'application/json' } })
       .then((res) => res.json())
-      .then((data) => data.items.filter((item) => item.title.length > 0))
+      .then((data) => data?.items?.filter((item) => item?.title?.length > 0))
       .then((newArticles) => newArticles.slice(0, MAX_ARTICLES))
       .then((articles) => {
         setArticles(articles);

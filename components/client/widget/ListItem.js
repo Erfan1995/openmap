@@ -28,7 +28,7 @@ const SmallTitle = styled.div`
     font-size:10px
 `;
 const ListItem = ({ item, makeModalVisible }) => {
-    let itemText = Object.entries(item.data[0]);
+    let itemText = item.data[0]!==undefined ? Object.entries(item.data[0]) : null;
     return (
         <CustomItem onClick={() => makeModalVisible(item)} >
             <div>
@@ -56,7 +56,7 @@ const ListItem = ({ item, makeModalVisible }) => {
                 </Row>
                 <Row>
                     <TextDev>
-                        {itemText[0][1]}
+                        {itemText!==null ? itemText[0][1] : ""}
                     </TextDev>
                 </Row>
             </div>
