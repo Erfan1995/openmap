@@ -134,8 +134,10 @@ const Map = ({ serverSideManualMapData, mapData, datasets, injectedcodes, public
   }
   const callback = (key) => {
     if (key === '1') {
+      setSelectedDatasets(selectedDatasets);
+      setListData([...generateListViewSurvey(selectedSurveys, mapData.surveys), ...generateListViewDataset(selectedDatasets)]);
+      setZoomLevel(localStorage.getItem('zoom') || mapData.zoomLevel);
       setDatasetData(selectedDatasets);
-      setZoomLevel(2);
     }
   }
   return (
@@ -202,23 +204,24 @@ const Map = ({ serverSideManualMapData, mapData, datasets, injectedcodes, public
               </Row>
             </TabPane>
           </Tabs>
-          <Modal
-            centered
-            bodyStyle={{ overflowX: 'scroll' }}
-            width={800}
-            visible={modalVisible}
-            // destroyOnClose={true}
-            onCancel={() => {
-              setModalVisible(false)
-            }}
-            footer={[
-              <Button key="close" onClick={() => { setModalVisible(false) }}> close</Button>
-            ]}
-          >
-            <ListItemDetails item={selectedItem} />
-          </Modal>
+
         </Spin>
       </LayoutPage>
+      <Modal
+        centered
+        bodyStyle={{ overflowX: 'scroll' }}
+        width={800}
+        visible={modalVisible}
+        destroyOnClose={true}
+        onCancel={() => {
+          setModalVisible(false)
+        }}
+        footer={[
+          <Button key="close" onClick={() => { setModalVisible(false) }}> close</Button>
+        ]}
+      >
+        <ListItemDetails item={selectedItem} />
+      </Modal>
 
       {/* } */}
       <div dangerouslySetInnerHTML={injectCode(true)}>
