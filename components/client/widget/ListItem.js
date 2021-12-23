@@ -3,6 +3,7 @@ import { Row, Col } from "antd";
 import styled from "styled-components";
 import { timeSince } from "lib/general-functions";
 import { useEffect, useState } from "react";
+import Progressbar from "./progressbar/progressbar";
 
 const CustomItem = styled.div`
     width:100%;
