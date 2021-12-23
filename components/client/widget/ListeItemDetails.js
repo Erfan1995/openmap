@@ -27,7 +27,6 @@ const Answer = styled.div`
     overflow: hidden;
     inlineSize: 700px;
 `;
-
 const DateTitle = styled.div`
     color:#aaa;
     font-size:12px
