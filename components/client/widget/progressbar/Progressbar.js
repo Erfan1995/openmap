@@ -12,7 +12,6 @@ const Progressbar = ({ progressbar }) => {
         cursor:pointer;
     }
     `
-
     const Link = styled.a`
         background-color:${progressbar.progressbarColor} ;
         :after{
