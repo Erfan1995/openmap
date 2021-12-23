@@ -103,8 +103,6 @@ padding: 10px;
 `
 
 
-
-
 const Popup = ({ mdcId, properties, selectedDatasetProperties, layerType, setDataset, onMapDataChange, token, editedProperties }) => {
     const [loading, setLoading] = useState(false);
     const [checkedList, setCheckedList] = useState(selectedDatasetProperties);
@@ -251,8 +249,8 @@ const Popup = ({ mdcId, properties, selectedDatasetProperties, layerType, setDat
                     <div className="slides">
                         {
                             PopUp?.map((item, index) => (
-                                <div  key={'div'+item.name + index}>
-                                    <PopUpCart  key={item.name + index} onClick={() => selectPopupStyle(item.name)}
+                                <div key={'div' + item.name + index}>
+                                    <PopUpCart key={item.name + index} onClick={() => selectPopupStyle(item.name)}
                                         cover={<img alt="example" src={item.cover}
                                         />}
                                     />

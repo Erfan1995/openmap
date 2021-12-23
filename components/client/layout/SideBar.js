@@ -43,16 +43,19 @@ bottom:20px;
 left:30px;
 `
 
-const SideBar = ({ siderCollapsed, toggle, datasets, onDataSetChange, mapInfo }) => {
+const SideBar = ({ siderCollapsed, toggle, datasets, onDataSetChange, mapInfo, surveys, onSurveySelectChange }) => {
   const router = useRouter();
   let firstMounted = useRef(false);
   const [checkedList, setCheckedList] = useState(datasets.map((item) => (item.id)));
-
+  const [surveyCheckedList, setSurveyCheckedList] = useState(surveys.map((item) => (item.id)));
   const onLayerChange = list => {
     setCheckedList(list);
     onDataSetChange(list);
   };
-
+  const onSurveyChange = list => {
+    setSurveyCheckedList(list);
+    onSurveySelectChange(list);
+  }
   useEffect(() => {
     firstMounted.current = true;
   });
@@ -89,6 +92,10 @@ const SideBar = ({ siderCollapsed, toggle, datasets, onDataSetChange, mapInfo })
             Layers
           </Title>
           <Checkbox.Group options={datasets.map((item) => ({ label: item.title, value: item.id }))} value={checkedList} onChange={onLayerChange} />
+          <Title level={5}>
+            Surveys
+          </Title>
+          <Checkbox.Group options={surveys.map((item) => ({ label: item.forms.title, value: item.id }))} value={surveyCheckedList} onChange={onSurveyChange} />
         </ChildWrapper>
         <Divider />
         {/* <ChildWrapper >

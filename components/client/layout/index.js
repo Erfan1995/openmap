@@ -5,7 +5,7 @@ import NavBar from './NavBar';
 
 const { Content } = Layout;
 
-const AppLayout = ({ children, walletAddress, datasets, onDataSetChange, mapInfo, publicUser, mapData, injectedcodes }) => {
+const AppLayout = ({ children, walletAddress, datasets, onDataSetChange, mapInfo, publicUser, mapData, injectedcodes, surveys, onSurveySelectChange }) => {
   const [isMobileSize, setIsMobileSize] = useState(false);
   const [collapsed, setCollapsed] = useState(false);
   const [layerStyle, setLayerStyle] = useState('');
@@ -22,6 +22,9 @@ const AppLayout = ({ children, walletAddress, datasets, onDataSetChange, mapInfo
         toggle={toggle}
         onLayerChangeParent={setLayerStyle}
         datasets={datasets}
+        surveys={surveys}
+        onSurveySelectChange={onSurveySelectChange}
+        // updates the selected layers on the map when each layer is selected
         onDataSetChange={onDataSetChange}
         mapInfo={mapInfo}
       />

@@ -42,7 +42,6 @@ const PublicMap = ({ styleId, mapZoom, style, mapData, manualMapData, onCustomeD
 
         onCustomeDataChange();
     }
-
     return (
 
 
@@ -69,11 +68,9 @@ const PublicMap = ({ styleId, mapZoom, style, mapData, manualMapData, onCustomeD
                 datasets && datasets.map((item, index) => {
                     return <MarkerClusterGroup key={`dataset${index}`}> <GeoJSON pointToLayer={(feature, latlng) => {
                         const iconUrl = getStrapiMedia(item.config?.icon?.icon[0]);
-
                         if (!iconUrl) return L.marker(latlng, {
                             icon: new L.icon({ iconUrl: '/marker-icon.png', iconSize: MapDefaultIconSize })
                         });
-
                         return L.marker(latlng, {
                             icon: new L.icon({ iconUrl: iconUrl, iconSize: MapIconSize })
                         })

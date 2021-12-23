@@ -20,6 +20,8 @@ export const DATASET = {
     Unlock: 'Unlock',
     ID: 'Id',
     NAME: 'Name',
+    LAST_NAME:'Last Name',
+    IP:'IP Address',
     DATE: 'Last Modified',
     SIZE: 'Size',
     MAPS: 'Maps',
@@ -80,6 +82,7 @@ export const DATASET = {
     UPLOAD_CSV: 'Please upload CSV file',
     UPLOAD_JSON: 'Please upload JSON file',
     LOGO_FILE: 'Please Add Your Logo [recommended size (70px)]',
+    ICON_FILE: 'Please Add Your Icon [recommended size (70px)]',
     SEND: 'send',
     SIGN_IN_TO_VIEW_DASHBOARD: 'sign in to view the dashboard',
     BACK_TO_HOME: 'Back Home',
@@ -148,10 +151,68 @@ export const DATASET = {
     ADD_TRUST_SCORE: 'Add Trust Score',
     VARIFY: 'Varify',
     UNVARIFY: 'Unvarify',
-    SURVEY_EDITED_MESSAGE: 'Survey Edited Successfully!'
-
-
+    SURVEY_EDITED_MESSAGE: 'Survey Edited Successfully!',
+    HEADER_COLOR: 'Color',
+    EDITOR: 'Editor',
+    REQUIRED_FIELD: 'This field is required',
+    CORRECT_URL_MESSAGE: 'This field must be a valid url.',
+    EMBED_RSS_FEED: 'Embed Html (RSS Feed)',
+    SUCCESSFULY_UPDATE_MESSAGE: 'successfuly updated',
+    OCCURE_ERROR_MESSAGE: 'Opps! occured error',
+    STYLE: 'Style',
+    COLOR: 'Color',
+    PROGRES_BAR_STEPS: 'Progress Bar Steps',
+    HOVER_TEXT: 'Hover Text',
+    ICON: 'Icon',
+    ADD_STEP: 'Add New Step',
+    SHOW_ITEMS: 'Show Items',
+    RSS_FEED_URL: 'RSS feed url',
+    STEP_ADDED_SUCCESSFUL: 'step added successfuly!',
+    STEP_UPDATED_SUCCESSFUL: 'step updated successfuly!',
+    UPLOAD_NEW_ICON: 'Upload new icon',
+    STEP_UPDATE_FAILED: 'Opps step update failed ',
+    STEP_DELETED: 'step deleted ',
+    STEP_DELETION_FIELD: 'step deletion field',
+    FIELD_CHANGE_STYLE: 'Failed to change style ',
+    STYLE_CHANGED: 'style changed',
+    SELECT_STYLE: 'Select Style ',
+    IS_ACTIVE: 'Is Active',
+    API: 'API',
+    SHARED: 'Shared',
+    USER_API: 'User API',
+    TWITTER_API: 'Twitter API',
+    ERROR_IP:'user ip is not defined ',
+    GET_LOCATION_DATA_SUCCESSFUL:'user location get successfuly!',
+    CREATE_SURVEY: 'Create Survey',
+    VIEW_SURVEY: 'View Survey',
+    PREVIEW: 'Preview',
+    SHARE: 'Share',
+    SHARE_DESCRIPTION: 'Maps linked to this survey! If you have not linked any, please do it in Maps dashboard.',
+    GET_LINK: 'Get the Link',
+    GET_LINK_DESCRIPTION: 'Send to your friends, coworkers, or post it in your social networks.',
+    SCAN_QR_CODE: 'Scan the QR Code',
+    SCAN_QR_CODE_DESCRIPTION: 'Scan this QR code to view and fill the survey on your mobile devices.',
+    USER_LOCATION_INFO:'User Location Inof',
+    IP_ADDRESS:'IP Address',
+    ZIP_CODE:'Zip Code',
+    CITY:'City',
+    IP_TYPE:'IP Type',
+    LATITUTE:'Latitude',
+    LONGITUDE:'Longitude',
+    COUNTRY:'Country',
+    COUNTRY_CODE:'Country Code',
+    CONTINENT:'Continent',
+    CONTINENT_CODE:'Continent Code',
+    LOCATION:'Location',
+    IS_EU:'Is EU',
+    GEO_NAME_ID:'Geo Name Id',
+    LANGUAGES:'Languages',
+    LANGUAGE_NAME:'Name',
+    LANGUAGE_CODE:'Code',
+    LANGUAGE_NATIVE:'Native',
+    LOCATION_EMPTY_MESSAGE:'location data empty !'
 }
+
 export const LAT = ['lat', 'Lat', 'LAT', 'latitude', 'Latitude', 'LATITUDE'];
 export const LONG = ['lng', 'Lng', 'LNG', 'lon', 'Lon', 'LON', 'long', 'Long', 'LONG', 'longitude', 'Longitude', 'LONGITUDE'];
 export const API = {
@@ -182,6 +243,7 @@ export const MAP = {
     SING_IN: 'Sign in',
     MAP: 'Map',
     LIST: 'List',
+    CHECK_ALL: 'Check all',
 
 }
 
@@ -217,3 +279,13 @@ export const COLORS = [
     "rgb(255, 127, 80)",
     "rgb(222, 49, 99)"
 ];
+
+export const SUREVEY_COLORS = {
+    'MAIN_COLOR': "#7ff07f",
+    'MAIN_HOVER_COLOR': '#6fe06f',
+    'TEXT_COLOR': "#4a4a4a",
+    'HEADER_COLOR': '#7ff07f',
+    'HEADER_BACKGROUND_COLOR': '#4a4a4a',
+    'BODY_CONTAINER_BACKGROUND_COLOR': '#f8f8f8'
+}
+

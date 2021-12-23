@@ -115,8 +115,6 @@ const Metamask = ({ mapDetails }) => {
             message.error(e.message);
             return;
         }
-
-
     };
 
 
@@ -129,8 +127,6 @@ const Metamask = ({ mapDetails }) => {
             case 'Blockchain Login': return <NextButton  key={type} onClick={handleClick} icon={<img src='metamask.png' className='margin-right-10' />}>
                 Connect To Metamask
             </NextButton>;
-
-
         }
     }
 

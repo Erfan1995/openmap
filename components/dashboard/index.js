@@ -8,6 +8,7 @@ import { magic } from 'lib/magic';
 import { UserContext } from "lib/UserContext";
 import { useEffect, useState } from "react";
 import { publicUserOperation } from "lib/general-functions";
+import { getStrapiMedia } from "lib/media";
 export const CardFooter = styled.div`
 position: relative;
 bottom:-10px;
@@ -18,6 +19,16 @@ export const CardMiddle = styled.div`
 padding:25px;
 `;
 
+export const Photo=styled.img`
+width:150px;
+height:150px;
+border-radius: 50%;
+border:2px solid #eee;
+:hover{
+    opacity:0.8;
+    cursor:pointer;
+}
+`;
 
 export const StyledCard = styled(Card)`
   position: relative;
@@ -40,7 +51,6 @@ const { Title } = Typography;
 const Dashboard = ({ mapData, manualMapData, datasets, mapToken }) => {
 
   const [user, setUser] = useState();
-
   useEffect(() => {
     setUser({ loading: true });
     localStorage.removeItem('magicUser');
@@ -80,10 +90,11 @@ const Dashboard = ({ mapData, manualMapData, datasets, mapToken }) => {
           <div className='news-relay text-center' >
             <StyledCard>
               <Title level={1}>
-                {MAP.OPENMAP_LOGO}
+                {/* {mapData.loginTitle} */}
+                <Photo src={getStrapiMedia(mapData?.loginLogo)} alt="image"></Photo>
               </Title>
               <Title level={3}>
-                {MAP.WELCOME_TO_OPENMAP}
+                {mapData?.welcomeMessage}
               </Title>
               <Metamask mapDetails={mapData} />
               {/* <CardMiddle>

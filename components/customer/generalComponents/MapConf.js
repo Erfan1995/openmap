@@ -18,6 +18,7 @@ import DatasetConf from './DetasetConf';
 import InjectCode from '../Forms/CodeInjection/index.js';
 import EditSurveyMeta from '../mapComponents/EditSurveyMeta';
 import SelectNewMapSurvey from '../mapComponents/SelectNewMapSurvey';
+import AddWidget from '../mapComponents/AddWidget';
 
 const { TabPane } = Tabs;
 const { confirm } = Modal;
@@ -67,16 +68,20 @@ const SurveyDeleteButton = styled.span`
 `;
 const MapConf = ({ authenticatedUser, styledMaps, tags, mapData, serverSideDatasets, token, icons, setMapStyle,
     setDataset, onMapDataChange, injectedcodes, onConfigTabChanged, serverSideMapSurveys }) => {
-    const [styleId, setStyleID] = useState(mapData.styleId || process.env.NEXT_PUBLIC_MAPBOX_DEFAULT_MAP);
+    const [styleId, setStyleID] = useState(mapData?.styleId || process.env.NEXT_PUBLIC_MAPBOX_DEFAULT_MAP);
     const childRef = useRef();
     const selectDatasetChildRef = useRef();
     const [modalVisible, setModalVisible] = useState(false);
     const [datasets, setDatasets] = useState();
     const [selectedDataset, setSelectedDataset] = useState(serverSideDatasets);
     const [layerClicked, setLayerClicked] = useState(true);
+    const [listClicked, setListClicked] = useState(true);
     const [mdcId, setmdcId] = useState();
+    const [selectedProgressbar,setSelectedProgressbar]=useState();
     const [selectedDIcons, setSelectedDIcons] = useState();
     const [selectedDatasetProperties, setSelectedDatasetProperties] = useState();
+    const [selectedWidgets,setSelectedWidgets]=useState([]);
+    const [listviewProperties, setListviewProperties] = useState();
     const [datasetProperties, setDatasetProperties] = useState();
     const [layerType, setLayerType] = useState();
     const [loading, setLoading] = useState(false);
@@ -84,6 +89,7 @@ const MapConf = ({ authenticatedUser, styledMaps, tags, mapData, serverSideDatas
     const [datasetId, setDatasetId] = useState();
     const [surveyForms, setSurveyForms] = useState(serverSideMapSurveys);
     const [editedProperties, setEditedProperties] = useState();
+    const [listviewEditedProperties, setListviewEditedProperties] = useState();
     const [selectedSurveys, setSelectedSurveys] = useState(surveyForms);
     const [surveyId, setSurveyId] = useState();
     const [surveys, setSurveys] = useState();
@@ -92,8 +98,8 @@ const MapConf = ({ authenticatedUser, styledMaps, tags, mapData, serverSideDatas
     const router = useRouter();
     const [surveyModalVisible, setSurveyModalVisible] = useState();
     const menu = (
-        <Menu >
-            <Menu.Item key="1" style={{ padding: "3px 20px" }}><a onClick={() => showConfirm()} >{DATASET.DELETE}</a></Menu.Item>
+        <Menu>
+            <Menu.Item key="1" style={{ padding: "3px 20px" }}><a onClick={() => showConfirm()}>{DATASET.DELETE}</a></Menu.Item>
         </Menu>
     );
     const changeStyle = async (item) => {
@@ -210,11 +216,13 @@ const MapConf = ({ authenticatedUser, styledMaps, tags, mapData, serverSideDatas
     }
     //this function gets called whenever the user click on a dataset or main map popup styles button
     const mdc = async (id, state, type) => {
+        setSelectedWidgets(mapData?.selected_widgets);
         setLayerClicked(state);
         onConfigTabChanged(state);
         setLayerType(type);
         setSelectedDIcons([]);
         setSelectedDatasetProperties([]);
+        setListviewProperties([]);
         setDatasetProperties([]);
         if (type === "dataset") {
             const datasetDetails = await getDatasetDetails({ dataset: id }, token);
@@ -222,7 +230,10 @@ const MapConf = ({ authenticatedUser, styledMaps, tags, mapData, serverSideDatas
                 setDatasetProperties(datasetDetails[0]?.properties)
             }
             const mapDatasetConf = await getMapDatasetConf({ dataset: id, map: mapData.id }, token);
-            if (mapDatasetConf) setmdcId(Number(mapDatasetConf[0]?.id));
+            if (mapDatasetConf) {
+                setmdcId(Number(mapDatasetConf[0]?.id));
+                setSelectedProgressbar(mapDatasetConf[0]?.progressbar_selected)
+            }
             const selectedIcons = await getDatasetConfContent({ id: mapDatasetConf[0]?.id }, token);
             if (selectedIcons.length > 0) {
                 if (selectedIcons[0].icon !== null) {
@@ -234,7 +245,10 @@ const MapConf = ({ authenticatedUser, styledMaps, tags, mapData, serverSideDatas
                 }
 
                 setSelectedDatasetProperties(selectedIcons[0]?.selected_dataset_properties);
-                setEditedProperties(selectedIcons[0]?.edited_dataset_properties)
+                setEditedProperties(selectedIcons[0]?.edited_dataset_properties);
+                setListviewProperties(selectedIcons[0]?.listview_dataset_properties);
+                setListviewEditedProperties(selectedIcons[0]?.listview_edited_dataset_properties);
+
             }
         } else if (type === "main") {
             surveyForms.map(data => {
@@ -254,6 +268,7 @@ const MapConf = ({ authenticatedUser, styledMaps, tags, mapData, serverSideDatas
             if (mapSurveyConf) {
                 let i = 0;
                 setmdcId(Number(mapSurveyConf[0]?.id));
+                setSelectedProgressbar(mapSurveyConf[0]?.progressbar_selected)
                 const selectedproperties = await getSurveyConfContent({ id: mapSurveyConf[0]?.id }, token);
 
                 if (selectedproperties.length > 0) {
@@ -269,6 +284,8 @@ const MapConf = ({ authenticatedUser, styledMaps, tags, mapData, serverSideDatas
                     }
                     setSelectedDatasetProperties(selectedproperties[0]?.selected_survey_properties);
                     setEditedProperties(selectedproperties[0]?.edited_survey_properties);
+                    setListviewProperties(selectedproperties[0]?.listview_survey_properties);
+                    setListviewEditedProperties(selectedproperties[0]?.listview_edited_survey_properties);
                 }
             }
         }
@@ -366,7 +383,6 @@ const MapConf = ({ authenticatedUser, styledMaps, tags, mapData, serverSideDatas
     const onModalSurveyClose = (res) => {
         setEditModalVisible(false);
     }
-
 
 
     return (
@@ -510,16 +526,25 @@ const MapConf = ({ authenticatedUser, styledMaps, tags, mapData, serverSideDatas
                         </TabPane>
                     </Tabs>
                     :
-                    <div>
+                    listClicked ? <div>
                         <Button style={{ marginLeft: -20, marginTop: -30 }} icon={<ArrowLeftOutlined />} onClick={() => {
                             setLayerClicked(true);
                             onConfigTabChanged(true);
                         }} type='link'>back</Button>
-                        <DatasetConf setDataset={setDataset} onMapDataChange={onMapDataChange}
-                            icons={icons} mdcId={mdcId} selectedDIcons={selectedDIcons} token={token}
-                            datasetProperties={datasetProperties} selectedDatasetProperties={selectedDatasetProperties}
-                            layerType={layerType} changeSelectedIcons={changeSelectedIcons} editedProperties={editedProperties} />
-                    </div>
+                        <DatasetConf setListClicked={() => {
+                            setListClicked(false);
+                        }} setDataset={setDataset} onMapDataChange={onMapDataChange} listviewProperties={listviewProperties}
+                            listviewEditedProperties={listviewEditedProperties} icons={icons} mdcId={mdcId} selectedDIcons={selectedDIcons} token={token}
+                            datasetProperties={datasetProperties} selectedDatasetProperties={selectedDatasetProperties} selectedProgressbar={selectedProgressbar}
+                            layerType={layerType} changeSelectedIcons={changeSelectedIcons} editedProperties={editedProperties} selectedWidgets={selectedWidgets} mapId={mapData?.id} />
+                    </div> :
+                        <div>
+                            <Button style={{ marginLeft: -20, marginTop: -30 }} icon={<ArrowLeftOutlined />} onClick={() => {
+                                setListClicked(true);
+                            }} type='link'>back</Button>
+                            <AddWidget mapId={mapData.id} mdcId={mdcId} token={token} layerType={layerType} datasetProperties={datasetProperties} selectedDatasetProperties={selectedDatasetProperties} />
+                        </div>
+
                 }
             </Card>
         </Spin>

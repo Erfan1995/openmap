@@ -1,12 +1,14 @@
 
 import { useEffect, useState } from "react";
-import { Checkbox, message, Spin, Button, Modal, List, Col, Row, Dropdown, Menu, Form, Input, Select } from "antd";
-import { putMethod } from "lib/api";
+import { Checkbox, message, Spin, Button, Modal, List, Col, Row, Dropdown, Menu, Form, Input, Select, Upload } from "antd";
+import { putMethod,putFileMethod } from "lib/api";
 import { DATASET } from "static/constant";
 import styled from "styled-components";
-import { ExclamationCircleOutlined } from '@ant-design/icons'
+import { LoginData } from "lib/constants";
+import { ExclamationCircleOutlined, InboxOutlined } from '@ant-design/icons'
 
 const { confirm } = Modal;
+const { Dragger } = Upload;
 
 function LoginTab({ mapData }) {
 
@@ -17,6 +19,8 @@ function LoginTab({ mapData }) {
     const [selectedAttribute, setSelectedAttribute] = useState();
     const [attributeModelVisibility, setAttributeModelVisibility] = useState(false);
     const [editModalVisibility, setEditModalVisiblity] = useState(false);
+    const [file, setFile] = useState();
+    const [form] = Form.useForm();
 
 
 
@@ -45,53 +49,23 @@ function LoginTab({ mapData }) {
             width:100%;
     `;
 
-    const ListTitle = styled.div`
 
-    `;
-
-    const ListIcon = styled.div`
-    
-    `;
-
-    const firstData = [
-        {
-            "id": DATASET.ONE,
-            "label": DATASET.EMAIL_LOGIN,
-            "state": false
-        },
-        {
-            "id": DATASET.TWO,
-            "label": DATASET.SOCIAL_LOGIN,
-            "state": false
-        },
-        {
-            "id": DATASET.THREE,
-            "label": DATASET.BLOCKCHAIN_LOGIN,
-            "state": false
-        },
-        {
-            "id": DATASET.FOUR,
-            "label": DATASET.ANNONYMOUS_LOGIN,
-            "state": false
-        },
-        {
-            "id": DATASET.FIFE,
-            "label": DATASET.UNLOCK_PROTOCOL,
-            "state": false
-        }
-    ]
-
+    const SaveButton = styled(Button)`
+        margin-top: 20px;
+        margin-bottom: 20px;
+        float: right !important;
+        `;
 
 
     const attributeMenu = (
-        <Menu >
+        <Menu>
             <Menu.Item key="1" style={{ padding: "3px 20px" }}><a onClick={() => setEditModalVisiblity(true)} >{DATASET.EDIT}</a></Menu.Item>
             <Menu.Item key="2" style={{ padding: "3px 20px" }}><a onClick={() => deleteConfirm()} >{DATASET.DELETE}</a></Menu.Item>
         </Menu>
     );
 
     useEffect(() => {
-        mapData.auth_types != null ? setRows(mapData.auth_types) : setRows(firstData);
+        mapData.auth_types != null ? setRows(mapData.auth_types) : setRows(LoginData);
         setAttributes(mapData.auth_attributes != null ? mapData.auth_attributes : []);
     }, []);
 
@@ -116,13 +90,12 @@ function LoginTab({ mapData }) {
     const updateAuth = async (data) => {
         setLoading(true);
         try {
-           await putMethod('maps/' + mapData.id, { auth_types: data });
-          
+            await putMethod('maps/' + mapData.id, { auth_types: data });
+
         } catch (e) {
             message.error(e);
         }
         setLoading(false);
-
     }
 
 
@@ -133,7 +106,7 @@ function LoginTab({ mapData }) {
             const res = await putMethod('maps/' + mapData.id, { auth_attributes: data });
             if (res) {
                 setAttributes(data);
-               
+
             }
         } catch (e) {
             message.error(e);
@@ -189,11 +162,93 @@ function LoginTab({ mapData }) {
     }
 
 
+    const addImageFile = (file) => {
+        setFile(file);
+    }
+
+    const props = {
+        beforeUpload: file => {
+            if ((file.type.split("/")[0]) !== "image") {
+                message.error(`${file.name} is not a valid file`);
+            }
+            return (file.type.split("/")[0]) === "image" ? true : Upload.LIST_IGNORE;
+        },
+        onChange: info => {
+            addImageFile(info);
+        },
+    };
+
+
+    const storeLoginData = () => {
+        form
+            .validateFields()
+            .then(async (values) => {
+                const fData = new FormData();
+                let res = null;
+                setLoading(true);
+                fData.append('data',JSON.stringify(values));
+                if (file) {
+                    fData.append('files.loginLogo', file.file.originFileObj, file.file.originFileObj.name);
+                }
+                res = await putFileMethod(`maps/${mapData.id}`, fData);
+                setLoading(false);
+                if (res) {
+                    message.success(DATASET.CREATE_MAP_SUCCESS_MSG);
+                }
+            })
+            .catch((info) => {
+                console.log('data ' + info);
+
+                message.error(info)
+                setLoading(false);
+            })
+    }
 
 
     return <div>
         <Spin spinning={loading}>
-            <h2>{DATASET.LOGIN}</h2>
+            <h2>Login Info</h2>
+            <Form layout="vertical" onFinish={storeLoginData} form={form} initialValues={mapData} hideRequiredMark>
+                <Row gutter={16}>
+                    <Col span={24}>
+                        <Form.Item
+                            name="loginTitle"
+                            label={DATASET.TITLE}
+                            rules={[{ required: true }]}
+                        >
+                            <Input placeholder={DATASET.PLACE_HOLDER_TITLE} />
+                        </Form.Item>
+                    </Col>
+
+                    <Col span={24}>
+                        <Form.Item
+                            name="welcomeMessage"
+                            label={DATASET.DESCRIPTION}
+                            rules={[
+                                {
+                                    required: true,
+                                },
+                            ]}>
+                            <Input.TextArea rows={2} placeholder={DATASET.PLACE_HOLDER_DESCRIPTION} />
+                        </Form.Item>
+                    </Col>
+                    <Col span={24}>
+                        <Dragger  {...props} name="file" maxCount={1} >
+                            <p className="ant-upload-drag-icon">
+                                <InboxOutlined />
+                            </p>
+                            <p className="ant-upload-text">{DATASET.LOGO_FILE}</p>
+                            <p className="ant-upload-text">{DATASET.CLICK_OR_DRAG}</p>
+                        </Dragger>
+                    </Col>
+                    <Col span={24}>
+                        <SaveButton type="primary" htmlType="submit" >{DATASET.SAVE}</SaveButton>
+                    </Col>
+                </Row>
+            </Form>
+
+
+            <h2 className='mt-20'>{DATASET.LOGIN}</h2>
 
             <CustomTable>
                 {rows.map((row) => {
