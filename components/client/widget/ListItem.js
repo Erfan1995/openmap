@@ -2,8 +2,8 @@ import { Loader } from "@googlemaps/js-api-loader";
 import { Row, Col } from "antd";
 import styled from "styled-components";
 import { timeSince } from "lib/general-functions";
-import Progressbar from "./progressbar/progressbar";
 import { useEffect, useState } from "react";
+import Progressbar from "./progressbar/progressbar";
 
 const CustomItem = styled.div`
     width:100%;
