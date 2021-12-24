@@ -43,7 +43,6 @@ const SharedSurvey = ({ survey, mapId }) => {
     const [json, setJson] = useState([]);
     const [surveyId, setSurveyId] = useState();
     const [userInfo, setUserInfo] = useState();
-    console.log(survey);
     init(Survey);
 
     useEffect(() => {
