@@ -12,24 +12,24 @@ const CreateNewsFeedWidget = ({ widget }) => {
     const [form] = Form.useForm();
     const [colorCode, setColorCode] = useState(null);
     const [loading, setLoading] = useState(false);
-    const [articles, setArticles] = useState();
-    const mediumRssFeed = "https://api.rss2json.com/v1/api.json?rss_url=https://feeds.feedburner.com/raymondcamdensblog?format=xml";
-    const MAX_ARTICLES = 10;
-    useEffect(() => {
-        const feed = async () => {
-            fetch(mediumRssFeed, { headers: { 'Accept': 'application/json' } })
-                .then((res) => res.json())
-                .then((data) => data.items.filter((item) => item.title.length > 0))
-                .then((newArticles) => newArticles.slice(0, MAX_ARTICLES))
-                .then((articles) => {
-                    setArticles(articles);
-                    console.log(articles);
-                })
-                .catch((error) => console.log(error));
+    // const [articles, setArticles] = useState();
+    // const mediumRssFeed = "https://api.rss2json.com/v1/api.json?rss_url=https://feeds.feedburner.com/raymondcamdensblog?format=xml";
+    // const MAX_ARTICLES = 10;
+    // useEffect(() => {
+    //     const feed = async () => {
+    //         fetch(mediumRssFeed, { headers: { 'Accept': 'application/json' } })
+    //             .then((res) => res.json())
+    //             .then((data) => data.items.filter((item) => item.title.length > 0))
+    //             .then((newArticles) => newArticles.slice(0, MAX_ARTICLES))
+    //             .then((articles) => {
+    //                 setArticles(articles);
+    //                 console.log(articles);
+    //             })
+    //             .catch((error) => console.log(error));
 
-        }
-        feed();
-    }, [MAX_ARTICLES]);
+    //     }
+    //     feed();
+    // }, [MAX_ARTICLES]);
     const onSubmit = async () => {
         setLoading(true);
         form
