@@ -1,9 +1,8 @@
 import { getStrapiMedia } from "lib/media";
-import styles from "./progressbar.module.css";
+import styles from "./ProgressbarWidget.module.css";
 import styled from 'styled-components';
 import { Tooltip, Row } from 'antd';
-
-const Progressbar = ({ progressbar }) => {
+const ProgressbarWidget = ({ progressbar }) => {
     const Photo = styled.img`
     width:25px;
     height:25px;
@@ -68,4 +67,4 @@ const Progressbar = ({ progressbar }) => {
         }
     </div> : null;
 }
-export default Progressbar;
+export default ProgressbarWidget
