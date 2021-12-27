@@ -4,10 +4,35 @@ import { getSurveyForms, postMethod } from 'lib/api';
 import { API, MAP } from '../../static/constant';
 import { getStrapiMedia } from 'lib/media';
 import * as Survey from "survey-react"
+// import * as SurveyKo from "survey-knockout";
 import styled from 'styled-components';
+import * as widgets from "surveyjs-widgets";
+import { SUREVEY_COLORS } from '../../static/constant';
+import $ from "jquery";
+import "jquery-ui/themes/base/all.css";
+import "nouislider/distribute/nouislider.css";
+import "bootstrap-slider/dist/css/bootstrap-slider.css";
+import "jquery-ui/ui/widgets/datepicker.js";
+
+import "select2/dist/js/select2.js";
+import "select2/dist/css/select2.css";
+
+
+import "icheck/skins/square/blue.css";
+import "pretty-checkbox/dist/pretty-checkbox.css";
+import "easy-autocomplete/dist/easy-autocomplete.css";
+
+
+// bar rating 
+import "jquery-bar-rating/dist/themes/css-stars.css";
+import "jquery-bar-rating/dist/jquery.barrating.min.js";
+import "jquery-bar-rating/dist/themes/fontawesome-stars.css";
+
 
 import "survey-creator/survey-creator.css";
+import "survey-knockout/survey.css";
 import "survey-react/survey.css";
+
 
 const { Title } = Typography;
 const Photo = styled.img`
@@ -29,12 +54,8 @@ const SurveyCard = styled(Card)`
  &:hover{
     cursor:pointer;
     border:1px solid #a1a1a1;
-
 }
 `
-
-
-
 const AddMap = ({ onDataSaved, myVisible, geoData, mapData, modalClose, userType, userId }) => {
     const [visible, setVisible] = useState(false);
     const [mainMapData, setMainMapData] = useState(null);
