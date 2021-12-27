@@ -1,5 +1,5 @@
-import { getStrapiMedia } from "lib/media";
-import styles from "./ProgressbarWidget.module.css";
+import { getStrapiMedia } from 'lib/media';
+import styles from './ProgressbarWidget.module.css';
 import styled from 'styled-components';
 import { Tooltip, Row } from 'antd';
 const ProgressbarWidget = ({ progressbar }) => {
