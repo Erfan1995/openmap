@@ -49,6 +49,54 @@ const AddMap = ({ onDataSaved, myVisible, geoData, mapData, modalClose, userType
     var resolvedFlag = true;
 
     useEffect(async () => {
+        window["$"] = window["jQuery"] = $;
+        require("emotion-ratings/dist/emotion-ratings.js");
+        require("easy-autocomplete/dist/jquery.easy-autocomplete.js");
+
+        // ckeditor
+        // const self = this;
+        // if (self.alreadyRendered) return;
+        const script = document.createElement("script");
+        script.src = "https://cdn.ckeditor.com/4.14.1/standard/ckeditor.js";
+        document.head.append(script);
+        script.onload = function () {
+            window.CKEDITOR;
+            // self.alreadyRendered = true;
+            // if (self.forceUpdate) self.forceUpdate(); // need only for REACT
+        };
+
+        widgets.icheck(Survey, $);
+        widgets.prettycheckbox(Survey);
+        widgets.select2(Survey, $);
+        widgets.inputmask(Survey);
+        widgets.jquerybarrating(Survey, $);
+        widgets.jqueryuidatepicker(Survey, $);
+        widgets.nouislider(Survey);
+        widgets.select2tagbox(Survey, $);
+        widgets.sortablejs(Survey);
+        widgets.ckeditor(Survey);
+        widgets.autocomplete(Survey);
+        widgets.bootstrapslider(Survey);
+        widgets.emotionsratings(Survey);
+
+        var defaultThemeColorsSurvey = Survey.StylesManager.ThemeColors["default"];
+        defaultThemeColorsSurvey["$main-color"] = SUREVEY_COLORS.MAIN_COLOR;
+        defaultThemeColorsSurvey["$main-hover-color"] = SUREVEY_COLORS.MAIN_HOVER_COLOR;
+        defaultThemeColorsSurvey["$text-color"] = SUREVEY_COLORS.TEXT_COLOR;
+        defaultThemeColorsSurvey["$header-color"] = SUREVEY_COLORS.HEADER_COLOR;
+        defaultThemeColorsSurvey["$body-container-background-color"] = SUREVEY_COLORS.BODY_CONTAINER_BACKGROUND_COLOR;
+        Survey.StylesManager.applyTheme(defaultThemeColorsSurvey);
+
+        var defaultThemeColorsEditor = Survey.StylesManager.ThemeColors["default"];
+        defaultThemeColorsEditor["$primary-color"] = SUREVEY_COLORS.MAIN_COLOR; 
+        defaultThemeColorsEditor["$secondary-color"] = SUREVEY_COLORS.MAIN_COLOR;
+        defaultThemeColorsEditor["$primary-hover-color"] = SUREVEY_COLORS.MAIN_HOVER_COLOR;
+        defaultThemeColorsEditor["$primary-text-color"] = SUREVEY_COLORS.TEXT_COLOR;
+        defaultThemeColorsEditor["$selection-border-color"] = SUREVEY_COLORS.MAIN_COLOR;
+        Survey.StylesManager.applyTheme();
+
+
+        let url = process.env.NEXT_PUBLIC_MAPBOX_DEFAULT_MAP
         let lat = geoData.coordinates[0];
         let lng = geoData.coordinates[1];
         await fetch(`https://geocode.arcgis.com/arcgis/rest/services/World/GeocodeServer/reverseGeocode?f=pjson&featureTypes=&location=${lat}%2C${lng}`,
