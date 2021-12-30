@@ -27,7 +27,7 @@ const VideoWidget = ({ videoWidget }) => {
             boxShadow: "5px 8px 24px 5px rgba(208, 216, 243, 0.6)"
         }}
         cover={
-            <Title style={{ backgroundColor: videoWidget.color ? videoWidget.color : '#542344' }}>
+            <Title style={{ backgroundColor: videoWidget?.color ? videoWidget?.color : '#542344' }}>
                 <H2>
                     {videoWidget.title}
                 </H2>

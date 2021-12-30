@@ -2,12 +2,9 @@ import dynamic from "next/dynamic";
 import { useEffect, useState } from 'react';
 import CreateProgressBarWidget from '../Forms/Widgets/CreateProgressBarWidget';
 import CreateVideoWidget from '../Forms/Widgets/CreateVideoWidget';
-// import CreateTextWidget from '../Forms/Widgets/CreateTextWidget';
 import CreateNewsFeedWidget from '../Forms/Widgets/CreateNewsFeedWidget';
 import { getWidgets, postMethod } from 'lib/api';
 import { Spin } from "antd";
-
-
 
 const AddWidget = ({ mapId, mdcId, token, layerType }) => {
 
@@ -26,33 +23,35 @@ const AddWidget = ({ mapId, mdcId, token, layerType }) => {
             let response;
             if (layerType === "main") {
                 response = await getWidgets(mdcId, mapId, token, 'surveyProgressbars', 'mapsurveyconf');
-                console.log(response);
-                if (response && response?.length !== 0) {
-                    setWidget(response.widgets[0]);
+                if (response) {
+                    if (response?.widgets.length > 0) {
+                        setWidget(response?.widgets[0]);
+                    } else {
+                        const res = await postMethod('widgets/', { 'map': mapId });
+                        if (res) {
+                            setWidget(res);
+                        }
+                    }
                     setProgressbars(response.surveyProgressbars);
                     setMdcConf(response?.surveyProgressbars[0]?.mapsurveyconf);
                     setLoaded(true);
-                }
-                else {
-                    const res = await postMethod('widgets/', { 'map': mapId });
-                    if (res) {
-                        setWidget(res);
-                    }
+
                 }
 
             } else if (layerType === "dataset") {
                 response = await getWidgets(mdcId, mapId, token, 'datasetProgressbars', 'mapdatasetconf');
-                if (response && response?.length !== 0) {
-                    setWidget(response?.widgets[0]);
+                if (response) {
+                    if (response?.widgets.length > 0) {
+                        setWidget(response?.widgets[0]);
+                    } else {
+                        const res = await postMethod('widgets/', { 'map': mapId });
+                        if (res) {
+                            setWidget(res);
+                        }
+                    }
                     setProgressbars(response?.datasetProgressbars);
                     setMdcConf(response?.datasetProgressbars[0]?.mapdatasetconf);
                     setLoaded(true);
-                }
-                else {
-                    const res = await postMethod('widgets/', { 'map': mapId });
-                    if (res) {
-                        setWidget(res);
-                    }
                 }
             }
 

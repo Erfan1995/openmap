@@ -276,7 +276,8 @@ const CreateProgressBarWidget = ({ mdcId, mdcConf, progressbar, layerType }) => 
 
     }
 
-    return (typeof progressbar !== 'undefined') ? < div >
+    return (
+        // typeof progressbar !== 'undefined') ? < div >
         <Spin spinning={loading}>
             <Space direction='vertical'>
                 <br />
@@ -410,7 +411,8 @@ const CreateProgressBarWidget = ({ mdcId, mdcConf, progressbar, layerType }) => 
                 </Row>
             </Space>
         </Spin>
-    </div> : <div></div>
+    // {/* </div> : <div></div> */ }
+    )
 }
 
 

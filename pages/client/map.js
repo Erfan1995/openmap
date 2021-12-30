@@ -8,9 +8,9 @@ import {
 } from "lib/general-functions";
 import UseAuth from "hooks/useAuth";
 import styled from "styled-components";
-import VideoWidget from './../../components/client/widget/VideoWidget';
-import TextWidget from './../../components/client/widget/TextWidget';
-import SocialWidget from './../../components/client/widget/SocialWidget';
+import VideoWidget from '../../components/client/widget/VideoWidget';
+import TextWidget from '../../components/client/widget/TextWidget';
+import SocialWidget from '../../components/client/widget/SocialWidget';
 import ListItem from "components/client/widget/ListItem";
 import { Tabs, Row, Col, Card, List, Modal, Spin, Button } from 'antd';
 import ListItemDetails from "components/client/widget/ListeItemDetails";
