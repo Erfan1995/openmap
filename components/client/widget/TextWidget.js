@@ -62,9 +62,9 @@ const TextWidget = ({ textWidget }) => {
             boxShadow: "5px 8px 24px 5px rgba(208, 216, 243, 0.6)"
         }}
         cover={
-            <Title style={{ background: textWidget.color ? textWidget.color : '#542344' }}>
+            <Title style={{ background: textWidget?.color ? textWidget?.color : '#542344' }}>
                 <H2>
-                    <InfoCircleFilled style={{ fontSize: 20, color: '#00b0ff', paddingRight: '3px' }} />{textWidget.title}
+                    <InfoCircleFilled style={{ fontSize: 20, color: '#00b0ff', paddingRight: '3px' }} />{textWidget?.title}
                 </H2>
             </Title>
         }
@@ -113,7 +113,7 @@ const TextWidget = ({ textWidget }) => {
                 <a>More ...</a>
             </ReadMore>
         </Row> */}
-        <div dangerouslySetInnerHTML={{ __html: textWidget.description }} />
+        <div dangerouslySetInnerHTML={{ __html: textWidget?.description }} />
     </Card>
 }
 

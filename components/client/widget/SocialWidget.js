@@ -26,7 +26,7 @@ const ItemDescription = styled.div`
 
 const SocialWidget = ({ newsFeedWidget }) => {
   const [articles, setArticles] = useState();
-  const mediumRssFeed = "https://api.rss2json.com/v1/api.json?rss_url=" + newsFeedWidget.rss_feed;
+  const mediumRssFeed = "https://api.rss2json.com/v1/api.json?rss_url=" + newsFeedWidget?.rss_feed;
   const MAX_ARTICLES = 10;
   useEffect(() => {
     getRSSFeed();
@@ -57,7 +57,7 @@ const SocialWidget = ({ newsFeedWidget }) => {
       boxShadow: "5px 8px 24px 5px rgba(208, 216, 243, 0.6)",
     }}
     cover={
-      <Title style={{ background: newsFeedWidget.color ? newsFeedWidget.color : '#542344' }}>
+      <Title style={{ background: newsFeedWidget?.color ? newsFeedWidget?.color : '#542344' }}>
         {newsFeedWidget.title}
       </Title>
     }

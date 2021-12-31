@@ -8,9 +8,9 @@ import {
 } from "lib/general-functions";
 import UseAuth from "hooks/useAuth";
 import styled from "styled-components";
-import VideoWidget from './../../components/client/widget/VideoWidget';
-import TextWidget from './../../components/client/widget/TextWidget';
-import SocialWidget from './../../components/client/widget/SocialWidget';
+import VideoWidget from '../../components/client/widget/VideoWidget';
+import TextWidget from '../../components/client/widget/TextWidget';
+import SocialWidget from '../../components/client/widget/SocialWidget';
 import ListItem from "components/client/widget/ListItem";
 import { Tabs, Row, Col, Card, List, Modal, Spin, Button } from 'antd';
 import ListItemDetails from "components/client/widget/ListeItemDetails";
@@ -191,13 +191,13 @@ const Map = ({ serverSideManualMapData, mapData, datasets, injectedcodes, public
                 <Col span={8} >
                   <RightSide>
                     {mapData.selected_widgets && mapData.selected_widgets[0].checked && (
-                      <VideoWidget videoWidget={widgets.video} />
+                      <VideoWidget videoWidget={widgets?.video} />
                     )}
                     {mapData.selected_widgets && mapData.selected_widgets[1].checked && (
-                      <TextWidget textWidget={widgets.text} />
+                      <TextWidget textWidget={widgets?.text} />
                     )}
                     {mapData.selected_widgets && mapData.selected_widgets[2].checked && (
-                      <SocialWidget newsFeedWidget={widgets.news_feeds} />
+                      <SocialWidget newsFeedWidget={widgets?.news_feeds} />
                     )}
                   </RightSide>
                 </Col>
