@@ -338,7 +338,7 @@ const FileUpload = ({ onChangeEvent, googleDriveFile, user, onModalClose }) => {
                     openNotificationWithIcon('error', DATASET.INVALID_FILE_CONTENT, DATASET.INVALID_FILE_CONTENT_DESC);
                     setHasCoordinate(false);
                 }
-            } 
+            }
         })
     }
     const handleFileRead = (jsData) => {
@@ -361,7 +361,6 @@ const FileUpload = ({ onChangeEvent, googleDriveFile, user, onModalClose }) => {
     };
     const storeData = async (datasetContent, metaData) => {
         if (hasCoordinate) {
-            //     if (invalidFileSize === false) {
             if (datasetContent && metaData) {
                 setIsLoadingGoogleDriveApi(true);
                 try {
@@ -388,9 +387,6 @@ const FileUpload = ({ onChangeEvent, googleDriveFile, user, onModalClose }) => {
             } else {
                 message.error(DATASET.SELECTED_FILE_ERROR)
             }
-            //     } else {
-            //         openNotificationWithIcon('error', DATASET.INVALID_FILE_SIZE);
-            //     }
         } else {
             openNotificationWithIcon('error', DATASET.INVALID_FILE_CONTENT, DATASET.INVALID_FILE_CONTENT_DESC);
         }
