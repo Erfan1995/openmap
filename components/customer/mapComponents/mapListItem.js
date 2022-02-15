@@ -5,6 +5,7 @@ import React, { useState } from 'react';
 import { useRouter } from 'next/router';
 import { deleteMethod, putMethod } from "../../../lib/api";
 import { DATASET } from '../../../static/constant'
+import Publish from './Publish';
 const { Paragraph, Title } = Typography;
 const { confirm } = Modal;
 const ActionLink = styled.a`
@@ -57,6 +58,7 @@ const ActionButton = ({ handleMenuClick }) => {
 
 const MapItem = ({ item, filterDeletedMap }) => {
     const [loading, setLoading] = useState(false);
+    const [publishvisible, setPublishVisible] = useState(false);
     const router = useRouter();
     const deleteMap = async (id) => {
         setLoading(true);
@@ -82,30 +84,12 @@ const MapItem = ({ item, filterDeletedMap }) => {
         });
     }
 
-    function showGeneratedLink(item) {
-        confirm({
-            icon: <ExclamationCircleOutlined />,
-            content: <p>{'ok to redirect to public map'}</p>,
-            onOk() {
-                router.push({
-                    pathname: '/',
-                    query: { mapToken: item.mapId, id: item.id }
-                });
-            },
-
-            onCancel() {
-            },
-        });
-    }
-
-
-
     const handleMenuClick = (e) => {
         if (e.key === "edit") {
             localStorage.clear('zoom');
             router.push({
                 pathname: 'create-map',
-                query: { id: item.id,mapToken:item?.mapId }
+                query: { id: item.id, mapToken: item?.mapId }
             });
         } else if (e.key === "delete") {
             showConfirm(item.id)
@@ -115,10 +99,13 @@ const MapItem = ({ item, filterDeletedMap }) => {
                 query: { id: item.id }
             })
         } else {
-            showGeneratedLink(item);
+            setPublishVisible(true);
         }
 
     };
+    const makePublishVisibility = (state) => {
+        setPublishVisible(state)
+    }
     return (
         <>
             <Spin spinning={loading}>
@@ -153,7 +140,9 @@ const MapItem = ({ item, filterDeletedMap }) => {
                     </div>
                 </Card>
             </Spin>
-
+            {publishvisible && (
+                <Publish mapData={item} publishButtonVisibility={false} modalVisibility={true} makePublishVisibility={makePublishVisibility} />
+            )}
         </>
     );
 };

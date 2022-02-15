@@ -28,8 +28,8 @@ padding: 50px;
 `;
 
 const basePath = process.env.NEXT_PUBLIC_BASEPATH_URL;
-const Publish = ({ mapData }) => {
-    const [modalVisible, setModalVisible] = useState(false);
+const Publish = ({ mapData, publishButtonVisibility = true, modalVisibility = false, makePublishVisibility }) => {
+    const [modalVisible, setModalVisible] = useState(modalVisibility);
     const [link, setLink] = useState('');
     const [embed, setEmbed] = useState('');
     const [loading, setLoading] = useState(false);
@@ -48,6 +48,7 @@ const Publish = ({ mapData }) => {
 
     const onModalClose = () => {
         setModalVisible(false)
+        if (!publishButtonVisibility) makePublishVisibility(false);
     }
     return (
         <>
@@ -106,8 +107,10 @@ const Publish = ({ mapData }) => {
                 </MainWrapper>
 
             </Modal>
-            <Button type={'primary'} onClick={() => { setModalVisible(true) }} className='margin-top-10' size='large'>Publish</Button>
+            {publishButtonVisibility && (
+                <Button type={'primary'} onClick={() => { setModalVisible(true) }} className='margin-top-10' size='large'>Publish</Button>
 
+            )}
 
         </>
 
