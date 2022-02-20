@@ -204,8 +204,8 @@ const SurveyCreatorComponent = ({ authenticatedUser, token, surveyForms }) => {
             script.src = "https://cdn.ckeditor.com/4.14.1/standard/ckeditor.js";// Or any other location , example head
             document.head.append(script);
             setScriptLoaded(true);
-                widgets.ckeditor(Survey);
-                widgets.ckeditor(SurveyKo);
+            widgets.ckeditor(Survey);
+            widgets.ckeditor(SurveyKo);
         }
 
 
@@ -374,7 +374,7 @@ const SurveyCreatorComponent = ({ authenticatedUser, token, surveyForms }) => {
                             <Button key="close" onClick={() => { setVisible(false) }}> {DATASET.CLOSE}</Button>
                         ]}
                     >
-                        <EditSurvey surveyJson={Json} updateSurveyList={updateSurveyList} />
+                        <EditSurvey surveyJson={Json} updateSurveyList={updateSurveyList} setVisible={setVisible} />
                     </Modal>
                     <Modal
                         centered

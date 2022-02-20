@@ -21,7 +21,7 @@ export function init(SurveyKo) {
       SurveyKo.JsonObject.metaData.addClass("mapselectpoint", [], null, "text");
     },
     isDefaultRender: false,
-    htmlTemplate: "<div><input /> Map below <div id='mapsurvey' style='height:300px;'></div></div>",
+    htmlTemplate: "<div><input /> Map below <div id='mapsurvey' style='height:300px; width:100%'></div></div>",
     afterRender: function (question, el) {
       var mapEl = el.getElementsByTagName("div")[0];
       var map = L.map(mapEl).setView([32.44303111097896, -100.45234580921135], 4);
