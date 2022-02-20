@@ -2,8 +2,8 @@ import { Loader } from "@googlemaps/js-api-loader";
 import { Row, Col } from "antd";
 import styled from "styled-components";
 import { timeSince } from "lib/general-functions";
-import Progressbar from "./progressbar/progressbar";
 import { useEffect, useState } from "react";
+import ProgressbarWidget from "./progressbarWidget";
 
 const CustomItem = styled.div`
     width:100%;
@@ -28,7 +28,7 @@ const SmallTitle = styled.div`
     font-size:10px
 `;
 const ListItem = ({ item, makeModalVisible }) => {
-    let itemText = item.data[0]!==undefined ? Object.entries(item.data[0]) : null;
+    let itemText = item.data[0] !== undefined ? Object.entries(item.data[0]) : null;
     return (
         <CustomItem onClick={() => makeModalVisible(item)} >
             <div>
@@ -50,13 +50,13 @@ const ListItem = ({ item, makeModalVisible }) => {
                     </Col>
                     <Col span={12} style={{ borderLeft: '1px solid #ccc', padding: 10 }}>
                         {item.progressbar.steps.length > 0 && item.progressbar.progressbarStatus && (
-                            <Progressbar progressbar={item.progressbar} />
+                            <ProgressbarWidget progressbar={item.progressbar} />
                         )}
                     </Col>
                 </Row>
                 <Row>
                     <TextDev>
-                        {itemText!==null ? itemText[0][1] : ""}
+                        {itemText !== null ? itemText[0][1] : ""}
                     </TextDev>
                 </Row>
             </div>

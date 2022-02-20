@@ -1,7 +1,7 @@
 import { Row, Divider } from "antd";
 import styled from "styled-components";
 import { timeSince } from "lib/general-functions";
-import Progressbar from "./progressbar/progressbar";
+import ProgressbarWidget from "./progressbarWidget";
 const CustomItem = styled.div`
     width:100%;
     border-radius:10px;
@@ -27,7 +27,6 @@ const Answer = styled.div`
     overflow: hidden;
     inlineSize: 700px;
 `;
-
 const DateTitle = styled.div`
     color:#aaa;
     font-size:12px
@@ -59,7 +58,7 @@ const ListItemDetails = ({ item }) => {
             <Row>
                 <div style={{ paddingLeft: '20px' }}>
                     {item.progressbar.steps.length > 0 && (
-                        <Progressbar progressbar={item.progressbar} />
+                        <ProgressbarWidget progressbar={item.progressbar} />
                     )}
                 </div>
             </Row>

@@ -54,12 +54,8 @@ const SurveyCard = styled(Card)`
  &:hover{
     cursor:pointer;
     border:1px solid #a1a1a1;
-
 }
 `
-
-
-
 const AddMap = ({ onDataSaved, myVisible, geoData, mapData, modalClose, userType, userId }) => {
     const [visible, setVisible] = useState(false);
     const [mainMapData, setMainMapData] = useState(null);
@@ -135,6 +131,7 @@ const AddMap = ({ onDataSaved, myVisible, geoData, mapData, modalClose, userType
     const onCompleteSurvey = async (data) => {
         setLoading(true);
         data.valuesHash.geolocation = mapManualData.coordinates;
+
         try {
             let values = {};
             values.map = mainMapData.id;
@@ -155,6 +152,7 @@ const AddMap = ({ onDataSaved, myVisible, geoData, mapData, modalClose, userType
                 values.user = userId;
                 res = await postMethod('mmdcustomers', values);
             }
+
 
             if (res) {
                 setVisible(false);

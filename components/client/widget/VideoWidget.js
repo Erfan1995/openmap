@@ -13,7 +13,7 @@ const Title = styled.div`
 `;
 
 
-const VideoWidget = ({ videoWidget,width,height }) => {
+const VideoWidget = ({ videoWidget, width, height }) => {
     return <Card
         bodyStyle={{ padding: "0" }}
         style={{
@@ -23,7 +23,7 @@ const VideoWidget = ({ videoWidget,width,height }) => {
             boxShadow: "5px 8px 24px 5px rgba(208, 216, 243, 0.6)"
         }}
         cover={
-            <Title style={{ backgroundColor: videoWidget.color ? videoWidget.color : '#542344',height:50,fontSize:20 }}>
+            <Title style={{ backgroundColor: videoWidget.color ? videoWidget.color : '#542344', height: 50, fontSize: 20 }}>
                 {videoWidget.title}
             </Title>
         }
