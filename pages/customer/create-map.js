@@ -1,7 +1,8 @@
 import Layout from '../../components/customer/layout/Layout';
 import withPrivateServerSideProps from '../../utils/withPrivateServerSideProps';
 import { useState } from 'react';
-import { Row, Col, Divider, Typography, List, message, Spin,Tabs } from 'antd';
+import { Row, Col, Divider, Typography,Modal,Button,List, message, Spin,Tabs } from 'antd';
+import ListItemDetails from "components/client/widget/ListeItemDetails";
 import styled from 'styled-components';
 import nookies from 'nookies';
 import dynamic from "next/dynamic";
@@ -63,8 +64,8 @@ const CreateMapContainer = ({ authenticatedUser, collapsed, styledMaps, tags, se
   const [customMapData, setCustomMapData] = useState(manualMapData);
   const [loading, setLoading] = useState(false);
   const [listData, setListData] = useState();
-
-
+  const [modalVisible, setModalVisible] = useState(false);
+  const [selectedItem, setSelectedItem] = useState();
   const [layerClicked, setLayerClicked] = useState(true);
 
   const MapWithNoSSR = dynamic(() => import("../../components/map"), {
@@ -77,16 +78,7 @@ const CreateMapContainer = ({ authenticatedUser, collapsed, styledMaps, tags, se
     let datasetData = generateListViewDataset(serverSideDatasets)
     let surveyData = generateListViewSurvey(manualMapData, serverSideMapData.surveys);
     setListData([...surveyData, ...datasetData]);
-    // const user = JSON.parse(localStorage.getItem('magicUser'));
-    // if (!user?.issuer) {
-    //   const res = await login(mapData);
-    //   if (res) {
-    //     setPublicUserObject(res[0]);
-    //     // setInitLoading(false);
-    //   }
-    // }
   }, [])
-  
 
   const key = 'updatable';
 
@@ -190,8 +182,8 @@ const CreateMapContainer = ({ authenticatedUser, collapsed, styledMaps, tags, se
 
   const makeModalVisible = (item) => {
     console.log('selectedModal '+JSON.stringify(item))
-    // setModalVisible(true);
-    // setSelectedItem(item);
+    setModalVisible(true);
+    setSelectedItem(item);
   }
 
 
@@ -327,6 +319,21 @@ const CreateMapContainer = ({ authenticatedUser, collapsed, styledMaps, tags, se
 
 
       </Layout>
+      <Modal
+        centered
+        bodyStyle={{ overflowX: 'scroll' }}
+        width={800}
+        visible={modalVisible}
+        destroyOnClose={true}
+        onCancel={() => {
+          setModalVisible(false)
+        }}
+        footer={[
+          <Button key="close" onClick={() => { setModalVisible(false) }}> close</Button>
+        ]}
+      >
+        <ListItemDetails item={selectedItem} />
+      </Modal>
 
       {/* <div dangerouslySetInnerHTML={injectCode(true)}>
       </div> */}

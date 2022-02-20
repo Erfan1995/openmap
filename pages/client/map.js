@@ -37,7 +37,6 @@ const RightSide = styled.div`
 const Map = ({ serverSideManualMapData, mapData, datasets, injectedcodes, publicUser }) => {
   let widgets = mapData.widget;
   let manualMapData = serverSideManualMapData;
-  const [intiLoading, setInitLoading] = useState(true);
   const [publicUserObject, setPublicUserObject] = useState(publicUser);
   const [datasetData, setDatasetData] = useState(datasets);
   const [zoomLevel, setZoomLevel] = useState(mapData.zoomLevel);
