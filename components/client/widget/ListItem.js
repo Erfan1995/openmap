@@ -40,7 +40,7 @@ const ListItem = ({ item, makeModalVisible }) => {
                             </SmallTitle>
                         </Row>
                         <Row style={{ fontSize: 15 }}>
-                            {item.metaData.title}
+                            {item?.metaData?.title}
                         </Row>
                         <Row>
                             <SmallTitle>

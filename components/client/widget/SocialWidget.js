@@ -24,7 +24,7 @@ const ItemDescription = styled.div`
       overflow: hidden;
   `;
 
-const SocialWidget = ({ newsFeedWidget }) => {
+const SocialWidget = ({ newsFeedWidget,width,height }) => {
   const [articles, setArticles] = useState();
   const mediumRssFeed = "https://api.rss2json.com/v1/api.json?rss_url=" + newsFeedWidget.rss_feed;
   const MAX_ARTICLES = 10;
@@ -50,21 +50,21 @@ const SocialWidget = ({ newsFeedWidget }) => {
   return <Card
     bodyStyle={{ padding: '0px 10px 10px 10px' }}
     style={{
-      width: 300,
+      width: width,
       marginTop: 10,
       border: '1px solid #ddd',
       borderTopRightRadius: 5, borderTopLeftRadius: 5,
       boxShadow: "5px 8px 24px 5px rgba(208, 216, 243, 0.6)",
     }}
     cover={
-      <Title style={{ background: newsFeedWidget.color ? newsFeedWidget.color : '#542344' }}>
-        {newsFeedWidget.title}
+      <Title style={{ background: newsFeedWidget.color ? newsFeedWidget.color : '#542344' ,height:'50px'}}>
+        <InfoCircleFilled style={{ fontSize: 20, color: '#00b0ff' }} /> {newsFeedWidget.title}
       </Title>
     }
   >
 
 
-    <div style={{ height: 150, overflowY: 'scroll' }}>
+    <div style={{ height: height, overflowY: 'scroll',overflowX:'auto',paddingLeft:10,paddingRight:10}}>
       <List
         itemLayout="horizontal"
         dataSource={articles}
@@ -74,7 +74,7 @@ const SocialWidget = ({ newsFeedWidget }) => {
               description={
                 <div>
                   <Row>
-                    <InfoCircleFilled style={{ fontSize: 20, color: '#00b0ff' }} />
+                    
                   </Row>
                   <Row><ItemTitle>{item.title}</ItemTitle></Row>
                   <Row> <ItemDescription>{item.description}</ItemDescription></Row>

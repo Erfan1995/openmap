@@ -191,13 +191,13 @@ const Map = ({ serverSideManualMapData, mapData, datasets, injectedcodes, public
                 <Col span={8} >
                   <RightSide>
                     {mapData.selected_widgets && mapData.selected_widgets[0].checked && (
-                      <VideoWidget videoWidget={widgets.video} />
+                      <VideoWidget videoWidget={widgets.video} width={300} height={160} />
                     )}
                     {mapData.selected_widgets && mapData.selected_widgets[1].checked && (
-                      <TextWidget textWidget={widgets.text} />
+                      <TextWidget textWidget={widgets.text} width={300} height={160} />
                     )}
                     {mapData.selected_widgets && mapData.selected_widgets[2].checked && (
-                      <SocialWidget newsFeedWidget={widgets.news_feeds} />
+                      <SocialWidget newsFeedWidget={widgets.news_feeds} width={300} height={160} />
                     )}
                   </RightSide>
                 </Col>

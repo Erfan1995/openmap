@@ -1,18 +1,26 @@
 import Layout from '../../components/customer/layout/Layout';
 import withPrivateServerSideProps from '../../utils/withPrivateServerSideProps';
 import { useState } from 'react';
-import { Row, Col, Divider, Typography, Button, message, Spin } from 'antd';
+import { Row, Col, Divider, Typography, List, message, Spin,Tabs } from 'antd';
 import styled from 'styled-components';
 import nookies from 'nookies';
 import dynamic from "next/dynamic";
+import { useEffect } from 'react';
 import {
   putMethod, getOneMap, getDatasetsByMap, getMapGeneralData
 } from 'lib/api';
-import { getMapData, extractMapData } from "../../lib/general-functions";
+import {
+  getMapData,extractMapData, extractMapDataPublicUser, generateListViewDataset, generateListViewSurvey
+} from "lib/general-functions";
+import ListItem from "components/client/widget/ListItem";
 import { useRouter } from 'next/router';
 import { DATASET } from '../../static/constant'
 import MapConf from 'components/customer/generalComponents/MapConf';
 import Publish from 'components/customer/mapComponents/Publish';
+import TextWidget from 'components/client/widget/TextWidget';
+import VideoWidget from 'components/client/widget/VideoWidget';
+import SocialWidget from 'components/client/widget/SocialWidget';
+const { TabPane } = Tabs;
 
 const { Title } = Typography;
 const MapsWrapper = styled.div`
@@ -28,15 +36,33 @@ const CardTitle = styled(Title)`
   float: left !important;
 `;
 
+const Content = styled.div`
+  height:700px;
+  width:100%;
+  padding:10px;
+  overflow-y: scroll
+`;
+
+
+const RightSide = styled.div`
+  padding:10px;
+  width:100%;
+  overflow-y: scroll
+  background-color:white
+  height:800px
+`;
+
 
 const CreateMapContainer = ({ authenticatedUser, collapsed, styledMaps, tags, serverSideMapData, injectedcodes,
   manualMapData, serverSideDatasets, token, icons, serverSideMapSurveys }) => {
+    let widgets = serverSideMapData.widget;
   const [mapStyle, setMapStyle] = useState(serverSideMapData?.mapstyle?.link || process.env.NEXT_PUBLIC_MAPBOX_DEFAULT_MAP);
   const [datasets, setDatasets] = useState(serverSideDatasets);
   const [mapData, setMapData] = useState(serverSideMapData);
   const [center, setCenter] = useState(serverSideMapData?.center);
   const [customMapData, setCustomMapData] = useState(manualMapData);
   const [loading, setLoading] = useState(false);
+  const [listData, setListData] = useState();
 
 
   const [layerClicked, setLayerClicked] = useState(true);
@@ -45,6 +71,22 @@ const CreateMapContainer = ({ authenticatedUser, collapsed, styledMaps, tags, se
     ssr: false
   });
 
+
+  Request.ServerVariables
+  useEffect(async () => {
+    let datasetData = generateListViewDataset(serverSideDatasets)
+    let surveyData = generateListViewSurvey(manualMapData, serverSideMapData.surveys);
+    setListData([...surveyData, ...datasetData]);
+    // const user = JSON.parse(localStorage.getItem('magicUser'));
+    // if (!user?.issuer) {
+    //   const res = await login(mapData);
+    //   if (res) {
+    //     setPublicUserObject(res[0]);
+    //     // setInitLoading(false);
+    //   }
+    // }
+  }, [])
+  
 
   const key = 'updatable';
 
@@ -135,6 +177,22 @@ const CreateMapContainer = ({ authenticatedUser, collapsed, styledMaps, tags, se
   }
 
 
+  const callback = (key) => {
+    if (key === '1') {
+      // setSelectedDatasets(selectedDatasets);
+      // setListData([...generateListViewSurvey(selectedSurveys, mapData.surveys), ...generateListViewDataset(selectedDatasets)]);
+      // setZoomLevel(localStorage.getItem('zoom') || mapData.zoomLevel);
+      // setDatasetData(selectedDatasets);
+    }
+  }
+
+
+
+  const makeModalVisible = (item) => {
+    console.log('selectedModal '+JSON.stringify(item))
+    // setModalVisible(true);
+    // setSelectedItem(item);
+  }
 
 
   return (
@@ -176,7 +234,66 @@ const CreateMapContainer = ({ authenticatedUser, collapsed, styledMaps, tags, se
 
             <Col xs={24} sm={24} md={24} lg={17} xl={17}>
               <Spin spinning={loading}>
-                <MapWithNoSSR
+                <Tabs defaultActiveKey="1" centered onChange={callback}>
+                  <TabPane tab="Map" key="1">
+                    <MapWithNoSSR
+                      manualMapData={customMapData}
+                      styleId={mapStyle}
+                      style={{ height: "71vh" }}
+                      datasets={datasets}
+                      mapData={mapData}
+                      userType='customer'
+                      userId={authenticatedUser.id}
+                      center={center}
+                      setCenter={changeMapCenter}
+                      onMapDataChange={onCustomDataChange}
+                      injectedcodes={injectedcodes}
+                      layerClicked={layerClicked}
+                      draw={{
+                        rectangle: true,
+                        polygon: true,
+                        circle: false,
+                        circlemarker: false,
+                        polyline: false
+                      }}
+                      edit={
+                        {
+                          edit: false,
+                          remove: false,
+                        }
+                      }
+                    />
+                  </TabPane>
+                  <TabPane tab="List" key="2">
+                    <Row>
+                      <Col span={16}>
+                        <Content >
+                          <List
+                            size="small"
+                            dataSource={listData}
+                            renderItem={item => <List.Item>
+                              <ListItem item={item} makeModalVisible={makeModalVisible} />
+                            </List.Item>}
+                          />
+                        </Content>
+                      </Col>
+                      <Col span={8} >
+                        <RightSide>
+                          {serverSideMapData.selected_widgets && serverSideMapData.selected_widgets[0].checked && (
+                            <VideoWidget videoWidget={widgets.video} width={220} height={150} />
+                          )}
+                          {serverSideMapData.selected_widgets && serverSideMapData.selected_widgets[1].checked && (
+                            <TextWidget textWidget={widgets.text} width={220} height={150} />
+                          )}
+                          {serverSideMapData.selected_widgets && serverSideMapData.selected_widgets[2].checked && (
+                            <SocialWidget newsFeedWidget={widgets.news_feeds} width={220} height={150} />
+                          )}
+                        </RightSide>
+                      </Col>
+                    </Row>
+                  </TabPane>
+                </Tabs>
+                {/* <MapWithNoSSR
                   manualMapData={customMapData}
                   styleId={mapStyle}
                   style={{ height: "71vh" }}
@@ -202,7 +319,7 @@ const CreateMapContainer = ({ authenticatedUser, collapsed, styledMaps, tags, se
                       remove: false,
                     }
                   }
-                />
+                /> */}
               </Spin>
             </Col>
           </Row>
@@ -225,7 +342,6 @@ export const getServerSideProps = withPrivateServerSideProps(
       if (id && mapToken) {
         let mapData = null;
         mapData = await getMapGeneralData(id, mapToken, token);
-        console.log(mapData);
         if (mapData?.maps?.length > 0) {
           let map = mapData?.maps[0];
 
@@ -244,6 +360,7 @@ export const getServerSideProps = withPrivateServerSideProps(
             item.key = item.id;
           })
 
+
           // const data = await getCreateMapData(id, token);
           const mapStyles = mapData?.mapstyles;
           const tags = mapData?.tags;
@@ -258,7 +375,7 @@ export const getServerSideProps = withPrivateServerSideProps(
           tags?.map((item) => {
             item.id = Number(item.id);
           })
-          console.log(manualArray,'arrayaaaaaa');
+          console.log(manualArray, 'arrayaaaaaa');
           return {
             props: {
               authenticatedUser: verifyUser, styledMaps: mapStyles, tags: tags, injectedcodes: injectedcodes,

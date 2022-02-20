@@ -1,17 +1,19 @@
 import { Table, Tag, Space, Dropdown, Menu, message, Modal, Spin } from 'antd';
 import React, { useEffect, useState } from 'react';
-import { DownOutlined, ExclamationCircleOutlined } from '@ant-design/icons';
+import { DownOutlined, ExclamationCircleOutlined, DownloadOutlined } from '@ant-design/icons';
 import { deleteMethod, putMethod, getPublicUsers, getIpLocation } from "../../../lib/api";
+import jsPDF from 'jspdf';
+import "jspdf-autotable"
 import UserLocationDetails from './UserLocationDetails';
 import 'antd/dist/antd.css';
 import { DATASET } from '../../../static/constant'
 const { confirm } = Modal;
-const UserLocationTable = () => {
+const UserLocationTable = ({onGeneratePdf}) => {
     const [loading, setLoading] = useState(false);
     const [users, setUsers] = useState([]);
     const [userIp, setUserIp] = useState(null);
     const [userId, setUserId] = useState(0);
-    const [visible,setVisible]=useState(false);
+    const [visible, setVisible] = useState(false);
 
     useEffect(() => {
         async function fetchPublicUser() {
@@ -54,6 +56,9 @@ const UserLocationTable = () => {
             message.error(DATASET.ERROR_IP);
         }
     }
+
+
+
 
     const menu = (
         <Menu >
@@ -104,7 +109,7 @@ const UserLocationTable = () => {
     ];
     return (<>
         <Spin spinning={loading}>
-            <Table dataSource={users} columns={columns} />
+            <Table id="test-table" dataSource={users} columns={columns} />
             <Modal
                 centered
                 width='700px'
@@ -112,7 +117,7 @@ const UserLocationTable = () => {
                 destroyOnClose={true}
                 footer={[]}
                 onCancel={() => setVisible(false)}>
-                <UserLocationDetails id={userId}></UserLocationDetails>
+                <UserLocationDetails id={userId} ></UserLocationDetails>
             </Modal>
         </Spin>
 

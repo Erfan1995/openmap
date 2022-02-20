@@ -189,6 +189,7 @@ const AddMap = ({ onDataSaved, myVisible, geoData, mapData, modalClose, userType
 
 
     const selectSurvey = (item) => {
+        console.log('selectedSurvey '+JSON.stringify(item.forms))
         setSelectedSurveys(item);
         setSurveys(surveys.map((obj) => {
             if (item.id === obj.id) {
