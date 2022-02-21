@@ -90,6 +90,7 @@ const Dataset = ({ authenticatedUser, collapsed, locked_data, unlocked_data, tag
         // console.log('response ' + JSON.stringify(res));
     }
 
+
     return (
         <Layout collapsed={collapsed} user={authenticatedUser}>
             <MapsWrapper  >
@@ -176,11 +177,11 @@ const Dataset = ({ authenticatedUser, collapsed, locked_data, unlocked_data, tag
                             destroyOnClose={true}
                             footer={[]}
                             onCancel={() => setLocationVisible(false)}>
-    
-                                <UserLocationTable/>
+
+                            <UserLocationTable />
                             {/* <Spin spinning={loading}> */}
 
-                                {/* <FileUpload user={authenticatedUser} onModalClose={onModalClose} /> */}
+                            {/* <FileUpload user={authenticatedUser} onModalClose={onModalClose} /> */}
                             {/* </Spin> */}
                         </Modal>
                     </TabPane>

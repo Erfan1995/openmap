@@ -25,6 +25,7 @@ function MyApp({ Component, pageProps }) {
           rel="stylesheet"
           href="https://cdnjs.cloudflare.com/ajax/libs/nprogress/0.2.0/nprogress.min.css"
         />
+        <script src="https://cdn.ckeditor.com/4.14.1/standard/ckeditor.js"></script>
       </Head>
       <GlobalStyle />
       <Component {...pageProps} />

@@ -192,7 +192,7 @@ export const DATASET = {
     GET_LINK_DESCRIPTION: 'Send to your friends, coworkers, or post it in your social networks.',
     SCAN_QR_CODE: 'Scan the QR Code',
     SCAN_QR_CODE_DESCRIPTION: 'Scan this QR code to view and fill the survey on your mobile devices.',
-    USER_LOCATION_INFO:'User Location Inof',
+    USER_LOCATION_INFO:'User Location Info',
     IP_ADDRESS:'IP Address',
     ZIP_CODE:'Zip Code',
     CITY:'City',
@@ -281,8 +281,8 @@ export const COLORS = [
 ];
 
 export const SUREVEY_COLORS = {
-    'MAIN_COLOR': "#7ff07f",
-    'MAIN_HOVER_COLOR': '#6fe06f',
+    'MAIN_COLOR': "#001529",
+    'MAIN_HOVER_COLOR': '#1890ff',
     'TEXT_COLOR': "#4a4a4a",
     'HEADER_COLOR': '#7ff07f',
     'HEADER_BACKGROUND_COLOR': '#4a4a4a',

@@ -56,7 +56,6 @@ const PublicMap = ({ styleId, mapZoom, style, mapData, manualMapData, onCustomeD
             <TileLayer
                 url={styleId}
             />
-
             <LeafletgeoSearch />
             <MapEvents />
 

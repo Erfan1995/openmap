@@ -4,68 +4,28 @@ import { InfoCircleFilled } from "@ant-design/icons"
 import styled from "styled-components"
 
 const Title = styled.div`
-    width: 100%;
-    border-top-right-radius:5px;
-    border-top-left-radius:5px;
-
-`;
-
-const H2 = styled.div`
+    width: 100%; 
+    border-top-right-radius: 5px;
+    border-top-left-radius: 5px;
     color:white;
     padding:10px;
-    font-size:18px
-`
-
-const PurpleText = styled.div`
-    color: #8e4362;
-    font-size: 20px;
-    font-weight: bold;
-`;
-
-const GreenText = styled.div`
-    color: #5fb47b;
-    font-size: 20px;
-    font-weight: bold          
-`;
-
-const LinkText = styled.div`
-    color: #653b58;
-    margin-top:6px;
-`;
-
-const SampleText = styled.div`
-    color: #646464; 
-    padding-top: 6px
+    font-size:20px
 `;
 
 
-const BlackTitle = styled.div`
-    color: #4a4a4a; 
-    font-size: 20px; 
-    font-weight: bold 
-`;
-
-const ReadMore = styled.div`
-    width:100%;
-    text-align:right
-`;
-
-
-const TextWidget = ({ textWidget }) => {
+const TextWidget = ({ textWidget,width,height }) => {
     return <Card
         bodyStyle={{ padding: '0px 10px 10px 10px' }}
         style={{
-            width: 300,
+            width: width,
             marginTop: 10,
             border: '1px solid #ddd',
             borderTopRightRadius: 5, borderTopLeftRadius: 5,
             boxShadow: "5px 8px 24px 5px rgba(208, 216, 243, 0.6)"
         }}
         cover={
-            <Title style={{ background: textWidget?.color ? textWidget?.color : '#542344' }}>
-                <H2>
-                    <InfoCircleFilled style={{ fontSize: 20, color: '#00b0ff', paddingRight: '3px' }} />{textWidget?.title}
-                </H2>
+            <Title style={{ background: textWidget.color ? textWidget.color : '#542344', height: 50 }}>
+                <InfoCircleFilled style={{ fontSize: 20, color: '#00b0ff', paddingRight: '3px' }} />{textWidget.title}
             </Title>
         }
     >
@@ -113,7 +73,7 @@ const TextWidget = ({ textWidget }) => {
                 <a>More ...</a>
             </ReadMore>
         </Row> */}
-        <div dangerouslySetInnerHTML={{ __html: textWidget?.description }} />
+        <div style={{ height: height, paddingTop: 10 }} dangerouslySetInnerHTML={{ __html: textWidget.description }} />
     </Card>
 }
 

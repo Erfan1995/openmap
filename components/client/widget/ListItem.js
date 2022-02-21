@@ -1,8 +1,6 @@
-import { Loader } from "@googlemaps/js-api-loader";
 import { Row, Col } from "antd";
 import styled from "styled-components";
 import { timeSince } from "lib/general-functions";
-import { useEffect, useState } from "react";
 import ProgressbarWidget from "./progressbarWidget";
 
 const CustomItem = styled.div`
@@ -40,7 +38,7 @@ const ListItem = ({ item, makeModalVisible }) => {
                             </SmallTitle>
                         </Row>
                         <Row style={{ fontSize: 15 }}>
-                            {item.metaData.title}
+                            {item?.metaData?.title}
                         </Row>
                         <Row>
                             <SmallTitle>

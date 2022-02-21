@@ -86,7 +86,7 @@ const Dashboard = ({ mapData, manualMapData, datasets, mapToken }) => {
         <div>
 
           <MapWithNoSSR mapData={mapData} manualMapData={manualMapData} datasets={datasets} />
-
+ 
           <div className='news-relay text-center' >
             <StyledCard>
               <Title level={1}>
