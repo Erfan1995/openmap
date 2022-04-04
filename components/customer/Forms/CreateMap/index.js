@@ -85,7 +85,7 @@ const CreateMap = ({ serverSideTags, user, mapData, onModalClose, addImageFile }
                 .catch((info) => {
                     message.error(info)
                 });
-                return true;
+            return true;
         },
         createMap(datasetId = null, image) {
             form
@@ -119,7 +119,7 @@ const CreateMap = ({ serverSideTags, user, mapData, onModalClose, addImageFile }
                 })
         }
     }), [])
-    
+
     const props = {
         beforeUpload: file => {
             if ((file.type.split("/")[0]) !== "image") {
@@ -135,10 +135,10 @@ const CreateMap = ({ serverSideTags, user, mapData, onModalClose, addImageFile }
         <Spin spinning={loading}>
             <Form form={form} layout="vertical" initialValues={mapData} hideRequiredMark>
                 <Row gutter={16}>
-                <Col span={24}>
+                    <Col span={24}>
                         <Form.Item
                             name="dialog_title"
-                            label={DATASET.DIALOG_TITLE}
+                            label={DATASET.MAP_NAME}
                             rules={[{ required: true }]}
                         >
                             <Input placeholder={DATASET.PLACE_HOLDER_DIALOG} />

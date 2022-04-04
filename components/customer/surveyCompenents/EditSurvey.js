@@ -13,7 +13,7 @@ const { confirm } = Modal;
 import "survey-creator/survey-creator.css";
 import "survey-react/survey.css";
 
-const EditSurvey = ({ surveyJson, updateSurveyList }) => {
+const EditSurvey = ({ surveyJson, updateSurveyList, setVisible }) => {
     let surveyCreator;
     const [loading, setLoading] = useState(false);
     const [surveyForms, setSurveyForm] = useState(surveyJson.forms)
@@ -30,6 +30,7 @@ const EditSurvey = ({ surveyJson, updateSurveyList }) => {
                     updateSurveyList(result.forms, surveyJson.id);
                     setLoading(false);
                     message.success("survey added successfully!")
+                    setVisible(false);
                 }
             } else {
                 message.error("please add title and description")
@@ -48,21 +49,11 @@ const EditSurvey = ({ surveyJson, updateSurveyList }) => {
             null,
             options
         );
-        surveyCreator.saveSurveyFunc = showConfirm;
+        surveyCreator.saveSurveyFunc = saveMySurvey;
         surveyCreator.text = JSON.stringify(surveyForms);
         surveyCreator.render("surveyContainer");
     });
-    function showConfirm() {
-        confirm({
-            icon: <ExclamationCircleOutlined />,
-            content: <p>{DATASET.UPDATE_WARNING}</p>,
-            onOk() {
-                saveMySurvey();
-            },
-            onCancel() {
-            },
-        });
-    }
+
     return (
         <Spin spinning={loading}>
             <div style={{ paddingTop: "30px" }}>

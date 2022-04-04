@@ -47,7 +47,7 @@ const ListItemDetails = ({ item }) => {
             </Row>
             <Row>
                 <ItemTitle>
-                    {item.metaData.title}
+                    {item.metaData?.title}
                 </ItemTitle>
             </Row>
             <Row>

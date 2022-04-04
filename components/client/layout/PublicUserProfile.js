@@ -92,6 +92,7 @@ const PublicUserProfile = ({ userId, onModalClose, serverPublicUser, customWalle
     const [attributeId, setAttributeId] = useState(0);
     const [states, setStates] = useState([]);
     const [isMagic, setIsMagic] = useState(JSON.parse(localStorage.getItem('magicUser')) || false);
+    console.log(serverPublicUser, 'ssssssssssssssss')
     const logout = () => {
 
         if (isMagic) {

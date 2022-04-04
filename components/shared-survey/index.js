@@ -89,39 +89,52 @@ const SharedSurvey = ({ survey, mapId }) => {
                 setUserInfo(data);
             })
     }
-    const onCompleteSurvey = (data) => {
+    const onCompleteSurvey = async (data) => {
         let latlng;
         let geometry;
         let properties = data.valuesHash;
+        let hasMap = false;
         Object.entries(data.valuesHash).map(value => {
             if (value[1].lat) {
+                hasMap = true;
                 latlng = [value[1].lng, value[1].lat];
                 geometry = { 'type': 'Point', 'coordinates': latlng };
                 getAddress(value[1].lat, value[1].lng, geometry, properties);
             }
         })
-
+        if (!hasMap) {
+            store(null, properties, '', false);
+        }
     }
-    const store = async (geometry, properties, address) => {
+    
+    const store = async (geometry, properties, address, hasMap) => {
         let values = {};
         values.map = mapId;
         values.geometry = geometry;
         values.properties = properties;
         values.survey = surveyId;
         values.address = address;
-        values.ip = userInfo.ip;
+        values.ip = userInfo?.ip;
         values.is_approved = false;
-        const res = await postMethod('mmdpublicusers', values, false);
+        try {
+            if (hasMap && geometry) {
+                const res = await postMethod('mmdpublicusers', values, false);
+            }
+            if (!hasMap) {
+                const res = await postMethod('mmdpublicusers', values, false);
+            }
+        } catch (e) {
+            message.error(e.message)
+        }
     }
 
+
     const getAddress = async (lat, lng, geometry, properties) => {
-        console.log(lat, lng);
         await fetch(`https://geocode.arcgis.com/arcgis/rest/services/World/GeocodeServer/reverseGeocode?f=pjson&featureTypes=&location=${lng}%2C${lat}`,
             { headers: { 'Accept': 'application/json' } })
             .then((res) => res.json())
             .then((data) => {
-                console.log(data);
-                store(geometry, properties, data.address.LongLabel);
+                store(geometry, properties, data.address.LongLabel, true);
             });
     }
 

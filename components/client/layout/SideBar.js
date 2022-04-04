@@ -1,4 +1,4 @@
-import { Layout, Button, Typography, Divider, Radio, Checkbox } from "antd";
+import { Layout, Button, Typography, Divider, Radio, Checkbox, Dropdown, Select, Input, Col, Row } from "antd";
 import React, { useEffect, useRef, useState } from 'react';
 import { MenuOutlined } from '@ant-design/icons';
 import styled from 'styled-components'
@@ -7,6 +7,9 @@ const { Sider } = Layout;
 const { Title } = Typography;
 import { MAP } from 'static/constant'
 import { getStrapiMedia } from '../../../lib/media'
+import LayerSelectCheckbox from "./LayerSelectCheckbox";
+
+const { Option } = Select;
 
 const ParentWrapper = styled.div`
  width:100%;
@@ -60,7 +63,6 @@ const SideBar = ({ siderCollapsed, toggle, datasets, onDataSetChange, mapInfo, s
     firstMounted.current = true;
   });
 
-
   return (
     <Sider className="site-layout-sider"
       trigger={null}
@@ -91,11 +93,15 @@ const SideBar = ({ siderCollapsed, toggle, datasets, onDataSetChange, mapInfo, s
           <Title level={5}>
             Layers
           </Title>
-          <Checkbox.Group options={datasets.map((item) => ({ label: item.title, value: item.id }))} value={checkedList} onChange={onLayerChange} />
+
+          {/* <Checkbox.Group options={datasets.map((item) => ({ label: item.title, value: item.id }))} value={checkedList} onChange={onLayerChange} /> */}
+          <LayerSelectCheckbox options={datasets} value={checkedList} onChange={onLayerChange} title={'Select Map Layers'} />
+
           <Title level={5}>
             Surveys
           </Title>
-          <Checkbox.Group options={surveys.map((item) => ({ label: item.forms.title, value: item.id }))} value={surveyCheckedList} onChange={onSurveyChange} />
+          {/* <Checkbox.Group options={surveys.map((item) => ({ label: item.forms.title, value: item.id }))} value={surveyCheckedList} onChange={onSurveyChange} /> */}
+          <LayerSelectCheckbox options={surveys} value={surveyCheckedList} onChange={onSurveyChange} title={'Select Map Surveys'} />
         </ChildWrapper>
         <Divider />
         {/* <ChildWrapper >

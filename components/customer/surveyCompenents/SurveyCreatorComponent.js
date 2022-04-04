@@ -86,7 +86,6 @@ defaultThemeColorsSurvey["$main-color"] = SUREVEY_COLORS.MAIN_COLOR;
 defaultThemeColorsSurvey["$main-hover-color"] = SUREVEY_COLORS.MAIN_HOVER_COLOR;
 defaultThemeColorsSurvey["$text-color"] = SUREVEY_COLORS.TEXT_COLOR;
 defaultThemeColorsSurvey["$header-color"] = SUREVEY_COLORS.HEADER_COLOR;
-// defaultThemeColorsSurvey["$header-background-color"] = SUREVEY_COLORS.HEADER_BACKGROUND_COLOR;
 defaultThemeColorsSurvey["$body-container-background-color"] = SUREVEY_COLORS.BODY_CONTAINER_BACKGROUND_COLOR;
 SurveyKo.StylesManager.applyTheme(defaultThemeColorsSurvey);
 
@@ -112,6 +111,8 @@ widgets.sortablejs(Survey);
 widgets.autocomplete(Survey);
 widgets.bootstrapslider(Survey);
 widgets.emotionsratings(Survey);
+widgets.ckeditor(Survey);
+
 
 
 // custom widget showed on editor 
@@ -127,6 +128,7 @@ widgets.sortablejs(SurveyKo);
 widgets.autocomplete(SurveyKo);
 widgets.bootstrapslider(SurveyKo);
 widgets.emotionsratings(SurveyKo);
+widgets.ckeditor(SurveyKo);
 
 init(SurveyKo);
 
@@ -146,7 +148,6 @@ const SurveyCreatorComponent = ({ authenticatedUser, token, surveyForms }) => {
     const [link, setLink] = useState('');
     const [maps, setMaps] = useState([]);
     const [selectedMap, setSelectedMap] = useState();
-    const [scriptLoaded, setScriptLoaded] = useState(false);
 
     const basePath = process.env.NEXT_PUBLIC_BASEPATH_URL;
 
@@ -204,8 +205,8 @@ const SurveyCreatorComponent = ({ authenticatedUser, token, surveyForms }) => {
             script.src = "https://cdn.ckeditor.com/4.14.1/standard/ckeditor.js";// Or any other location , example head
             document.head.append(script);
             setScriptLoaded(true);
-                widgets.ckeditor(Survey);
-                widgets.ckeditor(SurveyKo);
+            widgets.ckeditor(Survey);
+            widgets.ckeditor(SurveyKo);
         }
 
 
@@ -213,10 +214,10 @@ const SurveyCreatorComponent = ({ authenticatedUser, token, surveyForms }) => {
             null,
             options
         );
-
         surveyCreator.saveSurveyFunc = saveMySurvey;
         surveyCreator.render("surveyCreatorContainer");
-    });
+    },[surveyCreator]);
+
     const callback = async (key) => {
         if (!(JSON.parse(surveyCreator.text)?.pages[0]?.elements?.length > 0)) {
             tabChangeEvent(key);
@@ -374,7 +375,7 @@ const SurveyCreatorComponent = ({ authenticatedUser, token, surveyForms }) => {
                             <Button key="close" onClick={() => { setVisible(false) }}> {DATASET.CLOSE}</Button>
                         ]}
                     >
-                        <EditSurvey surveyJson={Json} updateSurveyList={updateSurveyList} />
+                        <EditSurvey surveyJson={Json} updateSurveyList={updateSurveyList} setVisible={setVisible} />
                     </Modal>
                     <Modal
                         centered
