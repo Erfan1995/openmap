@@ -1,0 +1,31 @@
+
+.list_title{
+    width: 500px;
+    height: 100%;
+    padding: 10px 0px;
+}
+
+.list_item_no{
+    padding: 1px 7px;
+    border: 1px solid rgb(206, 204, 204);
+    text-align: center;
+    border-radius: 4px;
+    font-size: 15px;
+    color: rgb(206, 204, 204);
+
+}
+
+.list_item_title{
+    margin-left: 10px;
+    margin-top: 2px;
+    color: rgb(61, 60, 60);
+    text-align: center;
+}
+
+
+.list_content{
+    padding-left: 30px;
+    white-space: nowrap;
+    align-items: center;
+
+}

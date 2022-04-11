@@ -1,4 +1,4 @@
-import { Layout, Button, Typography, Divider, Radio, Checkbox } from "antd";
+import { Layout, Button, Typography, Divider, Radio, Checkbox, Dropdown, Select, Input, Col, Row } from "antd";
 import React, { useEffect, useRef, useState } from 'react';
 import { MenuOutlined } from '@ant-design/icons';
 import styled from 'styled-components'
@@ -7,6 +7,9 @@ const { Sider } = Layout;
 const { Title } = Typography;
 import { MAP } from 'static/constant'
 import { getStrapiMedia } from '../../../lib/media'
+import LayerSelectCheckbox from "./LayerSelectCheckbox";
+
+const { Option } = Select;
 
 const ParentWrapper = styled.div`
  width:100%;
@@ -19,7 +22,9 @@ const ChildWrapper = styled.div`
 `
 
 const Photo = styled.img`
-  height:100px;
+  // width:50%;
+  height:90px;
+  margin-bottom:20px;
 `
 const StyledCheckBox = styled(Checkbox)`
   margin-bottom:20px;
@@ -36,20 +41,24 @@ text-align:center;
 
 `
 const NeedHelp = styled.div`
-  margin-top:120px;
-  padding-left:20px;
+position:fixed;
+bottom:20px;
+left:30px;
 `
 
-const SideBar = ({ siderCollapsed, toggle, datasets, onDataSetChange, mapInfo }) => {
+const SideBar = ({ siderCollapsed, toggle, datasets, onDataSetChange, mapInfo, surveys, onSurveySelectChange }) => {
   const router = useRouter();
   let firstMounted = useRef(false);
   const [checkedList, setCheckedList] = useState(datasets.map((item) => (item.id)));
-
+  const [surveyCheckedList, setSurveyCheckedList] = useState(surveys.map((item) => (item.id)));
   const onLayerChange = list => {
     setCheckedList(list);
     onDataSetChange(list);
   };
-
+  const onSurveyChange = list => {
+    setSurveyCheckedList(list);
+    onSurveySelectChange(list);
+  }
   useEffect(() => {
     firstMounted.current = true;
   });
@@ -71,12 +80,12 @@ const SideBar = ({ siderCollapsed, toggle, datasets, onDataSetChange, mapInfo })
 
       <ParentWrapper>
         <ChildWrapper>
-          <Photo src={getStrapiMedia(mapInfo.logo)} />
+          <Photo src={getStrapiMedia(mapInfo?.logo)} />
           <Title>
-            {mapInfo.title}
+            {mapInfo?.title}
           </Title>
           <Title level={2}>
-            {mapInfo.subtitle}
+            {mapInfo?.subtitle}
           </Title>
         </ChildWrapper>
         <Divider />
@@ -84,17 +93,25 @@ const SideBar = ({ siderCollapsed, toggle, datasets, onDataSetChange, mapInfo })
           <Title level={5}>
             Layers
           </Title>
-          <Checkbox.Group options={datasets.map((item) => ({ label: item.title, value: item.id }))} value={checkedList} onChange={onLayerChange} />
+
+          {/* <Checkbox.Group options={datasets.map((item) => ({ label: item.title, value: item.id }))} value={checkedList} onChange={onLayerChange} /> */}
+          <LayerSelectCheckbox options={datasets} value={checkedList} onChange={onLayerChange} title={'Select Map Layers'} />
+
+          <Title level={5}>
+            Surveys
+          </Title>
+          {/* <Checkbox.Group options={surveys.map((item) => ({ label: item.forms.title, value: item.id }))} value={surveyCheckedList} onChange={onSurveyChange} /> */}
+          <LayerSelectCheckbox options={surveys} value={surveyCheckedList} onChange={onSurveyChange} title={'Select Map Surveys'} />
         </ChildWrapper>
         <Divider />
-        <ChildWrapper >
+        {/* <ChildWrapper >
           <Title style={{ textAlign: "center" }} level={5}>Can you add to our map?</Title>
           <ButtonWrapper>
             <StyledButton type="primary" shape="round" size={'large'}>
 
               Button</StyledButton>
           </ButtonWrapper>
-        </ChildWrapper>
+        </ChildWrapper> */}
       </ParentWrapper>
       <NeedHelp>
         <a href={mapInfo.link} target="_blank" rel="noopener noreferrer">Need Help?</a>

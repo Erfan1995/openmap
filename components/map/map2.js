@@ -1,12 +1,27 @@
 import React, { Component } from 'react';
-import { MapContainer, TileLayer, Circle, FeatureGroup } from 'react-leaflet';
-import L, { geoJSON, Layer, polyline } from 'leaflet';
+import { FeatureGroup } from 'react-leaflet';
+import L, { geoJSON } from 'leaflet';
 import { EditControl } from 'react-leaflet-draw';
-import foo from '../../lib/data.json';
 import AddMap from './AddMap';
 import Preview from './Preview';
-
+import styled from 'styled-components';
 // work around broken icons when using webpack, see https://github.com/PaulLeCam/react-leaflet/issues/255
+import { Card } from "antd";
+import { getSpecifictPopup } from 'lib/general-functions';
+import { getStrapiMedia } from 'lib/media';
+import { MapDefaultIconSize, MapIconSize } from 'lib/constants';
+
+import "leaflet.markercluster/dist/leaflet.markercluster";
+import "leaflet.markercluster/dist/MarkerCluster.css";
+import "leaflet.markercluster/dist/MarkerCluster.Default.css";
+import { map } from 'rxjs';
+
+const PupopDiv = styled.div`
+height:200px;
+background-color:#000;
+border-radius:20px;
+`
+
 
 delete L.Icon.Default.prototype._getIconUrl;
 L.Icon.Default.mergeOptions({
@@ -21,6 +36,8 @@ L.Icon.Default.mergeOptions({
 //
 
 
+
+const mcg = L.markerClusterGroup();
 export default class EditControlExample extends Component {
 
   state = {
@@ -29,8 +46,8 @@ export default class EditControlExample extends Component {
     geoData: {},
     type: 'create',
     place: {}
-
   }
+
   constructor(props) {
     super(props);
     this.childRef = React.createRef()
@@ -76,20 +93,47 @@ export default class EditControlExample extends Component {
   _editableFG = null;
 
   _onFeatureGroupReady = (reactFGref) => {
+
     if (this.state.type === 'create') {
       reactFGref?.clearLayers();
+      mcg.clearLayers();
     }
     if (this.props.manualMapData.length > 0) {
-      let leafletGeoJSON = new L.GeoJSON({
-        type: 'FeatureCollection',
-        features: this.props.manualMapData
-      });
+      let leafletGeoJSON = new L.GeoJSON(this.props.manualMapData, {
+        pointToLayer: (feature, latlng) => {
+          const iconUrl = getStrapiMedia(feature?.icon?.icon?.length > 0 ? feature?.icon?.icon[0] : null);
+
+          if (!iconUrl) return L.marker(latlng, {
+            icon: new L.icon({ iconUrl: '/marker-icon.png', iconSize: MapDefaultIconSize })
+          });
+
+          return L.marker(latlng, {
+            icon: new L.icon({ iconUrl: iconUrl, iconSize: MapIconSize })
+          })
+        },
+        onEachFeature: (feature = {}, layer) => {
+          const { properties, mapSurveyConf } = feature;
+          if (!properties) return;
+
+          if (!(mapSurveyConf?.selected_survey_properties)) {
+            return;
+          }
+
+          if (!(mapSurveyConf?.selected_survey_properties?.length > 0)) {
+            return;
+          }
+
+
+          layer.bindPopup(`<div>${getSpecifictPopup(properties, mapSurveyConf?.default_popup_style_slug || '', mapSurveyConf?.selected_survey_properties || [], mapSurveyConf?.edited_survey_properties)}</div>`)
+        }
+      })
       let leafletFG = reactFGref;
-      localStorage.setItem('center', JSON.stringify(leafletGeoJSON.getBounds().getCenter()));
       leafletGeoJSON.eachLayer((layer) => {
-        layer.on("click", function (e) {
-          this.setState({ modalVisible: true, place: layer.feature });
-        }.bind(this));
+        if (this.props.layerClicked) {
+          layer.on("click", function (e) {
+            this.setState({ modalVisible: true, place: layer.feature });
+          }.bind(this));
+        }
         if (leafletFG) {
           leafletFG.addLayer(layer);
         }
@@ -106,6 +150,8 @@ export default class EditControlExample extends Component {
     onChange();
   };
   render() {
+
+
     return (
 
       <div>
@@ -119,12 +165,9 @@ export default class EditControlExample extends Component {
               modalClose={this.drawerClose}
               userType={this.props.userType}
               userId={this.props.userId}
-              
-
             />
           )
         }
-
         {
           this.state.modalVisible && (
             <Preview
@@ -142,6 +185,7 @@ export default class EditControlExample extends Component {
             this._onFeatureGroupReady(reactFGref);
           }}
         >
+
           <EditControl
             position="topright"
             onCreated={this._onCreated}

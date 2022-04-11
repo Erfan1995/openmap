@@ -1,9 +1,7 @@
 import React from "react";
 import { Form, Input, Button, Checkbox, message } from 'antd';
 import { UserOutlined, LockOutlined } from '@ant-design/icons';
-import {
-    StyledCard,
-} from "../styles/globalStyles";
+import { StyledCard } from "../styles/globalStyles";
 import { postMethod } from "../lib/api";
 import persistUserCredential from "../utils/persistUserCredential";
 import { useRouter } from 'next/router';
@@ -27,7 +25,11 @@ const SignIn = () => {
                 }, false)
                 persistUserCredential(res.jwt);
                 message.success({ content: DATASET.SUCCESS, key });
-                router.push('/customer/dashboard');
+                if (res.user.role.name === "Customer") {
+                    router.push('/customer/maps');
+                } else if (res.user.role.name === "Admin") {
+                    router.push('/admin/customers');
+                }
             })
             .catch((err) => {
                 message.error(err);

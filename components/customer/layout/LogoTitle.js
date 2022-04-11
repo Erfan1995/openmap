@@ -1,5 +1,6 @@
 import styled from 'styled-components';
 import Link from 'next/link';
+import { DATASET } from '../../../static/constant';
 
 export const Logo = styled.img`
   display: inline-block;
@@ -7,14 +8,23 @@ export const Logo = styled.img`
   vertical-align: middle;
 `;
 
-const Title = styled.div`
-  display: inline-block;
-  color: white;
+const MainTitle = styled.div`
+  display: block;
+  color: #eee;
   font-weight: 600;
-  font-size: 20px;
-  margin-left: 12px;
+  font-size: 28px;
   font-family: 'Arial';
   vertical-align: middle;
+`;
+
+const SubTitle = styled.div`
+  display: block;
+  color: #eee;
+  font-weight: 500;
+  font-size: 9px;
+  margin-top:-40px;
+  margin-left: 12px;
+
 `;
 
 const TitleWrapper = styled.div`
@@ -36,7 +46,8 @@ const LogoTitle = () => {
       <Link href="/">
         <HrefLink>
           {/* <Logo src="logo.png" alt="logo" /> */}
-          <Title>Focal Point  </Title>
+          <MainTitle>{DATASET.SAFE_SPACE}</MainTitle>
+          <SubTitle>{DATASET.OPEN_MAP}</SubTitle>
         </HrefLink>
       </Link>
     </TitleWrapper>

@@ -5,7 +5,7 @@ import MapItem from 'components/customer/mapComponents/mapListItem';
 import { List, Button, Divider, Typography, Modal } from 'antd';
 import styled from 'styled-components';
 import React, { useState, useRef } from 'react';
-import { getMethod } from 'lib/api';
+import { getMethod, getMaps, getTags, getallMaps } from 'lib/api';
 const { Title } = Typography;
 import nookies from 'nookies';
 import CreateMap from 'components/customer/Forms/CreateMap';
@@ -36,9 +36,11 @@ const Map = ({ authenticatedUser, collapsed, maps, tags, mapData = null }) => {
   const [file, setFile] = useState();
   const onModalClose = (res) => {
     setCreateMapModalVisible(false);
+    console.log(res);
     router.push({
       pathname: 'create-map',
-      query: { id: res.id }
+      query: { id: res?.id,mapToken:res?.mapId }
+      
     })
 
   }
@@ -98,14 +100,15 @@ export const getServerSideProps = withPrivateServerSideProps(
   async (ctx, verifyUser) => {
     try {
       const { token } = nookies.get(ctx);
-      const res = await getMethod(`maps?_sort=updated_at:DESC&_where[0][users.id]=${verifyUser.id}`, token);
-      const tags = await getMethod('tags', token);
-
-      return { props: { authenticatedUser: verifyUser, maps: res, tags: tags } }
+      const res = await getMaps({ user: verifyUser.id }, token)
+      // const res = await getMethod(`maps?_sort=updated_at:DESC&_where[0][users.id]=${verifyUser.id}`, token);
+      const tags = await getTags(token);
+      return { props: { authenticatedUser: verifyUser, maps: res, tags: tags || [] } }
     } catch (error) {
+      console.log(error.message);
       return {
         redirect: {
-          destination: '/server-error',
+          destination: '/errors/500',
           permanent: false,
         },
       }

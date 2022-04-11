@@ -1,7 +1,7 @@
-import { Table, Dropdown, Menu, Modal, Spin, Button } from 'antd';
+import { Table, Dropdown, Menu, Modal, Spin, Button, message } from 'antd';
 import React, { useEffect, useState, useRef } from 'react';
 import { DownOutlined, ExclamationCircleOutlined } from '@ant-design/icons';
-import { deleteMethod, putMethod } from "../../../lib/api";
+import { deleteMethod, putMethod, getMaps, postMethod } from "../../../lib/api";
 import 'antd/dist/antd.css';
 import styled from 'styled-components';
 import DatasetDetails from './DatasatDetails';
@@ -14,7 +14,7 @@ background:#ffffff;
 padding:20px;
 margin:10px;
 `;
-const UnlockedDataset = ({ data, updateLockedData, user, tags }) => {
+const UnlockedDataset = ({ data, updateLockedData, user, tags, updatedData }) => {
     let mapData;
     const router = useRouter();
     const [datasetId, setDatasetId] = useState();
@@ -30,11 +30,19 @@ const UnlockedDataset = ({ data, updateLockedData, user, tags }) => {
     }, [data])
 
     const deleteDataset = async () => {
-        setLoading(true)
-        const deletedDataset = await deleteMethod('datasetcontents/' + datasetId)
-        if (deletedDataset) {
-            const res = await deleteMethod('datasets/' + datasetId)
-            if (res) setDataset(dataset.filter(dData => dData.id !== res.id));
+        try {
+            setLoading(true);
+            const res = await deleteMethod('datasetcontents/' + datasetId)
+            if (res !== 'Faild') {
+                const datasets = dataset.filter(dData => dData.id !== res);
+                setDataset(datasets);
+                updatedData(datasets);
+                setLoading(false)
+            } else {
+                message.error('Faild to delete please try again.');
+            }
+        } catch (e) {
+            message.error(e.message);
             setLoading(false)
         }
     }
@@ -43,7 +51,7 @@ const UnlockedDataset = ({ data, updateLockedData, user, tags }) => {
         const res = await putMethod('datasets/' + datasetId, { is_locked: true });
         if (res) {
             let dd = dataset.filter(dData => dData.id !== res.id);
-            setDataset(dd)
+            setDataset(dd);
             updateLockedData(dataset.filter(dData => dData.id === res.id), dd)
             setLoading(false)
         }
@@ -106,6 +114,11 @@ const UnlockedDataset = ({ data, updateLockedData, user, tags }) => {
             key: 'maps'
         },
         {
+            title: DATASET.SIZE,
+            dataIndex: "size",
+            key: 'size'
+        },
+        {
             title: DATASET.ACTIONS,
             key: 'action',
             render: (record) => (
@@ -124,15 +137,20 @@ const UnlockedDataset = ({ data, updateLockedData, user, tags }) => {
     const addImageFile = (file) => {
         setFile(file);
     }
-    const onModalClose = (res) => {
-        setCreateMapModalVisible(false);
-        router.push({
-            pathname: 'create-map',
-            query: { id: res.id }
-        })
+    const createMapDatasetConf = async (data) => {
+        const dd = await postMethod('mapdatasetconfs', { map: data.id, dataset: datasetId });
+        if (dd) {
+            setCreateMapModalVisible(false);
+            router.push({
+                pathname: 'create-map',
+                query: { id: data?.id,mapToken:data?.mapId }
+            })
+        }
 
     }
-
+    const onModalClose = (res) => {
+        createMapDatasetConf(res)
+    }
     return (
         <>
             <Modal
@@ -141,9 +159,11 @@ const UnlockedDataset = ({ data, updateLockedData, user, tags }) => {
                 centered
                 visible={modalVisible}
                 destroyOnClose={true}
+                onCancel={() => { setModalVisible(false) }}
                 footer={[
                     <Button key="close" onClick={() => { setModalVisible(false) }}> close</Button>
                 ]}
+
             >
                 <DatasetDetails rowId={datasetId} />
             </Modal>

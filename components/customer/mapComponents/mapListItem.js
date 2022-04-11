@@ -5,6 +5,7 @@ import React, { useState } from 'react';
 import { useRouter } from 'next/router';
 import { deleteMethod, putMethod } from "../../../lib/api";
 import { DATASET } from '../../../static/constant'
+import Publish from './Publish';
 const { Paragraph, Title } = Typography;
 const { confirm } = Modal;
 const ActionLink = styled.a`
@@ -48,18 +49,26 @@ const ActionButton = ({ handleMenuClick }) => {
             <Menu.Item key="link">
                 {DATASET.CREATE_LINK}
             </Menu.Item>
+            <Menu.Item key="analytics">
+                {DATASET.MAP_ANALYTICS}
+            </Menu.Item>
         </Menu>
     );
 };
 
 const MapItem = ({ item, filterDeletedMap }) => {
     const [loading, setLoading] = useState(false);
+    const [publishvisible, setPublishVisible] = useState(false);
     const router = useRouter();
-    const deleteDataset = async (id) => {
+    const deleteMap = async (id) => {
         setLoading(true);
-        const res = await deleteMethod('maps/' + id)
-        if (res) {
-            filterDeletedMap(id);
+        const dConf = await deleteMethod('mapdatasetconfs/map:' + id);
+        const deleteSurvey = await deleteMethod('mapsurveyconfs/map:' + id);
+        if (dConf && deleteSurvey) {
+            const res = await deleteMethod('maps/' + id)
+            if (res) {
+                filterDeletedMap(id);
+            }
         }
         setLoading(false);
     }
@@ -68,52 +77,42 @@ const MapItem = ({ item, filterDeletedMap }) => {
             icon: <ExclamationCircleOutlined />,
             content: <p>{DATASET.DELETE_CONFIRM}</p>,
             onOk() {
-                deleteDataset(id)
+                deleteMap(id)
             },
             onCancel() {
             },
         });
     }
-
-    function showGeneratedLink(item) {
-        confirm({
-            icon: <ExclamationCircleOutlined />,
-            content: <p>{'ok to redirect to public map'}</p>,
-            onOk() {
-                router.push({
-                    pathname: '/',
-                    query: { mapToken: item.mapId,id:item.id }
-                });
-            },
-            
-            onCancel() {
-            },
-        });
-    }
-
-
 
     const handleMenuClick = (e) => {
         if (e.key === "edit") {
             localStorage.clear('zoom');
             router.push({
                 pathname: 'create-map',
-                query: { id: item.id }
+                query: { id: item.id, mapToken: item?.mapId }
             });
         } else if (e.key === "delete") {
             showConfirm(item.id)
-        }else{
-            showGeneratedLink(item);
+        } else if (e.key === "analytics") {
+            router.push({
+                pathname: 'map-analytics',
+                query: { id: item.id }
+            })
+        } else {
+            setPublishVisible(true);
         }
 
     };
+    const makePublishVisibility = (state) => {
+        setPublishVisible(state)
+    }
     return (
         <>
             <Spin spinning={loading}>
                 <Card
                     key={`map${item.id}`}
                     cover={
-                        <img src={`${process.env.NEXT_PUBLIC_MAPBOX_API_URL}/styles/v1/mbshaban/${item.styleId}/static/-77.0368707,38.9071923,10/280x250?access_token=${process.env.NEXT_PUBLIC_MAPBOX_TOKEN}`} alt={item.name} />
+                        <img src={`${process.env.NEXT_PUBLIC_MAPBOX_API_URL}/styles/v1/mapbox/light-v10/static/-77.0368707,38.9071923,10/280x250?access_token=${process.env.NEXT_PUBLIC_MAPBOX_TOKEN}`} alt={item.name} />
                     }
                     title={<Title level={5}>{item.title}</Title>}
                     extra={<Dropdown overlay={<ActionButton handleMenuClick={handleMenuClick} />}>
@@ -129,7 +128,7 @@ const MapItem = ({ item, filterDeletedMap }) => {
                             <div><CalendarOutlined />  {new Date(item.updated_at).toLocaleDateString()}</div>
                             <div >
                                 {
-                                    item.tags.map((tag) => (
+                                    item?.tags?.map((tag) => (
                                         <Tag color='cyan' key={`tag${tag.id}`} className='margin-top-5'>
                                             {tag.name}
                                         </Tag>
@@ -141,7 +140,9 @@ const MapItem = ({ item, filterDeletedMap }) => {
                     </div>
                 </Card>
             </Spin>
-
+            {publishvisible && (
+                <Publish mapData={item} publishButtonVisibility={false} modalVisibility={true} makePublishVisibility={makePublishVisibility} />
+            )}
         </>
     );
 };

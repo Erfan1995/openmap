@@ -1,0 +1,148 @@
+
+
+#circle ul{
+    list-style: none;
+    display: inline-table;
+    padding:0px
+}
+
+#circle ul li{
+    display: inline;
+}
+
+
+#circle ul li a{
+    display: block;
+    float: left;
+    height: 40px;
+    width:40px;
+    padding-top:6px;
+    text-align: center;
+    border-radius:50%;
+    position: relative;
+    margin: 2px 30px 0 0; 
+    font-size: 15px;
+    text-decoration: none;
+    color: #8093A7;
+    border:1px solid #F3F5FA;
+    
+}
+
+#circle ul li a.habib{
+    background:#8093A7;
+}
+
+#circle ul li a:after{
+    content: "____";  
+    border-top: 2px solid transparent;
+    position: absolute; 
+    right: -31px;
+    top: 0;
+    z-index: 1;
+    
+} 
+
+			
+#circle ul li:last-child a:after {
+	display: none; 
+}
+			
+/* #circle ul li a:hover {
+	background: green;
+} */
+
+
+
+
+
+#flash ul{
+    list-style: none;
+    display: inline-table;
+    padding:0px
+}
+
+#flash ul li{
+    display: inline;
+    margin-top: 2px;
+}
+
+#flash ul li a{
+    display: block;
+    float: left;
+    height: 40px;
+    width:75px;
+    text-align: center;
+    padding: 7px 5px 0 20px;
+    position: relative;
+    margin: 5px 3px 0 0; 
+    /* font-size: 15px; */
+    text-decoration: none;
+}
+
+#flash ul li a:after{
+    content: "";  
+    border-top: 20px solid transparent;
+    border-bottom: 20px solid transparent;
+    border-left-width: 10px;
+    border-left-style: solid;
+    position: absolute; 
+    right: -10px;
+    top: 0;
+    z-index: 1;
+} 
+
+
+#flash ul li a:before{
+    content: "";  
+    border-top: 20px solid transparent;
+    border-bottom: 20px solid transparent;
+    border-left: 10px solid #fff;
+    position: absolute; 
+    left: 0; 
+    top: 0;
+} 
+
+
+#flash ul li:first-child a {
+	border-top-left-radius: 10px; border-bottom-left-radius: 10px;
+    padding-left:10px
+	}
+
+#flash ul li:first-child a:before {
+	display: none; 
+}
+				
+/* #flash ul li:last-child a {
+	padding-right: 15px;
+	border-top-right-radius: 10px; border-bottom-right-radius: 10px;
+} */
+
+/* #flash ul li:last-child a:after {
+	display: none; 
+} */
+			
+/* #flash ul li a:hover {
+	background: green;
+} 
+
+#flash ul li a:hover:after {
+	border-left-color: green;
+}  */
+
+
+.disable{
+    background:#E6E6FA ;
+}
+
+.disable:after{
+    border-left-color:#E6E6FA; ;
+}
+
+.active{
+    background:#28a745 !important ;
+}	
+
+.active:after{
+    border-left-color:#28a745 !important;
+};
+		

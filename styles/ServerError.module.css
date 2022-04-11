@@ -1,0 +1,57 @@
+
+@font-face {
+    font-family: "ConcertOne";
+    src: url("/fonts/ConcertOne-Regular.ttf");
+    font-style: normal;
+    font-weight: 400;
+    font-display: swap;
+  }
+
+
+.container{
+    height: 100vh;
+    width: 100%;
+    /* background-color: #f5f5f5; */
+    background-color: white;
+    text-align: center;
+    padding: 100px 150px;
+}
+
+
+.title{
+    font-size: 200px;
+    color: #2C447D;
+    font-family: ConcertOne;
+}
+
+.error_title{
+    color: #191F3A;
+    font-size: 35px;
+    margin-top: -60px;
+    font-family: ConcertOne;
+}
+
+.error_message{
+    color: #C8DEF4;
+}
+
+.card{
+    border: 1px solid #d9d9d9;
+    border-radius: 10px;
+    background-color: #ffffff;
+}
+
+.button{
+    margin-top: 20px;
+    font-size: 15px;
+    border-radius: 5px;
+    background-color: #2C447D;
+    color: #ffffff;
+    border-radius: 50px;
+    height: 50px;
+}
+
+.responsive {
+    width: 100%;
+    height: auto;
+  }

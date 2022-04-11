@@ -16,6 +16,7 @@ function EditableLayer(props) {
     }
     editLayerRef.current.clearLayers();
     editLayerRef.current.addLayer(props.layer);
+    
     props.layer.on("click", function (e) {
       props.onLayerClicked(e, drawControlRef.current);
     });
@@ -29,7 +30,7 @@ function EditableLayer(props) {
     <div>
       <FeatureGroup ref={editLayerRef}>
         <EditControl
-          position="topright"
+          position='bottomleft'
           onEdited={props.onUpdate}
           onDeleted={props.onDeleted}
           draw={props.draw}
@@ -49,6 +50,9 @@ function EditableGroup(props) {
   }
   let layers = [];
   let i = 0;
+
+  
+
   props.dataLayer.eachLayer((layer) => {
     layer.feature.properties.editLayerId = i;
     layers.push(layer);

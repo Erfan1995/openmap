@@ -1,10 +1,11 @@
 import { ExclamationCircleOutlined } from "@ant-design/icons";
-import { Modal, Button, Row, Col, Form, Input, message } from "antd";
+import { Modal, Button, Row, Col, List, Card, message, Spin } from "antd";
 import { deleteMethod, putMethod } from "lib/api";
 import { useEffect, useState } from "react";
 import styled from 'styled-components';
 import EditMap from "./EditMap";
 import { API, MAP } from '../../static/constant';
+import { getStrapiMedia } from "lib/media";
 
 const { confirm } = Modal;
 
@@ -12,41 +13,87 @@ const ContentWrapper = styled.div`
 padding:10px;
 
 `
-const Content = styled.div`
-padding:10px;
-border-bottom:1px solid #ededed;
+
+
+const Photo = styled.img`
+  width:43px;
+  height:43px;
+  :hover{
+      opacity:0.8;
+  }
 `
 
-const Preview = ({ isVisible, place, closePlaceDetails, mapData, onDataSaved, dataType, userType }) => {
+const MarkerCard = styled(Card)`
+:hover{
+    cursor:pointer;
+}
+`
 
-    const [form] = Form.useForm();
+const Preview = ({ isVisible, place, closePlaceDetails, mapData, onDataSaved }) => {
+
     const [visible, setVisible] = useState(false);
-    const [initialValues, setInitialValues] = useState({});
+    const [icons, setIcons] = useState(mapData?.mapsurveyconfs?.length > 0 ? mapData?.mapsurveyconfs[0]?.icons.map(item => ({ ...item, isSelected: false })) : []);
+    const [loading, setLoading] = useState(false);
+
+
+    const selectMarker = async (item) => {
+
+
+        setLoading(true);
+        if (mapData?.mapsurveyconfs?.length > 0) {
+            setIcons(mapData?.mapsurveyconfs[0]?.icons.map((obj) => {
+                if (item.id === obj.id) {
+                    return { ...obj, isSelected: true }
+                } else {
+                    return { ...obj, isSelected: false }
+                }
+            }));
+        }
+
+        let url = place.properties.type === 'public' ? 'mmdpublicusers' : 'mmdcustomers';
+
+        try {
+            const res = await putMethod(`${url}/${place.properties.id}`, { icon: item.id });
+
+            if (res) {
+                setLoading(false)
+                setVisible(false);
+                onDataSaved();
+            }
+        } catch (e) {
+            setLoading(false);
+            message.info(e.message);
+
+        }
+
+
+
+
+    }
 
     useEffect(() => {
         setVisible(isVisible);
-        setInitialValues(place.properties);
     }, [])
 
-    const saveData = (geometry = null) => {
-        form
-            .validateFields()
-            .then(async (values) => {
-                if (geometry) {
-                    values.geometry = geometry;
-                }
-                let url = place.properties.type === 'public' ? 'mmdpublicusers' : 'mmdcustomers';
+    const saveData = async (geometry = null) => {
+        setLoading(true);
 
-                const res = await putMethod(`${url}/${place.properties.id}`, values);
+        try {
+            if (geometry) {
+                let url = place.properties.type === 'public' ? 'mmdpublicusers' : 'mmdcustomers';
+                const res = await putMethod(`${url}/${place.properties.id}`, { geometry: geometry });
                 if (res) {
+                    setLoading(false);
+
                     setVisible(false);
-                    form.resetFields();
                     onDataSaved();
                 }
-            })
-            .catch((info) => {
-                message.error(info);
-            });
+            }
+        }
+        catch (info) {
+            setLoading(false);
+            message.error(info.message);
+        };
     }
 
     const onUpdate = (data) => {
@@ -54,14 +101,20 @@ const Preview = ({ isVisible, place, closePlaceDetails, mapData, onDataSaved, da
     }
 
     const deleteFeature = async () => {
+        setLoading(true);
+
         try {
             let url = place.properties.type === 'public' ? 'mmdpublicusers' : 'mmdcustomers';
 
             const res = await deleteMethod(`${url}/${place.properties.id}`);
             if (res) {
+                setLoading(false);
+
                 onDataSaved();
             }
         } catch (e) {
+            setLoading(false);
+
             message.error(MAP.CHECK_INTERNET_CONNECTION);
         }
 
@@ -86,58 +139,44 @@ const Preview = ({ isVisible, place, closePlaceDetails, mapData, onDataSaved, da
             style={{ top: 20 }}
             onCancel={closePlaceDetails}
             destroyOnClose={true}
-            width={900}
+            width={800}
             footer={[
                 <Button key="close" onClick={closePlaceDetails}> close</Button>,
-                dataType !== 'dataset' && userType !== 'public' ? <Button key="delete" onClick={onDelete} > {MAP.DELETE}</Button> : '',
-                dataType !== 'dataset' && userType !== 'public' ? <Button key="save" type='primary' color='red' onClick={() => {
-                    saveData();
-                }}> {MAP.SAVE}</Button> : '',
+                <Button key="delete" onClick={onDelete} > {MAP.DELETE}</Button>,
+
             ]}
         >
 
-            <ContentWrapper>
-                {dataType === 'dataset' || userType === 'public' ?
-
-                    Object.keys(place.properties).map((key) => [key, place.properties[key]]).map((item, index) => {
-                        return <Content key={`prop${index}`} > <strong>{item[0]}</strong>{' : ' + item[1]}  </Content>
-                    })
-                    :
+            <Spin spinning={loading}>
+                <ContentWrapper>
                     <Row gutter={[24, 24]}>
-                        <Col xs={24} sm={24} md={24} lg={9} xl={9} >
+                        <Col span={10} >
+                            {
+                                place.geometry?.type === 'Point' &&
+                                <Col span={24}>
+                                    <List
 
-                            <Form layout="vertical" preserve={false} form={form} initialValues={initialValues} hideRequiredMark>
-                                <Row gutter={16}>
-                                    <Col span={24}>
-                                        <Form.Item
-                                            name="title"
-                                            label={MAP.TITLE}
-                                            rules={[{ required: true, message: MAP.ENTER_TITLE }]}
-                                        >
-                                            <Input placeholder={MAP.ENTER_TITLE} />
-                                        </Form.Item>
-                                    </Col>
-                                    <Col span={24}>
-                                        <Form.Item
-                                            name="description"
-                                            label={MAP.DESCRIPTION}
-                                            rules={[
-                                                {
-                                                    required: true,
-                                                    message: MAP.ENTER_DESCRIPTION,
-                                                },
-                                            ]}
-                                        >
-                                            <Input.TextArea rows={4} placeholder={MAP.ENTER_DESCRIPTION} />
-                                        </Form.Item>
-                                    </Col>
-                                </Row>
-                            </Form>
+                                        grid={{
+                                            gutter: 10,
+                                            column: 3
+
+                                        }}
+                                        dataSource={icons || []}
+                                        renderItem={(item) => (
+                                            <List.Item key={`listItem` + item.id} >
+                                                <MarkerCard className={item.isSelected ? 'selectedBox' : ''} onClick={() => selectMarker(item)} >
+                                                    <Photo src={getStrapiMedia(item.icon[0])} />
+                                                </MarkerCard>
+                                            </List.Item>
+                                        )}
+                                    />
+                                </Col>
+                            }
                         </Col>
-                        <Col xs={24} sm={24} md={24} lg={15} xl={15}>
+                        <Col span={14}>
                             <EditMap
                                 manualMapData={place}
-                                styleId={mapData.styleId}
+                                styleId={mapData.mapstyle?.link}
                                 style={{ height: "50vh" }}
                                 option={{ zoom: 5 }}
                                 mapData={mapData}
@@ -158,10 +197,12 @@ const Preview = ({ isVisible, place, closePlaceDetails, mapData, onDataSaved, da
                                 }
                             />
                         </Col>
-                    </Row>
-                }
-            </ContentWrapper>
 
+                    </Row>
+
+
+                </ContentWrapper>
+            </Spin>
 
 
         </Modal>

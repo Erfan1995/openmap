@@ -57,7 +57,7 @@ const CreateMap = ({ serverSideTags, user, mapData, onModalClose, addImageFile }
                 .then(async (values) => {
                     const fData = new FormData();
                     values.styleId = styleId;
-                    values.users = user.id;
+                    values.user = user.id;
                     let res = null;
                     setLoading(true);
                     if (mapData) {
@@ -78,13 +78,14 @@ const CreateMap = ({ serverSideTags, user, mapData, onModalClose, addImageFile }
                     setLoading(false);
                     if (res) {
                         message.success(DATASET.CREATE_MAP_SUCCESS_MSG);
-                        onModalClose(res);
+                        // onModalClose(res);
                         localStorage.clear('zoom');
                     }
                 })
                 .catch((info) => {
-                    message.error(info.message)
+                    message.error(info)
                 });
+            return true;
         },
         createMap(datasetId = null, image) {
             form
@@ -92,14 +93,14 @@ const CreateMap = ({ serverSideTags, user, mapData, onModalClose, addImageFile }
                 .then(async (values) => {
                     const fData = new FormData();
                     values.datasets = datasetId;
-                    values.styleId = process.env.NEXT_PUBLIC_MAPBOX_DEFAULT_MAP;
-                    values.users = user.id;
+                    // values.styleId = process.env.NEXT_PUBLIC_MAPBOX_DEFAULT_MAP;
+                    values.user = user.id;
                     values.mapId = CryptoJS.SHA1(new Date().toString() + user.id).toString();
                     values.zoomLevel = 2;
                     values.center = [29.9635203, -10.1238717];
                     fData.append('data', JSON.stringify(values));
-                    setLoading(true);
                     if (image) {
+                        setLoading(true);
                         fData.append('files.logo', image.file.originFileObj, image.file.originFileObj.name);
                         let res = await postFileMethod('maps', fData)
                         setLoading(false);
@@ -109,13 +110,16 @@ const CreateMap = ({ serverSideTags, user, mapData, onModalClose, addImageFile }
                         }
                     } else {
                         message.error('please select the logo');
+                        setLoading(false);
                     }
                 })
                 .catch((info) => {
-                    message.error(info.message)
+                    message.error(info)
+                    setLoading(false);
                 })
         }
     }), [])
+
     const props = {
         beforeUpload: file => {
             if ((file.type.split("/")[0]) !== "image") {
@@ -131,6 +135,15 @@ const CreateMap = ({ serverSideTags, user, mapData, onModalClose, addImageFile }
         <Spin spinning={loading}>
             <Form form={form} layout="vertical" initialValues={mapData} hideRequiredMark>
                 <Row gutter={16}>
+                    <Col span={24}>
+                        <Form.Item
+                            name="dialog_title"
+                            label={DATASET.MAP_NAME}
+                            rules={[{ required: true }]}
+                        >
+                            <Input placeholder={DATASET.PLACE_HOLDER_DIALOG} />
+                        </Form.Item>
+                    </Col>
                     <Col span={12}>
                         <Form.Item
                             name="title"
@@ -170,7 +183,7 @@ const CreateMap = ({ serverSideTags, user, mapData, onModalClose, addImageFile }
                             <Input placeholder={DATASET.PLACEHOLDER_LINK} />
                         </Form.Item>
                     </Col>
-                    <Col span={12}>
+                    <Col span={24}>
                         <Form.Item
                             name="tags"
                             label={DATASET.TAGS}
@@ -200,7 +213,7 @@ const CreateMap = ({ serverSideTags, user, mapData, onModalClose, addImageFile }
                             </Select>
                         </Form.Item>
                     </Col>
-                    <Col span={12}>
+                    <Col span={24}>
                         <Form.Item
                             name="description"
                             label={DATASET.DESCRIPTION}
@@ -218,7 +231,9 @@ const CreateMap = ({ serverSideTags, user, mapData, onModalClose, addImageFile }
                 <p className="ant-upload-drag-icon">
                     <InboxOutlined />
                 </p>
+                <p className="ant-upload-text">{DATASET.LOGO_FILE}</p>
                 <p className="ant-upload-text">{DATASET.CLICK_OR_DRAG}</p>
+
 
             </Dragger>
         </Spin>
