@@ -148,7 +148,7 @@ const SurveyCreatorComponent = ({ authenticatedUser, token, surveyForms }) => {
     const [link, setLink] = useState('');
     const [maps, setMaps] = useState([]);
     const [selectedMap, setSelectedMap] = useState();
-
+    const [scriptLoaded, setScriptLoaded] = useState(false);
     const basePath = process.env.NEXT_PUBLIC_BASEPATH_URL;
 
 
@@ -216,7 +216,7 @@ const SurveyCreatorComponent = ({ authenticatedUser, token, surveyForms }) => {
         );
         surveyCreator.saveSurveyFunc = saveMySurvey;
         surveyCreator.render("surveyCreatorContainer");
-    },[surveyCreator]);
+    }, [surveyCreator]);
 
     const callback = async (key) => {
         if (!(JSON.parse(surveyCreator.text)?.pages[0]?.elements?.length > 0)) {
