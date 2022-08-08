@@ -200,11 +200,11 @@ const SurveyCreatorComponent = ({ authenticatedUser, token, surveyForms }) => {
 
     useEffect(() => {
 
-        if (typeof window !== undefined && !scriptLoaded) {
+        if (typeof window !== undefined ) {
             const script = document.createElement('script');
             script.src = "https://cdn.ckeditor.com/4.14.1/standard/ckeditor.js";// Or any other location , example head
             document.head.append(script);
-            setScriptLoaded(true);
+            // setScriptLoaded(true);
             widgets.ckeditor(Survey);
             widgets.ckeditor(SurveyKo);
         }
@@ -370,7 +370,6 @@ const SurveyCreatorComponent = ({ authenticatedUser, token, surveyForms }) => {
                         onCancel={() => {
                             setVisible(false)
                         }}
-                        destroyOnClose={true}
                         footer={[
                             <Button key="close" onClick={() => { setVisible(false) }}> {DATASET.CLOSE}</Button>
                         ]}
